@@ -147,7 +147,7 @@ export default {
   },
   created () {
     const that = this
-    http.get('/Servant/Info').then((res) => {
+    http.get('/Info').then((res) => {
       that.ServantInfo = res.data.Data
       that.imgList1 = that.insertImgList(that.ServantInfo.ZiGeImg)
     })

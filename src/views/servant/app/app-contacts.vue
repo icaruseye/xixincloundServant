@@ -58,7 +58,7 @@ export default {
       this.$router.push(`/message/chat/${id}`)
     },
     async getData () {
-      const res = await http.get('/Servant/ContactList', { Page: 1, Size: 10 })
+      const res = await http.get('/ContactList', { Page: 1, Size: 10 })
       this.list = res.data.Data
     }
   }

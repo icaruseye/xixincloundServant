@@ -74,7 +74,7 @@ export default {
   },
   async created () {
     const that = this
-    const res = await http.get('/Servant/ChatRecordHistoryList', { UserViewID: this.$route.params.id, PageIndex: 1 })
+    const res = await http.get('/ChatRecordHistoryList', { UserViewID: this.$route.params.id, PageIndex: 1 })
     this.userAccount = res.data.Data.UserAccount
     this.chatList = res.data.Data.ChatHisList
     setTimeout(function () {
@@ -121,7 +121,7 @@ export default {
     },
     // 功能逻辑函数
     async chatRecordTimePoll () {
-      const res = await http.get('/Servant/ChatRecordTimePoll', { UserViewID: this.userAccount.ViewID })
+      const res = await http.get('/ChatRecordTimePoll', { UserViewID: this.userAccount.ViewID })
       console.log(res)
     },
     async sendMsg () {
@@ -139,7 +139,7 @@ export default {
         Content: this.chatMsg,
         time: new Date()
       }
-      const res = await http.post('/Servant/ChatRecord', {
+      const res = await http.post('/ChatRecord', {
         UserViewID: this.userAccount.ViewID,
         MsgType: 1,
         Content: this.chatMsg

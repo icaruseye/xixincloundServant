@@ -62,7 +62,7 @@ export default {
       if (!(mobile.length === 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/.test(mobile))) {
         return this.$vux.toast.text('请填写正确的手机号')
       }
-      const res = await http.get('/Servant/ValidateMobile', { mobile: this.mobile })
+      const res = await http.get('/ValidateMobile', { mobile: this.mobile })
       if (res.data.Code === 100000) {
         this.setTimer()
       }

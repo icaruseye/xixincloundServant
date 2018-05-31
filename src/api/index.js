@@ -57,6 +57,28 @@ export default {
     return axios(options)
     .then(checkStatus).then(checkCode)
   },
+  put (url, data, header) {
+    var token = localStorage.getItem('servant_token')
+    var headers = {
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json; charset=UTF-8'
+    }
+    if (header) {
+      var _headers = Object.assign(headers, header)
+    }
+    if (token) {
+      headers.token = token
+    }
+    var options = {
+      method: 'put',
+      url: config._PATH_ + url,
+      data: data,
+      timeout: config._TIMEOUT_,
+      headers: _headers || headers
+    }
+    return axios(options)
+    .then(checkStatus).then(checkCode)
+  },
   get (url, params) {
     var token = localStorage.getItem('servant_token')
     var headers = {

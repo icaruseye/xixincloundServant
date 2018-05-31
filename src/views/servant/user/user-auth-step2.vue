@@ -5,13 +5,13 @@
       <div class="weui-cell nobor">
         <div class="weui-cell-top">
           <label class="label" for="">姓名</label>
-          <input type="text" placeholder="请输入姓名">
+          <input v-model="reqParam.RealName" type="text" placeholder="请输入姓名">
         </div>
       </div>
       <div class="weui-cell">
         <div class="weui-cell-top">
           <label class="label" for="">身份证号码</label>
-          <input type="text" placeholder="请输入身份证号码">
+          <input v-model="reqParam.IDCard" type="text" placeholder="请输入身份证号码">
         </div>
       </div>
     </div>
@@ -28,14 +28,14 @@
       ></uploader>
       <uploader
         title="身份证背面"
-        :limit="1"
+        :limit="count"
         :maxSize="1024 * 1024 * 2"
         :imgList="imgList2"
         @onUpdate="onUpdate2"
       ></uploader>
     </div>
     <div class="step-btn">
-      <button class="weui-btn">确定</button>
+      <button class="weui-btn" @click="submit">下一步</button>
     </div>
   </div>
 </template>
@@ -43,7 +43,15 @@
 <script>
 import stepBar from './user-auth-stepbar'
 import uploader from '@/components/common/uploader'
+import Vue from 'vue'
+import util from '@/plugins/util'
+import http from '@/api/index'
+import { ToastPlugin } from 'vux'
+Vue.use(ToastPlugin)
 export default {
+  metaInfo: {
+    title: '实名认证'
+  },
   components: {
     stepBar,
     uploader
@@ -63,16 +71,64 @@ export default {
         text: '开始服务',
         type: 0
       }],
+      count: 3,
       imgList1: [],
-      imgList2: []
+      imgList2: [],
+      reqParam: {
+        RealName: '',
+        IDCard: '',
+        IDCardImg: '',
+        IDCardBackImg: ''
+      },
+      authText: {
+        RealName: {
+          text: '真实姓名',
+          required: true
+        },
+        IDCard: {
+          text: '身份证号码',
+          required: true
+        },
+        IDCardImg: {
+          text: '身份证正面',
+          required: true
+        },
+        IDCardBackImg: {
+          text: '身份证背面',
+          required: true
+        }
+      }
     }
   },
   methods: {
     onUpdate1 (id) {
       console.log(id)
+      this.reqParam.IDCardImg = id.toString()
     },
     onUpdate2 (id) {
       console.log(id)
+      this.reqParam.IDCardBackImg = id.toString()
+    },
+    async submit () {
+      const that = this
+      const isValidate = util.validateForm(this.reqParam, this.authText)
+      console.log(isValidate)
+      if (isValidate) {
+        if (util.CheckIDCardNum(this.reqParam.IDCard)) {
+          const res = await http.put('/ServantInfo', this.reqParam)
+          console.log(res)
+          if (res.data.Code === 100000) {
+            this.$vux.toast.show({
+              text: '提交成功',
+              onHide () {
+                that.$router.push('/user/authstep3')
+              }
+            })
+          } else {
+            this.$vux.toast.text(res.data.Msg)
+          }
+        }
+      }
     }
   }
 }
