@@ -24,6 +24,11 @@ const servantUserWithdraw = () => import('@/views/servant/user/user-withdraw')
 const servantUserComplaint = () => import('@/views/servant/user/user-complaint')
 const servantUserComplaintDetail = () => import('@/views/servant/user/user-complaint-detail')
 const servantUserDate = () => import('@/views/servant/user/user-date')
+const servantAuthStep1 = () => import('@/views/servant/user/user-auth-step1')
+const servantAuthStep2 = () => import('@/views/servant/user/user-auth-step2')
+const servantAuthStep3 = () => import('@/views/servant/user/user-auth-step3')
+const servantAuthStep3a1 = () => import('@/views/servant/user/user-auth-step3-1')
+const servantAuthStep4 = () => import('@/views/servant/user/user-auth-step4')
 
 const wxLogin = () => import('@/views/servant/wxlogin/login')
 
@@ -120,19 +125,39 @@ const router = new Router({
     {
       path: '/user/date',
       component: servantUserDate
+    },
+    {
+      path: '/user/authstep1',
+      component: servantAuthStep1
+    },
+    {
+      path: '/user/authstep2',
+      component: servantAuthStep2
+    },
+    {
+      path: '/user/authstep3',
+      component: servantAuthStep3
+    },
+    {
+      path: '/user/authstep3-1',
+      component: servantAuthStep3a1
+    },
+    {
+      path: '/user/authstep4',
+      component: servantAuthStep4
     }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   // 微信授权登录
-  const token = localStorage.getItem('token')
+  const token = localStorage.getItem('servant_token')
   localStorage.setItem('to_path', from.path)
   if (!token && to.path !== '/Servant/Login') {
     // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxef2a7d894732658e&redirect_uri=' +
     // encodeURIComponent('http://xxx.xixincloud.com/Servant/Login?shopID=666') + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
     // window.location.href = '/Servant/Login'
-    next('/Servant/Login')
+    next('/Servant/Login?id=2')
   } else {
     next()
   }

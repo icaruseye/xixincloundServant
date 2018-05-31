@@ -36,7 +36,7 @@ function checkCode (res) {
 
 export default {
   post (url, data, header) {
-    var token = localStorage.getItem('token')
+    var token = localStorage.getItem('servant_token')
     var headers = {
       'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/json; charset=UTF-8'
@@ -58,7 +58,7 @@ export default {
     .then(checkStatus).then(checkCode)
   },
   get (url, params) {
-    var token = localStorage.getItem('token')
+    var token = localStorage.getItem('servant_token')
     var headers = {
       'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/json; charset=UTF-8',

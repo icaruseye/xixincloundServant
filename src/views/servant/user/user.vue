@@ -85,7 +85,7 @@ export default {
     ])
   },
   created () {
-    this.$store.dispatch('getUserInfo', localStorage.getItem('token'))
+    this.$store.dispatch('getUserInfo', localStorage.getItem('servant_token'))
   },
   methods: {
     toggleMask (val) {

@@ -1,21 +1,19 @@
 <template>
 <div v-show="isShow">
   <div class="weui-form">
-    <form action="">
-      <div class="weui-cell">
-        <div class="weui-cell-top">
-            <label class="label" for="">手机号</label>
-            <input v-model="mobile" name="mobile" type="number" placeholder="请输入手机号">
-        </div>
+    <div class="weui-cell">
+      <div class="weui-cell-top">
+          <label class="label" for="">手机号</label>
+          <input v-model="mobile" name="mobile" type="number" placeholder="请输入手机号">
       </div>
-      <div class="weui-cell weui-cell_vcode">
-        <div class="weui-cell-top">
-            <label class="label" for="">验证码</label>
-            <input v-model="code" name="code" type="number" placeholder="请输入验证码">
-            <button type="button" class="weui-vcode-btn" @click="getCode" :disabled="disabled_code">{{codeText}}</button>
-        </div>
+    </div>
+    <div class="weui-cell weui-cell_vcode">
+      <div class="weui-cell-top">
+          <label class="label" for="">验证码</label>
+          <input v-model="code" name="code" type="number" placeholder="请输入验证码">
+          <button type="button" class="weui-vcode-btn" @click="getCode" :disabled="disabled_code">{{codeText}}</button>
       </div>
-    </form>
+    </div>
   </div>
   <button type="button" class="weui-btn weui-btn-all weui-btn_primary" @click="submit">提交</button>
 </div>
@@ -38,7 +36,7 @@ export default {
   },
   created () {
     const userInfo = this.$store.getters.userInfo
-    if (userInfo.State === 2) {
+    if (userInfo.State === 1) {
       history.back()
       AlertModule.show({
         title: '提示',

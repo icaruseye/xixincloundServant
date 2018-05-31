@@ -80,9 +80,9 @@ export default {
     setTimeout(function () {
       that.goDown()
     }, 0)
-    // setInterval(() => {
-    //   this.chatRecordTimePoll()
-    // }, 10000)
+    setInterval(() => {
+      this.chatRecordTimePoll()
+    }, 10000)
   },
   mounted () {
     this.goDown()
