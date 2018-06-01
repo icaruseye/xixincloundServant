@@ -29,7 +29,7 @@
       </div>
       <!-- 头像 -->
       <div v-else class="weui-uploader">
-        <div class="is-avatar" :style="{ 'background-image': 'url(' + list[0].url + ')'}">
+        <div class="is-avatar" :style="{ 'background-image': 'url(' + imgList[0].url + ')'}">
             <input class="weui-uploader__input" type="file" @change="change">
         </div>
       </div>

@@ -2,24 +2,14 @@
   <div>
     <step-bar :list="stepInfo"></step-bar>
     <div class="panel">
-      <div class="cell vux-1px-b">
-        <div class="cell-in">
-          <div class="title"><span>护士</span></div>
-          <button class="btn">申请</button>
-        </div>
-      </div>
-      <div class="cell vux-1px-b">
-        <div class="cell-in">
-          <div class="title"><span>护士</span></div>
-          <button class="btn">申请</button>
-        </div>
-      </div>
-      <div class="cell">
-        <div class="cell-in">
-          <div class="title"><span>护士</span></div>
-          <button class="btn">申请</button>
-        </div>
-      </div>
+        <template v-for="(item, index) in list">
+          <div class="cell" :class="list.length !== index + 1 ? 'vux-1px-b' : ''" :key="index">
+            <div class="cell-in">
+              <div class="title"><span>{{item.Name}}</span></div>
+              <button class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">申请</button>
+            </div>
+          </div>
+        </template>
     </div>
     <div class="weui-form-title">
       *以上执业资格证书审核通过任意一项后，即可申请 相关服务项，进行服务
@@ -31,6 +21,7 @@
 </template>
 
 <script>
+import http from '@/api'
 import stepBar from './user-auth-stepbar'
 export default {
   components: {
@@ -50,7 +41,21 @@ export default {
       }, {
         text: '开始服务',
         type: 0
-      }]
+      }],
+      list: []
+    }
+  },
+  created () {
+    this.getCertificateType()
+  },
+  methods: {
+    toNext (ShopCertificateTypeID, ImgNums) {
+      this.$router.push(`/user/authstep3-1?ShopCertificateTypeID=${ShopCertificateTypeID}&ImgNums=${ImgNums}`)
+    },
+    async getCertificateType () {
+      const res = await http.get('/CertificateType')
+      this.list = res.data.Data
+      console.log(res)
     }
   }
 }
@@ -68,7 +73,7 @@ export default {
   .cell-in {
     display: flex;
     align-items: center;
-    padding: 0 0 10px 9px;
+    padding: 0 0 10px 12px;
     .title {
       flex: 1;
       font-size: 16px;

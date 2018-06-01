@@ -45,7 +45,7 @@ import stepBar from './user-auth-stepbar'
 import uploader from '@/components/common/uploader'
 import Vue from 'vue'
 import util from '@/plugins/util'
-import http from '@/api/index'
+import http from '@/api'
 import { ToastPlugin } from 'vux'
 Vue.use(ToastPlugin)
 export default {

@@ -59,7 +59,7 @@
     <servant-tabbar></servant-tabbar>
     <div class="weui-mask" v-show="maskShow">
       <div class="weui-mask-layer" @click="toggleMask(false)"></div>
-      <img src="https://qr.api.cli.im/qr?data=http%253A%252F%252F192.168.2.236%253A8080%252Fuser&level=H&transparent=false&bgcolor=%23ffffff&forecolor=%23000000&blockpixel=12&marginblock=1&logourl=&size=280&kid=cliim&key=7f1bcc8a077dbff814ca8383f7cc5cd9" alt="">
+      <img :src="userInfo.QRCodeStr" alt="">
     </div>
   </div>
 </template>
@@ -83,9 +83,6 @@ export default {
     ...mapGetters([
       'userInfo'
     ])
-  },
-  created () {
-    this.$store.dispatch('getUserInfo', localStorage.getItem('servant_token'))
   },
   methods: {
     toggleMask (val) {

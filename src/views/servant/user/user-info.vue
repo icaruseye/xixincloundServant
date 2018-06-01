@@ -1,104 +1,102 @@
 <template>
   <div class="weui-form">
-    <form action="">
-      <div class="weui-cell">
-        <p class="weui-cell-top" style="align-items:center">
-            <label class="label" for="">头像</label>
-            <uploader
-              style="flex:1"
-              class="upload"
-              :isAvatar="true"
-              :maxSize="1024 * 1024 * 2"
-              :imgList="imgList5"
-              @onUpdate="onUpdate5"
-            ></uploader>
-            <i class="iconfont icon-jiantouyou"></i>
-        </p>
-      </div>
-      <div class="weui-cell">
-        <p class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">昵称</label>
-            <input v-model="nickname" v-validate="'required'" :class="{'input': true, 'is-danger': errors.has('nickname') }" name="nickname" type="text" placeholder="请输入昵称">
-        </p>
-        <span v-show="errors.has('nickname')" class="help is-danger">{{ errors.first('nickname') }}</span>
-      </div>
-      <div class="weui-cell">
-        <p class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">真实姓名</label>
-            <input v-model="ServantInfo.RealName" v-validate="'required'" :class="{'input': true, 'is-danger': errors.has('RealName') }" name="RealName" type="text" placeholder="请输入真实姓名">
-        </p>
-        <span v-show="errors.has('RealName')" class="help is-danger">{{ errors.first('RealName') }}</span>
-      </div>
-      <div class="weui-cell">
-        <p class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">执业证编号</label>
-            <input v-model="ServantInfo.ZhiyeNum" v-validate="'required'" :class="{'input': true, 'is-danger': errors.has('ZhiyeNum') }" name="ZhiyeNum" type="text" placeholder="请输入执业证编号">
-        </p>
-        <span v-show="errors.has('ZhiyeNum')" class="help is-danger">{{ errors.first('ZhiyeNum') }}</span>
-      </div>
-      <div class="weui-cell">
-        <p class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">身份证号码</label>
-            <input v-model="ServantInfo.IDCard" v-validate="'required|IDCard'" data-vv-validate-on="blur" @blur="calculate" :class="{'input': true, 'is-danger': errors.has('IDCard') }" name="IDCard" type="text" placeholder="请输入身份证号码">
-        </p>
-        <span v-show="errors.has('IDCard')" class="help is-danger">{{ errors.first('IDCard') }}</span>
-      </div>
-      <div class="weui-cell">
-        <p class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">出生日期</label>
-            <input v-model="birthday" name="birthday" type="text" readonly placeholder="根据身份证自动计算">
-        </p>
-      </div>
-      <div class="weui-cell">
-        <p class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">年龄</label>
-            <input v-model="age" name="age" type="text" readonly placeholder="根据身份证自动计算">
-        </p>
-      </div>
-      <uploader
-        title="执业证正面"
-        :limit="1"
-        :maxSize="1024 * 1024 * 5"
-        :imgList="imgList1"
-        @onUpdate="onUpdate1"
-      ></uploader>
-      <div class="weui-cell-upload">
-        <p class="weui-cell-top" :class="{ 'control': true }">
-          <input v-model="ZhiyeNumImg" v-validate="'required'" :class="{'input': true, 'is-danger': errors.has('ZhiyeNumImg') }" name="ZhiyeNumImg" type="hidden">
-        </p>
-        <span v-show="errors.has('ZhiyeNumImg')" class="help is-danger">{{ errors.first('ZhiyeNumImg') }}</span>
-      </div>
-      <uploader
-        title="执业证背面"
-        :limit="2"
-        :maxSize="1024 * 1024 * 2"
-        :imgList="imgList2"
-        @onUpdate="onUpdate2"
-      ></uploader>
-      <uploader
-        title="身份证正面"
-        :limit="1"
-        :maxSize="1024 * 1024 * 4"
-        :imgList="imgList3"
-        @onUpdate="onUpdate3"
-      ></uploader>
-      <uploader
-        title="身份证背面"
-        :limit="1"
-        :maxSize="1024 * 1024 * 2"
-        :imgList="imgList4"
-        @onUpdate="onUpdate4"
-      ></uploader>
-      <div class="weui-cell">
-        <p class="weui-cell-top" :class="{ 'control': true }">
-          <label class="label" for="email">个人介绍</label>
-          <textarea name="intro" placeholder="请输入个人介绍" v-model="ServantInfo.Description"></textarea>
-        </p>
-      </div>
-      <div class="weui-cell">
-        <a class="weui-btn weui-btn_primary" @click="validateBeforeSubmit">保存</a>
-      </div>
-    </form>
+    <div class="weui-cell">
+      <p class="weui-cell-top" style="align-items:center">
+          <label class="label" for="">头像</label>
+          <uploader
+            style="flex:1"
+            class="upload"
+            :isAvatar="true"
+            :maxSize="1024 * 1024 * 2"
+            :imgList="imgList5"
+            @onUpdate="onUpdate5"
+          ></uploader>
+          <i class="iconfont icon-jiantouyou"></i>
+      </p>
+    </div>
+    <div class="weui-cell">
+      <p class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">昵称</label>
+          <input v-model="nickname" v-validate="'required'" :class="{'input': true, 'is-danger': errors.has('nickname') }" name="nickname" type="text" placeholder="请输入昵称">
+      </p>
+      <span v-show="errors.has('nickname')" class="help is-danger">{{ errors.first('nickname') }}</span>
+    </div>
+    <div class="weui-cell">
+      <p class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">真实姓名</label>
+          <input v-model="ServantInfo.RealName" v-validate="'required'" :class="{'input': true, 'is-danger': errors.has('RealName') }" name="RealName" type="text" placeholder="请输入真实姓名">
+      </p>
+      <span v-show="errors.has('RealName')" class="help is-danger">{{ errors.first('RealName') }}</span>
+    </div>
+    <div class="weui-cell">
+      <p class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">执业证编号</label>
+          <input v-model="ServantInfo.ZhiyeNum" v-validate="'required'" :class="{'input': true, 'is-danger': errors.has('ZhiyeNum') }" name="ZhiyeNum" type="text" placeholder="请输入执业证编号">
+      </p>
+      <span v-show="errors.has('ZhiyeNum')" class="help is-danger">{{ errors.first('ZhiyeNum') }}</span>
+    </div>
+    <div class="weui-cell">
+      <p class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">身份证号码</label>
+          <input v-model="ServantInfo.IDCard" v-validate="'required|IDCard'" data-vv-validate-on="blur" @blur="calculate" :class="{'input': true, 'is-danger': errors.has('IDCard') }" name="IDCard" type="text" placeholder="请输入身份证号码">
+      </p>
+      <span v-show="errors.has('IDCard')" class="help is-danger">{{ errors.first('IDCard') }}</span>
+    </div>
+    <div class="weui-cell">
+      <p class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">出生日期</label>
+          <input v-model="birthday" name="birthday" type="text" readonly placeholder="根据身份证自动计算">
+      </p>
+    </div>
+    <div class="weui-cell">
+      <p class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">年龄</label>
+          <input v-model="age" name="age" type="text" readonly placeholder="根据身份证自动计算">
+      </p>
+    </div>
+    <uploader
+      title="执业证正面"
+      :limit="1"
+      :maxSize="1024 * 1024 * 5"
+      :imgList="imgList1"
+      @onUpdate="onUpdate1"
+    ></uploader>
+    <div class="weui-cell-upload">
+      <p class="weui-cell-top" :class="{ 'control': true }">
+        <input v-model="ZhiyeNumImg" v-validate="'required'" :class="{'input': true, 'is-danger': errors.has('ZhiyeNumImg') }" name="ZhiyeNumImg" type="hidden">
+      </p>
+      <span v-show="errors.has('ZhiyeNumImg')" class="help is-danger">{{ errors.first('ZhiyeNumImg') }}</span>
+    </div>
+    <uploader
+      title="执业证背面"
+      :limit="2"
+      :maxSize="1024 * 1024 * 2"
+      :imgList="imgList2"
+      @onUpdate="onUpdate2"
+    ></uploader>
+    <uploader
+      title="身份证正面"
+      :limit="1"
+      :maxSize="1024 * 1024 * 4"
+      :imgList="imgList3"
+      @onUpdate="onUpdate3"
+    ></uploader>
+    <uploader
+      title="身份证背面"
+      :limit="1"
+      :maxSize="1024 * 1024 * 2"
+      :imgList="imgList4"
+      @onUpdate="onUpdate4"
+    ></uploader>
+    <div class="weui-cell">
+      <p class="weui-cell-top" :class="{ 'control': true }">
+        <label class="label" for="email">个人介绍</label>
+        <textarea name="intro" placeholder="请输入个人介绍" v-model="ServantInfo.Description"></textarea>
+      </p>
+    </div>
+    <div class="weui-cell">
+      <a class="weui-btn weui-btn_primary" @click="validateBeforeSubmit">保存</a>
+    </div>
   </div>
 </template>
 

@@ -1,11 +1,10 @@
 <template>
-  <div>
+  <div style="min-height:100vh;position:relative">
     <div class="weui-form">
       <uploader
         title="执业证照片"
-        :limit="2"
+        :limit="limit"
         :maxSize="1024 * 1024 * 2"
-        :imgList="imgList1"
         @onUpdate="onUpdate1"
       ></uploader>
     </div>
@@ -16,42 +15,78 @@
       <div class="weui-cell nobor">
         <div class="weui-cell-top">
           <label for="">执业证编号</label>
-          <input type="text" placeholder="输入执业证编号">
+          <input v-model="reqParam.CertificateNum" type="text" placeholder="输入执业证编号">
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell-top">
-          <label for="">首次注册日期</label>
-          <datetime class="datetime" v-model="date" format="YYYY-MM-DD" placeholder="请选择日期"></datetime>
-          <i class="iconfont icon-jiantouyou"></i>
-        </div>
-      </div>
+      <group>
+        <x-switch title="是否默认" v-model="reqParam.IsDefault" :value-map="[0, 1]"></x-switch>
+      </group>
     </div>
     <div class="step-btn">
-      <button class="weui-btn">提交</button>
+      <button class="weui-btn" @click="submit">提交</button>
     </div>
   </div>
 </template>
 
 <script>
 import uploader from '@/components/common/uploader'
-import { Group, Datetime } from 'vux'
+import Vue from 'vue'
+import util from '@/plugins/util'
+import http from '@/api'
+import { ToastPlugin, Group, XSwitch } from 'vux'
+Vue.use(ToastPlugin)
 export default {
   components: {
     uploader,
     Group,
-    Datetime
+    XSwitch
   },
   data () {
     return {
-      date: '',
-      imgList1: []
+      limit: +this.$route.query.ImgNums,
+      reqParam: {
+        ShopCertificateTypeID: this.$route.query.ShopCertificateTypeID,
+        Imgs: '',
+        CertificateNum: '',
+        IsDefault: 0
+      },
+      authText: {
+        Imgs: {
+          text: '执业证照片',
+          required: true
+        },
+        CertificateNum: {
+          text: '执业证编号',
+          required: true
+        },
+        isDefault: {
+          required: false
+        }
+      }
     }
   },
   methods: {
     onUpdate1 (id) {
-      console.log(id)
+      this.reqParam.Imgs = id.toString()
+    },
+    async submit () {
+      const that = this
+      const isValidate = util.validateForm(this.reqParam, this.authText)
+      if (isValidate) {
+        const res = await http.post('/ServantShopCertificate', this.reqParam)
+        console.log(res)
+        if (res.data.Code === 100000) {
+          this.$vux.toast.show({
+            text: '提交成功',
+            onHide () {
+              that.$router.push('/user/authstep3')
+            }
+          })
+        } else {
+          this.$vux.toast.text(res.data.Msg)
+        }
+      }
     }
   }
 }
@@ -104,7 +139,7 @@ export default {
 }
 
 .step-btn {
-  position: fixed;
+  position: absolute;
   bottom: 23px;
   width: 100%;
   padding: 0 12px;

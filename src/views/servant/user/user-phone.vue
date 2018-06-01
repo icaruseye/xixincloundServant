@@ -36,7 +36,7 @@ export default {
   },
   created () {
     const userInfo = this.$store.getters.userInfo
-    if (userInfo.State === 1) {
+    if (userInfo.Mobile) {
       history.back()
       AlertModule.show({
         title: '提示',

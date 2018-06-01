@@ -15,12 +15,13 @@ export default {
       // }
       // // 获取token
       // const res = await http.get('/Login', option)
-      const res = await http.get('/LoginTest/', {id: this.$route.query.id})
+      const res = await http.get('/LoginTest', {id: this.$route.query.id})
       if (res.data.Data) {
         localStorage.setItem('servant_token', res.data.Data)
-        this.$store.dispatch('getUserInfo')
-        console.log(123)
-        this.$router.replace('/')
+        this.$store.dispatch('getAccount').then(() => {
+          console.log(sessionStorage.getItem('to_path'))
+          this.$router.push(sessionStorage.getItem('to_path'))
+        })
       }
     }
   },
