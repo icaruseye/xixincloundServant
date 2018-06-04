@@ -44,7 +44,11 @@ const router = new Router({
   routes: [
     {
       path: '/Servant/Login',
-      component: wxLogin
+      component: wxLogin,
+      beforeEnter: (to, from, next) => {
+        sessionStorage.setItem('to_path', from.path)
+        next()
+      }
     },
     {
       path: '/',
@@ -174,7 +178,7 @@ router.beforeEach((to, from, next) => {
     // window.location.href = '/Servant/Login'
     sessionStorage.setItem('to_path', to.fullPath)
     next('/Servant/Login?id=2')
-  } else if (userInfo.State === 2 && to.path !== '/user/authstep1') {
+  } else if (userInfo.State === 0 && to.path !== '/user/authstep1') {
     next('/user/authstep1')
   } else {
     next()

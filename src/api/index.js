@@ -1,15 +1,21 @@
 import axios from 'axios'
 import config from '@/config'
 import Vue from 'vue'
+import router from '@/router'
 
 axios.interceptors.response.use(response => {
+  console.log(response)
   return response
 }, error => {
-  // if (error.response.status === 401) {
-  //   console.log(100010)
-  //   window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxef2a7d894732658e&redirect_uri=' +
-  //   encodeURIComponent('http://xxx.xixincloud.com/Servant/Login?shopID=666') + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
-  // }
+  if (error.response.status === 401) {
+    console.log(error.response)
+    // token无效，重新登录
+    if (error.response.data.Code === 100010) {
+      router.push('/Servant/Login?id=2')
+    }
+    // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxef2a7d894732658e&redirect_uri=' +
+    // encodeURIComponent('http://xxx.xixincloud.com/Servant/Login?shopID=666') + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
+  }
   Vue.prototype.$popupTop('出错了，请重试')
   return Promise.reject(error)
 })
@@ -54,8 +60,7 @@ export default {
       timeout: config._TIMEOUT_,
       headers: _headers || headers
     }
-    return axios(options)
-    .then(checkStatus).then(checkCode)
+    return axios(options).then(checkStatus).then(checkCode)
   },
   put (url, data, header) {
     var token = localStorage.getItem('servant_token')
@@ -76,8 +81,7 @@ export default {
       timeout: config._TIMEOUT_,
       headers: _headers || headers
     }
-    return axios(options)
-    .then(checkStatus).then(checkCode)
+    return axios(options).then(checkStatus).then(checkCode)
   },
   get (url, params) {
     var token = localStorage.getItem('servant_token')

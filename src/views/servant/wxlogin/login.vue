@@ -19,8 +19,8 @@ export default {
       if (res.data.Data) {
         localStorage.setItem('servant_token', res.data.Data)
         this.$store.dispatch('getAccount').then(() => {
-          console.log(sessionStorage.getItem('to_path'))
-          this.$router.push(sessionStorage.getItem('to_path'))
+          const path = sessionStorage.getItem('to_path') || '/'
+          this.$router.push(path)
         })
       }
     }

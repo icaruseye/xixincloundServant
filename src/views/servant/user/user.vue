@@ -2,8 +2,8 @@
   <div>
     <div class="has-tabbar">
       <div class="user-info">
-        <img class="avatar" :src="userInfo.Avatar | transformImgUrl" alt="">
-        <span class="name">{{userInfo.NickName}}</span>
+        <img class="avatar" :src="userAccount.Avatar | transformImgUrl" alt="">
+        <span class="name">{{userAccount.NickName}}</span>
         <img class="qrcode" src="@/assets/servant/code-1.png" alt="" @click="toggleMask(true)">
       </div>
       <div class="user-info_percent">
@@ -59,7 +59,7 @@
     <servant-tabbar></servant-tabbar>
     <div class="weui-mask" v-show="maskShow">
       <div class="weui-mask-layer" @click="toggleMask(false)"></div>
-      <img :src="userInfo.QRCodeStr" alt="">
+      <img :src="userAccount.QRCodeStr" alt="">
     </div>
   </div>
 </template>
@@ -81,7 +81,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userInfo'
+      'userAccount'
     ])
   },
   methods: {
