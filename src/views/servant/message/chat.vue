@@ -68,8 +68,8 @@ export default {
   },
   filters: {
     timeFormat (val) {
-      const time = val.split('T')
-      return `${time[0]} ${time[1]}`
+      const d = new Date(val)
+      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDay()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
     }
   },
   async created () {
@@ -125,8 +125,14 @@ export default {
     // 功能逻辑函数
     async chatRecordTimePoll () {
       const res = await http.get('/ChatRecord', { UserViewID: this.userAccount.ViewID })
+      const that = this
       if (res.data.Data.ChatHisList.length > 0) {
-        this.chatList.concat(res.data.Data.ChatHisList)
+        res.data.Data.ChatHisList.map((item) => {
+          this.chatList.push(item)
+          setTimeout(function () {
+            that.goDown()
+          }, 500)
+        })
       }
     },
     async sendMsg () {

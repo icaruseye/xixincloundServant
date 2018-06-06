@@ -18,13 +18,13 @@
     <div class="weui-cell">
       <div class="weui-cell-top">
         <label class="label" for="">昵称</label>
-        <input v-model="nickname" name="nickname" type="text" placeholder="请输入昵称">
+        <input v-model="reqParam.nickname" name="nickname" type="text" placeholder="请输入昵称">
     </div>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top">
         <label class="label" for="email">个人介绍</label>
-        <textarea name="intro" placeholder="请输入个人介绍" v-model="Description"></textarea>
+        <textarea v-model="reqParam.Introduction" name="intro" placeholder="请输入个人介绍"></textarea>
       </div>
     </div>
     <div class="weui-cell-form-title">已认证信息</div>
@@ -77,7 +77,7 @@
       </div>
     </div>
     <div class="weui-cell nobor">
-      <a class="weui-btn weui-btn_primary" @click="validateBeforeSubmit">保存</a>
+      <a class="weui-btn weui-btn_primary" @click="validateBeforeSubmit" :disabled="submitBtn">保存</a>
     </div>
   </div>
 </template>
@@ -92,6 +92,7 @@ export default {
   },
   data () {
     return {
+      submitBtn: false,
       ServantInfo: {
         RealName: '',
         IDCard: '',
@@ -99,8 +100,20 @@ export default {
         IDCardImg: '',
         IDCardBackImg: ''
       },
-      Description: '',
-      nickname: '',
+      authText: {
+        nickname: {
+          required: true,
+          text: '昵称'
+        },
+        Introduction: {
+          required: false
+        }
+      },
+      reqParam: {
+        Introduction: '',
+        nickname: '',
+        Avatar: ''
+      },
       gender: '',
       birthday: '',
       age: '',
@@ -127,17 +140,23 @@ export default {
       this.uploadId4 = id
     },
     async validateBeforeSubmit () {
-      let res = await this.$validator.validateAll()
-      if (res) {
-        console.log('验证通过')
-      } else {
-        // 设置焦点到第一个未验证通过的表单元素
-        let field = this.$validator.errors.items[0].field
-        this.$validator.fields.items.map(i => {
-          if (i.name === field) {
-            return i.el.focus()
-          }
-        })
+      const that = this
+      const isValidate = util.validateForm(this.reqParam, this.authText)
+      if (isValidate) {
+        this.submitBtn = true
+        const res = await http.send('/Account', 'put', this.reqParam)
+        if (res.data.Code === 100000) {
+          this.$vux.toast.show({
+            text: '提交成功',
+            onHide () {
+              that.$store.dispatch('getAccount').then(() => {
+                that.$router.back()
+              })
+            }
+          })
+        } else {
+          this.submitBtn = false
+        }
       }
     }
   }

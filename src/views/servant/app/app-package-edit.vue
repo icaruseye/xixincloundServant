@@ -1,113 +1,113 @@
 <template>
   <div class="weui-form">
-    <form action="">
-      <div class="weui-cell-form-title">详情</div>
-      <div class="weui-cell">
-        <div class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">服务包名称</label>
-            <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入服务包名称">
-        </div>
-        <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+    <div class="weui-cell-form-title">详情</div>
+    <div class="weui-cell">
+      <div class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">服务包名称</label>
+          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入服务包名称">
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell-top">
-            <label class="label" for="">添加服务项</label>
-            <a href="javascript:;" style="color:#3ecccc;flex:1;text-align:right;" @click="addItemPopup = true">+添加</a>
-            <input type="hidden" v-validate="'required'" name="serviceItem">
-        </div>
-        <span v-show="errors.has('serviceItem')" class="help is-danger">{{ errors.first('serviceItem') }}</span>
+      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+    </div>
+    <div class="weui-cell">
+      <div class="weui-cell-top">
+          <label class="label" for="">添加服务项</label>
+          <a href="javascript:;" style="color:#3ecccc;flex:1;text-align:right;" @click="addItemPopup = true">+添加</a>
+          <input type="hidden" v-validate="'required'" name="serviceItem">
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell-add">
-          <div class="title">换药</div>
-          <div class="mid">
-            <label for="">单价:</label><input type="number">
-            <label for="">数量:</label><input type="number">
-          </div>
-          <span class="delete">删除</span>
+      <span v-show="errors.has('serviceItem')" class="help is-danger">{{ errors.first('serviceItem') }}</span>
+    </div>
+    <div class="weui-cell">
+      <div class="weui-cell-add">
+        <div class="title">换药</div>
+        <div class="mid">
+          <label for="">单价:</label><input type="number">
+          <label for="">数量:</label><input type="number">
         </div>
-        <div class="weui-cell-add">
-          <div class="title">换药</div>
-          <div class="mid">
-            <label for="">单价:</label><input type="number">
-            <label for="">数量:</label><input type="number">
-          </div>
-          <span class="delete">删除</span>
-        </div>
-        <div class="weui-cell-add">
-          <div class="title">换药</div>
-          <div class="mid">
-            <label for="">单价:</label><input type="number">
-            <label for="">数量:</label><input type="number">
-          </div>
-          <span class="delete">删除</span>
-        </div>
+        <span class="delete">删除</span>
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">真实售价</label>
-            <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入真实售价">
+      <div class="weui-cell-add">
+        <div class="title">换药</div>
+        <div class="mid">
+          <label for="">单价:</label><input type="number">
+          <label for="">数量:</label><input type="number">
         </div>
-        <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+        <span class="delete">删除</span>
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">展示价格</label>
-            <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入展示价格">
+      <div class="weui-cell-add">
+        <div class="title">换药</div>
+        <div class="mid">
+          <label for="">单价:</label><input type="number">
+          <label for="">数量:</label><input type="number">
         </div>
-        <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+        <span class="delete">删除</span>
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">库存数量</label>
-            <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入库存数量">
-        </div>
-        <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+    </div>
+    <div class="weui-cell">
+      <div class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">真实售价</label>
+          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入真实售价">
       </div>
-      <div class="weui-cell-form-title">详情</div>
-      <div class="weui-cell">
-        <div class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">服务包分类</label>
-            <select name="" v-model="serviceType" @change="serviceTypeChange">
-              <option :value="1">默认分类</option>
-              <option :value="0">新增分类</option>
-            </select>
-            <i class="iconfont icon-jiantouyou"></i>
-        </div>
-        <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+    </div>
+    <div class="weui-cell">
+      <div class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">展示价格</label>
+          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入展示价格">
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">标签</label>
-            <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入标签，支持多标签，用逗号隔开">
-        </div>
-        <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+    </div>
+    <div class="weui-cell">
+      <div class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">库存数量</label>
+          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入库存数量">
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">有效期单位</label>
-            <select name="" v-model="serviceUnit">
-              <option :value="0">年</option>
-              <option :value="1">月</option>
-              <option :value="2">日</option>
-            </select>
-            <i class="iconfont icon-jiantouyou"></i>
-        </div>
-        <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+    </div>
+    <div class="weui-cell-form-title">详情</div>
+    <div class="weui-cell">
+      <div class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">服务包分类</label>
+          <select name="" v-model="serviceType" @change="serviceTypeChange">
+            <option :value="1">默认分类</option>
+            <option :value="0">新增分类</option>
+          </select>
+          <i class="iconfont icon-jiantouyou"></i>
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell-top" :class="{ 'control': true }">
-            <label class="label" for="">有效期时长</label>
-            <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入有效期时长">
-        </div>
-        <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+    </div>
+    <div class="weui-cell">
+      <div class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">标签</label>
+          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入标签，支持多标签，用逗号隔开">
       </div>
-      <div class="weui-cell">
-        <div class="weui-cell-top">
-            <label class="label" for="">服务包介绍</label>
-            <textarea name="intro" placeholder="请输入服务包介绍"></textarea>
-        </div>
+      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+    </div>
+    <div class="weui-cell">
+      <div class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">有效期单位</label>
+          <select name="" v-model="serviceUnit">
+            <option :value="0">年</option>
+            <option :value="1">月</option>
+            <option :value="2">日</option>
+          </select>
+          <i class="iconfont icon-jiantouyou"></i>
       </div>
+      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+    </div>
+    <div class="weui-cell">
+      <div class="weui-cell-top" :class="{ 'control': true }">
+          <label class="label" for="">有效期时长</label>
+          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入有效期时长">
+      </div>
+      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+    </div>
+    <div class="weui-cell">
+      <div class="weui-cell-top">
+          <label class="label" for="">服务包介绍</label>
+          <textarea name="intro" placeholder="请输入服务包介绍"></textarea>
+      </div>
+    </div>
+    <div class="weui-cell">
       <uploader
         title="服务包封面"
         :limit="1"
@@ -115,16 +115,16 @@
         :imgList="imgList1"
         @onUpdate="onUpdate1"
       ></uploader>
-      <div class="weui-cell-upload">
-        <div class="weui-cell-top" :class="{ 'control': true }">
-          <input v-validate="'required'" name="uploadeId1" type="hidden">
-        </div>
-        <span v-show="errors.has('uploadeId1')" class="help is-danger">{{ errors.first('uploadeId1') }}</span>
+    </div>
+    <div class="weui-cell-upload">
+      <div class="weui-cell-top" :class="{ 'control': true }">
+        <input v-validate="'required'" name="uploadeId1" type="hidden">
       </div>
-      <div class="weui-cell">
-        <button type="button" class="weui-btn weui-btn_primary" @click="validateBeforeSubmit">提交</button>
-      </div>
-    </form>
+      <span v-show="errors.has('uploadeId1')" class="help is-danger">{{ errors.first('uploadeId1') }}</span>
+    </div>
+    <div class="weui-cell">
+      <button type="button" class="weui-btn weui-btn_primary" @click="validateBeforeSubmit">提交</button>
+    </div>
     <!-- 服务项列表 -->
     <div v-transfer-dom>
       <popup v-model="addItemPopup" height="100%" :hide-on-blur=false style="background: #fff;">

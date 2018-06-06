@@ -1,5 +1,5 @@
 <template>
-  <div class="weui-cell">
+  <div class="weui-form-cell">
     <div class="weui-cell_bd">
       <!-- 普通图片 -->
       <div v-if="!isAvatar" class="weui-uploader">
