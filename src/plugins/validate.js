@@ -22,10 +22,10 @@ const dictionary = {
     },
     attributes: {
       nickname: '请输入昵称',
-      realname: '请输入真实姓名',
-      zhiye: '请输入执业证编号',
-      idcard: '请输入身份证号码',
-      zhiyeImg: '请上传相应图片',
+      RealName: '请输入真实姓名',
+      ZhiyeNum: '请输入执业证编号',
+      IDCard: '请输入身份证号码',
+      ZhiyeNumImg: '请上传相应图片',
       code: '请输入验证码',
       mobile: '请输入手机号'
     }

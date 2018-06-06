@@ -47,6 +47,23 @@ export default {
         return res
     }
   },
+  getGender: function (psidno) {
+    let sexno, sex
+    if (psidno.length === 18) {
+      sexno = psidno.substring(16, 17)
+    } else if (psidno.length === 15) {
+      sexno = psidno.substring(14, 15)
+    } else {
+      return false
+    }
+    let tempid = sexno % 2
+    if (tempid === 0) {
+      sex = 0
+    } else {
+      sex = 1
+    }
+    return sex
+  },
   formatDate: function (date) {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
   },

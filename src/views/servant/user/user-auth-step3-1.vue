@@ -75,7 +75,6 @@ export default {
       const isValidate = util.validateForm(this.reqParam, this.authText)
       if (isValidate) {
         const res = await http.post('/ServantShopCertificate', this.reqParam)
-        console.log(res)
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
             text: '提交成功',

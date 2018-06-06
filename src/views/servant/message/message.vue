@@ -17,32 +17,16 @@
           </router-link>
         </div>
         <div class="tabbox-list vux-1px-b vux-1px-t">
-          <div class="item vux-1px-b" @click="goChat(0)">
-            <div><img class="avatar" src="https://img3.doubanio.com/icon/u53078059-35.jpg" alt=""></div>
-            <div class="mid">
-              <div class="name">1carus</div>
-              <p class="text fof">我抬头就看见了月亮</p>
+          <template v-for="(item, index) in list">
+            <div class="item vux-1px-b" @click="goChat(item.FriendViewID, index)" :key="index">
+              <div><img class="avatar" :src="item.FriendAvatar" alt=""></div>
+              <div class="mid">
+                <div class="name">{{item.FriendName}}</div>
+                <p class="text fof">{{item.AddMessage}}</p>
+              </div>
+              <i class="iconfont icon-jiantouyou"></i>
             </div>
-            <i class="iconfont icon-jiantouyou"></i>
-          </div>
-          <div class="item vux-1px-b" @click="goChat(0)">
-            <img class="avatar" src="https://img3.doubanio.com/icon/u60691164-1.jpg" alt="">
-            <span class="unread"></span>
-            <div class="mid">
-              <div class="name">雷蒙德·卡佛</div>
-              <div class="text fof">当我们谈论爱情时我们在谈论什么</div>
-            </div>
-            <i class="iconfont icon-jiantouyou"></i>
-          </div>
-          <div class="item vux-1px-b" @click="goChat(0)">
-            <img class="avatar" src="https://img3.doubanio.com/img/author/medium/1492599253.62.jpg" alt="">
-            <span class="unread"></span>
-            <div class="mid">
-              <div class="name">威廉·莎士比亚</div>
-              <div class="text fof">我才是仅次于上帝的人</div>
-            </div>
-            <i class="iconfont icon-jiantouyou"></i>
-          </div>
+          </template>
         </div>
       </div>
     </div>
@@ -51,20 +35,31 @@
 </template>
 
 <script>
+import http from '@/api/index'
 import servantTabbar from '@/components/common/servantTabbar'
 export default {
-  metaInfo: {
-    title: '悉心服务-消息'
-  },
   components: {
     servantTabbar
   },
+  metaInfo: {
+    title: '我的消息'
+  },
   data () {
-    return {}
+    return {
+      list: []
+    }
+  },
+  mounted () {
+    this.getData()
   },
   methods: {
-    goChat (id) {
+    goChat (id, index) {
+      sessionStorage.setItem('friendInfo', JSON.stringify(this.list[index]))
       this.$router.push(`/message/chat/${id}`)
+    },
+    async getData () {
+      const res = await http.get('/ContactList', { Page: 1, Size: 10 })
+      this.list = res.data.Data
     }
   }
 }
@@ -127,6 +122,4 @@ export default {
     height: 40px;
   }
 }
-
-
 </style>

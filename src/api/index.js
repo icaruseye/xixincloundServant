@@ -4,11 +4,9 @@ import Vue from 'vue'
 import router from '@/router'
 
 axios.interceptors.response.use(response => {
-  console.log(response)
   return response
 }, error => {
   if (error.response.status === 401) {
-    console.log(error.response)
     // token无效，重新登录
     if (error.response.data.Code === 100010) {
       router.push('/Servant/Login?id=2')

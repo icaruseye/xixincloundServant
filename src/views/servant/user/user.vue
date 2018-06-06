@@ -66,7 +66,7 @@
 
 <script>
 import servantTabbar from '@/components/common/servantTabbar'
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   metaInfo: {
     title: '我的'

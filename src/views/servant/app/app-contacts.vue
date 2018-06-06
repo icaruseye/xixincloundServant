@@ -50,7 +50,7 @@ export default {
     }
   },
   mounted () {
-    console.log(this.getData())
+    this.getData()
   },
   methods: {
     goChat (id, index) {

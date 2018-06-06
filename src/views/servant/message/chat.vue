@@ -63,7 +63,7 @@ export default {
       chatMsg: '',
       chatList: [],
       userAccount: {},
-      mineAccount: JSON.parse(sessionStorage.getItem('GET_USER_INFO'))
+      mineAccount: JSON.parse(sessionStorage.getItem('userAccount'))
     }
   },
   filters: {
@@ -74,20 +74,24 @@ export default {
   },
   async created () {
     const that = this
-    const res = await http.get('/ChatRecordHistoryList', { UserViewID: this.$route.params.id, PageIndex: 1 })
+    const res = await http.get('/ChatRecord', { UserViewID: this.$route.params.id, pageIndex: 1 })
     this.userAccount = res.data.Data.UserAccount
     this.chatList = res.data.Data.ChatHisList
     setTimeout(function () {
       that.goDown()
     }, 0)
-    setInterval(() => {
-      this.chatRecordTimePoll()
-    }, 10000)
+    window.servantTimer = setInterval(function () {
+      that.chatRecordTimePoll()
+    }, 5000)
   },
   mounted () {
     this.goDown()
     this.faceboxHeight = document.getElementById('chatFaceBox').offsetHeight // 获取表情高度
     this.translateFace = this.faceboxHeight + 5 // 表情上弹高度
+  },
+  beforeRouteLeave (to, from, next) {
+    clearInterval(window.servantTimer)
+    next()
   },
   methods: {
     // 页面逻辑函数
@@ -111,7 +115,6 @@ export default {
     inputFocus () {
       const that = this
       this.hideFace()
-      console.log('inputFocus')
       setTimeout(function () {
         that.goDown()
       }, 500)
@@ -121,8 +124,10 @@ export default {
     },
     // 功能逻辑函数
     async chatRecordTimePoll () {
-      const res = await http.get('/ChatRecordTimePoll', { UserViewID: this.userAccount.ViewID })
-      console.log(res)
+      const res = await http.get('/ChatRecord', { UserViewID: this.userAccount.ViewID })
+      if (res.data.Data.ChatHisList.length > 0) {
+        this.chatList.concat(res.data.Data.ChatHisList)
+      }
     },
     async sendMsg () {
       const that = this

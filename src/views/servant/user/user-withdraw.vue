@@ -48,11 +48,9 @@ export default {
   },
   methods: {
     modified (id) {
-      console.log(id)
       this.$router.push(`/user/withdraw/${id}`)
     },
     onItemClick (index) {
-      console.log(index)
       this.tabIndex = index
     }
   }

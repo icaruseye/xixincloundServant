@@ -67,7 +67,6 @@ export default {
       if (res.data.Code === 100000) {
         this.setTimer()
       }
-      console.log(res)
     },
     setTimer: function () {
       if (!this.timer) {

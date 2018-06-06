@@ -129,8 +129,6 @@ export default {
   },
   methods: {
     onItemClick (index) {
-      console.log(this)
-      console.log(index)
       this.tabIndex = index
       util.formatDate(new Date())
     },

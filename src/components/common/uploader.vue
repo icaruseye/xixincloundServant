@@ -7,8 +7,8 @@
           {{title}}
         </div>
         <div class="weui-uploader__bd">
-            <ul class="weui-uploader__files uploaderFiles">
-              <template v-for="(img, index) in imgList" >
+            <ul class="weui-uploader__files uploaderFiles" v-if="list.length > 0">
+              <template v-for="(img, index) in list">
                 <li
                   :key="index"
                   :style="{ 'background-image': 'url(' + img.url + ')'}"
@@ -29,7 +29,7 @@
       </div>
       <!-- 头像 -->
       <div v-else class="weui-uploader">
-        <div class="is-avatar" :style="{ 'background-image': 'url(' + imgList[0].url + ')'}">
+        <div class="is-avatar" v-if="list.length > 0" :style="{ 'background-image': 'url(' + list[0].url + ')'}">
             <input class="weui-uploader__input" type="file" @change="change">
         </div>
       </div>
@@ -65,7 +65,19 @@ export default {
   data () {
     return {
       count: 0,
-      guid: []
+      guid: [],
+      list: [],
+      avatar: {}
+    }
+  },
+  watch: {
+    imgList: function (val) {
+      this.list = val
+    }
+  },
+  mounted () {
+    if (this.imgList.length > 0) {
+      this.list = this.imgList
     }
   },
   methods: {
@@ -93,9 +105,9 @@ export default {
       reader.onload = function (e) {
         _img.url = this.result
         if (that.isAvatar) {
-          that.imgList = [_img]
+          that.list = [_img]
         } else {
-          that.imgList.push(_img)
+          that.list.push(_img)
         }
       }
       this.upload(_img)
@@ -131,12 +143,12 @@ export default {
           title: '提示',
           content: '网络错误，上传失败'
         })
-        that.imgList.pop()
+        that.list.pop()
         return false
       }
     },
     removeImg (index) {
-      this.imgList.splice(index, 1)
+      this.list.splice(index, 1)
       this.guid.splice(index, 1)
       this.count--
       this.$emit('onUpdate', this.guid)
@@ -168,7 +180,7 @@ export default {
     },
     checkName (name, e) {
       let flag = true
-      this.imgList.map((i) => {
+      this.list.map((i) => {
         if (name === i.name) {
           flag = false
           e.target.value = ''

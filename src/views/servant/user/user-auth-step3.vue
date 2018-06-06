@@ -55,7 +55,6 @@ export default {
     async getCertificateType () {
       const res = await http.get('/CertificateType')
       this.list = res.data.Data
-      console.log(res)
     }
   }
 }

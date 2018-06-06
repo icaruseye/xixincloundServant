@@ -102,21 +102,17 @@ export default {
   },
   methods: {
     onUpdate1 (id) {
-      console.log(id)
       this.reqParam.IDCardImg = id.toString()
     },
     onUpdate2 (id) {
-      console.log(id)
       this.reqParam.IDCardBackImg = id.toString()
     },
     async submit () {
       const that = this
       const isValidate = util.validateForm(this.reqParam, this.authText)
-      console.log(isValidate)
       if (isValidate) {
         if (util.CheckIDCardNum(this.reqParam.IDCard)) {
           const res = await http.put('/ServantInfo', this.reqParam)
-          console.log(res)
           if (res.data.Code === 100000) {
             this.$vux.toast.show({
               text: '提交成功',
