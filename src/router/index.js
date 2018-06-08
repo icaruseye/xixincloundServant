@@ -11,11 +11,13 @@ const servantMissionToreceive = () => import('@/views/servant/mission/mission-to
 const servantMissionWaitreceive = () => import('@/views/servant/mission/mission-waitreceive')
 // 医护端-应用
 const servantApp = () => import('@/views/servant/app/app')
+const servantAppService = () => import('@/views/servant/app/app-service')
 const servantAppPackageList = () => import('@/views/servant/app/app-package-list')
 const servantAppPackageEdit = () => import('@/views/servant/app/app-package-edit')
 const servantAppItemList = () => import('@/views/servant/app/app-item-list')
 const servantAppItemEdit = () => import('@/views/servant/app/app-item-edit')
 const servantAppContacts = () => import('@/views/servant/app/app-contacts')
+const servantAppItemApply = () => import('@/views/servant/app/app-item-apply')
 // 医护端-我的
 const servantUser = () => import('@/views/servant/user/user')
 const servantUserInfo = () => import('@/views/servant/user/user-info')
@@ -44,7 +46,11 @@ const router = new Router({
   routes: [
     {
       path: '/Servant/Login',
-      component: wxLogin
+      component: wxLogin,
+      beforeEnter: (to, from, next) => {
+        sessionStorage.setItem('to_path', from.fullPath)
+        next()
+      }
     },
     {
       path: '/',
@@ -79,6 +85,10 @@ const router = new Router({
       component: servantApp
     },
     {
+      path: '/app/service',
+      component: servantAppService
+    },
+    {
       path: '/app/packageList',
       component: servantAppPackageList
     },
@@ -97,6 +107,10 @@ const router = new Router({
     {
       path: '/app/contacts',
       component: servantAppContacts
+    },
+    {
+      path: '/app/itemApply',
+      component: servantAppItemApply
     },
     {
       path: '/user',

@@ -9,6 +9,7 @@ axios.interceptors.response.use(response => {
   if (error.response.status === 401) {
     // token无效，重新登录
     if (error.response.data.Code === 100010) {
+      sessionStorage.removeItem('userInfo')
       router.push('/Servant/Login?id=2')
     }
     // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxef2a7d894732658e&redirect_uri=' +

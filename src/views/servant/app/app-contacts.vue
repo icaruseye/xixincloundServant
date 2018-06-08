@@ -8,7 +8,7 @@
         <div class="tabbox-list vux-1px-b" style="border-top:0">
           <router-link to="/">
             <div class="item">
-              <img class="avatar" src="@/assets/servant/book-icon-1.png" alt="">
+              <img class="avatar" src="@/assets/images/book-icon-1.png" >
               <div class="mid">
                 <div class="name">最近添加</div>
               </div>
@@ -19,7 +19,7 @@
         <div class="tabbox-list vux-1px-b vux-1px-t">
           <template v-for="(item, index) in list">
             <div class="item vux-1px-b" @click="goChat(item.FriendViewID, index)" :key="index">
-              <div><img class="avatar" :src="item.FriendAvatar" alt=""></div>
+              <div><img class="avatar" :src="item.FriendAvatar" ></div>
               <div class="mid">
                 <div class="name">{{item.FriendName}}</div>
                 <p class="text fof">{{item.AddMessage}}</p>
@@ -78,7 +78,7 @@ export default {
   font-size: 0;
   width: 100%;
   height: 155px;
-  background: url(../../../assets/servant/banner-2.png) no-repeat center;
+  background: url(../../../assets/images/banner-2.png) no-repeat center;
   background-size: cover;
 }
 

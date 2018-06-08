@@ -133,14 +133,14 @@
             <ul>
               <li @click="chooseItem(0)">
                 <div>
-                  <img class="poster" src="http://192.168.2.236/Content/img/default_img_service.jpg" alt="">
+                  <img class="poster" src="http://192.168.2.236/Content/img/default_img_service.jpg" >
                 </div>
                 <div class="title">换药</div>
                 <i class="iconfont icon-jiantouyou"></i>
               </li>
               <li>
                 <div>
-                  <img class="poster" src="http://192.168.2.236/Content/img/default_img_service.jpg" alt="">
+                  <img class="poster" src="http://192.168.2.236/Content/img/default_img_service.jpg" >
                 </div>
                 <div class="title">换药</div>
                 <i class="iconfont icon-jiantouyou"></i>

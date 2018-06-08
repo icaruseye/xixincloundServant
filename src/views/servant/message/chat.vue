@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="user-info">
-      <img class="avatar" :src="userAccount.Avatar | transformImgUrl" alt="">
+      <img class="avatar" :src="userAccount.Avatar | transformImgUrl" >
       <span class="name">{{userAccount.NickName}}</span>
     </div>
     <div class="chat-list" id="chatList" :style="{paddingBottom : faceHeight + 'px'}">

@@ -67,13 +67,13 @@
     <div class="weui-cell nobor">
       <div class="weui-cell-top">
         <label class="label" for="">身份证正面</label>
-        <div><img style="width:150px;" :src="ServantInfo.IDCardImg | transformImgUrl" alt=""></div>
+        <div><img style="width:150px;" :src="ServantInfo.IDCardImg | transformImgUrl" ></div>
       </div>
     </div>
     <div class="weui-cell nobor">
       <div class="weui-cell-top">
         <label class="label" for="">身份证反面</label>
-        <div><img style="width:150px;" :src="ServantInfo.IDCardBackImg | transformImgUrl" alt=""></div>
+        <div><img style="width:150px;" :src="ServantInfo.IDCardBackImg | transformImgUrl" ></div>
       </div>
     </div>
     <div class="weui-cell nobor">

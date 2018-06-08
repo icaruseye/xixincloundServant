@@ -29,7 +29,7 @@
 }
 
 .weui-btn_primary {
-  background-color: #3ecccc;
+  background-color: #3ac7f5;
 }
 
 .weui-btn_default {
@@ -91,26 +91,43 @@
     -webkit-transform: scaleY(0.5);
     transform: scaleY(0.5);
   }
+  &.weui-list-panel {
+    margin: 0;
+  }
+  &.weui-list-panel::after,
+  &.weui-list-panel::before {
+    border: 0;
+  }
   .weui-cell {
     position: relative;
     padding: 15px 0;
-    &::before {
+    &::after {
       content: " ";
       position: absolute;
-      top: 0;
+      bottom: 0;
       left: 0;
       right: 0;
       height: 1px;
-      border-top: 1px solid #d9f7f5;
       color: #d9f7f5;
+      border-bottom: 1px solid #d9f7f5;
       -webkit-transform-origin: 0 0;
       transform-origin: 0 0;
       -webkit-transform: scaleY(0.5);
       transform: scaleY(0.5);
       z-index: 2;
     }
-    &:first-child::before {
+    &:last-child::after {
       display: none;
+    }
+  }
+  .weui-cell.nobor::after {
+    border: 0;
+  }
+  &.weui-list-panel {
+    .weui-cell {
+      &::before {
+        border-top: 1px solid rgba(0, 180, 171, .2);
+      }
     }
   }
 }
@@ -129,6 +146,7 @@
     font-size: 14px;
     color: rgba(69,90,100,.6);
     padding: 15px;
+    background: #f6f6f6;
   }
   & > .weui-cell {
     padding: 10px 15px;
@@ -239,7 +257,7 @@
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  background: url(../assets/servant/group-bg.jpg) no-repeat center;
+  background: url(../assets/images/group-bg.jpg) no-repeat center;
   background-size: cover;
   .avatar {
     width: 60px;

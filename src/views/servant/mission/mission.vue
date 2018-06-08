@@ -2,9 +2,9 @@
   <div>
     <div class="has-tabbar">
       <div class="user-info">
-        <img class="avatar" src="https://img3.doubanio.com/icon/u53078059-35.jpg" alt="">
+        <img class="avatar" src="https://img3.doubanio.com/icon/u53078059-35.jpg" >
         <span class="name">夸夸夸</span>
-        <img class="qrcode" src="@/assets/servant/code-1.png" alt="">
+        <img class="qrcode" src="@/assets/images/code-1.png" >
       </div>
       <sticky
         ref="sticky"
@@ -22,7 +22,7 @@
         <div class="weui-panel">
           <div class="weui-cell item" @click="toReceive(1)">
             <div class="left">
-              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" alt="">
+              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" >
               <span>1carus</span>
             </div>
             <div class="mid">
@@ -53,7 +53,7 @@
         <div class="weui-panel">
           <div class="weui-cell item" @click="toWait(1)">
             <div class="left">
-              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" alt="">
+              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" >
               <span>1carus</span>
             </div>
             <div class="mid">
@@ -70,7 +70,7 @@
         <div class="weui-panel">
           <div class="weui-cell item" @click="toDetail(1)">
             <div class="left">
-              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" alt="">
+              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" >
               <span>1carus</span>
             </div>
             <div class="mid">
@@ -87,7 +87,7 @@
         <div class="weui-panel">
           <div class="weui-cell item" @click="toDetail(1)">
             <div class="left">
-              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" alt="">
+              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" >
               <span>1carus</span>
             </div>
             <div class="mid">

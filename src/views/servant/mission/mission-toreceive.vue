@@ -2,7 +2,7 @@
   <div class="wrap">
     <div class="mission-title">服务项</div>
     <div class="mission-info-box">
-      <div class="icon"><img src="@/assets/servant/calendar-cate-1.png"></div>
+      <div class="icon"><img src="@/assets/images/calendar-cate-1.png"></div>
       <div class="name">换药测试-换药</div>
       <div class="custom">服务对象：医师啊 <img src="/Content/img/ic_iphone.png"></div>
       <div class="mark">

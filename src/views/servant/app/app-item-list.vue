@@ -5,7 +5,7 @@
       <div class="package-box_list">
         <div class="package-box_item">
           <div class="top">
-            <div><img class="poster" src="http://192.168.2.236/Content/img/default_img_service.jpg" alt=""></div>
+            <div><img class="poster" src="http://192.168.2.236/Content/img/default_img_service.jpg" ></div>
             <div class="top-md">
               <p class="top-md_mtext">上门打针</p>
               <p class="top-md_stext">描述信息描述信息</p>

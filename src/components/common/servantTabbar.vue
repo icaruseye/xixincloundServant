@@ -55,55 +55,61 @@ export default {
   .weui-tabbar__label {
     font-size: 12px;
   }
+  .weui-tabbar__item
+  .weui-tabbar__icon {
+    margin: 2px 0;
+    width: 20px;
+    height: 20px;
+  }
   .weui-tabbar__item.weui-bar__item_on .weui-tabbar__icon > i, .weui-tabbar__item.weui-bar__item_on .weui-tabbar__label {
     color: #3ac7f5;
   }
   .weui-tabbar__icon_1 {
     .weui-tabbar__icon {
-      background: url(../../assets/servant/tab-icon-1.png) no-repeat center;
-      background-size: cover;
+      background: url(../../assets/images/icon-1.png) no-repeat center;
+      background-size: contain;
     }
   }
   .weui-tabbar__icon_2 {
     .weui-tabbar__icon {
-      background: url(../../assets/servant/tab-icon-2.png) no-repeat center;
-      background-size: cover;
+      background: url(../../assets/images/icon-2.png) no-repeat center;
+      background-size: contain;
     }
   }
   .weui-tabbar__icon_3 {
     .weui-tabbar__icon {
-      background: url(../../assets/servant/tab-icon-3.png) no-repeat center;
-      background-size: cover;
+      background: url(../../assets/images/icon-3.png) no-repeat center;
+      background-size: contain;
     }
   }
   .weui-tabbar__icon_4 {
     .weui-tabbar__icon {
-      background: url(../../assets/servant/tab-icon-4.png) no-repeat center;
-      background-size: cover;
+      background: url(../../assets/images/icon-4.png) no-repeat center;
+      background-size: contain;
     }
   }
   .weui-tabbar__icon_1.weui-bar__item_on {
     .weui-tabbar__icon {
-      background: url(../../assets/servant/tab-icon-1-on.png) no-repeat center;
-      background-size: cover;
+      background: url(../../assets/images/icon-1-on.png) no-repeat center;
+      background-size: contain;
     }
   }
   .weui-tabbar__icon_2.weui-bar__item_on {
     .weui-tabbar__icon {
-      background: url(../../assets/servant/tab-icon-2-on.png) no-repeat center;
-      background-size: cover;
+      background: url(../../assets/images/icon-2-on.png) no-repeat center;
+      background-size: contain;
     }
   }
   .weui-tabbar__icon_3.weui-bar__item_on {
     .weui-tabbar__icon {
-      background: url(../../assets/servant/tab-icon-3-on.png) no-repeat center;
-      background-size: cover;
+      background: url(../../assets/images/icon-3-on.png) no-repeat center;
+      background-size: contain;
     }
   }
   .weui-tabbar__icon_4.weui-bar__item_on {
     .weui-tabbar__icon {
-      background: url(../../assets/servant/tab-icon-4-on.png) no-repeat center;
-      background-size: cover;
+      background: url(../../assets/images/icon-4-on.png) no-repeat center;
+      background-size: contain;
     }
   }
 }
