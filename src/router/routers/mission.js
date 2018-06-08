@@ -8,8 +8,8 @@ export default [
    * 医护端-任务
    */
   {
-     path: '/mission',
-     component: _import('/servant/mission/mission')
+    path: '/mission',
+    component: _import('/servant/mission/mission')
   },
   {
     path: '/mission/receive/:id',
