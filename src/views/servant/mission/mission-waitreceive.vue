@@ -50,7 +50,39 @@
       >
         <ul>
           <li class="desc_list_items">
+            <p class="normal_desc_p">
+              用户联系电话：
+              <span style="font-size: 12px;color: #999999;">13541242122</span>
+            </p>
+            <p class="normal_desc_p">
+              用户服务地址：
+              <span style="font-size: 12px;color: #999999;">四川省成都市22号</span>
+            </p>
+          </li>
+        </ul>
+        <ul>
+          <li class="desc_list_items">
             <p class="normal_desc_p">任务服务需要完成标准动作</p>
+            <div style="padding-top: 11px; margin: 0 10px">
+              <xx-radio v-model="radioValue" typeName="checkbox" name="xxx" style="display: block; margin-bottom: 18px;">
+                1：伤口评估
+              </xx-radio>
+              <xx-radio v-model="radioValue2" name="xxx" typeName="checkbox" style="display: block; margin-bottom: 18px;">
+                2：清洗伤口
+              </xx-radio>
+              <xx-radio typeName="checkbox" style="display: block; margin-bottom: 18px;">
+                3：测量伤口长度
+              </xx-radio>
+              <xx-radio typeName="checkbox" style="display: block; margin-bottom: 18px;">
+                4：拍照记录
+              </xx-radio>
+              <xx-radio typeName="checkbox" style="display: block; margin-bottom: 18px;">
+                5：消毒
+              </xx-radio>
+              <xx-radio typeName="checkbox" style="display: block; margin-bottom: 18px;">
+                6：做好处理记录
+              </xx-radio>
+            </div>
           </li>
           <li class="desc_list_items">
             <p class="normal_desc_p">服务结果</p>
@@ -86,6 +118,7 @@ import stepBar from '@/components/common/operationSteps/bar'
 import stepItems from '@/components/common/operationSteps/items'
 import timeLineBox from '@/components/common/timeLine/box'
 import timeLineItems from '@/components/common/timeLine/items'
+import xxRadio from '@/components/common/xxRadio'
 export default {
   directives: {
     TransferDom
@@ -95,10 +128,18 @@ export default {
     stepItems,
     timeLineBox,
     Previewer,
-    timeLineItems
+    timeLineItems,
+    xxRadio
+  },
+  watch: {
+    radioValue (val) {
+      console.log(val)
+    }
   },
   data () {
     return {
+      radioValue: true,
+      radioValue2: false,
       relatedPicturesList: [
         {
           src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
