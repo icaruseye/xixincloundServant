@@ -1,84 +1,63 @@
 <template>
   <div class="has-tabbar">
-    <!-- <tab v-model="index" custom-bar-width="25px" :line-width="4">
-      <tabItem selected @on-item-click="onItemClick">服务项</tabItem>
-      <tabItem @on-item-click="onItemClick">服务套餐</tabItem>
-    </tab> -->
     <tab v-model="index" custom-bar-width="25px">
-      <tabItem selected @on-item-click="onItemClick">服务项</tabItem>
-      <tabItem @on-item-click="onItemClick">服务套餐</tabItem>
+      <tabItem selected @on-item-click="changeTab">服务项</tabItem>
+      <tabItem @on-item-click="changeTab">服务套餐</tabItem>
     </tab>
     <!-- 服务项 -->
     <div v-if="index === 0">
-      <div class="weui-list-title">在线服务</div>
-      <div class="weui-list-panel weui-panel">
-        <div class="weui-cell">
-          <div class="weui-cell-top">
-            <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
-            <div class="mid">
-              <div class="name">图文问诊</div>
-              <div class="price"><span>￥</span>100</div>
-            </div>
-            <div class="btns">
-              <button class="gray btn">库存:90</button>
-              <button class="default btn">下架</button>
-              <button class="default btn" @click="showPopup(1)">操作</button>
-            </div>
+      <template v-for="(item, typeIndex) in itemList">
+        <div :key="typeIndex">
+          <div class="weui-list-title">{{item.PackageTypeName}}</div>
+          <div class="weui-list-panel weui-panel">
+            <template v-for="(i, index) in item.PackageList">
+              <div class="weui-cell" :key="index">
+                <div class="weui-cell-top">
+                  <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
+                  <div class="mid">
+                    <div class="name">{{i.Name}}</div>
+                    <div class="price"><span>￥</span>{{(i.Price / 100).toFixed(2)}}</div>
+                  </div>
+                  <div class="btns">
+                    <button class="gray btn">库存:90</button>
+                    <button class="default btn" @click="changeStatusDown(i.ID)" v-if="i.State === 1">下架</button>
+                    <button class="default btn" @click="changeStatusUp(i.ID)" v-if="i.State === 0">上架</button>
+                    <button class="default btn" @click="showPopup(i.ID, typeIndex, index)">操作</button>
+                  </div>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
-        <div class="weui-cell">
-          <div class="weui-cell-top">
-            <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
-            <div class="mid">
-              <div class="name">图文问诊</div>
-              <div class="price"><span>￥</span>99</div>
-            </div>
-            <div class="btns">
-              <button class="gray btn">库存:90</button>
-              <button class="default btn">下架</button>
-              <button class="default btn">操作</button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="weui-list-title">特殊服务</div>
-      <div class="weui-list-panel weui-panel">
-        <div class="weui-cell">
-          <div class="weui-cell-top">
-            <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
-            <div class="mid">
-              <div class="name">图文问诊</div>
-              <div class="price"><span>￥</span>100</div>
-            </div>
-            <div class="btns">
-              <button class="gray btn">库存:90</button>
-              <button class="default btn">下架</button>
-              <button class="default btn">操作</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      </template>
       <button type="button" class="weui-btn weui-btn_primary" @click="addServiceItem">申请开通</button>
     </div>
     <!-- 服务套餐 -->
     <div v-if="index === 1">
-      <div class="weui-list-title">套餐分类</div>
-      <div class="weui-list-panel weui-panel">
-        <div class="weui-cell">
-          <div class="weui-cell-top">
-            <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
-            <div class="mid">
-              <div class="name">图文问诊</div>
-              <div class="price"><span>￥</span>100</div>
-            </div>
-            <div class="btns">
-              <button class="gray btn">库存:90</button>
-              <button class="default btn">下架</button>
-              <button class="default btn" @click="showPopup(1)">操作</button>
-            </div>
+      <template v-for="(item, typeIndex) in packageList">
+        <div :key="typeIndex" v-if="packageList.length > 0">
+          <div class="weui-list-title">{{BundleType[typeIndex].Name}}</div>
+          <div class="weui-list-panel weui-panel">
+            <template v-for="(i, index) in packageList[index]">
+              <div class="weui-cell" :key="index">
+                <div class="weui-cell-top">
+                  <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
+                  <div class="mid">
+                    <div class="name">{{i.PackageInfo.Name}}</div>
+                    <div class="price"><span>￥</span>{{i.PackageInfo.Price === 0 ? '0' : (i.PackageInfo.Price / 100).toFixed(2)}}</div>
+                  </div>
+                  <div class="btns">
+                    <button class="gray btn">库存:90</button>
+                    <button class="danger btn" @click="changeStatusDown(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 1">下架</button>
+                    <button class="default btn" @click="changeStatusUp(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 0">上架</button>
+                    <button class="default btn" @click="showPopup(i.PackageInfo.ID, typeIndex, index)">操作</button>
+                  </div>
+                </div>
+              </div>
+            </template>
           </div>
         </div>
-      </div>
+      </template>
       <button type="button" class="weui-btn weui-btn_primary" @click="addServicePackage">创建套餐包</button>
     </div>
     <div v-transfer-dom>
@@ -97,6 +76,7 @@
 </template>
 
 <script>
+import http from '@/api'
 import { TransferDom, Popup } from 'vux'
 import { Tab, TabItem } from '@/components/common/tab'
 export default {
@@ -112,15 +92,26 @@ export default {
     return {
       index: 0,
       isShowPopup: false,
-      currentId: ''
+      currentId: '',
+      itemPageIndex: 1,
+      packagePageIndex: 1,
+      itemList: [],
+      packageList: [],
+      singleItem: {},
+      BundleType: []
     }
   },
+  created () {
+    this.getItemList()
+    this.getBundleType()
+  },
   methods: {
-    showPopup (id) {
+    showPopup (id, typeIndex, index) {
       this.currentId = id
       this.isShowPopup = true
+      this.singleItem = this.packageList[typeIndex][index]
     },
-    onItemClick (index) {
+    changeTab (index) {
       this.index = index
     },
     addServicePackage () {
@@ -130,10 +121,72 @@ export default {
       this.$router.push('/app/itemApply')
     },
     recommend () {},
+    // 修改服务项/套餐
     modify () {
-      this.$router.push(`/app/packageEdit/${this.currentId}`)
+      sessionStorage.setItem('packageDetail', JSON.stringify(this.singleItem))
+      if (this.index) {
+        this.$router.push(`/app/packageEdit/${this.currentId}?isAdd=0`)
+      } else {
+        this.$router.push(`/app/itemEdit/${this.currentId}?isAdd=0`)
+      }
     },
-    removoe () {}
+    // 删除服务项/套餐
+    async removoe () {
+      if (this.index) {
+        const res = await http.delete(`/Bundle/${this.currentId}`)
+        if (res.data.Code === 100000) {
+          this.$vux.toast.text('删除成功')
+          this.isShowPopup = false
+          this.getBundleType()
+        }
+      } else {
+        const res = await http.delete(`/Package/${this.currentId}`)
+        if (res.data.Code === 100000) {
+          this.$vux.toast.text('删除成功')
+          this.isShowPopup = false
+          this.getItemList()
+        }
+      }
+    },
+    // 上下架
+    async changeStatusDown (id) {
+      const res = await http.put(`/Bundle/${id}/OffTheShelf`)
+      if (res.data.Code === 100000) {
+        this.$vux.toast.text('下架成功')
+        this.getBundleType()
+      }
+    },
+    async changeStatusUp (id) {
+      const res = await http.put(`/Bundle/${id}/OnTheShelf`)
+      if (res.data.Code === 100000) {
+        this.$vux.toast.text('上架成功')
+        this.getBundleType()
+      }
+    },
+    // 服务项列表
+    async getItemList () {
+      const res = await http.get(`/PackageList?pageIndex=${this.itemPageIndex}`)
+      console.log(res)
+      this.itemList = res.data.Data
+    },
+    // 服务套餐列表
+    async getBundleType () {
+      // 服务套餐分类
+      const res = await http.get('/BundleType')
+      if (res.data.Code === 100000) {
+        this.BundleType = res.data.Data
+        this.packageList = []
+        res.data.Data.map(async (item) => {
+          let res = await this.getPackageList(item.ID, 1)
+          if (res.data.Data.length === 0) return false
+          this.packageList.push(res.data.Data)
+        })
+      }
+    },
+    async getPackageList (bundleTypeID, pageIndex) {
+      let res = await http.get(`/BundleList?bundleTypeID=${bundleTypeID}&pageIndex=${pageIndex}`)
+      return res
+    }
   }
 }
 </script>
@@ -189,7 +242,8 @@ export default {
       line-height: 25px;
       font-size: 13px;
       border-radius: 2px;
-      margin-right: 16px;
+      margin-right: 8px;
+      border: 0;
       &:last-child {
         margin-right: 0;
       }
@@ -203,6 +257,11 @@ export default {
       color: #3AC7F5;
       border: 1px solid #3AC7F5;
       background: transparent;
+    }
+    .danger {
+      color: #fff;
+      border: 1px solid #ff9800;
+      background: #ff9800;
     }
   }
 }

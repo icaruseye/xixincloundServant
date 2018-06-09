@@ -30,30 +30,30 @@
     <div class="income-panel-wrap">
       <div class="income-panel">
         <div class="item">
-          <!-- <div class="row-1">
+          <div class="row-1">
             <div class="title">本月预估收入</div>
             <div class="count">198.89</div>
-          </div> -->
+          </div>
           <div class="row-2">
             <div class="title">累计收入</div>
             <div class="count">19万</div>
           </div>
         </div>
         <div class="item">
-          <!-- <div class="row-1">
+          <div class="row-1">
             <div class="title">今日服务</div>
             <div class="count">2</div>
-          </div> -->
+          </div>
           <div class="row-2">
             <div class="title">累计服务</div>
             <div class="count">3578</div>
           </div>
         </div>
         <div class="item">
-          <!-- <div class="row-1">
+          <div class="row-1">
             <div class="title">今日评价</div>
             <div class="count">4</div>
-          </div> -->
+          </div>
           <div class="row-2">
             <div class="title">累计评价</div>
             <div class="count">2798</div>

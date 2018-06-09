@@ -1,129 +1,93 @@
 <template>
   <div class="weui-form">
-    <div class="weui-cell-form-title">详情</div>
-    <div class="weui-cell">
+    <div class="weui-cell-form-title">填写服务套餐信息</div>
+    <div class="weui-cell nobor">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">服务包名称</label>
-          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入服务包名称">
+          <input v-model="reqParams.BundleName" v-validate="'required'" name="PackageName" type="text" placeholder="请输入服务包名称">
       </div>
-      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+      <span v-show="errors.has('PackageName')" class="help is-danger">{{ errors.first('PackageName') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top">
           <label class="label" for="">添加服务项</label>
           <a href="javascript:;" style="color:#3ecccc;flex:1;text-align:right;" @click="addItemPopup = true">+添加</a>
-          <input type="hidden" v-validate="'required'" name="serviceItem">
+          <input type="hidden" v-model="reqParams.itemsInfoList" v-validate="'required'" name="itemsInfoList">
       </div>
-      <span v-show="errors.has('serviceItem')" class="help is-danger">{{ errors.first('serviceItem') }}</span>
+      <span v-show="errors.has('itemsInfoList')" class="help is-danger">{{ errors.first('itemsInfoList') }}</span>
     </div>
-    <div class="weui-cell">
-      <div class="weui-cell-add">
-        <div class="title">换药</div>
-        <div class="mid">
-          <label for="">单价:</label><input type="number">
-          <label for="">数量:</label><input type="number">
+    <div class="weui-cell" v-if="reqParams.itemsInfoList.length !== 0">
+      <template v-for="(item, index) in reqParams.itemsInfoList">
+        <div class="weui-cell-add" :key="index">
+          <div class="title">{{item.Name}}</div>
+          <div class="mid">
+            <label for="">单价:</label><input type="text" v-model="item.Price" @change="totalPrice">
+            <label for="">数量:</label><input type="text" v-model="item.number" @change="totalPrice">
+          </div>
+          <span class="delete" @click="deleteItems(index)">删除</span>
         </div>
-        <span class="delete">删除</span>
-      </div>
-      <div class="weui-cell-add">
-        <div class="title">换药</div>
-        <div class="mid">
-          <label for="">单价:</label><input type="number">
-          <label for="">数量:</label><input type="number">
-        </div>
-        <span class="delete">删除</span>
-      </div>
-      <div class="weui-cell-add">
-        <div class="title">换药</div>
-        <div class="mid">
-          <label for="">单价:</label><input type="number">
-          <label for="">数量:</label><input type="number">
-        </div>
-        <span class="delete">删除</span>
-      </div>
+      </template>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">真实售价</label>
-          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入真实售价">
+          <input v-model="reqParams.Price" v-validate="'required'" readonly name="Price" type="number" placeholder="请输入真实售价">
       </div>
-      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+      <span v-show="errors.has('Price')" class="help is-danger">{{ errors.first('Price') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">展示价格</label>
-          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入展示价格">
+          <input v-model="reqParams.BundleViewPrice" v-validate="'required'" readonly name="PackageBundleViewPrice" type="number" placeholder="请输入展示价格">
       </div>
-      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+      <span v-show="errors.has('PackageBundleViewPrice')" class="help is-danger">{{ errors.first('PackageBundleViewPrice') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">库存数量</label>
-          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入库存数量">
+          <input v-model="reqParams.Count" v-validate="'required|min_value:1|max_value:500'" name="Count" type="text" placeholder="请输入库存数量">
       </div>
-      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+      <span v-show="errors.has('Count')" class="help is-danger">{{ errors.first('Count') }}</span>
     </div>
-    <div class="weui-cell-form-title">详情</div>
     <div class="weui-cell">
-      <div class="weui-cell-top" :class="{ 'control': true }">
+      <div class="weui-cell-top">
           <label class="label" for="">服务包分类</label>
-          <select name="" v-model="serviceType" @change="serviceTypeChange">
+          <select v-model="reqParams.BundleTypeID" @change="serviceTypeChange">
             <option :value="1">默认分类</option>
+            <option v-for="(item, index) in BundleTypeList" :key="index" :value="item.ID">{{item.Name}}</option>
             <option :value="0">新增分类</option>
           </select>
           <i class="iconfont icon-jiantouyou"></i>
       </div>
-      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
-    </div>
-    <div class="weui-cell">
-      <div class="weui-cell-top" :class="{ 'control': true }">
-          <label class="label" for="">标签</label>
-          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入标签，支持多标签，用逗号隔开">
-      </div>
-      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">有效期单位</label>
-          <select name="" v-model="serviceUnit">
-            <option :value="0">年</option>
-            <option :value="1">月</option>
-            <option :value="2">日</option>
+          <select name="" v-model="reqParams.EffectiveType">
+            <option :value="1">年</option>
+            <option :value="2">月</option>
+            <option :value="3">日</option>
           </select>
           <i class="iconfont icon-jiantouyou"></i>
       </div>
-      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+      <span v-show="errors.has('EffectiveType')" class="help is-danger">{{ errors.first('EffectiveType') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">有效期时长</label>
-          <input v-model="name" v-validate="'required'" name="name" type="text" placeholder="请输入有效期时长">
+          <input v-model="reqParams.EffectiveValue" v-validate="'required|min_value:1'" name="EffectiveValue" type="text" placeholder="请输入有效期时长">
       </div>
-      <span v-show="errors.has('name')" class="help is-danger">{{ errors.first('name') }}</span>
+      <span v-show="errors.has('EffectiveValue')" class="help is-danger">{{ errors.first('EffectiveValue') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top">
           <label class="label" for="">服务包介绍</label>
-          <textarea name="intro" placeholder="请输入服务包介绍"></textarea>
+          <textarea v-model="reqParams.PackageDescription" v-validate="'required'" name="PackageDescription" placeholder="请输入服务包介绍"></textarea>
       </div>
+      <span v-show="errors.has('PackageDescription')" class="help is-danger">{{ errors.first('PackageDescription') }}</span>
     </div>
     <div class="weui-cell">
-      <uploader
-        title="服务包封面"
-        :limit="1"
-        :maxSize="1024 * 1024 * 2"
-        :imgList="imgList1"
-        @onUpdate="onUpdate1"
-      ></uploader>
-    </div>
-    <div class="weui-cell-upload">
-      <div class="weui-cell-top" :class="{ 'control': true }">
-        <input v-validate="'required'" name="uploadeId1" type="hidden">
-      </div>
-      <span v-show="errors.has('uploadeId1')" class="help is-danger">{{ errors.first('uploadeId1') }}</span>
-    </div>
-    <div class="weui-cell">
-      <button type="button" class="weui-btn weui-btn_primary" @click="validateBeforeSubmit">提交</button>
+      <button type="button" class="weui-btn weui-btn_primary" @click="validateBeforeSubmit" :disabled="submitBtn">提交</button>
     </div>
     <!-- 服务项列表 -->
     <div v-transfer-dom>
@@ -131,24 +95,16 @@
         <div class="popup">
           <div class="service-item_list">
             <ul>
-              <li @click="chooseItem(0)">
+              <li @click="chooseItem(index)" v-for="(item, index) in serviceItemList" :key="index">
                 <div>
-                  <img class="poster" src="http://192.168.2.236/Content/img/default_img_service.jpg" >
+                  <img class="poster" src="@/assets/images/icon_tcmr.png" >
                 </div>
-                <div class="title">换药</div>
-                <i class="iconfont icon-jiantouyou"></i>
-              </li>
-              <li>
-                <div>
-                  <img class="poster" src="http://192.168.2.236/Content/img/default_img_service.jpg" >
-                </div>
-                <div class="title">换药</div>
+                <div class="title">{{item.Name}}</div>
                 <i class="iconfont icon-jiantouyou"></i>
               </li>
             </ul>
           </div>
           <div class="weui-cell" style="position:fixed;bottom:0;width:100%;display:flex;z-index:99">
-            <a href="javascript:;" style="font-size:16px;padding:8px 0" class="weui-btn weui-btn_primary" @click="go('itemList')">管理服务项</a>
             <a href="javascript:;" style="font-size:16px;padding:8px 0" class="weui-btn weui-btn_warning" @click="addItemPopup = false">关闭</a>
           </div>
         </div>
@@ -168,6 +124,7 @@
 </template>
 
 <script>
+import http from '@/api'
 import uploader from '@/components/common/uploader'
 import { TransferDom, Popup, Confirm } from 'vux'
 export default {
@@ -181,47 +138,129 @@ export default {
   },
   data () {
     return {
+      submitBtn: false,
       addItemPopup: false, // 添加服务项
       addType: false, // 新增分类
-      name: '',
-      serviceItem: [],
+      BundleTypeList: [],
       serviceType: 1,
-      serviceUnit: 0,
-      imgList1: [],
-      uploadeId1: [],
-      serviceItemList: [] // 服务项列表
+      serviceItemList: [], // 服务项列表
+      reqParams: {
+        BundleName: '',
+        Price: '',
+        BundleViewPrice: '',
+        BundleTypeID: 1,
+        EffectiveValue: '',
+        EffectiveType: 1,
+        Count: '',
+        PackageDescription: '',
+        itemsInfoList: []
+      }
     }
   },
   mounted () {
-    const id = this.$route.params.id
-    if (id === 'add') return
-    this.getData(id)
+    this.getItemList()
+    this.getBundleType()
+    if (this.$route.params.id !== 'add') {
+      this.getData()
+    }
   },
   methods: {
-    getData (id) {},
-    onUpdate1 (id) {
-      this.uploadeId1 = id
+    getData () {
+      const info = JSON.parse(sessionStorage.getItem('packageDetail'))
+      this.reqParams = Object.assign(this.reqParams, info)
+      this.reqParams.Price = this.convertToyuan(this.reqParams.Price)
+      this.reqParams.BundleViewPrice = this.convertToyuan(this.reqParams.BundleViewPrice * 1.2)
+    },
+    setEffectiveType (data) {
+      if (data.EffectiveYear) {
+        data.EffectiveType = 1
+        data.EffectiveValue = data.EffectiveYear
+        return data
+      }
+      if (data.EffectiveMonth) {
+        data.EffectiveType = 2
+        data.EffectiveValue = data.EffectiveMonth
+        return data
+      }
+      if (data.EffectiveDay) {
+        data.EffectiveType = 3
+        data.EffectiveValue = data.EffectiveDay
+        return data
+      }
+    },
+    totalPrice () {
+      const itemList = this.reqParams.itemsInfoList
+      let res = 0
+      for (let i = 0; i < itemList.length; i++) {
+        res += parseFloat(itemList[i].Price) * parseFloat(itemList[i].number)
+      }
+      this.reqParams.Price = parseFloat(res).toFixed(2)
+      this.reqParams.BundleViewPrice = (res * 1.2).toFixed(2)
+    },
+    convertToyuan (val) {
+      return (val / 100).toFixed(2)
     },
     go (name) {
       this.$router.push(`/app/${name}`)
     },
     chooseItem (index) {
-      let obj = Object.assign({}, this.serviceItemList[index])
-      this.serviceItem.push(obj)
+      let obj = Object.assign({number: 1}, this.serviceItemList[index])
+      for (var i = 0; i < this.reqParams.itemsInfoList.length; i++) {
+        if (this.reqParams.itemsInfoList[i] === obj.ID) {
+          return false
+        }
+      }
+      obj.Price = this.convertToyuan(obj.Price)
+      this.reqParams.itemsInfoList.push(obj)
+      this.totalPrice()
+      this.addItemPopup = false
+    },
+    deleteItems (index) {
+      this.reqParams.itemsInfoList.splice(index, 1)
     },
     serviceTypeChange () {
-      if (this.serviceType === 0) {
+      if (this.reqParams.BundleTypeID === 0) {
         this.addType = true
       }
     },
-    addTypeonConfirm () {
-    },
     addTypeCancel () {
+      this.reqParams.BundleTypeID = 1
+    },
+    async addTypeonConfirm (val) {
+      const res = await http.post('/BundleType', {
+        BundleTypeName: val
+      })
+      if (res.data.Code === 100000) {
+        this.getBundleType()
+        this.reqParams.BundleTypeID = res.data.Data
+      }
+    },
+    async getItemList () {
+      const res = await http.get('/ItemList')
+      if (res.data.Code === 100000) {
+        this.serviceItemList = res.data.Data
+      }
+    },
+    async getBundleType () {
+      const res = await http.get('/BundleType')
+      if (res.data.Code === 100000) {
+        console.log(res.data.Data)
+        this.BundleTypeList = res.data.Data
+      }
     },
     async validateBeforeSubmit () {
       let res = await this.$validator.validateAll()
       if (res) {
-        console.log('验证通过')
+        this.submitBtn = true
+        this.reqParams.Price = this.reqParams.Price * 100
+        this.reqParams.BundleViewPrice = this.reqParams.BundleViewPrice * 100
+        for (let i = 0; i < this.reqParams.itemsInfoList.length; i++) {
+          this.reqParams.itemsInfoList[i].Price = this.reqParams.itemsInfoList[i].Price * 100
+        }
+        const res = await http.post('/Bundle', this.reqParams)
+        if (res.data.Code === 100000) {
+          this.$router.back()
+        }
       } else {
         // 设置焦点到第一个未验证通过的表单元素
         let field = this.$validator.errors.items[0].field
@@ -237,11 +276,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-body {
-  background: #f8f8f8;
-}
-
 .weui-form {
+  min-height: 100vh;
   background: #f8f8f8;
 }
 
@@ -273,7 +309,7 @@ body {
     }
     .poster {
       display: block;
-      width: 40px;
+      width: 28px;
       margin-right: 10px;
     }
     .title {

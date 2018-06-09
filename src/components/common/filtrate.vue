@@ -1,6 +1,6 @@
 <template>
   <div class="xixin-filtrate">
-    <div class="xixin-filtrate-active" @click="showList">{{currentText}}<i class="iconfont icon-sanjiao"></i></div>
+    <div class="xixin-filtrate-active" @click="showList">{{list[currentIndex]}}<i class="iconfont icon-sanjiao"></i></div>
     <div class="xixin-filtrate-list" :class="active ? 'fadein' : ''" v-show="isShowList">
       <ul>
         <li
@@ -18,14 +18,29 @@
 export default {
   name: 'filtrate',
   props: {
-    list: Array
+    list: {
+      type: Array,
+      default: []
+    },
+    roleIndex: {
+      type: Number,
+      default: 0
+    }
+  },
+  watch: {
+    roleIndex (val) {
+      this.currentIndex = this.roleIndex
+    }
+  },
+  mounted () {
+    this.list.unshift('全部')
+    this.currentIndex = this.roleIndex
   },
   data () {
     return {
       isShowList: false,
       active: false,
-      currentIndex: 0,
-      currentText: '全部'
+      currentIndex: 0
     }
   },
   methods: {
@@ -47,7 +62,7 @@ export default {
     },
     changeItem (item, index) {
       this.currentIndex = index
-      this.currentText = item
+      this.$emit('onItemClick', index)
       this.close()
     }
   }

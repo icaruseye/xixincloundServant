@@ -7,12 +7,14 @@ import store from './store/index'
 import router from './router'
 import Meta from 'vue-meta'
 import './plugins/validate.js'
-
+import _ from 'lodash'
 import registryPopup from './components/common/popup-top/index'
+import { ToastPlugin } from 'vux'
+
+Vue.use(ToastPlugin)
 Vue.use(registryPopup)
-
+Object.defineProperty(Vue.prototype, '$_', { value: _ })
 FastClick.attach(document.body)
-
 Vue.config.productionTip = false
 Vue.use(Meta)
 

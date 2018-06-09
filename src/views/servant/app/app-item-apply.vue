@@ -1,31 +1,27 @@
 <template>
   <div>
     <!-- 筛选 -->
-    <filtrate :list="list"></filtrate>
+    <filtrate :list="roleList" :roleIndex="roleIndex" @onItemClick="changeFilter"></filtrate>
     <div class="weui-panel weui-list-panel">
-      <div class="weui-cell">
-        <div class="weui-cell-top">
-          <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
-          <div class="name">图文问诊</div>
-          <div class="btn">
-            <button class="" @click="go(1)">申请</button>
+      <template v-for="(item, index) in itemList">
+        <div class="weui-cell" :key="index">
+          <div class="weui-cell-top">
+            <!-- <div class="icon"><img :src="item.Img" alt=""></div> -->
+            <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
+            <div class="name">{{item.Name}}</div>
+            <div class="btn">
+              <button v-if="item.State === 0" class="" @click="go(item.ID, index)">申请</button>
+              <button v-if="item.State === 1" class="" disabled>已申请</button>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="weui-cell">
-        <div class="weui-cell-top">
-          <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
-          <div class="name">图文问诊</div>
-          <div class="btn">
-            <button class="" disabled="disabled">已开通</button>
-          </div>
-        </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
+import http from '@/api'
 import Filtrate from '@/components/common/filtrate'
 export default {
   components: {
@@ -33,12 +29,45 @@ export default {
   },
   data () {
     return {
-      list: ['全部', '护士', '医生', '教师']
+      roleIndex: 0,
+      roleList: [],
+      itemList: [],
+      allItems: []
     }
   },
+  created () {
+    this.getList()
+  },
   methods: {
-    go (id) {
-      this.$router.push(`/app/itemEdit/${id}`)
+    changeFilter (index) {
+      if (index === 0) {
+        this.itemList = this.$_.flatten(this.allItems)
+        return false
+      }
+      this.itemList = this.allItems[index - 1]
+    },
+    go (id, index) {
+      sessionStorage.setItem('packageDetail', JSON.stringify(this.itemList[index]))
+      this.$router.push(`/app/packageEdit/${id}?isAdd=1`)
+    },
+    getRoleList (list) {
+      list.map((item) => {
+        this.roleList.push(item.Name)
+      })
+    },
+    getAllItems (list) {
+      list.map((item) => {
+        this.allItems.push(item.ItemList)
+      })
+    },
+    async getList () {
+      const res = await http.get('/PackageList')
+      console.log(res)
+      if (res.data.Code === 100000) {
+        this.getRoleList(res.data.Data)
+        this.getAllItems(res.data.Data)
+        this.changeFilter(0)
+      }
     }
   }
 }

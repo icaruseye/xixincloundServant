@@ -16,8 +16,7 @@ const dictionary = {
   zh_CN: {
     messages: {
       // email: () => '请输入正确的邮箱格式',
-      digits: () => '必须为4位数字',
-      required: (field) => field
+      required: (field) => field + '不能为空'
     },
     attributes: {
       nickname: '请输入昵称',
@@ -26,7 +25,14 @@ const dictionary = {
       IDCard: '请输入身份证号码',
       ZhiyeNumImg: '请上传相应图片',
       code: '请输入验证码',
-      mobile: '请输入手机号'
+      mobile: '请输入手机号',
+      PackageName: '服务包名称',
+      Price: '真实价格',
+      PackageViewPrice: '展示价格',
+      Count: '库存数量',
+      EffectiveValue: '有效期时长',
+      PackageDescription: '服务包介绍',
+      itemsInfoList: '服务项'
     }
   }
 }

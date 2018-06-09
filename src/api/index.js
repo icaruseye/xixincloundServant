@@ -100,5 +100,24 @@ export default {
       timeout: 15000,
       headers: headers
     }).then(checkStatus).then(checkCode)
+  },
+  delete (url, params) {
+    var token = localStorage.getItem('servant_token')
+    var headers = {
+      'X-Requested-With': 'XMLHttpRequest',
+      'Content-Type': 'application/json; charset=UTF-8',
+      'deviceType': 'WAP'
+    }
+    if (token) {
+      headers.token = token
+    }
+    return axios({
+      method: 'delete',
+      url: config._PATH_ + url,
+      withCredentials: true,
+      params,
+      timeout: 15000,
+      headers: headers
+    }).then(checkStatus).then(checkCode)
   }
 }

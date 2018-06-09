@@ -13,13 +13,15 @@
           <textarea name="" placeholder="请输入投诉详情..."></textarea>
       </p>
     </div>
-    <uploader
-      title="投诉图片"
-      :limit="1"
-      :maxSize="1024 * 1024 * 5"
-      :imgList="imgList"
-      @onUpdate="onUpdate">
-    </uploader>
+    <div class="weui-cell">
+      <uploader
+        title="投诉图片"
+        :limit="1"
+        :maxSize="1024 * 1024 * 5"
+        :imgList="imgList"
+        @onUpdate="onUpdate">
+      </uploader>
+    </div>
     <div class="weui-cell">
       <button class="weui-btn weui-btn_primary">提交</button>
     </div>
