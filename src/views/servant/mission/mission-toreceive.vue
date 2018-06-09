@@ -315,6 +315,7 @@ export default {
     width: 100%;
     height: 100%;
     resize: none;
+    border: none;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
   }
   .service_remark_textarea_nums_count
