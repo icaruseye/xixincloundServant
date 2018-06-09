@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VeeValidate, {Validator} from 'vee-validate'
 import zh from 'vee-validate/dist/locale/zh_CN'
 import util from './util'
-import { DatetimePlugin } from 'vux'
 
 // 配置中文
 Validator.addLocale(zh)
@@ -12,7 +11,6 @@ const config = {
   errorBagName: 'errorBags'
 }
 Vue.use(VeeValidate, config)
-Vue.use(DatetimePlugin)
 
 // 自定义validate
 const dictionary = {

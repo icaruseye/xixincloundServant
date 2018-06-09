@@ -6,10 +6,12 @@ import App from './App'
 import store from './store/index'
 import router from './router'
 import Meta from 'vue-meta'
+import { DatetimePlugin } from 'vux'
 import './plugins/validate.js'
 
 import registryPopup from './components/common/popup-top/index'
 Vue.use(registryPopup)
+Vue.use(DatetimePlugin)
 
 FastClick.attach(document.body)
 
