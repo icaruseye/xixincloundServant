@@ -9,11 +9,7 @@ export default [
    */
   {
     path: '/Servant/Login',
-    component: _import('/servant/wxlogin/login'),
-    beforeEnter: (to, from, next) => {
-      sessionStorage.setItem('to_path', from.fullPath)
-      next()
-    }
+    component: _import('/servant/wxlogin/login')
   },
   /**
    * 重定向
