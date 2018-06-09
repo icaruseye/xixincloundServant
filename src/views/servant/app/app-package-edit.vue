@@ -6,7 +6,7 @@
           <label class="label" for="">服务包名称</label>
           <input v-model="reqParams.BundleName" v-validate="'required'" name="PackageName" type="text" placeholder="请输入服务包名称">
       </div>
-      <span v-show="errors.has('PackageName')" class="help is-danger">{{ errors.first('PackageName') }}</span>
+      <span v-show="errorBags.has('PackageName')" class="help is-danger">{{ errorBags.first('PackageName') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top">
@@ -14,7 +14,7 @@
           <a href="javascript:;" style="color:#3ecccc;flex:1;text-align:right;" @click="addItemPopup = true">+添加</a>
           <input type="hidden" v-model="reqParams.itemsInfoList" v-validate="'required'" name="itemsInfoList">
       </div>
-      <span v-show="errors.has('itemsInfoList')" class="help is-danger">{{ errors.first('itemsInfoList') }}</span>
+      <span v-show="errorBags.has('itemsInfoList')" class="help is-danger">{{ errorBags.first('itemsInfoList') }}</span>
     </div>
     <div class="weui-cell" v-if="reqParams.itemsInfoList.length !== 0">
       <template v-for="(item, index) in reqParams.itemsInfoList">
@@ -33,21 +33,21 @@
           <label class="label" for="">真实售价</label>
           <input v-model="reqParams.Price" v-validate="'required'" readonly name="Price" type="number" placeholder="请输入真实售价">
       </div>
-      <span v-show="errors.has('Price')" class="help is-danger">{{ errors.first('Price') }}</span>
+      <span v-show="errorBags.has('Price')" class="help is-danger">{{ errorBags.first('Price') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">展示价格</label>
           <input v-model="reqParams.BundleViewPrice" v-validate="'required'" readonly name="PackageBundleViewPrice" type="number" placeholder="请输入展示价格">
       </div>
-      <span v-show="errors.has('PackageBundleViewPrice')" class="help is-danger">{{ errors.first('PackageBundleViewPrice') }}</span>
+      <span v-show="errorBags.has('PackageBundleViewPrice')" class="help is-danger">{{ errorBags.first('PackageBundleViewPrice') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">库存数量</label>
           <input v-model="reqParams.Count" v-validate="'required|min_value:1|max_value:500'" name="Count" type="text" placeholder="请输入库存数量">
       </div>
-      <span v-show="errors.has('Count')" class="help is-danger">{{ errors.first('Count') }}</span>
+      <span v-show="errorBags.has('Count')" class="help is-danger">{{ errorBags.first('Count') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top">
@@ -70,21 +70,21 @@
           </select>
           <i class="iconfont icon-jiantouyou"></i>
       </div>
-      <span v-show="errors.has('EffectiveType')" class="help is-danger">{{ errors.first('EffectiveType') }}</span>
+      <span v-show="errorBags.has('EffectiveType')" class="help is-danger">{{ errorBags.first('EffectiveType') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">有效期时长</label>
           <input v-model="reqParams.EffectiveValue" v-validate="'required|min_value:1'" name="EffectiveValue" type="text" placeholder="请输入有效期时长">
       </div>
-      <span v-show="errors.has('EffectiveValue')" class="help is-danger">{{ errors.first('EffectiveValue') }}</span>
+      <span v-show="errorBags.has('EffectiveValue')" class="help is-danger">{{ errorBags.first('EffectiveValue') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top">
           <label class="label" for="">服务包介绍</label>
           <textarea v-model="reqParams.PackageDescription" v-validate="'required'" name="PackageDescription" placeholder="请输入服务包介绍"></textarea>
       </div>
-      <span v-show="errors.has('PackageDescription')" class="help is-danger">{{ errors.first('PackageDescription') }}</span>
+      <span v-show="errorBags.has('PackageDescription')" class="help is-danger">{{ errorBags.first('PackageDescription') }}</span>
     </div>
     <div class="weui-cell">
       <button type="button" class="weui-btn weui-btn_primary" @click="validateBeforeSubmit" :disabled="submitBtn">提交</button>
