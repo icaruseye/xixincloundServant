@@ -14,13 +14,13 @@
       </p>
     </div>
     <div class="weui-cell">
-      <uploader
+      <xx-uploader
         title="投诉图片"
         :limit="1"
         :maxSize="1024 * 1024 * 5"
         :imgList="imgList"
         @onUpdate="onUpdate">
-      </uploader>
+      </xx-uploader>
     </div>
     <div class="weui-cell">
       <button class="weui-btn weui-btn_primary">提交</button>
@@ -29,11 +29,7 @@
 </template>
 
 <script>
-import uploader from '@/components/common/uploader'
 export default {
-  components: {
-    uploader
-  },
   data () {
     return {
       title: '',

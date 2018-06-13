@@ -1,9 +1,9 @@
 <template>
   <div class="has-tabbar">
-    <tab v-model="index" custom-bar-width="25px">
-      <tabItem selected @on-item-click="changeTab">服务项</tabItem>
-      <tabItem @on-item-click="changeTab">服务套餐</tabItem>
-    </tab>
+    <xx-tab v-model="index" custom-bar-width="25px">
+      <xx-tabItem selected @on-item-click="changeTab">服务项</xx-tabItem>
+      <xx-tabItem @on-item-click="changeTab">服务套餐</xx-tabItem>
+    </xx-tab>
     <!-- 服务项 -->
     <div v-if="index === 0">
       <template v-for="(item, typeIndex) in itemList">
@@ -38,7 +38,7 @@
         <div :key="typeIndex" v-if="packageList.length > 0">
           <div class="weui-list-title">{{BundleType[typeIndex].Name}}</div>
           <div class="weui-list-panel weui-panel">
-            <template v-for="(i, index) in packageList[index]">
+            <template v-for="(i, index) in packageList[typeIndex]">
               <div class="weui-cell" :key="index">
                 <div class="weui-cell-top">
                   <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
@@ -78,14 +78,11 @@
 <script>
 import http from '@/api'
 import { TransferDom, Popup } from 'vux'
-import { Tab, TabItem } from '@/components/common/tab'
 export default {
   directives: {
     TransferDom
   },
   components: {
-    Tab,
-    TabItem,
     Popup
   },
   data () {
@@ -153,6 +150,7 @@ export default {
       const res = await http.put(`/Bundle/${id}/OffTheShelf`)
       if (res.data.Code === 100000) {
         this.$vux.toast.text('下架成功')
+
         this.getBundleType()
       }
     },

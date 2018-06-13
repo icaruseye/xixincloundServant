@@ -1,12 +1,12 @@
 <template>
   <div style="min-height:100vh;position:relative">
     <div class="weui-form">
-      <uploader
+      <xx-uploader
         title="执业证照片"
         :limit="limit"
         :maxSize="1024 * 1024 * 2"
         @onUpdate="onUpdate1"
-      ></uploader>
+      ></xx-uploader>
     </div>
     <div class="weui-form-title">
       *执业证信息
@@ -30,15 +30,11 @@
 </template>
 
 <script>
-import uploader from '@/components/common/uploader'
-import Vue from 'vue'
 import util from '@/plugins/util'
 import http from '@/api'
-import { ToastPlugin, Group, XSwitch } from 'vux'
-Vue.use(ToastPlugin)
+import { Group, XSwitch } from 'vux'
 export default {
   components: {
-    uploader,
     Group,
     XSwitch
   },

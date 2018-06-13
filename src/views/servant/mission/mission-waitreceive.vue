@@ -1,15 +1,15 @@
 <template>
   <div class="wrap">
     <step-bar step="2">
-      <step-items slot="items">
+      <xx-step-items slot="items">
         待确认
-      </step-items>
-      <step-items slot="items">
+      </xx-step-items>
+      <xx-step-items slot="items">
         服务中
-      </step-items>
-      <step-items slot="items">
+      </xx-step-items>
+      <xx-step-items slot="items">
         已完成
-      </step-items>
+      </xx-step-items>
     </step-bar>
 
     <timeLine-box step="2" class="mt10px">
@@ -64,24 +64,24 @@
           <li class="desc_list_items">
             <p class="normal_desc_p">任务服务需要完成标准动作</p>
             <div style="padding-top: 11px; margin: 0 10px">
-              <xx-radio v-model="radioValue" typeName="checkbox" name="xxx" style="display: block; margin-bottom: 18px;">
+              <xx-checker v-model="radioValue" typeName="checkbox" name="xxx" style="display: block; margin-bottom: 18px;">
                 1：伤口评估
-              </xx-radio>
-              <xx-radio v-model="radioValue2" name="xxx" typeName="checkbox" style="display: block; margin-bottom: 18px;">
+              </xx-checker>
+              <xx-checker v-model="radioValue2" name="xxx" typeName="checkbox" style="display: block; margin-bottom: 18px;">
                 2：清洗伤口
-              </xx-radio>
-              <xx-radio typeName="checkbox" style="display: block; margin-bottom: 18px;">
+              </xx-checker>
+              <xx-checker typeName="checkbox" style="display: block; margin-bottom: 18px;">
                 3：测量伤口长度
-              </xx-radio>
-              <xx-radio typeName="checkbox" style="display: block; margin-bottom: 18px;">
+              </xx-checker>
+              <xx-checker typeName="checkbox" style="display: block; margin-bottom: 18px;">
                 4：拍照记录
-              </xx-radio>
-              <xx-radio typeName="checkbox" style="display: block; margin-bottom: 18px;">
+              </xx-checker>
+              <xx-checker typeName="checkbox" style="display: block; margin-bottom: 18px;">
                 5：消毒
-              </xx-radio>
-              <xx-radio typeName="checkbox" style="display: block; margin-bottom: 18px;">
+              </xx-checker>
+              <xx-checker typeName="checkbox" style="display: block; margin-bottom: 18px;">
                 6：做好处理记录
-              </xx-radio>
+              </xx-checker>
             </div>
           </li>
           <li class="desc_list_items">
@@ -114,22 +114,12 @@
 
 <script>
 import { Previewer, TransferDom } from 'vux'
-import stepBar from '@/components/common/operationSteps/bar'
-import stepItems from '@/components/common/operationSteps/items'
-import timeLineBox from '@/components/common/timeLine/box'
-import timeLineItems from '@/components/common/timeLine/items'
-import xxRadio from '@/components/common/xxRadio'
 export default {
   directives: {
     TransferDom
   },
   components: {
-    stepBar,
-    stepItems,
-    timeLineBox,
-    Previewer,
-    timeLineItems,
-    xxRadio
+    Previewer
   },
   watch: {
     radioValue (val) {

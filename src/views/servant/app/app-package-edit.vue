@@ -125,14 +125,12 @@
 
 <script>
 import http from '@/api'
-import uploader from '@/components/common/uploader'
 import { TransferDom, Popup, Confirm } from 'vux'
 export default {
   directives: {
     TransferDom
   },
   components: {
-    uploader,
     Confirm,
     Popup
   },

@@ -100,13 +100,12 @@
         </div>
       </div>
     </div>
-    <servant-tabbar></servant-tabbar>
+    <xx-tabbar></xx-tabbar>
   </div>
 </template>
 
 <script>
 import { Tab, TabItem, Sticky, InlineCalendar } from 'vux'
-import servantTabbar from '@/components/common/servantTabbar'
 import util from '@/plugins/util'
 export default {
   metaInfo: {
@@ -116,7 +115,6 @@ export default {
     Tab,
     TabItem,
     Sticky,
-    servantTabbar,
     InlineCalendar
   },
   data () {

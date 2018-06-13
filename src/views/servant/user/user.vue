@@ -57,7 +57,7 @@
       </div>
       
     </div>
-    <servant-tabbar></servant-tabbar>
+    <xx-tabbar></xx-tabbar>
     <div class="weui-mask" v-show="maskShow">
       <div class="weui-mask-layer" @click="toggleMask(false)"></div>
       <img :src="userAccount.QRCodeStr" >
@@ -66,14 +66,10 @@
 </template>
 
 <script>
-import servantTabbar from '@/components/common/servantTabbar'
 import { mapGetters } from 'vuex'
 export default {
   metaInfo: {
     title: '我的'
-  },
-  components: {
-    servantTabbar
   },
   data () {
     return {

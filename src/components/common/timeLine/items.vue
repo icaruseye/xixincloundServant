@@ -61,7 +61,7 @@
     border-radius: 50%;
     color: #999;
     font-size: 13px;
-    line-height: 18px;
+    line-height: 19px;
     text-align: center;
     font-style: normal;
     border: 1px solid #999;
@@ -80,13 +80,13 @@
   }
   .active_items .time-line_items_icon
   {
-    border-color: #3AC7F5;
-    background-color: #3AC7F5;
+    border-color: #3ecccc;
+    background-color: #3ecccc;
     color: #ffffff;
   }
   .active_items .time-line_items_left::after
   {
-    background-color: #3AC7F5;
+    background-color: #3ecccc;
   }
   .time-line_items_container:last-child .time-line_items_left:after
   {

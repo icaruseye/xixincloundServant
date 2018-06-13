@@ -4,14 +4,14 @@
     <div class="weui-cell nobor">
       <div class="weui-cell-top" style="align-items:center">
         <label class="label" for="">头像</label>
-        <uploader
+        <xx-uploader
           style="flex:1"
           class="upload"
           :isAvatar="true"
           :maxSize="1024 * 1024 * 2"
           :imgList="avatarUrl"
           @onUpdate="onUpdate5"
-        ></uploader>
+        ></xx-uploader>
         <i class="iconfont icon-jiantouyou"></i>
     </div>
     </div>
@@ -84,12 +84,8 @@
 
 <script>
 import http from '@/api/index'
-import uploader from '@/components/common/uploader'
 import util from '@/plugins/util'
 export default {
-  components: {
-    uploader
-  },
   data () {
     return {
       submitBtn: false,
@@ -170,8 +166,8 @@ export default {
   }
   .upload {
     flex: 1;
-    .weui-uploader__input-box,
-    .weui-uploader__file {
+    .weui-xx-uploader__input-box,
+    .weui-xx-uploader__file {
       margin-right: 15px;
       float: right;
       border-radius: 50%;

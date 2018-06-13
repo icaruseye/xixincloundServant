@@ -7,8 +7,8 @@
           {{title}}
         </div>
         <div class="weui-uploader__bd">
-            <ul class="weui-uploader__files uploaderFiles" v-if="list.length > 0">
-              <template v-for="(img, index) in list">
+            <ul class="weui-uploader__files uploaderFiles">
+              <template v-for="(img, index) in list" >
                 <li
                   :key="index"
                   :style="{ 'background-image': 'url(' + img.url + ')'}"
@@ -29,7 +29,7 @@
       </div>
       <!-- 头像 -->
       <div v-else class="weui-uploader">
-        <div class="is-avatar" v-if="list.length > 0" :style="{ 'background-image': 'url(' + list[0].url + ')'}">
+        <div class="is-avatar" :style="{ 'background-image': 'url(' + list[0].url + ')'}">
             <input class="weui-uploader__input" type="file" @change="change">
         </div>
       </div>
@@ -49,12 +49,7 @@ export default {
     },
     url: String,
     maxSize: Number,
-    imgList: {
-      type: Array,
-      default () {
-        return []
-      }
-    },
+    imgList: Array,
     onSuccess: Function,
     onRemove: Function,
     isAvatar: {
@@ -65,18 +60,12 @@ export default {
   data () {
     return {
       count: 0,
-      guid: [],
       list: [],
-      avatar: {}
+      guid: []
     }
   },
-  watch: {
-    imgList: function (val) {
-      this.list = val
-    }
-  },
-  mounted () {
-    if (this.imgList.length > 0) {
+  created () {
+    if (this.imgList) {
       this.list = this.imgList
     }
   },
@@ -87,7 +76,7 @@ export default {
       let reader = new FileReader()
       if (!this.checkSize(file, e)) return false
       if (!this.checkCount(e)) return false
-      // if (!this.checkName(file.name, e)) return false
+      if (!this.checkName(file.name, e)) return false
 
       let img = {
         url: '',
@@ -197,10 +186,6 @@ export default {
 </script>
 
 <style lang="less">
-.weui-uploader {
-  padding-bottom: 5px;
-}
-
 .weui-cell_bd {
   -webkit-box-flex: 1;
   -webkit-flex: 1;
@@ -214,8 +199,6 @@ export default {
   -webkit-box-align: center;
   -webkit-align-items: center;
   align-items: center;
-  font-size: 14px;
-  color: #666;
 }
 .weui-uploader__title {
   -webkit-box-flex: 1;
@@ -274,7 +257,7 @@ export default {
   border-radius: 0;
   width: 77px;
   height: 77px;
-  border: 1px solid #d9d9d9;
+  border: 1px dashed #D0D0D0;
 }
 .weui-uploader__input-box:before,
 .weui-uploader__input-box:after {
@@ -288,10 +271,10 @@ export default {
 }
 .weui-uploader__input-box:before {
   width: 2px;
-  height: 39.5px;
+  height: 24px;
 }
 .weui-uploader__input-box:after {
-  width: 39.5px;
+  width: 24px;
   height: 2px;
 }
 .weui-uploader__input-box:active {
@@ -318,7 +301,7 @@ export default {
     margin-bottom: 9px;
     width: 77px;
     height: 77px;
-    border: 1px solid #D9D9D9;
+    border: 1px dashed #D9D9D9;
 }
 .progress-bar {
   position: absolute;

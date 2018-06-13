@@ -1,18 +1,18 @@
 <template>
   <div class="wrap">
-    <step-bar step="1">
-      <step-items slot="items">
+    <xx-step-bar step="1">
+      <xx-xx-step-items slot="items">
         待确认
-      </step-items>
-      <step-items slot="items">
+      </xx-xx-step-items>
+      <xx-step-items slot="items">
         服务中
-      </step-items>
-      <step-items slot="items">
+      </xx-step-items>
+      <xx-step-items slot="items">
         已完成
-      </step-items>
-    </step-bar>
+      </xx-step-items>
+    </xx-step-bar>
 
-    <xx-cell-container class="mt10px">
+    <xx-cell class="mt10px">
       <xx-cell-items label="服务项" class="noraml_cell_right">
         PICC换药
       </xx-cell-items>
@@ -27,11 +27,11 @@
           四川省成都市天府新区华阳街道天府大道 184号附298号
         </p>
       </xx-cell-items>
-    </xx-cell-container>
+    </xx-cell>
     <h2 class="cells_title">
       用户需求描述
     </h2>
-    <xx-cell-container>
+    <xx-cell>
       <xx-cell-items label="工具" class="noraml_cell_right" style="color: #FF3939">
         需要准备工具
       </xx-cell-items>
@@ -48,11 +48,11 @@
           <img  v-for="(item, index) in prewimgList" :src="item.src" :key="index" @click="previewImage(index)" class="previewer-img" alt="">
         </div>
       </xx-cell-items>
-    </xx-cell-container>
+    </xx-cell>
     <h2 class="cells_title">
       确认服务时间
     </h2>
-    <xx-cell-container>
+    <xx-cell>
       <xx-cell-items label="用户申请服务时间段" direction="vertical">
         <div class="select-time_container">
           <div class="select-time_items">
@@ -74,15 +74,15 @@
         </div>
       </xx-cell-items>
       <p class="service_hint_p">请服务者根据用户申请服务时间段确定到达时间点</p>
-    </xx-cell-container>
-    <xx-cell-container>
+    </xx-cell>
+    <xx-cell>
       <xx-cell-items label="服务备注（该内容患者不可见）" direction="vertical">
         <div class="service_remark_textarea_container">
           <textarea v-model="remark" class="service_remark_textarea" placeholder="请输入备注"></textarea>
           <span class="service_remark_textarea_nums_count">{{remark.length}} / 200</span>
         </div>
       </xx-cell-items>
-    </xx-cell-container>
+    </xx-cell>
     <div class="btn-bar">
       <button type="button" class="weui-btn weui-btn_primary">取消任务</button>
       <button type="button" class="weui-btn weui-btn_primary">生成任务</button>
@@ -95,10 +95,6 @@
 
 <script>
 import { Group, Datetime, Previewer, TransferDom, dateFormat } from 'vux'
-import stepBar from '@/components/common/operationSteps/bar'
-import stepItems from '@/components/common/operationSteps/items'
-import xxCellContainer from '@/components/common/xxCells/container'
-import xxCellItems from '@/components/common/xxCells/items'
 const dataFormatRule = 'YYYY/MM/DD HH:mm'
 export default {
   directives: {
@@ -107,10 +103,6 @@ export default {
   components: {
     Group,
     Datetime,
-    stepBar,
-    stepItems,
-    xxCellContainer,
-    xxCellItems,
     Previewer
   },
   data () {

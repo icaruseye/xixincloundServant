@@ -30,17 +30,13 @@
         </div>
       </div>
     </div>
-    <servant-tabbar></servant-tabbar>
+    <xx-tabbar></xx-tabbar>
   </div>
 </template>
 
 <script>
 import http from '@/api/index'
-import servantTabbar from '@/components/common/servantTabbar'
 export default {
-  components: {
-    servantTabbar
-  },
   metaInfo: {
     title: '通讯录'
   },

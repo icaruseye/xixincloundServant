@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- 筛选 -->
-    <filtrate :list="roleList" :roleIndex="roleIndex" @onItemClick="changeFilter"></filtrate>
+    <xx-filtrate :list="roleList" :roleIndex="roleIndex" @onItemClick="changeFilter"></xx-filtrate>
     <div class="weui-panel weui-list-panel">
       <template v-for="(item, index) in itemList">
         <div class="weui-cell" :key="index">
@@ -22,11 +22,7 @@
 
 <script>
 import http from '@/api'
-import Filtrate from '@/components/common/filtrate'
 export default {
-  components: {
-    Filtrate
-  },
   data () {
     return {
       roleIndex: 0,

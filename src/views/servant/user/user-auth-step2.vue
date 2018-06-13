@@ -19,20 +19,20 @@
       *上传身份证正反面照片
     </div>
     <div class="weui-form">
-      <uploader
+      <xx-uploader
         title="身份证正面"
         :limit="1"
         :maxSize="1024 * 1024 * 4"
         :imgList="imgList1"
         @onUpdate="onUpdate1"
-      ></uploader>
-      <uploader
+      ></xx-uploader>
+      <xx-uploader
         title="身份证背面"
         :limit="count"
         :maxSize="1024 * 1024 * 2"
         :imgList="imgList2"
         @onUpdate="onUpdate2"
-      ></uploader>
+      ></xx-uploader>
     </div>
     <div class="step-btn">
       <button class="weui-btn" @click="submit">下一步</button>
@@ -42,7 +42,6 @@
 
 <script>
 import stepBar from './user-auth-stepbar'
-import uploader from '@/components/common/uploader'
 import Vue from 'vue'
 import util from '@/plugins/util'
 import http from '@/api'
@@ -53,8 +52,7 @@ export default {
     title: '实名认证'
   },
   components: {
-    stepBar,
-    uploader
+    stepBar
   },
   data () {
     return {

@@ -95,16 +95,12 @@
         </div>
       </div>
     </div>
-    <servant-tabbar></servant-tabbar>
+    <xx-tabbar></xx-tabbar>
   </div>
 </template>
 
 <script>
-import servantTabbar from '@/components/common/servantTabbar'
 export default {
-  components: {
-    servantTabbar
-  },
   methods: {
     go (name) {
       this.$router.push(`/app/${name}`)

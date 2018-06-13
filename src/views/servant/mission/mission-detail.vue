@@ -8,14 +8,14 @@
         <div class="title">服务结果</div>
         <div style="padding:0 15px;"><textarea name="" ></textarea></div>
       </div>
-      <uploader
+      <xx-uploader
         title="病情照片"
         :limit="1"
         :maxSize="1024 * 1024 * 5"
         textColor='#3ecccc'
         :imgList="imgList1"
         @onUpdate="onUpdate1"
-      ></uploader>
+      ></xx-uploader>
       <div class="weui-cell">
         <button type="button" class="weui-btn weui-btn_primary">完成任务</button>
       </div>
@@ -24,12 +24,10 @@
 </template>
 
 <script>
-import uploader from '@/components/common/uploader'
 import missionInfo from '@/views/servant/mission/mission-info-box'
 import missionStep from '@/views/servant/mission/mission-step'
 export default {
   components: {
-    uploader,
     missionInfo,
     missionStep
   },
