@@ -1,9 +1,10 @@
 <template>
     <label class="xx-checker">
       <span class="xx-checker__input">
-        <input :type="typeName"
+        <input type="checkbox"
+                ref="checkBoxRef"
                :name="name"
-               v-model="model"
+               :checked="modelChecked"
                @change="handleChange"
                aria-hidden="true"
                class="xx-checker__original">
@@ -13,39 +14,34 @@
     </label>
 </template>
 <script>
-  export default{
-    props: {
-      typeName: {
-        type: String,
-        default: 'radio'
-      },
-      name: {
-        type: String,
-        default: ''
-      },
-      value: {
-        type: Boolean,
-        default: false
-      }
+export default{
+  name: 'checkerItems',
+  componentName: 'checkerItems',
+  props: {
+    name: {
+      type: String,
+      default: ''
     },
-    computed: {
-      model: {
-        get () {
-          return this.value
-        },
-        set (val) {
-          this.$emit('input', val)
-        }
-      }
-    },
-    methods: {
-      handleChange () {
-        this.$nextTick(() => {
-          this.$emit('change', this.model)
-        })
-      }
+    value: '',
+    checked: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data () {
+    const that = this
+    return {
+      modelChecked: that.checked || false
+    }
+  },
+  inject: ['handleChecked'],
+  methods: {
+    handleChange () {
+      this.modelChecked = this.$refs.checkBoxRef.checked
+      this.handleChecked(this.value)
     }
   }
+}
 </script>
 <style scoped>
   .xx-checker {

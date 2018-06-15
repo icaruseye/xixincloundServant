@@ -1,9 +1,9 @@
 <template>
   <div class="wrap">
     <xx-step-bar step="1">
-      <xx-xx-step-items slot="items">
+      <xx-step-items slot="items">
         待确认
-      </xx-xx-step-items>
+      </xx-step-items>
       <xx-step-items slot="items">
         服务中
       </xx-step-items>
@@ -73,7 +73,9 @@
           <i class="iconfont icon-jiantouyou" style="color:#CCCCCC;"></i>
         </div>
       </xx-cell-items>
-      <p class="service_hint_p">请服务者根据用户申请服务时间段确定到达时间点</p>
+      <xx-hint>
+        请服务者根据用户申请服务时间段确定到达时间点
+      </xx-hint>
     </xx-cell>
     <xx-cell>
       <xx-cell-items label="服务备注（该内容患者不可见）" direction="vertical">
@@ -283,14 +285,6 @@ export default {
     text-align: center;
     font-size: 15px;
     color: #333333;
-  }
-  .service_hint_p
-  {
-    height: 40px;
-    line-height: 40px;
-    font-size: 11px;
-    color: #999999;
-    margin: 0 11px;
   }
   .service_remark_textarea_container
   {

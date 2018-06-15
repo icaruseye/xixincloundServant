@@ -2,7 +2,7 @@
   <div class="wrap">
     <xx-step-bar step="2">
       <xx-step-items slot="items">
-        待确认
+        已确认
       </xx-step-items>
       <xx-step-items slot="items">
         服务中
@@ -58,36 +58,53 @@
               用户服务地址：
               <span style="font-size: 12px;color: #999999;">四川省成都市22号</span>
             </p>
+            <xx-hint style="margin: 0;height: 30px;line-height:30px">
+              服务人员还未到达服务指定地点
+            </xx-hint>
           </li>
         </ul>
         <ul>
           <li class="desc_list_items">
             <p class="normal_desc_p">任务服务需要完成标准动作</p>
             <div style="padding-top: 11px; margin: 0 10px">
-              <xx-checker v-model="radioValue" typeName="checkbox" name="xxx" style="display: block; margin-bottom: 18px;">
-                1：伤口评估
-              </xx-checker>
-              <xx-checker v-model="radioValue2" name="xxx" typeName="checkbox" style="display: block; margin-bottom: 18px;">
-                2：清洗伤口
-              </xx-checker>
-              <xx-checker typeName="checkbox" style="display: block; margin-bottom: 18px;">
-                3：测量伤口长度
-              </xx-checker>
-              <xx-checker typeName="checkbox" style="display: block; margin-bottom: 18px;">
-                4：拍照记录
-              </xx-checker>
-              <xx-checker typeName="checkbox" style="display: block; margin-bottom: 18px;">
-                5：消毒
-              </xx-checker>
-              <xx-checker typeName="checkbox" style="display: block; margin-bottom: 18px;">
-                6：做好处理记录
-              </xx-checker>
+              <xx-checker-box  v-model="checkboxValue">
+                <xx-checker-item value="1" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
+                  1：伤口评估
+                </xx-checker-item>
+                <xx-checker-item value="2" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
+                  2：清洗伤口
+                </xx-checker-item>
+                <xx-checker-item value="3" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
+                  3：测量伤口长度
+                </xx-checker-item>
+                <xx-checker-item value="4" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
+                  4：拍照记录
+                </xx-checker-item>
+                <xx-checker-item value="5" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
+                  5：消毒
+                </xx-checker-item>
+                <xx-checker-item value="6" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
+                  6：做好处理记录
+                </xx-checker-item>
+              </xx-checker-box>
             </div>
           </li>
           <li class="desc_list_items">
             <p class="normal_desc_p">服务结果</p>
             <div class="service_remark_textarea_container">
               <textarea class="service_remark_textarea" placeholder="请输入文本"></textarea>
+            </div>
+          </li>
+          <li class="desc_list_items">
+            <p class="normal_desc_p">备注 <span style="font-size: 12px; color:#A7A7A7">（患者不可见）</span></p>
+            <div class="service_remark_textarea_container" style="height: 65px">
+              <textarea class="service_remark_textarea" placeholder="请输入文本"></textarea>
+            </div>
+          </li>
+          <li class="desc_list_items">
+            <p class="normal_desc_p">服务相关图片</p>
+            <div class="thumbs_container" style="margin-top: 14px">
+              <xx-uploader :limit="4" @onUpdate="onUpdate"></xx-uploader>
             </div>
           </li>
         </ul>
@@ -121,15 +138,9 @@ export default {
   components: {
     Previewer
   },
-  watch: {
-    radioValue (val) {
-      console.log(val)
-    }
-  },
   data () {
     return {
-      radioValue: true,
-      radioValue2: false,
+      checkboxValue: [],
       relatedPicturesList: [
         {
           src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
@@ -169,6 +180,8 @@ export default {
   methods: {
     relatedPicturesPreviewImage (index) {
       this.$refs.relatedPicturesListPreviewer.show(index)
+    },
+    onUpdate (value) {
     }
   }
 }
@@ -236,7 +249,6 @@ export default {
     margin-top: 12px;
     position: relative;
     height: 115px;
-    border: 1px solid #E7F9F8;
   }
   .service_remark_textarea
   {
@@ -247,6 +259,9 @@ export default {
     height: 100%;
     resize: none;
     border: none;
+    background-color: #f6f6f6;
+    border-radius: 3px;
+    color: #333333;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
   }
 </style>

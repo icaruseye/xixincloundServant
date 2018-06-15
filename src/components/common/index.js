@@ -6,10 +6,12 @@ import xxTimeLine from './timeLine/box'
 import xxTimeLineItems from './timeLine/items'
 import xxTab from './tabs/tab'
 import xxTabItem from './tabs/tab-item'
-import xxChecker from './checker'
+import xxCheckerItem from './checker/item'
+import xxCheckerBox from './checker/box'
 import xxUploader from './uploader'
 import xxTabbar from './tabbar'
 import xxFiltrate from './filtrate'
+import xxHint from './hintComponent'
 
 const components = {
   install: function (Vue) {
@@ -21,10 +23,12 @@ const components = {
     Vue.component('xxTimeLineItems', xxTimeLineItems)
     Vue.component('xxTab', xxTab)
     Vue.component('xxTabItem', xxTabItem)
-    Vue.component('xxChecker', xxChecker)
+    Vue.component('xxCheckerItem', xxCheckerItem)
+    Vue.component('xxCheckerBox', xxCheckerBox)
     Vue.component('xxUploader', xxUploader)
     Vue.component('xxTabbar', xxTabbar)
     Vue.component('xxFiltrate', xxFiltrate)
+    Vue.component('xxHint', xxHint)
   }
 }
 
