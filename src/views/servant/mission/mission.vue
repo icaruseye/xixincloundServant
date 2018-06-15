@@ -1,99 +1,57 @@
 <template>
-  <div>
-    <div class="has-tabbar">
-      <div class="user-info">
-        <img class="avatar" src="https://img3.doubanio.com/icon/u53078059-35.jpg" >
-        <span class="name">夸夸夸</span>
-        <img class="qrcode" src="@/assets/images/code-1.png" >
+  <div class="has-tabbar">
+    <sticky
+      ref="sticky"
+      :offset="0"
+      :check-sticky-support="false">
+      <xx-tab v-model="tabIndex" active-color="#3AC7F5" custom-bar-width="25px">
+        <xx-tab-item :selected="tabIndex === 0" @on-item-click="onItemClick">服务中</xx-tab-item>
+        <xx-tab-item :selected="tabIndex === 1" @on-item-click="onItemClick">已完成</xx-tab-item>
+      </xx-tab>
+    </sticky>
+    <!-- 服务中 -->
+    <div class="tabbox" v-show="tabIndex === 0">
+      <div class="checker-bar">
+        <span class="">筛选条件：</span>
+        <ul>
+          <li :class="checkerIndex === 0 ? 'active' : ''" @click="changeChecker(0)">全部</li>
+          <li :class="checkerIndex === 1 ? 'active' : ''" @click="changeChecker(1)">待确认</li>
+          <li :class="checkerIndex === 2 ? 'active' : ''" @click="changeChecker(2)">待服务</li>
+          <li :class="checkerIndex === 3 ? 'active' : ''" @click="changeChecker(3)">待评价</li>
+        </ul>
       </div>
-      <sticky
-        ref="sticky"
-        :offset="0"
-        :check-sticky-support="false">
-        <xx-tab v-model="tabIndex" custom-bar-width="25px">
-          <tab-item @on-item-click="onItemClick">服务中</tab-item>
-          <tab-item selected @on-item-click="onItemClick">已完成</tab-item>
-        </xx-tab>
-      </sticky>
-      <!-- 待确认 -->
-      <div v-show="tabIndex === 0">
-        <div class="weui-panel">
-          <div class="weui-cell item" @click="toReceive(1)">
-            <div class="left">
-              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" >
-              <span>1carus</span>
-            </div>
+      <div class="weui-panel" style="margin-top:0">
+        <div class="weui-list_container">
+          <div class="weui-list_item">
+            <div class="avatar"><img src="https://tva1.sinaimg.cn/crop.0.0.180.180.50/5e9d399fjw1e8qgp5bmzyj2050050aa8.jpg" alt=""></div>
             <div class="mid">
-              <div class="title">测试服务包1-上门输液</div>
-              <div class="time">预计服务时间：2018-04-27 14:49</div>
-              <div class="mark">备注：没有哦</div>
+              <div style="display: flex;justify-content: space-between;align-items: baseline;">
+                <div class="title" style="font-weight:normal">PICC换药</div>
+              </div>
+              <div style="font-size:13px;color:#999;">患者：xxx</div>
+              <div style="font-size:13px;color:#999;">内容：阿莫西林3颗含服</div>
+              <div class="describe">到期时间：2018/06/08</div>
             </div>
-            <div class="right">待确认</div>
+            <img style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
           </div>
         </div>
       </div>
-      <!-- 待服务 -->
-      <div v-show="tabIndex === 1">
-        <div v-show="calendarShow" style="border-bottom: 1px solid #eefffe">
-          <inline-calendar
-          ref="calendar"
-          @on-change="calendarChange"
-          class="inline-calendar-demo"
-          v-model="calendarVal"
-          :highlight-weekend="true"
-          :replace-text-list="{'TODAY':'今'}"
-          :disable-past="true">
-          </inline-calendar>
-        </div>
-        <div class="weui-cell-calendar vux-1px-b" @click="toggleCalender">
-          {{calendarBarText}} <i class="iconfont" :class="{'icon-jiantoushang' : calendarShow, 'icon-jiantouxia': !calendarShow}"></i>
-        </div>
-        <div class="weui-panel">
-          <div class="weui-cell item" @click="toWait(1)">
-            <div class="left">
-              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" >
-              <span>1carus</span>
-            </div>
+    </div>
+    <!-- 已完成 -->
+    <div class="tabbox" v-show="tabIndex === 1">
+      <div class="weui-panel">
+        <div class="weui-list_container">
+          <div class="weui-list_item" @click="toDetail(1)">
+            <div class="avatar"><img src="https://tva1.sinaimg.cn/crop.0.0.180.180.50/5e9d399fjw1e8qgp5bmzyj2050050aa8.jpg" alt=""></div>
             <div class="mid">
-              <div class="title">测试服务包1-上门输液</div>
-              <div class="time">服务开始时间：2018-04-27 14:49</div>
-              <div class="mark">备注：没有哦</div>
+              <div style="display: flex;justify-content: space-between;align-items: baseline;">
+                <div class="title" style="font-weight:normal">PICC换药</div>
+              </div>
+              <div style="font-size:13px;color:#999;">患者：xxx</div>
+              <div style="font-size:13px;color:#999;">内容：阿莫西林3颗含服</div>
+              <div class="describe">到期时间：2018/06/08</div>
             </div>
-            <div class="right">等待服务</div>
-          </div>
-        </div>
-      </div>
-      <!-- 服务中 -->
-      <div v-show="tabIndex === 2">
-        <div class="weui-panel">
-          <div class="weui-cell item" @click="toDetail(1)">
-            <div class="left">
-              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" >
-              <span>1carus</span>
-            </div>
-            <div class="mid">
-              <div class="title">测试服务包1-上门输液</div>
-              <div class="time">预计服务时间：2018-04-27 14:49</div>
-              <div class="mark">备注：没有哦</div>
-            </div>
-            <div class="right">服务中</div>
-          </div>
-        </div>
-      </div>
-      <!-- 待评价 -->
-      <div v-show="tabIndex === 3">
-        <div class="weui-panel">
-          <div class="weui-cell item" @click="toDetail(1)">
-            <div class="left">
-              <img class="avatar" src="https://avatars2.githubusercontent.com/u/5502029?v=4" >
-              <span>1carus</span>
-            </div>
-            <div class="mid">
-              <div class="title">测试服务包1-上门输液</div>
-              <div class="time">预计服务时间：2018-04-27 14:49</div>
-              <div class="mark">备注：没有哦</div>
-            </div>
-            <div class="right">待评价</div>
+            <img style="width:50px;height:50px;" src="@/assets/images/ic_ywj.png" alt="">
           </div>
         </div>
       </div>
@@ -103,111 +61,134 @@
 </template>
 
 <script>
-import { Tab, TabItem, Sticky, InlineCalendar } from 'vux'
-import util from '@/plugins/util'
+import { Sticky } from 'vux'
 export default {
   metaInfo: {
-    title: '悉心服务-任务'
+    title: '服务'
   },
   components: {
-    Tab,
-    TabItem,
-    Sticky,
-    InlineCalendar
+    Sticky
   },
   data () {
     return {
-      tabIndex: 1,
-      calendarShow: true,
-      calendarBarText: '收起日历',
-      calendarVal: 'TODAY'
+      tabIndex: 0,
+      checkerIndex: 0
+    }
+  },
+  watch: {
+    serviceTabIndex (val) {
+      this.tabIndex = val
     }
   },
   methods: {
-    onItemClick (index) {
-      this.tabIndex = index
-      util.formatDate(new Date())
+    changeChecker (index) {
+      this.checkerIndex = index
     },
-    toggleCalender () {
-      this.calendarShow = !this.calendarShow
-      this.calendarBarText = this.calendarShow ? '收起日历' : '展开日历'
-    },
-    calendarChange (val) {
-      console.log('on-change', val)
-    },
-    toReceive (id) {
-      this.$router.push(`/mission/receive/${id}`)
+    onItemClick (id) {
+      this.$store.commit('setServiceTabIndex', id)
     },
     toDetail (id) {
-      this.$router.push(`/mission/detail/${id}`)
-    },
-    toWait (id) {
-      this.$router.push(`/mission/waitreceive/${id}`)
+      this.$router.push(`/service/in/${id}`)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.iconfont {
-  color: #f8a519
+.weui-panel {
+  padding: 0 12px;
 }
 
-.weui-cell-calendar {
-  font-size: 14px;
-  color: #f8a519;
-  padding: 15px;
-  text-align: center;
-  background: #fff;
-  justify-content: center
-}
-
-.item {
+.weui-list_item {
+  position: relative;
+  padding: 13px 5px;
   display: flex;
-  .left {
-    margin-right: 10px;
-    text-align: center;
-    color: @yellow;
-    font-size: 12px;
-    text-align: center;
-    .avatar {
-      display: block;
-      width: 50px;
-      height: 50px;
-      margin-bottom: 5px;
-    }
+  align-items: center;
+  &::after {
+    content: " ";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    height: 1px;
+    border-bottom: 1px solid #d9f7f5;
+    color: #d9f7f5;
+    -webkit-transform-origin: 0 100%;
+    transform-origin: 0 100%;
+    -webkit-transform: scaleY(0.5);
+    transform: scaleY(0.5);
+  }
+  &:last-child::after {
+    border: 0;
+  }
+  .icon {
+    width: 29px;
+    height: 29px;
+  }
+  .avatar {
+    border-radius: 50%;
+    width: 37px;
+    height: 37px;
+    overflow: hidden;
   }
   .mid {
     flex: 1;
-    font-size: 12px;
+    margin: 0 19px;
     color: #999;
     .title {
+      font-size: 15px;
       color: #666;
-      font-size: 14px;
+      font-weight: bold;
+    }
+    .balance {
+      font-size: 12px;
+    }
+    .describe {
+      font-size: 12px;
     }
   }
-  .right {
-    font-size: 14px;
-    color: #f8a519;
+  .btn {
+    button {
+      width: 50px;
+      height: 22px;
+      line-height: 22px;
+      background: #3ecccc;
+      color: #fff;
+      text-align: center;
+      font-size: 15px;
+      border: 0;
+      border-radius: 2px;
+    }
   }
 }
 
-.vux-tab-item {
-  position: relative;
-}
-
-.weui-badge {
-    display: inline-block;
-    padding: .15em .4em;
-    min-width: 9px;
-    border-radius: 18px;
-    background-color: #f8a519;
-    color: #FFFFFF;
-    line-height: 1.2;
-    text-align: center;
-    font-size: 12px;
-    position: relative;
-    top: -2px;
-    left: 1px;
+.checker-bar {
+  padding: 10px 12px;
+  display: flex;
+  font-size: 15px;
+  color: #999;
+  ul {
+    display: flex;
+    li {
+      position: relative;
+      padding: 0 10px;
+      &::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        background: #999;
+        height: 25px;
+        border-right: 1px solid #D8D8D8;
+        -webkit-transform: scaleY(0.5);
+        transform: scaleY(0.5);
+      }
+      &:last-child::after {
+        border: 0;
+      }
+    }
+    li.active {
+      color: #3AC7F5;
+    }
+  }
 }
 </style>
