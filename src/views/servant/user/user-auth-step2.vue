@@ -42,11 +42,8 @@
 
 <script>
 import stepBar from './user-auth-stepbar'
-import Vue from 'vue'
 import util from '@/plugins/util'
 import http from '@/api'
-import { ToastPlugin } from 'vux'
-Vue.use(ToastPlugin)
 export default {
   metaInfo: {
     title: '实名认证'

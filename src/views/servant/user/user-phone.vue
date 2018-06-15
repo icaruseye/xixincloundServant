@@ -20,10 +20,8 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import http from '@/api/index'
-import { AlertModule, ToastPlugin } from 'vux'
-Vue.use(ToastPlugin)
+import { AlertModule } from 'vux'
 export default {
   data () {
     return {

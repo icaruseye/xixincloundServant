@@ -21,11 +21,7 @@
 
 <script>
 import http from '@/api/index'
-import Vue from 'vue'
-import { ToastPlugin } from 'vux'
 import stepBar from './user-auth-stepbar'
-Vue.use(ToastPlugin)
-
 export default {
   components: {
     stepBar

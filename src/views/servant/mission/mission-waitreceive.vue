@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <step-bar step="2">
+    <xx-step-bar step="2">
       <xx-step-items slot="items">
         待确认
       </xx-step-items>
@@ -10,10 +10,10 @@
       <xx-step-items slot="items">
         已完成
       </xx-step-items>
-    </step-bar>
+    </xx-step-bar>
 
-    <timeLine-box step="2" class="mt10px">
-      <timeLine-items
+    <xx-timeLine step="2" class="mt10px">
+      <xx-timeLine-items
         slot="items"
         title="已确认"
         subhead="确认时间：2018/06/08 15:30"
@@ -42,9 +42,9 @@
             </div>
           </li>
         </ul>
-      </timeLine-items>
+      </xx-timeLine-items>
 
-      <timeLine-items
+      <xx-timeLine-items
         slot="items"
         title="服务中"
       >
@@ -91,9 +91,9 @@
             </div>
           </li>
         </ul>
-      </timeLine-items>
+      </xx-timeLine-items>
 
-      <timeLine-items
+      <xx-timeLine-items
         slot="items"
         title="待评价"
       >
@@ -102,9 +102,9 @@
             <p class="normal_desc_p">服务还未完成，不能进行评价</p>
           </li>
         </ul>
-      </timeLine-items>
+      </xx-timeLine-items>
 
-    </timeLine-box>
+    </xx-timeLine>
 
     <div class="btn_bar">
       <button type="button" class="weui-btn weui-btn_primary">已到达，开始服务</button>

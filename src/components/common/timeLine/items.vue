@@ -80,13 +80,13 @@
   }
   .active_items .time-line_items_icon
   {
-    border-color: #3ecccc;
-    background-color: #3ecccc;
+    border-color: #3ac7f5;
+    background-color: #3ac7f5;
     color: #ffffff;
   }
   .active_items .time-line_items_left::after
   {
-    background-color: #3ecccc;
+    background-color: #3ac7f5;
   }
   .time-line_items_container:last-child .time-line_items_left:after
   {
