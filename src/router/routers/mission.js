@@ -21,6 +21,6 @@ export default [
   },
   {
     path: '/mission/detail/:id',
-    component: _import('/servant/mission/mission-detail')
+    component: _import('/servant/mission/detail')
   }
 ]
