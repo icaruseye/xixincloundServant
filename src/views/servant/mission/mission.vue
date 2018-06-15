@@ -10,12 +10,10 @@
         ref="sticky"
         :offset="0"
         :check-sticky-support="false">
-        <tab :line-width="2">
-          <tab-item @on-item-click="onItemClick">待确认<span class="weui-badge">1</span></tab-item>
-          <tab-item selected @on-item-click="onItemClick">待服务</tab-item>
+        <xx-tab v-model="tabIndex" custom-bar-width="25px">
           <tab-item @on-item-click="onItemClick">服务中</tab-item>
-          <tab-item @on-item-click="onItemClick">待确认</tab-item>
-        </tab>
+          <tab-item selected @on-item-click="onItemClick">已完成</tab-item>
+        </xx-tab>
       </sticky>
       <!-- 待确认 -->
       <div v-show="tabIndex === 0">
