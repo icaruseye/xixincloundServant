@@ -21,7 +21,11 @@ export default [
   },
   {
     path: '/user/withdraw',
-    component: _import('/servant/user/user-withdraw')
+    component: _import('/servant/user/user-withdraw/list')
+  },
+  {
+    path: '/user/withdraw/detail',
+    component: _import('/servant/user/user-withdraw/detail')
   },
   {
     path: '/user/complaint/:id',
