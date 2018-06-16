@@ -34,7 +34,7 @@
         <i class="iconfont icon-biaoqing1" @click="showFace"></i>
         <button type="button" class="send-msg" @click="sendMsg">发送</button>
       </div>
-      <div class="chat-face-box" id="chatFaceBox">
+      <div v-if="showFace" class="chat-face-box" id="chatFaceBox">
         <div class="" style="font-size:22px;text-align:justify">
           <a href="javascript:;" style="margin:0 3px;" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">{{item}}</a>
         </div>
