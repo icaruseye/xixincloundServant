@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <xx-step-bar step="2">
+    <xx-step-bar :step="detail.State | stepFileter">
       <xx-step-items slot="items">
         已确认
       </xx-step-items>
@@ -20,26 +20,21 @@
       >
         <ul>
           <li class="desc_list_items">
-            <p class="normal_desc_p" style="font-size: 14px; color: #666">任务名称：PICC换药</p>
-            <p class="normal_desc_p">服务对象：贾秉仁</p>
-            <p class="normal_desc_p">执行人：王二小</p>
+            <p class="normal_desc_p" style="font-size: 14px; color: #666">任务名称：{{detail.ItemName}}</p>
+            <p class="normal_desc_p">服务对象：{{detail.UserName}}</p>
+            <p class="normal_desc_p">执行人：{{detail.ServantName}}</p>
             <p class="normal_desc_p">时间：2018/01/01 13:30</p>
-            <p class="normal_desc_p" style="color:#FF3939;">工具：需要准备</p>
-            <p class="normal_desc_p">药品：不需要准备</p>
-            <p class="normal_desc_p">内容：阿莫西林3颗含服</p>
+            <p class="normal_desc_p" style="color:#FF3939;">工具：{{detail.NeedTools?'需要准备':'不需要准备'}}</p>
+            <p class="normal_desc_p" style="color:#666666">药品：{{detail.NeedDrug?'需要准备':'不需要准备'}}</p>
+            <p class="normal_desc_p">内容：{{detail.Discription?detail.Discription: '该患者没有留言'}}</p>
           </li>
           <li class="desc_list_items">
             <h5 class="desc_list_items_title">用户描述</h5>
-            <p class="normal_desc_p">感冒咳嗽，头晕眼花</p>
+            <p class="normal_desc_p">{{detail.Discription?detail.Discription: '该患者没有留言'}}</p>
           </li>
           <li class="desc_list_items">
             <h5 class="desc_list_items_title">相关图片</h5>
-            <div class="thumbs_container">
-              <img class="preview_img" v-for="(item, index) in relatedPicturesList" :src="item.src" :key="index" @click="relatedPicturesPreviewImage(index)" alt="">
-            </div>
-            <div v-transfer-dom>
-              <previewer ref="relatedPicturesListPreviewer" :list="relatedPicturesList" :options="options"></previewer>
-            </div>
+            <image-preview-item list=""></image-preview-item>
           </li>
         </ul>
       </xx-timeLine-items>
@@ -56,7 +51,7 @@
             </p>
             <p class="normal_desc_p">
               用户服务地址：
-              <span style="font-size: 12px;color: #999999;">四川省成都市22号</span>
+              <span style="font-size: 12px;color: #999999;">{{detail.Address}}</span>
             </p>
             <xx-hint style="margin: 0;height: 30px;line-height:30px">
               服务人员还未到达服务指定地点
@@ -124,6 +119,7 @@
     </xx-timeLine>
 
     <div class="btn_bar">
+      <button v-if="detail.CanCancel"  class="weui-btn weui-btn_primary" style="flex:0 0 30%;background-color: #ffc349" @click="cancelMissionEvent">取消任务</button>
       <button type="button" class="weui-btn weui-btn_primary">已到达，开始服务</button>
     </div>
   </div>
@@ -131,15 +127,19 @@
 
 <script>
 import { Previewer, TransferDom } from 'vux'
+import ImagePreviewItem from '@/components/ImagePreViewItem'
+import http from '@/api'
 export default {
   directives: {
     TransferDom
   },
   components: {
-    Previewer
+    Previewer,
+    ImagePreviewItem
   },
   data () {
     return {
+      detail: {},
       checkboxValue: [],
       relatedPicturesList: [
         {
@@ -177,7 +177,75 @@ export default {
       }
     }
   },
+  computed: {
+    MissionID () {
+      return this.$route.params.id
+    }
+  },
+  filters: {
+    stepFileter (value) {
+      switch (value) {
+        case 0:
+          return '1'
+        case 3:
+          return '2'
+        default:
+          return '0'
+      }
+    }
+  },
+  created () {
+    this.initDetail()
+  },
   methods: {
+
+    /**
+     * 取消任务
+     */
+    cancelMissionEvent () {
+      const that = this
+      that.$vux.confirm.show({
+        content: '任务取消后不可恢复，请谨慎操作！',
+        confirmText: '仍然取消',
+        cancelText: '放弃',
+        onConfirm () {
+          that.cancelMission().then(value => {
+            console.log(value)
+            if (value.Code === 100000) {
+              that.$vux.toast.show({
+                position: 'middle',
+                text: '取消成功'
+              })
+              that.$router.push('/mission')
+            } else {
+              that.$vux.toast.show({
+                width: '60%',
+                type: 'text',
+                position: 'middle',
+                text: value.Msg
+              })
+            }
+          })
+        }
+      })
+    },
+    async cancelMission () {
+      const that = this
+      const res = await that.$http.put('/Mission?missionID=' + that.MissionID)
+      return res.data
+    },
+
+    initDetail () {
+      const that = this
+      this.getData().then(value => {
+        console.log(value)
+        that.detail = value
+      })
+    },
+    async getData () {
+      const res = await http.get('/Mission/' + this.MissionID)
+      return res.data.Data
+    },
     relatedPicturesPreviewImage (index) {
       this.$refs.relatedPicturesListPreviewer.show(index)
     },
@@ -202,6 +270,8 @@ export default {
     left: 0;
     right: 0;
     height: 52px;
+    display: flex;
+    flex-flow: nowrap
   }
   .normal_desc_p
   {

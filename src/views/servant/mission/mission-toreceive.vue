@@ -14,17 +14,17 @@
 
     <xx-cell class="mt10px">
       <xx-cell-items label="服务项" class="noraml_cell_right">
-        PICC换药
+        {{detail.ItemName}}
       </xx-cell-items>
       <xx-cell-items label="服务对象" class="noraml_cell_right">
-        刘一
+        {{detail.UserName}}
       </xx-cell-items>
       <xx-cell-items label="联系电话" class="noraml_cell_right" style="color:#3AC7F5">
         13541210120
       </xx-cell-items>
       <xx-cell-items label="地址" class="noraml_cell_right" style="color:#3AC7F5">
-        <p style="font-size: 12px;width: 216px;text-align: justify;float: right;">
-          四川省成都市天府新区华阳街道天府大道 184号附298号
+        <p style="font-size: 12px;max-width: 216px;text-align: justify;float: right;">
+          {{detail.Address}}
         </p>
       </xx-cell-items>
     </xx-cell>
@@ -33,20 +33,18 @@
     </h2>
     <xx-cell>
       <xx-cell-items label="工具" class="noraml_cell_right" style="color: #FF3939">
-        需要准备工具
+        {{detail.IsNeedTools?'':'不'}}需要准备工具
       </xx-cell-items>
       <xx-cell-items label="药品" class="noraml_cell_right">
-        不需要准备药品
+        {{detail.IsNeedDrug?'':'不'}}需要准备药品
       </xx-cell-items>
       <xx-cell-items label="用户描述" direction="vertical">
         <p style="margin-top: 20px;font-size: 13px;color: #999;text-align: justify;">
-          感冒咳嗽，头晕眼花感冒咳嗽，头晕眼花感冒咳嗽，头晕眼花感冒咳嗽，头晕眼花感冒咳嗽，头晕眼花感冒咳嗽，头晕眼花
+          {{detail.Discription}}
         </p>
       </xx-cell-items>
       <xx-cell-items label="相关图片" direction="vertical">
-        <div class="thumbs_container">
-          <img  v-for="(item, index) in prewimgList" :src="item.src" :key="index" @click="previewImage(index)" class="previewer-img" alt="">
-        </div>
+        <image-preview-item :list="detail.Imgs"></image-preview-item>
       </xx-cell-items>
     </xx-cell>
     <h2 class="cells_title">
@@ -56,11 +54,11 @@
       <xx-cell-items label="用户申请服务时间段" direction="vertical">
         <div class="select-time_container">
           <div class="select-time_items">
-            {{startTime}}
+            {{detail.StartTime | timeFormat}}
           </div>
           <span class="select-time_interval">至</span>
           <div class="select-time_items">
-            {{endTime}}
+            {{detail.EndTime | timeFormat}}
           </div>
         </div>
       </xx-cell-items>
@@ -86,114 +84,125 @@
       </xx-cell-items>
     </xx-cell>
     <div class="btn-bar">
-      <button type="button" class="weui-btn weui-btn_primary">取消任务</button>
-      <button type="button" class="weui-btn weui-btn_primary">生成任务</button>
-    </div>
-    <div v-transfer-dom>
-      <previewer ref="previewer" :list="prewimgList" :options="options"></previewer>
+      <button type="button" class="weui-btn weui-btn_primary" @click="cancelMissionEvent">取消任务</button>
+      <button type="button" class="weui-btn weui-btn_primary" @click="createMissionEvent">生成任务</button>
     </div>
   </div>
 </template>
 
 <script>
-import { Group, Datetime, Previewer, TransferDom, dateFormat } from 'vux'
+import { Group, Datetime, dateFormat } from 'vux'
+import ImagePreviewItem from '@/components/ImagePreViewItem'
 const dataFormatRule = 'YYYY/MM/DD HH:mm'
 export default {
-  directives: {
-    TransferDom
-  },
   components: {
     Group,
     Datetime,
-    Previewer
+    ImagePreviewItem
   },
-  data () {
-    const that = this
-    return {
-      startTime: dateFormat(new Date(), dataFormatRule),
-      endTime: dateFormat(that.addOneDay(new Date()), dataFormatRule),
-      arrivalTime: null,
-      remark: '',
-      prewimgList: [
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        }
-      ],
-      options: {
-        getThumbBoundsFn (index) {
-          let thumbnail = document.querySelectorAll('.previewer-img')[index]
-          let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
-          let rect = thumbnail.getBoundingClientRect()
-          return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
-        }
-      }
+  filters: {
+    timeFormat (value) {
+      return dateFormat(new Date(value), 'YYYY-MM-DD HH:mm:ss')
     }
   },
+  data () {
+    return {
+      detail: {},
+      arrivalTime: null,
+      remark: ''
+    }
+  },
+  computed: {
+    MissionID () {
+      return this.$route.params.id
+    }
+  },
+  created () {
+    this.initDetail()
+  },
   methods: {
-    addOneDay (date) {
-      return new Date(date.getTime() + 24 * 60 * 60 * 1000)
-    },
-    previewImage (index) {
-      this.$refs.previewer.show(index)
-    },
-    selectStartTime () {
+    /**
+     * 生成任务
+     */
+    createMissionEvent () {
       const that = this
-      that.$vux.datetime.show({
-        cancelText: '取消',
-        confirmText: '确定',
-        format: dataFormatRule,
-        value: that.startTime,
-        yearRow: '{value}年',
-        monthRow: '{value}月',
-        dayRow: '{value}日',
-        hourRow: '{value}时',
-        minuteRow: '{value}分',
-        clearText: '服务开始时间',
-        onConfirm (val) {
-          that.startTime = val
-          that.endTime = dateFormat(that.addOneDay(new Date(val)), dataFormatRule)
+      if (that.arrivalTime === null) {
+        that.$vux.toast.show({
+          width: '60%',
+          type: 'text',
+          position: 'middle',
+          text: '请选择与用户沟通到达时间'
+        })
+        return false
+      }
+      if (that.remark.length > 200) {
+        that.$vux.toast.show({
+          width: '60%',
+          type: 'text',
+          position: 'middle',
+          text: '服务备注不可超过200字！'
+        })
+        return false
+      }
+      that.createMission().then(value => {
+        console.log(value)
+      })
+    },
+    async createMission () {
+      const that = this
+      const res = await that.$http.post('/ReserveAcceptance', {
+        ReserveID: that.MissionID,
+        ConfirmArrivingTime: that.arrivalTime,
+        ReserveDescription: that.remark
+      })
+      return res.data.Data
+    },
+    /**
+     * 取消预约单
+     */
+    cancelMissionEvent () {
+      const that = this
+      that.$vux.confirm.show({
+        content: '任务取消后不可恢复，请谨慎操作！',
+        confirmText: '仍然取消',
+        cancelText: '放弃',
+        onConfirm () {
+          that.cancelMission().then(value => {
+            console.log(value)
+            if (value.Code === 200) {
+              that.$vux.toast.show({
+                position: 'middle',
+                text: '取消成功'
+              })
+            } else {
+              that.$vux.toast.show({
+                width: '60%',
+                type: 'text',
+                position: 'middle',
+                text: value.Msg
+              })
+            }
+          })
         }
       })
     },
-    selectEndTime () {
+    async cancelMission () {
       const that = this
-      that.$vux.datetime.show({
-        cancelText: '取消',
-        confirmText: '确定',
-        startDate: that.startTime,
-        format: dataFormatRule,
-        value: that.endTime,
-        yearRow: '{value}年',
-        monthRow: '{value}月',
-        dayRow: '{value}日',
-        hourRow: '{value}时',
-        minuteRow: '{value}分',
-        clearText: '服务结束时间',
-        onConfirm (val) {
-          that.endTime = val
-        }
+      const res = await that.$http.put('/Mission?missionID=' + that.MissionID)
+      return res.data
+    },
+    /**
+     * 初始化内容
+     */
+    initDetail () {
+      const that = this
+      this.getData().then(value => {
+        that.detail = value
       })
+    },
+    async getData () {
+      const res = await this.$http.get('/UserReserveService/' + this.MissionID)
+      return res.data.Data
     },
     selectArrivalTime () {
       const that = this
@@ -249,17 +258,6 @@ export default {
   display: flex;
   .weui-btn:nth-child(1) {
     background: #ffc349
-  }
-}
-.thumbs_container
-{
-  padding-top: 20px;
-  .previewer-img
-  {
-    display: inline-block;
-    width: 65px;
-    height: 65px;
-    margin-right: 10px;
   }
 }
   .select-time_container

@@ -9,18 +9,22 @@ import Meta from 'vue-meta'
 import './plugins/validate.js'
 import _ from 'lodash'
 import registryPopup from './components/common/popupTop/index'
-import { DatetimePlugin, ToastPlugin } from 'vux'
+import { DatetimePlugin, ToastPlugin, ConfirmPlugin } from 'vux'
 import xxComponents from './components/common'
+import http from '@/api'
 
 Vue.use(xxComponents)
 Vue.use(registryPopup)
 Vue.use(DatetimePlugin)
 Vue.use(ToastPlugin)
+Vue.use(ConfirmPlugin)
 Vue.use(registryPopup)
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 FastClick.attach(document.body)
 Vue.config.productionTip = false
 Vue.use(Meta)
+
+Vue.prototype.$http = http
 
 Vue.filter('transformImgUrl', function (val) {
   if (!val) return
