@@ -28,15 +28,15 @@
             <p class="normal_desc_p">时间：2018/01/01 13:30</p>
             <p class="normal_desc_p" style="color:#FF3939;">工具：{{detail.NeedTools?'需要准备':'不需要准备'}}</p>
             <p class="normal_desc_p" style="color:#666666">药品：{{detail.NeedDrug?'需要准备':'不需要准备'}}</p>
-            <p class="normal_desc_p">内容：{{detail.Discription?detail.Discription: '该患者没有留言'}}</p>
+            <p v-if="detail.ReserveRemark" class="normal_desc_p">备注：{{detail.ReserveRemark}}</p>
           </li>
           <li class="desc_list_items">
             <h5 class="desc_list_items_title">用户描述</h5>
-            <p class="normal_desc_p">{{detail.Discription?detail.Discription: '该患者没有留言'}}</p>
+            <p class="normal_desc_p">{{detail.ReserveDiscreption?detail.ReserveDiscreption: '该患者没有留言'}}</p>
           </li>
-          <li class="desc_list_items">
+          <li class="desc_list_items" v-if="detail.ReserveImgs != null && detail.ReserveImgs != ''">
             <h5 class="desc_list_items_title">相关图片</h5>
-            <image-preview-item list=""></image-preview-item>
+            <image-preview-item :list="detail.ReserveImgs"></image-preview-item>
           </li>
         </ul>
       </xx-timeLine-items>
@@ -46,7 +46,7 @@
         title="服务中"
       >
         <template v-if="detail.State >= 4" slot="subhead">
-            服务完成时间：{{detail.StartTime | timeFormat}}
+            服务完成时间：{{detail.EndTime | timeFormat}}
         </template>
         <ul v-if="detail.State == 0">
           <li class="desc_list_items">
@@ -65,7 +65,7 @@
         </ul>
         <ul v-if="detail.State == 3">
           <li class="desc_list_items">
-            <p class="normal_desc_p">任务服务需要完成标准动作</p>
+            <p class="normal_title_p">任务服务需要完成标准动作</p>
             <div style="padding-top: 11px; margin: 0 10px">
               <xx-checker-box  v-model="actionListValue">
                 <xx-checker-item v-for="(item, index) in actionList" :key="index" :value="item.ID" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
@@ -75,7 +75,7 @@
             </div>
           </li>
           <li class="desc_list_items">
-            <p class="normal_desc_p">任务服务需要采集的信息</p>
+            <p class="normal_title_p">任务服务需要采集的信息</p>
             <div style="padding-top: 11px; margin: 0 10px">
               <xx-input-group-box ref="attributeInputGroup" v-model="attributeListValue">
                 <xx-input-group-items v-for="(item, index) in attributeList" :key="index" :label="item.Name" slot="item" :name="item.ID" :unit="item.Unit"></xx-input-group-items>
@@ -83,41 +83,86 @@
             </div>
           </li>
           <li class="desc_list_items">
-            <p class="normal_desc_p">服务结果</p>
+            <p class="normal_title_p">服务结果</p>
             <div class="service_remark_textarea_container">
               <textarea class="service_remark_textarea" placeholder="请输入文本" v-model="serviceResult"></textarea>
             </div>
           </li>
           <li class="desc_list_items">
-            <p class="normal_desc_p">备注 <span style="font-size: 12px; color:#A7A7A7">（患者不可见）</span></p>
+            <p class="normal_title_p">备注 <span style="font-size: 12px; color:#A7A7A7">（患者不可见）</span></p>
             <div class="service_remark_textarea_container" style="height: 65px">
               <textarea class="service_remark_textarea" placeholder="请输入文本" v-model="remark"></textarea>
             </div>
           </li>
           <li class="desc_list_items">
-            <p class="normal_desc_p">服务相关图片</p>
+            <p class="normal_title_p">服务相关图片</p>
             <div class="thumbs_container" style="margin-top: 14px">
               <xx-uploader :limit="4" @onUpdate="onUpdate"></xx-uploader>
             </div>
           </li>
         </ul>
-      </xx-timeLine-items>
-
-      <xx-timeLine-items
-        slot="items"
-        title="待评价"
-      >
-        <ul>
+        <!-- 待评价 -->
+        <ul v-if="detail.State === 4">
           <li class="desc_list_items">
-            <p class="normal_desc_p">服务还未完成，不能进行评价</p>
+            <p class="normal_title_p">任务服务需要完成标准动作</p>
+            <div style="padding-top: 11px; margin: 0 10px">
+              <p class="finished_action_list_item" v-for="(item, index) in actionList" :key="index">
+                {{index+1}}：{{item.Name}}
+                <span class="finished_action_list_tags" v-if="item.IsDone">已操作</span>
+              </p>
+            </div>
+          </li>
+          <li class="desc_list_items">
+            <p class="normal_title_p">任务服务需要采集的信息</p>
+            <div style="padding-top: 11px; margin: 0 10px">
+              <p class="finished_action_list_item" v-for="(item, index) in attributeList" :key="index">
+                {{item.Name}}：
+                <template v-if="item.Value != '' && item.Value != null">
+                  {{item.Value}}{{item.Unit}}
+                </template>
+                <template v-else>
+                  未采集此项
+                </template>
+              </p>
+            </div>
+          </li>
+          <li v-if="detail.Result != null && detail.Result != ''" class="desc_list_items">
+            <p class="normal_title_p">服务结果</p>
+            <p class="normal_desc_p">
+              {{detail.Result}}
+            </p>
+          </li>
+          <li v-if="detail.Discription != null && detail.Discription != ''" class="desc_list_items">
+            <p class="normal_title_p">备注 <span style="font-size: 12px; color:#A7A7A7">（患者不可见）</span></p>
+            <div class="service_remark_textarea_container" style="height: 65px">
+              <p class="normal_desc_p">
+                {{detail.Discription}}
+              </p>
+            </div>
+          </li>
+          <li v-if="detail.ServiceImgs != ''" class="desc_list_items">
+            <p class="normal_title_p">服务相关图片</p>
+            <div class="thumbs_container" style="margin-top: 14px">
+              <image-preview-item :list="detail.ServiceImgs"></image-preview-item>
+            </div>
           </li>
         </ul>
       </xx-timeLine-items>
-
+      <xx-timeLine-items
+        slot="items"
+        :title="detail.State<=4?'待评价': '已评价'"
+      >
+        
+        <p v-if="detail.State < 4" class="normal_desc_p">服务还未完成，不能进行评价</p>
+        <p v-if="detail.State == 4" class="normal_desc_p">等待患者对本次服务进行评价！</p>
+        <div class="evaluate_content_container">
+          <p>感谢医生，服务特别好，感觉很专业！</p>
+        </div>
+      </xx-timeLine-items>
     </xx-timeLine>
 
     <div class="btn_bar">
-      <button v-if="detail.CanCancel"  class="weui-btn weui-btn_primary" style="flex:1 0 30%;background-color: #ffc349" @click="cancelMissionEvent">取消任务</button>
+      <button v-if="detail.CanCancel && detail.State < 3"  class="weui-btn weui-btn_primary" style="flex:1 0 30%;background-color: #ffc349" @click="cancelMissionEvent">取消任务</button>
       <button v-if="detail.State == 0" type="button" class="weui-btn weui-btn_primary" @click="startMissionEvent">已到达，开始服务</button>
       <button v-if="detail.State == 3" type="button" class="weui-btn weui-btn_primary" @click="completeMissionEvent">服务已完成</button>
     </div>
@@ -140,7 +185,7 @@ export default {
       attributeList: [], // 采集信息列表
       serviceResult: '', // 服务结果
       remark: '', // 备注
-      serivicePic: [] // 服务相关图片
+      serivicePic: '' // 服务相关图片
     }
   },
   computed: {
@@ -153,14 +198,16 @@ export default {
       return dateFormat(new Date(value), 'YYYY-MM-DD HH:mm')
     },
     stepFileter (value) {
-      switch (value) {
-        case 0:
-          return '1'
-        case 3:
-          return '2'
-        default:
-          return '0'
+      if (value === 0) {
+        return '1'
       }
+      if (value >= 1 && value <= 4) {
+        return '2'
+      }
+      if (value >= 5) {
+        return '3'
+      }
+      return '0'
     }
   },
   created () {
@@ -199,9 +246,16 @@ export default {
         })
         return false
       }
-      that.completeMission().then(value => {
-        if (value.Code === 100000) {
-          that.initDetail()
+      that.$vux.confirm.show({
+        content: '请确定已经正确填写了相关信息？',
+        confirmText: '确认完成',
+        cancelText: '没有完成',
+        onConfirm () {
+          that.completeMission().then(value => {
+            if (value.Code === 100000) {
+              that.initDetail()
+            }
+          })
         }
       })
     },
@@ -238,7 +292,6 @@ export default {
       const res = await that.$http.put('/Mission/Start?MissionID=' + that.MissionID)
       return res.data
     },
-
     /**
      * 取消任务
      */
@@ -250,7 +303,6 @@ export default {
         cancelText: '放弃',
         onConfirm () {
           that.cancelMission().then(value => {
-            console.log(value)
             if (value.Code === 100000) {
               that.$vux.toast.show({
                 position: 'middle',
@@ -277,21 +329,26 @@ export default {
     /**
      * 初始化
      */
-    initDetail () {
+    async initDetail () {
       const that = this
-      that.getData().then(value => {
-        that.detail = value
+      that.$vux.loading.show({
+        text: '加载中'
       })
-      that.getActionList().then(value => {
+      await that.getData().then(value => {
+        that.detail = value.Data
+      })
+      await that.getActionList().then(value => {
         that.actionList = value.Data
       })
-      that.getAttributeList().then(value => {
+      await that.getAttributeList().then(value => {
         that.attributeList = value.Data
       })
+      that.$vux.loading.hide()
+      document.documentElement.scrollTop = 0
     },
     async getData () {
       const res = await this.$http.get('/Mission/' + this.MissionID)
-      return res.data.Data
+      return res.data
     },
     /**
      * 获取任务动作列表
@@ -340,9 +397,16 @@ export default {
     display: flex;
     flex-flow: nowrap
   }
+  .normal_title_p
+  {
+    font-size: 14px;
+    color: #666;
+    text-align: left;
+    line-height: 25px;
+  }
   .normal_desc_p
   {
-    font-size: 13px;
+    font-size: 12px;
     color: #999999;
     text-align: justify;
     line-height: 25px;
@@ -400,6 +464,45 @@ export default {
     border-radius: 3px;
     color: #333333;
     -webkit-tap-highlight-color: rgba(0,0,0,0);
+  }
+  .finished_action_list_item
+  {
+    height: 25px;
+    line-height: 25px;
+    font-size: 14px;
+    color: #999;
+    margin-bottom: 10px;
+  }
+  .finished_action_list_tags
+  {
+    display: inline-block;
+    font-size: 12px;
+    color: #FAB43E;
+    border: 1px solid #FAB43E;
+    border-radius: 4px;
+    padding: 0 10px;
+    height: 18px;
+    margin-left: 10px;
+    line-height: 18px;
+  }
+  .evaluate_content_container
+  {
+    position: relative;
+    background-color: #F2F2F2;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+  }
+  .evaluate_content_container::before {
+    position: absolute;
+    content: '';
+    display: block;
+    top: -10px;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-color: transparent transparent #F2F2F2 transparent;
+    border-width: 0px 20px 10px 20px;
   }
 </style>
 

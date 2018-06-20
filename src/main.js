@@ -9,7 +9,7 @@ import Meta from 'vue-meta'
 import './plugins/validate.js'
 import _ from 'lodash'
 import registryPopup from './components/common/popupTop/index'
-import { DatetimePlugin, ToastPlugin, ConfirmPlugin } from 'vux'
+import { DatetimePlugin, ToastPlugin, ConfirmPlugin, LoadingPlugin } from 'vux'
 import xxComponents from './components/common'
 import http from '@/api'
 
@@ -19,6 +19,7 @@ Vue.use(DatetimePlugin)
 Vue.use(ToastPlugin)
 Vue.use(ConfirmPlugin)
 Vue.use(registryPopup)
+Vue.use(LoadingPlugin)
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 FastClick.attach(document.body)
 Vue.config.productionTip = false

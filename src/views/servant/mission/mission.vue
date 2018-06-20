@@ -4,32 +4,32 @@
       ref="sticky"
       :offset="0"
       :check-sticky-support="false">
-      <xx-tab v-model="tabIndex" active-color="#3AC7F5" custom-bar-width="25px">
-        <xx-tab-item :selected="tabIndex === 0" @on-item-click="onItemClick">服务中</xx-tab-item>
-        <xx-tab-item :selected="tabIndex === 1" @on-item-click="onItemClick">已完成</xx-tab-item>
+      <xx-tab v-model="modelMissionTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
+        <xx-tab-item @on-item-click="onItemClick">服务中</xx-tab-item>
+        <xx-tab-item @on-item-click="onItemClick">已完成</xx-tab-item>
       </xx-tab>
     </sticky>
     <!-- 服务中 -->
-    <div class="tabbox" v-show="tabIndex === 0">
+    <div class="tabbox" v-show="modelMissionTabIndex === 0">
       <div class="checker-bar">
         <span class="">筛选条件：</span>
         <ul>
-          <li :class="checkerIndex === 0 ? 'active' : ''" @click="changeChecker(0)">全部</li>
-          <li :class="checkerIndex === 1 ? 'active' : ''" @click="changeChecker(1)">待确认</li>
-          <li :class="checkerIndex === 2 ? 'active' : ''" @click="changeChecker(2)">待服务</li>
-          <li :class="checkerIndex === 3 ? 'active' : ''" @click="changeChecker(3)">待评价</li>
+          <li :class="missionSmallTabIndex === 0 ? 'active' : ''" @click="changeChecker(0)">全部</li>
+          <li :class="missionSmallTabIndex === 1 ? 'active' : ''" @click="changeChecker(1)">待确认</li>
+          <li :class="missionSmallTabIndex === 2 ? 'active' : ''" @click="changeChecker(2)">待服务</li>
+          <li :class="missionSmallTabIndex === 3 ? 'active' : ''" @click="changeChecker(3)">待评价</li>
         </ul>
       </div>
-      <div class="weui-panel" style="margin-top:0">
+      <div  v-if="dataList.length >0"  class="weui-panel" style="margin-top:0">
         <div class="weui-list_container">
-          <div v-if="dataList.length >0" class="weui-list_item" v-for="(item, index) in dataList" :key="index" @click="redirectDetail(item.State, item.Type, item.ID)">
+          <div class="weui-list_item" v-for="(item, index) in dataList" :key="index" @click="redirectDetail(item.State, item.Type, item.ID)">
             <div class="avatar"><img src="https://tva1.sinaimg.cn/crop.0.0.180.180.50/5e9d399fjw1e8qgp5bmzyj2050050aa8.jpg" alt=""></div>
             <div class="mid">
               <div style="display: flex;justify-content: space-between;align-items: baseline;">
                 <div class="title" style="font-weight:normal">{{item.ItemName}}</div>
               </div>
-              <div style="font-size:13px;color:#999;">患者：{{item.ServantName}}</div>
-              <div style="font-size:13px;color:#999;">内容：{{item.Discription?item.Discription:'该患者没有留言'}}</div>
+              <div style="font-size:13px;color:#999;">患者：{{item.UserName}}</div>
+              <div style="font-size:13px;color:#999;">内容：{{item.Result?item.Result:'该患者没有留言'}}</div>
               <div class="describe">时间：{{item.EndTime | timeFormat}}</div>
             </div>
             <img v-if="item.State == 0 && item.Type == 0" style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
@@ -38,25 +38,31 @@
           </div>
         </div>
       </div>
+      <xx-occupied-box v-else>
+        当前列表为空
+      </xx-occupied-box>
     </div>
     <!-- 已完成 -->
-    <div class="tabbox" v-show="tabIndex === 1">
-      <div class="weui-panel">
+    <div class="tabbox" v-show="modelMissionTabIndex === 1">
+      <div v-if="complateMissionList.length" class="weui-panel">
         <div class="weui-list_container">
-          <div class="weui-list_item" @click="toDetail(1)">
+          <div v-for="(item, index) in complateMissionList" :key="index" class="weui-list_item" @click="redirectDetail(item.State, item.Type, item.ID)">
             <div class="avatar"><img src="https://tva1.sinaimg.cn/crop.0.0.180.180.50/5e9d399fjw1e8qgp5bmzyj2050050aa8.jpg" alt=""></div>
             <div class="mid">
               <div style="display: flex;justify-content: space-between;align-items: baseline;">
-                <div class="title" style="font-weight:normal">PICC换药1</div>
+                <div class="title" style="font-weight:normal">{{item.ItemName}}</div>
               </div>
-              <div style="font-size:13px;color:#999;">患者：xxx</div>
-              <div style="font-size:13px;color:#999;">内容：阿莫西林3颗含服</div>
-              <div class="describe">到期时间：2018/06/08</div>
+              <div style="font-size:13px;color:#999;">患者：{{item.UserName}}</div>
+              <div style="font-size:13px;color:#999;">内容：{{item.Result?item.Result:'该患者没有留言'}}</div>
+              <div class="describe">到期时间：{{item.EndTime | timeFormat}}</div>
             </div>
             <img style="width:50px;height:50px;" src="@/assets/images/ic_ywj.png" alt="">
           </div>
         </div>
       </div>
+      <xx-occupied-box v-else>
+        当前列表为空
+      </xx-occupied-box>
     </div>
     <xx-tabbar></xx-tabbar>
   </div>
@@ -64,7 +70,7 @@
 
 <script>
 import { Sticky, dateFormat } from 'vux'
-import http from '@/api'
+import { mapMutations, mapGetters } from 'vuex'
 export default {
   filters: {
     timeFormat (value) {
@@ -77,23 +83,37 @@ export default {
   components: {
     Sticky
   },
+  computed: {
+    ...mapGetters([
+      'missionTabIndex',
+      'missionSmallTabIndex'
+    ]),
+    modelMissionTabIndex: {
+      get () {
+        return this.missionTabIndex
+      },
+      set (val) {
+        this.SET_MISSION_TAB_INDEX(val)
+      }
+    }
+  },
   data () {
     return {
       dataList: [],
-      tabIndex: 0,
-      checkerIndexLoack: true,
-      checkerIndex: 0 // 0、全部；1、待确认；2、待服务；3、待评价
+      complateMissionList: [],
+      checkerIndexLoack: true
     }
   },
   watch: {
-    serviceTabIndex (val) {
-      this.tabIndex = val
+    missionTabIndex (val) {
+      this.initData()
     }
   },
   created () {
     this.initData()
   },
   methods: {
+    ...mapMutations(['SET_MISSION_TAB_INDEX', 'SET_SMALL_MISSION_TAB_INDEX']),
     /**
       跳转详情
      */
@@ -110,26 +130,38 @@ export default {
      */
     async initData () {
       const that = this
-      that.dataList = []
-      switch (that.checkerIndex) {
-        case 0:
-          await that.getAll()
-          break
-        case 1:
-          await that.getUserReserveServiceList().then(value => {
-            that.dataList = value
-            that.checkerIndexLoack = true
-          })
-          break
-        case 2:
-          await that.getAllWaitForService()
-          break
-        case 3:
-          await that.getWaitForReview().then(value => {
-            that.dataList = value
-            that.checkerIndexLoack = true
-          })
-          break
+      that.$vux.loading.show({
+        text: '加载中'
+      })
+      if (that.modelMissionTabIndex === 0) {
+        that.dataList = []
+        switch (that.missionSmallTabIndex) {
+          case 0:
+            await that.getAll()
+            break
+          case 1:
+            await that.getUserReserveServiceList().then(value => {
+              that.dataList = value
+              that.checkerIndexLoack = true
+            })
+            break
+          case 2:
+            await that.getAllWaitForService()
+            break
+          case 3:
+            await that.getWaitForReview().then(value => {
+              that.dataList = value
+              that.checkerIndexLoack = true
+            })
+            break
+        }
+        that.$vux.loading.hide()
+      }
+      if (that.modelMissionTabIndex === 1) {
+        that.getComplateMissionList().then(value => {
+          that.complateMissionList = value.Data
+          that.$vux.loading.hide()
+        })
       }
     },
     async getAllWaitForService () {
@@ -160,35 +192,39 @@ export default {
 
     /** 服务中 */
     async getInServiceList () {
-      const res = await http.get('/MissionList/InService')
+      const res = await this.$http.get('/MissionList/InService')
       return res.data.Data
     },
     /** 待服务 */
     async getWaitForServiceList () {
-      const res = await http.get('/MissionList/WaitForService')
+      const res = await this.$http.get('/MissionList/WaitForService')
       return res.data.Data
     },
     /** 待确认 */
     async getUserReserveServiceList () {
-      const res = await http.get('/UserReserveServiceList')
+      const res = await this.$http.get('/UserReserveServiceList')
       return res.data.Data
     },
     /** 待评价 */
     async getWaitForReview () {
-      const res = await http.get('/MissionList/WaitForReview')
+      const res = await this.$http.get('/MissionList/WaitForReview')
       return res.data.Data
     },
-
+    /** 已完成 */
+    async getComplateMissionList () {
+      const res = await this.$http.get('/MissionList/Complate')
+      return res.data
+    },
     async changeChecker (index) {
       if (this.checkerIndexLoack) {
         this.checkerIndexLoack = false
-        this.checkerIndex = index
+        this.SET_SMALL_MISSION_TAB_INDEX(index)
         await this.initData()
         this.checkerIndexLoack = true
       }
     },
     onItemClick (id) {
-      this.$store.commit('setServiceTabIndex', id)
+      this.SET_MISSION_TAB_INDEX(id)
     },
     toDetail (id) {
       this.$router.push(`/service/in/${id}`)

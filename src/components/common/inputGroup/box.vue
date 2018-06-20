@@ -20,7 +20,8 @@ export default {
         let defaultSlots = that.$slots.item
         defaultSlots.map((item, index) => {
           that.modelValue.push({
-            [item.componentInstance.name]: item.componentInstance.modelValue
+            id: item.componentInstance.name,
+            value: item.componentInstance.modelValue
           })
           if (!item.componentInstance.verify) {
             that.verify = false

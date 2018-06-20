@@ -40,7 +40,7 @@
       </xx-cell-items>
       <xx-cell-items label="用户描述" direction="vertical">
         <p style="margin-top: 20px;font-size: 13px;color: #999;text-align: justify;">
-          {{detail.Discription}}
+          {{detail.Discription?detail.Discription:'该患者没有留言'}}
         </p>
       </xx-cell-items>
       <xx-cell-items v-if="detail.Imgs != '' && detail.Imgs != null" label="相关图片" direction="vertical">
@@ -153,7 +153,11 @@ export default {
         confirmText: '仍然继续',
         cancelText: '放弃',
         onConfirm () {
+          that.$vux.loading.show({
+            text: '加载中'
+          })
           that.createMission().then(value => {
+            that.$vux.loading.hide()
             if (value.Code === 100000) {
               that.$router.push('/mission/waitreceive/' + value.Data)
               that.$vux.toast.show({
@@ -174,7 +178,7 @@ export default {
     },
     async createMission () {
       const that = this
-      const res = await that.$http.post('/ReserveAcceptance', {
+      const res = await that.$http.post('/UserReserveAcceptance', {
         ReserveID: that.MissionID,
         ConfirmArrivingTime: that.arrivalTime,
         ReserveDescription: that.remark

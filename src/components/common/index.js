@@ -14,6 +14,7 @@ import xxFiltrate from './filtrate'
 import xxHint from './hintComponent'
 import xxInputGroupBox from './inputGroup/box'
 import xxInputGroupItems from './inputGroup/items'
+import xxOccupiedBox from '../OccupiedBox'
 
 const components = {
   install: function (Vue) {
@@ -33,6 +34,7 @@ const components = {
     Vue.component('xxHint', xxHint)
     Vue.component('xxInputGroupBox', xxInputGroupBox)
     Vue.component('xxInputGroupItems', xxInputGroupItems)
+    Vue.component('xxOccupiedBox', xxOccupiedBox)
   }
 }
 

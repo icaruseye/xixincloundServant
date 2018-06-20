@@ -8,7 +8,7 @@
         <previewer ref="previewer" :list="prewimgList" :options="options"></previewer>
       </div>
     </template>
-    <template>
+    <template v-else>
       <p style="font-size: 12px;color: #999; text-align:center;padding: 40px 0">图片列表为空</p>
     </template>
   </div>
@@ -32,7 +32,7 @@ export default {
         let newList = []
         list.map((item) => {
           newList.push({
-            src: item
+            src: this.transformImgUrl(item)
           })
         })
         return newList
@@ -56,6 +56,20 @@ export default {
   methods: {
     previewImage (index) {
       this.$refs.previewer.show(index)
+    },
+    transformImgUrl (imageName) {
+      if (!imageName) return
+      if (imageName.indexOf('http') === -1) {
+        if (imageName.indexOf('Upload') === -1) {
+          // 值为id
+          return 'http://xixincloud.com:6883/File/GetImage/' + imageName
+        } else {
+          // 第三种情况
+          return imageName
+        }
+      }
+      // 值为完整url
+      return imageName
     }
   }
 }

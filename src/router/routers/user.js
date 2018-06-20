@@ -33,7 +33,7 @@ export default [
   },
   {
     path: '/user/complaint',
-    component: _import('/servant/user/user-complaint')
+    component: _import('/servant/user/user-complaint/list')
   },
   {
     path: '/user/date',
