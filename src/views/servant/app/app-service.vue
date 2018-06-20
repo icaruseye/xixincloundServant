@@ -6,12 +6,12 @@
     </xx-tab>
     <!-- 服务项 -->
     <div v-if="index === 0">
-      <template v-for="(item, typeIndex) in itemList">
-        <div :key="typeIndex">
+      <template v-for="(item, pIndex) in itemList">
+        <div :key="pIndex">
           <div class="weui-list-title">{{item.PackageTypeName}}</div>
           <div class="weui-list-panel weui-panel">
-            <template v-for="(i, index) in item.PackageList">
-              <div class="weui-cell" :key="index">
+            <template v-for="(i, cIndex) in item.PackageList">
+              <div class="weui-cell" :key="cIndex">
                 <div class="weui-cell-top">
                   <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
                   <div class="mid">
@@ -20,9 +20,9 @@
                   </div>
                   <div class="btns">
                     <button class="gray btn">库存:90</button>
-                    <button class="default btn" @click="changeStatusDown(i.ID)" v-if="i.State === 1">下架</button>
+                    <button class="default btn" @click="changeStatusDown(i.ID, pIndex, cIndex)" v-if="i.State === 1">下架</button>
                     <button class="default btn" @click="changeStatusUp(i.ID)" v-if="i.State === 0">上架</button>
-                    <button class="default btn" @click="showPopup(i.ID, typeIndex, index)">操作</button>
+                    <button class="default btn" @click="showPopup(i.ID, pIndex, cIndex)">操作</button>
                   </div>
                 </div>
               </div>
@@ -146,12 +146,12 @@ export default {
       }
     },
     // 上下架
-    async changeStatusDown (id) {
+    async changeStatusDown (id, pIndex, cIndex) {
       const res = await http.put(`/Bundle/${id}/OffTheShelf`)
       if (res.data.Code === 100000) {
         this.$vux.toast.text('下架成功')
-
-        this.getBundleType()
+        // this.getBundleType()
+        console.log(pIndex)
       }
     },
     async changeStatusUp (id) {
