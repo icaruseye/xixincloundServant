@@ -8,7 +8,7 @@ export default {
   props: {
     step: {
       type: String,
-      default: 1
+      default: '0'
     }
   },
   watch: {

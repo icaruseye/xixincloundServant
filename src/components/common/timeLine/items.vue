@@ -5,7 +5,9 @@
     </div>
     <h2 v-if="title" class="time-line_container_title">
       {{title}}
-      <span v-if="subhead" style="position: absolute;right: 0px;top: 0;font-size: 13px;color: #999999;">{{subhead}}</span>
+      <span style="position: absolute;right: 0px;top: 0;font-size: 13px;color: #999999;">
+        <slot name="subhead"></slot>
+      </span>
     </h2>
     <div class="content_container">
       <slot></slot>

@@ -33,8 +33,8 @@
               <div class="describe">时间：{{item.EndTime | timeFormat}}</div>
             </div>
             <img v-if="item.State == 0 && item.Type == 0" style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
-            <img v-if="item.State == 0  && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dff.png" alt="">
-            <img v-if="item.State == 4" style="width:50px;height:50px;" src="@/assets/images/ic_dpj.png" alt="">
+            <img v-if="(item.State == 0  && item.Type == 1) || item.State == 3 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dff.png" alt="">
+            <img v-if="item.State == 4 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dpj.png" alt="">
           </div>
         </div>
       </div>
@@ -81,15 +81,13 @@ export default {
     return {
       dataList: [],
       tabIndex: 0,
+      checkerIndexLoack: true,
       checkerIndex: 0 // 0、全部；1、待确认；2、待服务；3、待评价
     }
   },
   watch: {
     serviceTabIndex (val) {
       this.tabIndex = val
-    },
-    checkerIndex () {
-      this.initData()
     }
   },
   created () {
@@ -110,41 +108,49 @@ export default {
     /**
       初始化
      */
-    initData () {
+    async initData () {
       const that = this
       that.dataList = []
       switch (that.checkerIndex) {
         case 0:
-          that.getAll()
+          await that.getAll()
           break
         case 1:
-          that.getUserReserveServiceList().then(value => {
+          await that.getUserReserveServiceList().then(value => {
             that.dataList = value
+            that.checkerIndexLoack = true
           })
           break
         case 2:
-          that.getWaitForServiceList().then(value => {
-            that.dataList = value
-          })
+          await that.getAllWaitForService()
           break
         case 3:
-          that.getWaitForReview().then(value => {
+          await that.getWaitForReview().then(value => {
             that.dataList = value
+            that.checkerIndexLoack = true
           })
           break
       }
     },
-
+    async getAllWaitForService () {
+      const that = this
+      await that.getInServiceList().then(value => {
+        that.dataList = that.dataList.concat(value)
+      })
+      await that.getWaitForServiceList().then(value => {
+        that.dataList = that.dataList.concat(value)
+      })
+    },
     /** 查看全部 */
     async getAll () {
       const that = this
       await that.getInServiceList().then(value => {
         that.dataList = that.dataList.concat(value)
       })
-      await that.getUserReserveServiceList().then(value => {
+      await that.getWaitForServiceList().then(value => {
         that.dataList = that.dataList.concat(value)
       })
-      await that.getWaitForServiceList().then(value => {
+      await that.getUserReserveServiceList().then(value => {
         that.dataList = that.dataList.concat(value)
       })
       await that.getWaitForReview().then(value => {
@@ -173,8 +179,13 @@ export default {
       return res.data.Data
     },
 
-    changeChecker (index) {
-      this.checkerIndex = index
+    async changeChecker (index) {
+      if (this.checkerIndexLoack) {
+        this.checkerIndexLoack = false
+        this.checkerIndex = index
+        await this.initData()
+        this.checkerIndexLoack = true
+      }
     },
     onItemClick (id) {
       this.$store.commit('setServiceTabIndex', id)

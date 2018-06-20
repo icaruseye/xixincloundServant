@@ -8,21 +8,21 @@ export default {
   name: 'checkerBox',
   data () {
     return {
-      modelValue: []
+      modelValue: ''
     }
   },
   provide () {
     const that = this
     return {
-      handleChecked: () => {
+      handleChecked () {
         that.modelValue = []
         let defaultSlots = that.$slots.item
         defaultSlots.map((item, index) => {
           if (item.componentInstance.modelChecked) {
-            that.modelValue.push(item.componentInstance.value)
+            that.modelValue += item.componentInstance.value + ','
           }
         })
-        that.$emit('input', that.modelValue)
+        that.$emit('input', that.modelValue.substring(0, that.modelValue.lastIndexOf(',')))
       }
     }
   }

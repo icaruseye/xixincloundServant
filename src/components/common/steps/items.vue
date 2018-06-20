@@ -13,7 +13,7 @@ export default {
   props: {
     lineStyle: {
       type: String,
-      default: 'dashed'
+      default: ''
     }
   },
   data () {

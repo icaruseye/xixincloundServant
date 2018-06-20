@@ -43,7 +43,7 @@
           {{detail.Discription}}
         </p>
       </xx-cell-items>
-      <xx-cell-items label="相关图片" direction="vertical">
+      <xx-cell-items v-if="detail.Imgs != '' && detail.Imgs != null" label="相关图片" direction="vertical">
         <image-preview-item :list="detail.Imgs"></image-preview-item>
       </xx-cell-items>
     </xx-cell>
@@ -84,21 +84,24 @@
       </xx-cell-items>
     </xx-cell>
     <div class="btn-bar">
-      <button type="button" class="weui-btn weui-btn_primary" @click="cancelMissionEvent">取消任务</button>
+      <button type="button" class="weui-btn weui-btn_primary" @click="cancelMissionPopupVisible = true">取消任务</button>
       <button type="button" class="weui-btn weui-btn_primary" @click="createMissionEvent">生成任务</button>
     </div>
+    <cancel-mission-popup :missionID="MissionID" v-model="cancelMissionPopupVisible"></cancel-mission-popup>
   </div>
 </template>
 
 <script>
 import { Group, Datetime, dateFormat } from 'vux'
 import ImagePreviewItem from '@/components/ImagePreViewItem'
+import CancelMissionPopup from '@/components/cancelMissionPopup'
 const dataFormatRule = 'YYYY/MM/DD HH:mm'
 export default {
   components: {
     Group,
     Datetime,
-    ImagePreviewItem
+    ImagePreviewItem,
+    CancelMissionPopup
   },
   filters: {
     timeFormat (value) {
@@ -107,6 +110,7 @@ export default {
   },
   data () {
     return {
+      cancelMissionPopupVisible: false,
       detail: {},
       arrivalTime: null,
       remark: ''
@@ -144,35 +148,17 @@ export default {
         })
         return false
       }
-      that.createMission().then(value => {
-        console.log(value)
-      })
-    },
-    async createMission () {
-      const that = this
-      const res = await that.$http.post('/ReserveAcceptance', {
-        ReserveID: that.MissionID,
-        ConfirmArrivingTime: that.arrivalTime,
-        ReserveDescription: that.remark
-      })
-      return res.data.Data
-    },
-    /**
-     * 取消预约单
-     */
-    cancelMissionEvent () {
-      const that = this
       that.$vux.confirm.show({
-        content: '任务取消后不可恢复，请谨慎操作！',
-        confirmText: '仍然取消',
+        content: '确认生成任务单吗？',
+        confirmText: '仍然继续',
         cancelText: '放弃',
         onConfirm () {
-          that.cancelMission().then(value => {
-            console.log(value)
-            if (value.Code === 200) {
+          that.createMission().then(value => {
+            if (value.Code === 100000) {
+              that.$router.push('/mission/waitreceive/' + value.Data)
               that.$vux.toast.show({
                 position: 'middle',
-                text: '取消成功'
+                text: '成功生成任务单'
               })
             } else {
               that.$vux.toast.show({
@@ -186,9 +172,13 @@ export default {
         }
       })
     },
-    async cancelMission () {
+    async createMission () {
       const that = this
-      const res = await that.$http.put('/Mission?missionID=' + that.MissionID)
+      const res = await that.$http.post('/ReserveAcceptance', {
+        ReserveID: that.MissionID,
+        ConfirmArrivingTime: that.arrivalTime,
+        ReserveDescription: that.remark
+      })
       return res.data
     },
     /**
