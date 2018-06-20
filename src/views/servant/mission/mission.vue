@@ -176,13 +176,13 @@ export default {
     /** 查看全部 */
     async getAll () {
       const that = this
+      await that.getUserReserveServiceList().then(value => {
+        that.dataList = that.dataList.concat(value)
+      })
       await that.getInServiceList().then(value => {
         that.dataList = that.dataList.concat(value)
       })
       await that.getWaitForServiceList().then(value => {
-        that.dataList = that.dataList.concat(value)
-      })
-      await that.getUserReserveServiceList().then(value => {
         that.dataList = that.dataList.concat(value)
       })
       await that.getWaitForReview().then(value => {
@@ -190,6 +190,11 @@ export default {
       })
     },
 
+    /** 待确认 */
+    async getUserReserveServiceList () {
+      const res = await this.$http.get('/UserReserveServiceList')
+      return res.data.Data
+    },
     /** 服务中 */
     async getInServiceList () {
       const res = await this.$http.get('/MissionList/InService')
@@ -198,11 +203,6 @@ export default {
     /** 待服务 */
     async getWaitForServiceList () {
       const res = await this.$http.get('/MissionList/WaitForService')
-      return res.data.Data
-    },
-    /** 待确认 */
-    async getUserReserveServiceList () {
-      const res = await this.$http.get('/UserReserveServiceList')
       return res.data.Data
     },
     /** 待评价 */
