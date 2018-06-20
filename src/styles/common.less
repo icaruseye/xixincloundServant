@@ -62,3 +62,19 @@ input:disabled {
 img {
   width: 100%;
 }
+.clearfix::after
+{
+  display: block;
+  content: "";
+  overflow: hidden;
+  height: 1%;
+  clear: both;
+}
+.pull-left
+{
+  float: left !important;
+}
+.pull-right
+{
+  float: right !important;
+}

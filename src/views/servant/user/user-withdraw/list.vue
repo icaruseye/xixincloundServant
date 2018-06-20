@@ -22,7 +22,7 @@
             <div>￥12.00</div>
           </div>
           <div class="right">
-            <a href="javascript:;" class="btn">提现</a>
+            <router-link to="/user/withdraw/detail" class="btn">提现</router-link>
           </div>
         </div>
       </div>

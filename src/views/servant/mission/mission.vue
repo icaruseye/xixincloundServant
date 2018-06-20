@@ -22,17 +22,19 @@
       </div>
       <div class="weui-panel" style="margin-top:0">
         <div class="weui-list_container">
-          <div class="weui-list_item">
+          <div v-if="dataList.length >0" class="weui-list_item" v-for="(item, index) in dataList" :key="index" @click="redirectDetail(item.State, item.Type, item.ID)">
             <div class="avatar"><img src="https://tva1.sinaimg.cn/crop.0.0.180.180.50/5e9d399fjw1e8qgp5bmzyj2050050aa8.jpg" alt=""></div>
             <div class="mid">
               <div style="display: flex;justify-content: space-between;align-items: baseline;">
-                <div class="title" style="font-weight:normal">PICC换药</div>
+                <div class="title" style="font-weight:normal">{{item.ItemName}}</div>
               </div>
-              <div style="font-size:13px;color:#999;">患者：xxx</div>
-              <div style="font-size:13px;color:#999;">内容：阿莫西林3颗含服</div>
-              <div class="describe">到期时间：2018/06/08</div>
+              <div style="font-size:13px;color:#999;">患者：{{item.ServantName}}</div>
+              <div style="font-size:13px;color:#999;">内容：{{item.Discription?item.Discription:'该患者没有留言'}}</div>
+              <div class="describe">时间：{{item.EndTime | timeFormat}}</div>
             </div>
-            <img style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
+            <img v-if="item.State == 0 && item.Type == 0" style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
+            <img v-if="(item.State == 0  && item.Type == 1) || item.State == 3 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dff.png" alt="">
+            <img v-if="item.State == 4 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dpj.png" alt="">
           </div>
         </div>
       </div>
@@ -45,7 +47,7 @@
             <div class="avatar"><img src="https://tva1.sinaimg.cn/crop.0.0.180.180.50/5e9d399fjw1e8qgp5bmzyj2050050aa8.jpg" alt=""></div>
             <div class="mid">
               <div style="display: flex;justify-content: space-between;align-items: baseline;">
-                <div class="title" style="font-weight:normal">PICC换药</div>
+                <div class="title" style="font-weight:normal">PICC换药1</div>
               </div>
               <div style="font-size:13px;color:#999;">患者：xxx</div>
               <div style="font-size:13px;color:#999;">内容：阿莫西林3颗含服</div>
@@ -61,8 +63,14 @@
 </template>
 
 <script>
-import { Sticky } from 'vux'
+import { Sticky, dateFormat } from 'vux'
+import http from '@/api'
 export default {
+  filters: {
+    timeFormat (value) {
+      return dateFormat(new Date(value), 'YYYY-MM-DD HH:mm:ss')
+    }
+  },
   metaInfo: {
     title: '服务'
   },
@@ -71,8 +79,10 @@ export default {
   },
   data () {
     return {
+      dataList: [],
       tabIndex: 0,
-      checkerIndex: 0
+      checkerIndexLoack: true,
+      checkerIndex: 0 // 0、全部；1、待确认；2、待服务；3、待评价
     }
   },
   watch: {
@@ -80,9 +90,102 @@ export default {
       this.tabIndex = val
     }
   },
+  created () {
+    this.initData()
+  },
   methods: {
-    changeChecker (index) {
-      this.checkerIndex = index
+    /**
+      跳转详情
+     */
+    redirectDetail (state, type, id) {
+      const that = this
+      if (type === 0 && state === 0) {
+        that.$router.push('/mission/receive/' + id)
+      } else {
+        that.$router.push('/mission/waitreceive/' + id)
+      }
+    },
+    /**
+      初始化
+     */
+    async initData () {
+      const that = this
+      that.dataList = []
+      switch (that.checkerIndex) {
+        case 0:
+          await that.getAll()
+          break
+        case 1:
+          await that.getUserReserveServiceList().then(value => {
+            that.dataList = value
+            that.checkerIndexLoack = true
+          })
+          break
+        case 2:
+          await that.getAllWaitForService()
+          break
+        case 3:
+          await that.getWaitForReview().then(value => {
+            that.dataList = value
+            that.checkerIndexLoack = true
+          })
+          break
+      }
+    },
+    async getAllWaitForService () {
+      const that = this
+      await that.getInServiceList().then(value => {
+        that.dataList = that.dataList.concat(value)
+      })
+      await that.getWaitForServiceList().then(value => {
+        that.dataList = that.dataList.concat(value)
+      })
+    },
+    /** 查看全部 */
+    async getAll () {
+      const that = this
+      await that.getInServiceList().then(value => {
+        that.dataList = that.dataList.concat(value)
+      })
+      await that.getWaitForServiceList().then(value => {
+        that.dataList = that.dataList.concat(value)
+      })
+      await that.getUserReserveServiceList().then(value => {
+        that.dataList = that.dataList.concat(value)
+      })
+      await that.getWaitForReview().then(value => {
+        that.dataList = that.dataList.concat(value)
+      })
+    },
+
+    /** 服务中 */
+    async getInServiceList () {
+      const res = await http.get('/MissionList/InService')
+      return res.data.Data
+    },
+    /** 待服务 */
+    async getWaitForServiceList () {
+      const res = await http.get('/MissionList/WaitForService')
+      return res.data.Data
+    },
+    /** 待确认 */
+    async getUserReserveServiceList () {
+      const res = await http.get('/UserReserveServiceList')
+      return res.data.Data
+    },
+    /** 待评价 */
+    async getWaitForReview () {
+      const res = await http.get('/MissionList/WaitForReview')
+      return res.data.Data
+    },
+
+    async changeChecker (index) {
+      if (this.checkerIndexLoack) {
+        this.checkerIndexLoack = false
+        this.checkerIndex = index
+        await this.initData()
+        this.checkerIndexLoack = true
+      }
     },
     onItemClick (id) {
       this.$store.commit('setServiceTabIndex', id)

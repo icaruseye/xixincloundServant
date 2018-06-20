@@ -12,6 +12,8 @@ import xxUploader from './uploader'
 import xxTabbar from './tabbar'
 import xxFiltrate from './filtrate'
 import xxHint from './hintComponent'
+import xxInputGroupBox from './inputGroup/box'
+import xxInputGroupItems from './inputGroup/items'
 
 const components = {
   install: function (Vue) {
@@ -29,6 +31,8 @@ const components = {
     Vue.component('xxTabbar', xxTabbar)
     Vue.component('xxFiltrate', xxFiltrate)
     Vue.component('xxHint', xxHint)
+    Vue.component('xxInputGroupBox', xxInputGroupBox)
+    Vue.component('xxInputGroupItems', xxInputGroupItems)
   }
 }
 

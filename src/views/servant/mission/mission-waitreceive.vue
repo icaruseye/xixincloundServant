@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <xx-step-bar step="2">
+    <xx-step-bar :step="detail.State | stepFileter">
       <xx-step-items slot="items">
         已确认
       </xx-step-items>
@@ -12,34 +12,31 @@
       </xx-step-items>
     </xx-step-bar>
 
-    <xx-timeLine step="2" class="mt10px">
+    <xx-timeLine :step="detail.State | stepFileter" class="mt10px">
       <xx-timeLine-items
         slot="items"
         title="已确认"
-        subhead="确认时间：2018/06/08 15:30"
       >
+        <template v-if="detail.State >= 3" slot="subhead">
+            实际到达时间：{{detail.StartTime | timeFormat}}
+        </template>
         <ul>
           <li class="desc_list_items">
-            <p class="normal_desc_p" style="font-size: 14px; color: #666">任务名称：PICC换药</p>
-            <p class="normal_desc_p">服务对象：贾秉仁</p>
-            <p class="normal_desc_p">执行人：王二小</p>
+            <p class="normal_desc_p" style="font-size: 14px; color: #666">任务名称：{{detail.ItemName}}</p>
+            <p class="normal_desc_p">服务对象：{{detail.UserName}}</p>
+            <p class="normal_desc_p">执行人：{{detail.ServantName}}</p>
             <p class="normal_desc_p">时间：2018/01/01 13:30</p>
-            <p class="normal_desc_p" style="color:#FF3939;">工具：需要准备</p>
-            <p class="normal_desc_p">药品：不需要准备</p>
-            <p class="normal_desc_p">内容：阿莫西林3颗含服</p>
+            <p class="normal_desc_p" style="color:#FF3939;">工具：{{detail.NeedTools?'需要准备':'不需要准备'}}</p>
+            <p class="normal_desc_p" style="color:#666666">药品：{{detail.NeedDrug?'需要准备':'不需要准备'}}</p>
+            <p class="normal_desc_p">内容：{{detail.Discription?detail.Discription: '该患者没有留言'}}</p>
           </li>
           <li class="desc_list_items">
             <h5 class="desc_list_items_title">用户描述</h5>
-            <p class="normal_desc_p">感冒咳嗽，头晕眼花</p>
+            <p class="normal_desc_p">{{detail.Discription?detail.Discription: '该患者没有留言'}}</p>
           </li>
           <li class="desc_list_items">
             <h5 class="desc_list_items_title">相关图片</h5>
-            <div class="thumbs_container">
-              <img class="preview_img" v-for="(item, index) in relatedPicturesList" :src="item.src" :key="index" @click="relatedPicturesPreviewImage(index)" alt="">
-            </div>
-            <div v-transfer-dom>
-              <previewer ref="relatedPicturesListPreviewer" :list="relatedPicturesList" :options="options"></previewer>
-            </div>
+            <image-preview-item list=""></image-preview-item>
           </li>
         </ul>
       </xx-timeLine-items>
@@ -48,7 +45,10 @@
         slot="items"
         title="服务中"
       >
-        <ul>
+        <template v-if="detail.State >= 4" slot="subhead">
+            服务完成时间：{{detail.StartTime | timeFormat}}
+        </template>
+        <ul v-if="detail.State == 0">
           <li class="desc_list_items">
             <p class="normal_desc_p">
               用户联系电话：
@@ -56,49 +56,42 @@
             </p>
             <p class="normal_desc_p">
               用户服务地址：
-              <span style="font-size: 12px;color: #999999;">四川省成都市22号</span>
+              <span style="font-size: 12px;color: #999999;">{{detail.Address}}</span>
             </p>
             <xx-hint style="margin: 0;height: 30px;line-height:30px">
               服务人员还未到达服务指定地点
             </xx-hint>
           </li>
         </ul>
-        <ul>
+        <ul v-if="detail.State == 3">
           <li class="desc_list_items">
             <p class="normal_desc_p">任务服务需要完成标准动作</p>
             <div style="padding-top: 11px; margin: 0 10px">
-              <xx-checker-box  v-model="checkboxValue">
-                <xx-checker-item value="1" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
-                  1：伤口评估
-                </xx-checker-item>
-                <xx-checker-item value="2" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
-                  2：清洗伤口
-                </xx-checker-item>
-                <xx-checker-item value="3" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
-                  3：测量伤口长度
-                </xx-checker-item>
-                <xx-checker-item value="4" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
-                  4：拍照记录
-                </xx-checker-item>
-                <xx-checker-item value="5" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
-                  5：消毒
-                </xx-checker-item>
-                <xx-checker-item value="6" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
-                  6：做好处理记录
+              <xx-checker-box  v-model="actionListValue">
+                <xx-checker-item v-for="(item, index) in actionList" :key="index" :value="item.ID" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
+                  {{index+1}}：{{item.Name}}
                 </xx-checker-item>
               </xx-checker-box>
             </div>
           </li>
           <li class="desc_list_items">
+            <p class="normal_desc_p">任务服务需要采集的信息</p>
+            <div style="padding-top: 11px; margin: 0 10px">
+              <xx-input-group-box ref="attributeInputGroup" v-model="attributeListValue">
+                <xx-input-group-items v-for="(item, index) in attributeList" :key="index" :label="item.Name" slot="item" :name="item.ID" :unit="item.Unit"></xx-input-group-items>
+              </xx-input-group-box>
+            </div>
+          </li>
+          <li class="desc_list_items">
             <p class="normal_desc_p">服务结果</p>
             <div class="service_remark_textarea_container">
-              <textarea class="service_remark_textarea" placeholder="请输入文本"></textarea>
+              <textarea class="service_remark_textarea" placeholder="请输入文本" v-model="serviceResult"></textarea>
             </div>
           </li>
           <li class="desc_list_items">
             <p class="normal_desc_p">备注 <span style="font-size: 12px; color:#A7A7A7">（患者不可见）</span></p>
             <div class="service_remark_textarea_container" style="height: 65px">
-              <textarea class="service_remark_textarea" placeholder="请输入文本"></textarea>
+              <textarea class="service_remark_textarea" placeholder="请输入文本" v-model="remark"></textarea>
             </div>
           </li>
           <li class="desc_list_items">
@@ -124,64 +117,206 @@
     </xx-timeLine>
 
     <div class="btn_bar">
-      <button type="button" class="weui-btn weui-btn_primary">已到达，开始服务</button>
+      <button v-if="detail.CanCancel"  class="weui-btn weui-btn_primary" style="flex:1 0 30%;background-color: #ffc349" @click="cancelMissionEvent">取消任务</button>
+      <button v-if="detail.State == 0" type="button" class="weui-btn weui-btn_primary" @click="startMissionEvent">已到达，开始服务</button>
+      <button v-if="detail.State == 3" type="button" class="weui-btn weui-btn_primary" @click="completeMissionEvent">服务已完成</button>
     </div>
   </div>
 </template>
 
 <script>
-import { Previewer, TransferDom } from 'vux'
+import ImagePreviewItem from '@/components/ImagePreViewItem'
+import { dateFormat } from 'vux'
 export default {
-  directives: {
-    TransferDom
-  },
   components: {
-    Previewer
+    ImagePreviewItem
   },
   data () {
     return {
-      checkboxValue: [],
-      relatedPicturesList: [
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        },
-        {
-          src: 'https://img3.doubanio.com/icon/u53078059-35.jpg'
-        }
-      ],
-      options: {
-        getThumbBoundsFn (index) {
-          let thumbnail = document.querySelectorAll('.preview_img')[index]
-          let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
-          let rect = thumbnail.getBoundingClientRect()
-          return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
-        }
+      detail: {}, // 任务单详情
+      actionListValue: '', // 动作列表选中的值
+      actionList: [], // 动作列表
+      attributeListValue: '', // 采集信息的值
+      attributeList: [], // 采集信息列表
+      serviceResult: '', // 服务结果
+      remark: '', // 备注
+      serivicePic: [] // 服务相关图片
+    }
+  },
+  computed: {
+    MissionID () {
+      return this.$route.params.id
+    }
+  },
+  filters: {
+    timeFormat (value) {
+      return dateFormat(new Date(value), 'YYYY-MM-DD HH:mm')
+    },
+    stepFileter (value) {
+      switch (value) {
+        case 0:
+          return '1'
+        case 3:
+          return '2'
+        default:
+          return '0'
       }
     }
   },
+  created () {
+    this.initDetail()
+  },
   methods: {
-    relatedPicturesPreviewImage (index) {
-      this.$refs.relatedPicturesListPreviewer.show(index)
+    /**
+     * 完成任务
+     */
+    completeMissionEvent () {
+      const that = this
+      if (!that.$refs.attributeInputGroup.verify) {
+        that.$vux.toast.show({
+          width: '60%',
+          type: 'text',
+          position: 'middle',
+          text: '请正确填写采集信息'
+        })
+        return false
+      }
+      if (that.serviceResult.length > 200) {
+        that.$vux.toast.show({
+          width: '60%',
+          type: 'text',
+          position: 'middle',
+          text: '服务结果不可超过200字！'
+        })
+        return false
+      }
+      if (that.remark.length > 200) {
+        that.$vux.toast.show({
+          width: '60%',
+          type: 'text',
+          position: 'middle',
+          text: '备注不可超过200字！'
+        })
+        return false
+      }
+      that.completeMission().then(value => {
+        if (value.Code === 100000) {
+          that.initDetail()
+        }
+      })
     },
+    async completeMission () {
+      const res = await this.$http.post('/Mission?missionID=' + this.MissionID, {
+        Action: this.actionListValue,
+        Attribute: this.attributeListValue,
+        ViewResult: this.serviceResult,
+        HideResult: this.remark,
+        Imgs: this.serivicePic
+      })
+      return res.data
+    },
+    /**
+     * 开始任务
+     */
+    startMissionEvent () {
+      const that = this
+      that.startMission().then(value => {
+        if (value.Code === 100000) {
+          that.initDetail()
+        } else {
+          that.$vux.toast.show({
+            width: '60%',
+            type: 'text',
+            position: 'middle',
+            text: value.Msg
+          })
+        }
+      })
+    },
+    async startMission () {
+      const that = this
+      const res = await that.$http.put('/Mission/Start?MissionID=' + that.MissionID)
+      return res.data
+    },
+
+    /**
+     * 取消任务
+     */
+    cancelMissionEvent () {
+      const that = this
+      that.$vux.confirm.show({
+        content: '任务取消后不可恢复，请谨慎操作！',
+        confirmText: '仍然取消',
+        cancelText: '放弃',
+        onConfirm () {
+          that.cancelMission().then(value => {
+            console.log(value)
+            if (value.Code === 100000) {
+              that.$vux.toast.show({
+                position: 'middle',
+                text: '取消成功'
+              })
+              that.$router.push('/mission')
+            } else {
+              that.$vux.toast.show({
+                width: '60%',
+                type: 'text',
+                position: 'middle',
+                text: value.Msg
+              })
+            }
+          })
+        }
+      })
+    },
+    async cancelMission () {
+      const that = this
+      const res = await that.$http.put('/Mission?missionID=' + that.MissionID)
+      return res.data
+    },
+    /**
+     * 初始化
+     */
+    initDetail () {
+      const that = this
+      that.getData().then(value => {
+        that.detail = value
+      })
+      that.getActionList().then(value => {
+        that.actionList = value.Data
+      })
+      that.getAttributeList().then(value => {
+        that.attributeList = value.Data
+      })
+    },
+    async getData () {
+      const res = await this.$http.get('/Mission/' + this.MissionID)
+      return res.data.Data
+    },
+    /**
+     * 获取任务动作列表
+     */
+    async getActionList () {
+      const res = await this.$http.get('/ItemActionList?missionID=' + this.MissionID)
+      return res.data
+    },
+    /**
+     * 获取任务采集信息列表
+     */
+    async getAttributeList () {
+      const res = await this.$http.get('/ItemAttributeList?missionID=' + this.MissionID)
+      return res.data
+    },
+    /**
+     * 图片上传回调
+     */
     onUpdate (value) {
+      let imgsStr = ''
+      value.map((item) => {
+        imgsStr += item + ','
+      })
+
+      this.serivicePic = imgsStr.substring(0, imgsStr.lastIndexOf(','))
     }
   }
 }
@@ -202,13 +337,15 @@ export default {
     left: 0;
     right: 0;
     height: 52px;
+    display: flex;
+    flex-flow: nowrap
   }
   .normal_desc_p
   {
     font-size: 13px;
     color: #999999;
     text-align: justify;
-    line-height: 20px;
+    line-height: 25px;
   }
   .desc_list_items
   {
