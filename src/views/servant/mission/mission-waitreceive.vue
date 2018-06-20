@@ -18,7 +18,7 @@
         title="已确认"
       >
         <template v-if="detail.State >= 3" slot="subhead">
-            实际到达时间：{{detail.StartTime | timeFormat}}
+            到达时间：{{detail.StartTime | timeFormat}}
         </template>
         <ul>
           <li class="desc_list_items">
@@ -46,13 +46,13 @@
         title="服务中"
       >
         <template v-if="detail.State >= 4" slot="subhead">
-            服务完成时间：{{detail.EndTime | timeFormat}}
+            完成时间：{{detail.EndTime | timeFormat}}
         </template>
         <ul v-if="detail.State == 0">
           <li class="desc_list_items">
             <p class="normal_desc_p">
               用户联系电话：
-              <span style="font-size: 12px;color: #999999;">13541242122</span>
+              <span style="font-size: 12px;color: #999999;">{{detail.Mobile}}</span>
             </p>
             <p class="normal_desc_p">
               用户服务地址：
@@ -102,7 +102,7 @@
           </li>
         </ul>
         <!-- 待评价 -->
-        <ul v-if="detail.State === 4">
+        <ul v-if="detail.State >= 4">
           <li class="desc_list_items">
             <p class="normal_title_p">任务服务需要完成标准动作</p>
             <div style="padding-top: 11px; margin: 0 10px">
@@ -152,11 +152,19 @@
         slot="items"
         :title="detail.State<=4?'待评价': '已评价'"
       >
-        
         <p v-if="detail.State < 4" class="normal_desc_p">服务还未完成，不能进行评价</p>
         <p v-if="detail.State == 4" class="normal_desc_p">等待患者对本次服务进行评价！</p>
-        <div class="evaluate_content_container">
-          <p>感谢医生，服务特别好，感觉很专业！</p>
+        
+        <template v-if="detail.State > 4" slot="subhead">
+            评价时间：{{reviewDetail.ReviewTime | timeFormat}}
+        </template>
+        <div v-if="detail.State > 4" class="evaluate_content_container">
+          <h4 style="font-size: 12px;color: #666;font-weight:400">服务评价</h4>
+          <p style="font-size: 12px;color:#999">{{reviewDetail.Remark}}</p>
+          <div class="clearfix">
+            <rater :value="reviewDetail.Score" :disabled="true" style="float:right;" :font-size="14">
+            </rater>
+          </div>
         </div>
       </xx-timeLine-items>
     </xx-timeLine>
@@ -171,10 +179,11 @@
 
 <script>
 import ImagePreviewItem from '@/components/ImagePreViewItem'
-import { dateFormat } from 'vux'
+import { dateFormat, Rater } from 'vux'
 export default {
   components: {
-    ImagePreviewItem
+    ImagePreviewItem,
+    Rater
   },
   data () {
     return {
@@ -185,7 +194,8 @@ export default {
       attributeList: [], // 采集信息列表
       serviceResult: '', // 服务结果
       remark: '', // 备注
-      serivicePic: '' // 服务相关图片
+      serivicePic: '', // 服务相关图片
+      reviewDetail: {} // 评价
     }
   },
   computed: {
@@ -337,12 +347,19 @@ export default {
       await that.getData().then(value => {
         that.detail = value.Data
       })
-      await that.getActionList().then(value => {
-        that.actionList = value.Data
-      })
-      await that.getAttributeList().then(value => {
-        that.attributeList = value.Data
-      })
+      if (that.detail.State >= 3) {
+        await that.getActionList().then(value => {
+          that.actionList = value.Data
+        })
+        await that.getAttributeList().then(value => {
+          that.attributeList = value.Data
+        })
+      }
+      if (that.detail.State >= 5) {
+        await that.getReviewDetail().then(value => {
+          that.reviewDetail = value.Data
+        })
+      }
       that.$vux.loading.hide()
       document.documentElement.scrollTop = 0
     },
@@ -362,6 +379,13 @@ export default {
      */
     async getAttributeList () {
       const res = await this.$http.get('/ItemAttributeList?missionID=' + this.MissionID)
+      return res.data
+    },
+    /**
+     * 获取评价内容
+     */
+    async getReviewDetail () {
+      const res = await this.$http.get('/ServantReviewDetails?missionID=' + this.MissionID)
       return res.data
     },
     /**
@@ -491,18 +515,19 @@ export default {
     background-color: #F2F2F2;
     border-radius: 5px;
     padding: 10px;
-    margin-top: 10px;
+    margin-top: 20px;
   }
   .evaluate_content_container::before {
     position: absolute;
     content: '';
     display: block;
     top: -10px;
+    left: 20px;
     width: 0;
     height: 0;
     border-style: solid;
     border-color: transparent transparent #F2F2F2 transparent;
-    border-width: 0px 20px 10px 20px;
+    border-width: 0px 10px 10px 10px;
   }
 </style>
 

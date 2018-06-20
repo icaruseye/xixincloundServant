@@ -3,7 +3,7 @@
     <sticky
       ref="sticky"
       :offset="0"
-      :check-sticky-support="false">
+      :check-sticky-support="true">
       <xx-tab v-model="modelMissionTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
         <xx-tab-item @on-item-click="onItemClick">服务中</xx-tab-item>
         <xx-tab-item @on-item-click="onItemClick">已完成</xx-tab-item>
