@@ -4,31 +4,35 @@
       ref="sticky"
       :offset="0"
       :check-sticky-support="true">
-      <xx-tab v-model="currentTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
-        <xx-tab-item @on-item-click="onItemClick">投诉中</xx-tab-item>
-        <xx-tab-item @on-item-click="onItemClick">已完成</xx-tab-item>
+      <xx-tab v-model="modelComplaintTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
+        <xx-tab-item>投诉中</xx-tab-item>
+        <xx-tab-item>已完成</xx-tab-item>
       </xx-tab>
     </sticky>
-    <div class="weui-panel">
+    <div v-if="list.length > 0" class="weui-panel">
       <div v-for="(item, index) in list" :key="index" class="weui-cell">
         <div class="left">
           <img class="img_icon" src="@/assets/images/icon_tcmr.png" alt="">
         </div>
         <div class="right">
           <div class="title">
-            {{item.ComplaintEntity.MissionName}}
-            <span class="username">用户：{{item.ComplaintEntity.UserName}}</span>
+            {{item.MissionName}}
+            <span class="username">用户：{{item.UserName}}</span>
           </div>
-          <div class="desc">投诉原因:{{item.ComplaintEntity.UserComplaintTitle}}</div>
-          <div class="time">投诉时间:{{item.ComplaintEntity.CreateTime | timeFormat}}</div>
+          <div class="desc">投诉原因:{{item.UserComplaintTitle}}</div>
+          <div class="time">投诉时间:{{item.CreateTime | timeFormat}}</div>
         </div>
       </div>
     </div>
+    <xx-occupied-box v-else>
+      投诉中的列表为空
+    </xx-occupied-box>
   </div>
 </template>
 
 <script>
 import { Sticky, dateFormat } from 'vux'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   components: {
     Sticky
@@ -43,13 +47,19 @@ export default {
       return dateFormat(new Date(value), 'YYYY-MM-DD HH:mm:ss')
     }
   },
+  watch: {
+    complaintTabIndex () {
+      this.initList()
+    }
+  },
   computed: {
-    currentTabIndex: {
-      set () {
-      },
+    ...mapGetters(['complaintTabIndex']),
+    modelComplaintTabIndex: {
       get () {
-        console.log(this.$route.hash)
-        return 0
+        return this.complaintTabIndex
+      },
+      set (val) {
+        this.SET_COMPLAINT_TAB_INDEX(val)
       }
     }
   },
@@ -57,20 +67,39 @@ export default {
     this.initList()
   },
   methods: {
-    initList () {
-      this.getList().then(value => {
-        this.list = value.Data
+    ...mapMutations(['SET_COMPLAINT_TAB_INDEX']),
+    async initList () {
+      this.$vux.loading.show({
+        text: '加载中'
       })
+      if (this.complaintTabIndex === 0) {
+        await this.getComplaintingList().then(value => {
+          this.list = value.Data
+        })
+      }
+      if (this.complaintTabIndex === 1) {
+        await this.getComplatedList().then(value => {
+          this.list = value.Data
+        })
+      }
+      this.$vux.loading.hide()
     },
-    async getList () {
-      const res = await this.$http.get('/Complaint/GetAll')
+    /**
+    * 投诉中
+     */
+    async getComplaintingList () {
+      const res = await this.$http.get('/ComplaintList/Complainting')
+      return res.data
+    },
+    /**
+    * 已完成
+     */
+    async getComplatedList () {
+      const res = await this.$http.get('/ComplaintList/Complate')
       return res.data
     },
     modified (id) {
       this.$router.push(`/user/complaint/${id}`)
-    },
-    onItemClick (val) {
-      console.log(val)
     }
   }
 }
