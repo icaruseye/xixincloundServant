@@ -155,16 +155,19 @@
         <p v-if="detail.State < 4" class="normal_desc_p">服务还未完成，不能进行评价</p>
         <p v-if="detail.State == 4" class="normal_desc_p">等待患者对本次服务进行评价！</p>
         
-        <template v-if="detail.State > 4" slot="subhead">
+        <template v-if="detail.State == 5 || detail.State == 6" slot="subhead">
             评价时间：{{reviewDetail.ReviewTime | timeFormat}}
         </template>
-        <div v-if="detail.State > 4" class="evaluate_content_container">
+        <div v-if="detail.State == 5 || detail.State == 6" class="evaluate_content_container">
           <h4 style="font-size: 12px;color: #666;font-weight:400">服务评价</h4>
           <p style="font-size: 12px;color:#999">{{reviewDetail.Remark}}</p>
           <div class="clearfix">
             <rater :value="reviewDetail.Score" :disabled="true" style="float:right;" :font-size="14">
             </rater>
           </div>
+        </div>
+        <div v-if="detail.State == 7">
+          <p style="font-size: 14px;color:#F8A519">本次服务正在被用户投诉中</p>
         </div>
       </xx-timeLine-items>
     </xx-timeLine>
@@ -187,6 +190,7 @@ export default {
   },
   data () {
     return {
+      submitLocked: false,
       detail: {}, // 任务单详情
       actionListValue: '', // 动作列表选中的值
       actionList: [], // 动作列表
@@ -229,6 +233,9 @@ export default {
      */
     completeMissionEvent () {
       const that = this
+      if (that.submitLocked) {
+        return false
+      }
       if (!that.$refs.attributeInputGroup.verify) {
         that.$vux.toast.show({
           width: '60%',
@@ -261,7 +268,9 @@ export default {
         confirmText: '确认完成',
         cancelText: '没有完成',
         onConfirm () {
+          that.submitLocked = true
           that.completeMission().then(value => {
+            that.submitLocked = false
             if (value.Code === 100000) {
               that.initDetail()
             }
@@ -284,7 +293,12 @@ export default {
      */
     startMissionEvent () {
       const that = this
+      if (that.submitLocked) {
+        return false
+      }
+      that.submitLocked = true
       that.startMission().then(value => {
+        that.submitLocked = false
         if (value.Code === 100000) {
           that.initDetail()
         } else {
@@ -307,12 +321,17 @@ export default {
      */
     cancelMissionEvent () {
       const that = this
+      if (that.submitLocked) {
+        return false
+      }
       that.$vux.confirm.show({
         content: '任务取消后不可恢复，请谨慎操作！',
         confirmText: '仍然取消',
         cancelText: '放弃',
         onConfirm () {
+          that.submitLocked = true
           that.cancelMission().then(value => {
+            that.submitLocked = false
             if (value.Code === 100000) {
               that.$vux.toast.show({
                 position: 'middle',

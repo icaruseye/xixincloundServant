@@ -20,7 +20,7 @@
         {{detail.UserName}}
       </xx-cell-items>
       <xx-cell-items label="联系电话" class="noraml_cell_right" style="color:#3AC7F5">
-        13541210120
+        {{detail.Mobile}}
       </xx-cell-items>
       <xx-cell-items label="地址" class="noraml_cell_right" style="color:#3AC7F5">
         <p style="font-size: 12px;max-width: 216px;text-align: justify;float: right;">
@@ -110,6 +110,7 @@ export default {
   },
   data () {
     return {
+      submitLocked: false,
       cancelMissionPopupVisible: false,
       detail: {},
       arrivalTime: null,
@@ -130,6 +131,9 @@ export default {
      */
     createMissionEvent () {
       const that = this
+      if (that.submitLocked) {
+        return false
+      }
       if (that.arrivalTime === null) {
         that.$vux.toast.show({
           width: '60%',
@@ -156,8 +160,10 @@ export default {
           that.$vux.loading.show({
             text: '加载中'
           })
+          that.submitLocked = true
           that.createMission().then(value => {
             that.$vux.loading.hide()
+            that.submitLocked = false
             if (value.Code === 100000) {
               that.$router.push('/mission/waitreceive/' + value.Data)
               that.$vux.toast.show({

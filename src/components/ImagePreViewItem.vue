@@ -2,7 +2,7 @@
   <div>
     <template  v-if="prewimgList != null">
       <div class="thumbs_container">
-        <img  v-for="(item, index) in prewimgList" :src="item.src" :key="index" @click="previewImage(index)" class="previewer-img" alt="">
+        <img  v-for="(item, index) in prewimgList" :src="item.src" :key="index" @click="previewImage(index)" class="previewer-img" :class="groupClass" alt="">
       </div>
       <div v-transfer-dom>
         <previewer ref="previewer" :list="prewimgList" :options="options"></previewer>
@@ -26,6 +26,9 @@ export default {
     Previewer
   },
   computed: {
+    groupClass () {
+      return `preview_image_${Math.floor(Math.random() * 9999 + 1000)}`
+    },
     prewimgList () {
       if (this.list != null && this.list !== '') {
         const list = this.list.split(',')
@@ -42,10 +45,11 @@ export default {
     }
   },
   data () {
+    const that = this
     return {
       options: {
         getThumbBoundsFn (index) {
-          let thumbnail = document.querySelectorAll('.previewer-img')[index]
+          let thumbnail = document.querySelectorAll(`.${that.groupClass}`)[index]
           let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
           let rect = thumbnail.getBoundingClientRect()
           return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}

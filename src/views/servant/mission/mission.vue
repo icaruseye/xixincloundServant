@@ -10,8 +10,8 @@
       </xx-tab>
     </sticky>
     <!-- 服务中 -->
-    <div class="tabbox" v-show="modelMissionTabIndex === 0">
-      <div class="checker-bar">
+    <div class="tabbox">
+      <div class="checker-bar" v-show="modelMissionTabIndex === 0">
         <span class="">筛选条件：</span>
         <ul>
           <li :class="missionSmallTabIndex === 0 ? 'active' : ''" @click="changeChecker(0)">全部</li>
@@ -35,33 +35,12 @@
             <img v-if="item.State == 0 && item.Type == 0" style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
             <img v-if="(item.State == 0  && item.Type == 1) || item.State == 3 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dff.png" alt="">
             <img v-if="item.State == 4 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dpj.png" alt="">
+            <img v-if="item.State >= 5 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_ywj.png" alt="">
           </div>
         </div>
       </div>
       <xx-occupied-box v-else>
-        当前列表为空
-      </xx-occupied-box>
-    </div>
-    <!-- 已完成 -->
-    <div class="tabbox" v-show="modelMissionTabIndex === 1">
-      <div v-if="complateMissionList.length" class="weui-panel">
-        <div class="weui-list_container">
-          <div v-for="(item, index) in complateMissionList" :key="index" class="weui-list_item" @click="redirectDetail(item.State, item.Type, item.ID)">
-            <div class="avatar"><img src="https://tva1.sinaimg.cn/crop.0.0.180.180.50/5e9d399fjw1e8qgp5bmzyj2050050aa8.jpg" alt=""></div>
-            <div class="mid">
-              <div style="display: flex;justify-content: space-between;align-items: baseline;">
-                <div class="title" style="font-weight:normal">{{item.ItemName}}</div>
-              </div>
-              <div style="font-size:13px;color:#999;">患者：{{item.UserName}}</div>
-              <div style="font-size:13px;color:#999;">内容：{{item.Result?item.Result:'该患者没有留言'}}</div>
-              <div class="describe">到期时间：{{item.EndTime | timeFormat}}</div>
-            </div>
-            <img style="width:50px;height:50px;" src="@/assets/images/ic_ywj.png" alt="">
-          </div>
-        </div>
-      </div>
-      <xx-occupied-box v-else>
-        当前列表为空
+        任务列表空空如也
       </xx-occupied-box>
     </div>
     <xx-tabbar></xx-tabbar>
@@ -100,7 +79,6 @@ export default {
   data () {
     return {
       dataList: [],
-      complateMissionList: [],
       checkerIndexLoack: true
     }
   },
@@ -159,7 +137,7 @@ export default {
       }
       if (that.modelMissionTabIndex === 1) {
         that.getComplateMissionList().then(value => {
-          that.complateMissionList = value.Data
+          that.dataList = value.Data
           that.$vux.loading.hide()
         })
       }

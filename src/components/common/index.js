@@ -14,7 +14,7 @@ import xxFiltrate from './filtrate'
 import xxHint from './hintComponent'
 import xxInputGroupBox from './inputGroup/box'
 import xxInputGroupItems from './inputGroup/items'
-import xxOccupiedBox from '../OccupiedBox'
+import xxOccupiedBox from './OccupiedBox'
 
 const components = {
   install: function (Vue) {

@@ -10,7 +10,7 @@
       </xx-tab>
     </sticky>
     <div v-if="list.length > 0" class="weui-panel">
-      <div v-for="(item, index) in list" :key="index" class="weui-cell">
+      <div v-for="(item, index) in list" :key="index" class="weui-cell" @click = "redirectDetail(item.ID)">
         <div class="left">
           <img class="img_icon" src="@/assets/images/icon_tcmr.png" alt="">
         </div>
@@ -25,7 +25,7 @@
       </div>
     </div>
     <xx-occupied-box v-else>
-      投诉中的列表为空
+      没有{{modelComplaintTabIndex === 0 ? '进行中' : '已完成'}}的投诉
     </xx-occupied-box>
   </div>
 </template>
@@ -98,8 +98,8 @@ export default {
       const res = await this.$http.get('/ComplaintList/Complate')
       return res.data
     },
-    modified (id) {
-      this.$router.push(`/user/complaint/${id}`)
+    redirectDetail (id) {
+      this.$router.push(`/user/complaint/${id}/detail`)
     }
   }
 }

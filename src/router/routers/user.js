@@ -36,6 +36,10 @@ export default [
     component: _import('/servant/user/user-complaint/list')
   },
   {
+    path: '/user/complaint/:id/detail',
+    component: _import('/servant/user/user-complaint/detail')
+  },
+  {
     path: '/user/date',
     component: _import('/servant/user/user-date')
   },
