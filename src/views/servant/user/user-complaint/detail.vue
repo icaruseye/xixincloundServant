@@ -50,7 +50,6 @@
     <div v-if="detail.State >= 1" class="card_titile_container">
       服务者回复内容
       <span class="right">
-        提交时间：2018/06/03 15:30
       </span>
     </div>
     <xx-cell v-if="detail.State >= 1">
@@ -67,7 +66,7 @@
     <div class="card_titile_container">
       用户投诉内容
       <span class="right">
-        提交时间：2018/06/03 15:30
+        提交时间：{{detail.CreateTime | timeFormat}}
       </span>
     </div>
     <xx-cell>
@@ -93,7 +92,6 @@
     <div class="card_titile_container"  v-if="detail.State === 0">
       服务者回复内容
       <span class="right">
-        提交时间：2018/06/03 15:30
       </span>
     </div>
     <xx-cell  v-if="detail.State === 0">
@@ -116,6 +114,9 @@
 import { dateFormat, Confirm, TransferDom } from 'vux'
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 export default {
+  metaInfo: {
+    title: '投诉详情'
+  },
   directives: {
     TransferDom
   },

@@ -97,6 +97,9 @@ import ImagePreviewItem from '@/components/ImagePreViewItem'
 import CancelMissionPopup from '@/components/cancelMissionPopup'
 const dataFormatRule = 'YYYY/MM/DD HH:mm'
 export default {
+  metaInfo: {
+    title: '预约单详情'
+  },
   components: {
     Group,
     Datetime,
@@ -194,11 +197,13 @@ export default {
     /**
      * 初始化内容
      */
-    initDetail () {
-      const that = this
-      this.getData().then(value => {
-        that.detail = value
+    async initDetail () {
+      await this.getData().then(value => {
+        this.detail = value
       })
+      if (this.detail.State !== 0) {
+        this.$router.push('/mission')
+      }
     },
     async getData () {
       const res = await this.$http.get('/UserReserveService/' + this.MissionID)

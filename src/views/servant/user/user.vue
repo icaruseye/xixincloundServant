@@ -4,7 +4,7 @@
       <div class="user-info">
         <img class="avatar" :src="userAccount.Avatar | transformImgUrl" >
         <span class="name">{{userAccount.NickName}}</span>
-        <img class="qrcode" src="@/assets/images/code-1.png"  @click="toggleMask(true)">
+        <img class="qrcode" src="@/assets/images/code-1.png"  @click="maskShow = true">
       </div>
       <div class="user-info_percent">
         你的资料完整度为 0%，完善资料和验证手机后您才能为用户提供服务
@@ -39,6 +39,11 @@
           <span class="title">提现</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
+        <router-link to="/user/bankCard" class="setting-panel_item vux-1px-b">
+          <img src="@/assets/images/icon-my-phone.png" >
+          <span class="title">我的银行卡</span>
+          <i class="iconfont icon-jiantouyou"></i>
+        </router-link>
         <router-link to="/user/complaint" class="setting-panel_item vux-1px-b">
           <img src="@/assets/images/icon-my-phone.png" >
           <span class="title">我的投诉</span>
@@ -58,18 +63,23 @@
       
     </div>
     <xx-tabbar></xx-tabbar>
-    <div class="weui-mask" v-show="maskShow">
-      <div class="weui-mask-layer" @click="toggleMask(false)"></div>
-      <img :src="userAccount.QRCodeStr" >
-    </div>
+    <x-dialog v-model="maskShow" :hide-on-blur="true">
+      <show-Qrcode></show-Qrcode>
+    </x-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import { XDialog } from 'vux'
+import ShowQrcode from '@/components/ShowQrCode'
 export default {
   metaInfo: {
     title: '我的'
+  },
+  components: {
+    XDialog,
+    ShowQrcode
   },
   data () {
     return {
@@ -81,10 +91,9 @@ export default {
       'userAccount'
     ])
   },
+  created () {
+  },
   methods: {
-    toggleMask (val) {
-      this.maskShow = val
-    }
   }
 }
 </script>

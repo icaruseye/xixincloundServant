@@ -43,7 +43,7 @@
 
       <xx-timeLine-items
         slot="items"
-        title="服务中"
+        :title="detail.State>=4?'已服务': '服务中'"
       >
         <template v-if="detail.State >= 4" slot="subhead">
             完成时间：{{detail.EndTime | timeFormat}}
@@ -184,6 +184,9 @@
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 import { dateFormat, Rater } from 'vux'
 export default {
+  metaInfo: {
+    title: '任务详情'
+  },
   components: {
     ImagePreviewItem,
     Rater

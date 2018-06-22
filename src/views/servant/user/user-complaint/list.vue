@@ -34,6 +34,9 @@
 import { Sticky, dateFormat } from 'vux'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
+  metaInfo: {
+    title: '我的投诉'
+  },
   components: {
     Sticky
   },
@@ -72,30 +75,16 @@ export default {
       this.$vux.loading.show({
         text: '加载中'
       })
-      if (this.complaintTabIndex === 0) {
-        await this.getComplaintingList().then(value => {
-          this.list = value.Data
-        })
-      }
-      if (this.complaintTabIndex === 1) {
-        await this.getComplatedList().then(value => {
-          this.list = value.Data
-        })
-      }
+      await this.getComplaintList().then(value => {
+        this.list = value.Data
+      })
       this.$vux.loading.hide()
     },
     /**
-    * 投诉中
+    * 请求数据
      */
-    async getComplaintingList () {
-      const res = await this.$http.get('/ComplaintList/Complainting')
-      return res.data
-    },
-    /**
-    * 已完成
-     */
-    async getComplatedList () {
-      const res = await this.$http.get('/ComplaintList/Complate')
+    async getComplaintList () {
+      const res = await this.$http.get(`/ComplaintList/${this.complaintTabIndex === 0 ? 'Complainting' : 'Complate'}`)
       return res.data
     },
     redirectDetail (id) {

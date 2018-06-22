@@ -57,7 +57,7 @@ export default {
     }
   },
   metaInfo: {
-    title: '服务'
+    title: '任务列表'
   },
   components: {
     Sticky

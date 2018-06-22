@@ -78,5 +78,15 @@ export default [
   {
     path: '/user/authstep4',
     component: _import('/servant/user/user-auth-step4')
+  },
+  {
+    name: 'bankCard',
+    path: '/user/bankCard',
+    component: _import('/servant/user/user-bankCard/list')
+  },
+  {
+    name: 'addBankCard',
+    path: '/user/bankCard/add',
+    component: _import('/servant/user/user-bankCard/addBankCard')
   }
 ]
