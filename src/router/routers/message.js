@@ -13,5 +13,9 @@ export default [
   {
     path: '/message/chat/:id',
     component: _import('/servant/message/chat')
+  },
+  {
+    path: '/systemMail',
+    component: _import('/servant/message/MailList')
   }
 ]

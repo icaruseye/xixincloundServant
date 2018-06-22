@@ -114,10 +114,10 @@ export default{
     margin: 0;
   }
   .xx-checker__original:checked + .xx-checker__inner {
-    border-color: #3ecccc;
+    border-color: #3AC7F5;
   }
   .xx-checker__original:checked + .xx-checker__inner::after {
-    background-color: #3ecccc;
+    background-color: #3AC7F5;
     transform: translate(-50%,-50%) scale(1);
   }
 </style>

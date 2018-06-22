@@ -6,7 +6,7 @@
       <!-- 消息列表 -->
       <div class="tabbox">
         <div class="tabbox-list vux-1px-b" style="border-top:0">
-          <router-link to="/">
+          <router-link to="/systemMail">
             <div class="item">
               <img class="avatar" src="@/assets/images/book-icon-1.png" >
               <div class="mid">
