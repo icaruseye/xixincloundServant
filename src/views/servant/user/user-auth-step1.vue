@@ -93,7 +93,6 @@ export default {
         return this.$vux.toast.text('请填勾选同意用户协议')
       }
       const res = await http.put(`/ValidateMobile?mobile=${this.mobile}&validateCode=${this.code}`)
-      debugger
       if (res.data.Code === 100000) {
         this.$vux.toast.show({
           text: '绑定成功',

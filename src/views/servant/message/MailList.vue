@@ -1,9 +1,9 @@
 <template>
   <div>
     <div>  
-      <mail-list-item></mail-list-item>
-      <mail-list-item></mail-list-item>
-      <mail-list-item></mail-list-item>
+      <mail-list-item :count="1"></mail-list-item>
+      <mail-list-item :count="1"></mail-list-item>
+      <mail-list-item :count="9999"></mail-list-item>
     </div>
     <div class="mt10px">  
       <mail-list-item></mail-list-item>

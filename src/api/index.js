@@ -1,7 +1,6 @@
 import axios from 'axios'
 import config from '@/config'
 import Vue from 'vue'
-import router from '@/router'
 
 axios.interceptors.response.use(response => {
   return response
@@ -9,11 +8,10 @@ axios.interceptors.response.use(response => {
   if (error.response.status === 401) {
     // token无效，重新登录
     if (error.response.data.Code === 100010) {
-      sessionStorage.removeItem('userInfo')
-      router.push('/Servant/Login?id=2')
+      sessionStorage.removeItem('userAccount')
+      window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${process.env.wechatOption.appId}&redirect_uri=` +
+      encodeURIComponent(process.env.wechatOption.redirectUrl) + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
     }
-    // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxef2a7d894732658e&redirect_uri=' +
-    // encodeURIComponent('http://xxx.xixincloud.com/Servant/Login?shopID=666') + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
   }
   Vue.prototype.$popupTop('出错了，请重试')
   return Promise.reject(error)
@@ -43,7 +41,6 @@ export default {
   post (url, data, header) {
     var token = localStorage.getItem('servant_token')
     var headers = {
-      'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/json; charset=UTF-8'
     }
     if (header) {
@@ -54,7 +51,7 @@ export default {
     }
     var options = {
       method: 'post',
-      url: config._PATH_ + url,
+      url: process.env.API_PATH + url,
       data: data,
       timeout: config._TIMEOUT_,
       headers: _headers || headers
@@ -64,7 +61,6 @@ export default {
   put (url, data, header) {
     var token = localStorage.getItem('servant_token')
     var headers = {
-      'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/json; charset=UTF-8'
     }
     if (header) {
@@ -75,7 +71,7 @@ export default {
     }
     var options = {
       method: 'put',
-      url: config._PATH_ + url,
+      url: process.env.API_PATH + url,
       data: data,
       timeout: config._TIMEOUT_,
       headers: _headers || headers
@@ -85,17 +81,14 @@ export default {
   get (url, params) {
     var token = localStorage.getItem('servant_token')
     var headers = {
-      'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json; charset=UTF-8',
-      'deviceType': 'WAP'
+      'Content-Type': 'application/json; charset=UTF-8'
     }
     if (token) {
       headers.token = token
     }
     return axios({
       method: 'get',
-      url: config._PATH_ + url,
-      withCredentials: true,
+      url: process.env.API_PATH + url,
       params,
       timeout: 15000,
       headers: headers
@@ -104,17 +97,14 @@ export default {
   delete (url, params) {
     var token = localStorage.getItem('servant_token')
     var headers = {
-      'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json; charset=UTF-8',
-      'deviceType': 'WAP'
+      'Content-Type': 'application/json; charset=UTF-8'
     }
     if (token) {
       headers.token = token
     }
     return axios({
       method: 'delete',
-      url: config._PATH_ + url,
-      withCredentials: true,
+      url: process.env.API_PATH + url,
       params,
       timeout: 15000,
       headers: headers

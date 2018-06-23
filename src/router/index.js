@@ -15,21 +15,23 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  // 微信授权登录
-  const userInfo = JSON.parse(sessionStorage.getItem('userInfo')) || {}
-  if (!userInfo.ID && to.path !== '/Servant/Login') {
-    // window.location.href = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxef2a7d894732658e&redirect_uri=' +
-    // encodeURIComponent('http://xxx.xixincloud.com/Servant/Login?shopID=666') + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
-    // window.location.href = '/Servant/Login'
-    sessionStorage.setItem('to_path', to.fullPath)
-    next('/Servant/Login?id=2')
-    return false
+  if (to.meta.notNeedLogin) {
+    next()
+  } else {
+    const userAccount = JSON.parse(window.sessionStorage.getItem('userAccount'))
+    if (!userAccount) {
+      sessionStorage.setItem('to_path', to.fullPath)
+      window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${process.env.wechatOption.appId}&redirect_uri=` +
+      encodeURIComponent(process.env.wechatOption.redirectUrl) + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
+    } else {
+      if (userAccount.State === 0 && to.path !== '/user/authstep1') {
+        router.push('/user/authstep1')
+        return false
+      } else {
+        next()
+      }
+    }
   }
-  if (userInfo.State === 0 && to.path !== '/user/authstep1') {
-    next('/user/authstep1')
-    return false
-  }
-  next()
 })
 
 export default router

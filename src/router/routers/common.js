@@ -8,8 +8,11 @@ export default [
    * 微信登录
    */
   {
-    path: '/Servant/Login',
-    component: _import('/servant/wxlogin/login')
+    path: '/wxLogin',
+    component: _import('/servant/wxlogin/login'),
+    meta: {
+      notNeedLogin: true
+    }
   },
   /**
    * 重定向
