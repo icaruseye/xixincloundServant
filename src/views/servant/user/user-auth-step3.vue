@@ -6,7 +6,10 @@
           <div class="cell" :class="list.length !== index + 1 ? 'vux-1px-b' : ''" :key="index">
             <div class="cell-in">
               <div class="title"><span>{{item.Name}}</span></div>
-              <button class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">申请</button>
+              <button v-if="item.State === 2" class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">申请</button>
+              <button v-if="item.State === 0" style="background-color:#F8A519" class="btn">待审核</button>
+              <button v-if="item.State === 1" style="background-color:#3eb94e" class="btn">审核通过</button>
+              <button v-if="item.State === -1" style="background-color:#e15f63" class="btn">审核驳回</button>
             </div>
           </div>
         </template>
@@ -14,9 +17,9 @@
     <div class="weui-form-title">
       *以上执业资格证书审核通过任意一项后，即可申请 相关服务项，进行服务
     </div>
-    <div class="step-btn">
+    <!-- <div class="step-btn">
       <button class="weui-btn">上一步</button>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -86,6 +89,7 @@ export default {
       border: 0;
       font-size: 15px;
       background: #3BC8F6;
+      outline: none;
       &.pass {
         background: #F8A519
       }

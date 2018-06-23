@@ -13,12 +13,5 @@ export default [
     meta: {
       notNeedLogin: true
     }
-  },
-  /**
-   * 重定向
-   */
-  {
-    path: '/',
-    redirect: '/message'
   }
 ]

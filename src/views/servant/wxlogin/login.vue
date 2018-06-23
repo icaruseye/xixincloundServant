@@ -16,6 +16,7 @@ export default {
         localStorage.setItem('servant_token', res.data.Data)
         this.$store.dispatch('getAccount').then(() => {
           const path = sessionStorage.getItem('to_path') || '/'
+          sessionStorage.removeItem('to_path')
           this.$router.replace(path)
         })
       }

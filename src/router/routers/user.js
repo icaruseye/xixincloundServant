@@ -45,27 +45,11 @@ export default [
   },
   {
     path: '/user/authstep1',
-    component: _import('/servant/user/user-auth-step1'),
-    beforeEnter: (to, from, next) => {
-      const userInfo = JSON.parse(sessionStorage.getItem('userInfo')) || {}
-      if (userInfo.Mobile && to.path !== '/user/authstep2') {
-        next('/user/authstep2')
-      } else {
-        next()
-      }
-    }
+    component: _import('/servant/user/user-auth-step1')
   },
   {
     path: '/user/authstep2',
-    component: _import('/servant/user/user-auth-step2'),
-    beforeEnter: (to, from, next) => {
-      const userInfo = JSON.parse(sessionStorage.getItem('userInfo')) || {}
-      if (userInfo.IDCard && to.path !== '/user/authstep3') {
-        next('/user/authstep3')
-      } else {
-        next()
-      }
-    }
+    component: _import('/servant/user/user-auth-step2')
   },
   {
     path: '/user/authstep3',

@@ -29,7 +29,7 @@ const actions = {
       userInfo: userInfo.data.Data || {},
       userAccount: userAccount.data.Data || {}
     }
-    commit(SET_TOKEN, res)
+    commit(SET_TOKEN, res.token)
     commit(GET_USER_ACC, res)
   }
 }

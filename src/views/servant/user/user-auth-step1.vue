@@ -97,7 +97,9 @@ export default {
         this.$vux.toast.show({
           text: '绑定成功',
           onHide () {
-            that.$router.push('/user/authstep2')
+            that.$store.dispatch('getAccount').then(() => {
+              that.$router.push('/user/authstep2')
+            })
           }
         })
       } else {

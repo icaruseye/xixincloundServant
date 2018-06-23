@@ -18,9 +18,5 @@ export default [
   {
     path: '/mission/waitreceive/:id',
     component: _import('/servant/mission/mission-waitreceive')
-  },
-  {
-    path: '/mission/detail/:id',
-    component: _import('/servant/mission/detail')
   }
 ]

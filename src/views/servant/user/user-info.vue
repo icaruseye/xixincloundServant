@@ -140,7 +140,7 @@ export default {
       const isValidate = util.validateForm(this.reqParam, this.authText)
       if (isValidate) {
         this.submitBtn = true
-        const res = await http.send('/Account', 'put', this.reqParam)
+        const res = await http.put('/Account', this.reqParam)
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
             text: '提交成功',

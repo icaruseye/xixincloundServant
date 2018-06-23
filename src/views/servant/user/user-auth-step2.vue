@@ -18,21 +18,21 @@
     <div class="weui-form-title">
       *上传身份证正反面照片
     </div>
-    <div class="weui-form">
+    <div style="padding: 0 20px">
       <xx-uploader
-        title="身份证正面"
-        :limit="1"
-        :maxSize="1024 * 1024 * 4"
-        :imgList="imgList1"
-        @onUpdate="onUpdate1"
-      ></xx-uploader>
-      <xx-uploader
-        title="身份证背面"
-        :limit="count"
-        :maxSize="1024 * 1024 * 2"
-        :imgList="imgList2"
-        @onUpdate="onUpdate2"
-      ></xx-uploader>
+      title="身份证正面"
+      :limit="1"
+      :maxSize="1024 * 1024 * 4"
+      :imgList="imgList1"
+      @onUpdate="onUpdate1"
+    ></xx-uploader>
+    <xx-uploader
+      title="身份证背面"
+      :limit="1"
+      :maxSize="1024 * 1024 * 2"
+      :imgList="imgList2"
+      @onUpdate="onUpdate2"
+    ></xx-uploader>
     </div>
     <div class="step-btn">
       <button class="weui-btn" @click="submit">下一步</button>
@@ -43,7 +43,6 @@
 <script>
 import stepBar from './user-auth-stepbar'
 import util from '@/plugins/util'
-import http from '@/api'
 export default {
   metaInfo: {
     title: '实名认证'
@@ -107,12 +106,14 @@ export default {
       const isValidate = util.validateForm(this.reqParam, this.authText)
       if (isValidate) {
         if (util.CheckIDCardNum(this.reqParam.IDCard)) {
-          const res = await http.put('/ServantInfo', this.reqParam)
+          const res = await this.$http.put('/Info', this.reqParam)
           if (res.data.Code === 100000) {
             this.$vux.toast.show({
               text: '提交成功',
               onHide () {
-                that.$router.push('/user/authstep3')
+                that.$store.dispatch('getAccount').then(() => {
+                  that.$router.push('/user/authstep3')
+                })
               }
             })
           } else {

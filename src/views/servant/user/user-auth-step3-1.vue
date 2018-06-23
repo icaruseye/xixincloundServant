@@ -1,6 +1,6 @@
 <template>
   <div style="min-height:100vh;position:relative">
-    <div class="weui-form">
+    <div style="padding:20px">
       <xx-uploader
         title="执业证照片"
         :limit="limit"

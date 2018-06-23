@@ -7,7 +7,7 @@ import _import from '../_import'
  */
 export default [
   {
-    path: '/message',
+    path: '/',
     component: _import('/servant/message/message')
   },
   {
