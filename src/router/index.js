@@ -32,19 +32,31 @@ router.beforeEach((to, from, next) => {
         return false
       }
 
-      if ((userAccount.State === 0 || userAccount.State === 2) && to.path !== '/user/authstep2') { // 没有实名认证
-        if (to.path === '/user/authstep3' || to.path === '/user/authstep3-1') {
-          next()
-        } else {
+      if (to.path === '/user/authstep3' || to.path === '/user/authstep3-1') {
+        next()
+        return false
+      }
+
+      if (userAccount.State === 0 || userAccount.State === 2) { // 没有实名认证
+        if (to.path !== '/user/authstep2') {
           next('/user/authstep2')
+        } else {
+          next()
         }
         return false
-      } else if (userAccount.State === 3 && to.path !== '/user/authstep2') { // 实名认证通过
-        next()
-      } else if (userAccount.State === 3 && to.path === '/user/authstep2') {
-        next('/user/info')
+      } else if (userAccount.State === 1) { // 待审核
+        next('/user/authstep3')
+        return false
+      } else if (userAccount.State === 3) { // 审核通过
+        if (to.path === '/user/authstep2') {
+          next('/user/info')
+        } else {
+          next()
+        }
+        return false
       } else { // 账号处于异常状态
         alert('账号异常，请联系客服')
+        return false
       }
     }
   }
