@@ -1,58 +1,45 @@
 <template>
   <div class="weui-form">
-    <div class="weui-cell-form-title">填写服务套餐信息</div>
-    <div class="weui-cell nobor">
+    <div class="weui-cell-form-title">填写服务项目的信息</div>
+    <div class="weui-cell nobor" style="background-color:#3ac7f5;color:#fff">
       <div class="weui-cell-top" :class="{ 'control': true }">
-          <label class="label" for="">服务包名称</label>
-          {{reqParams.Name}}
+          <label class="label" for="">服务包名称：</label>
+          {{templateDetail.Name}}
       </div>
-      <span v-show="errorBags.has('PackageName')" class="help is-danger">{{ errorBags.first('PackageName') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
-          <label class="label" for="">真实售价</label>
-          <input v-model="reqParams.Price" @blur="countPrice" v-validate="'required'" name="Price" type="text" placeholder="请输入真实售价">
+          <x-input title = '真实售价：' v-model="templateDetail.Price" v-validate="'required'" name="Price" placeholder="请输入真实售价"></x-input>
       </div>
       <span v-show="errorBags.has('Price')" class="help is-danger">{{ errorBags.first('Price') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
-          <label class="label" for="">展示价格</label>
-          <input v-model="reqParams.ViewPrice" v-validate="'required'" name="PackageViewPrice" type="text" placeholder="请输入展示价格">
+          <x-input title = '展示价格：' v-model="ViewPrice" v-validate="'required'" name="PackageViewPrice" placeholder="请输入展示价格"></x-input>
       </div>
       <span v-show="errorBags.has('PackageViewPrice')" class="help is-danger">{{ errorBags.first('PackageViewPrice') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
-          <label class="label" for="">库存数量</label>
-          <input v-model="reqParams.Count" v-validate="'required|min_value:1|max_value:500'" name="Count" type="text" placeholder="请输入库存数量">
+          <x-input title = '库存数量：' v-model="reqParams.Count" v-validate="'required|min_value:1|max_value:500'" name="Count" placeholder="请输入库存数量"></x-input>
       </div>
       <span v-show="errorBags.has('Count')" class="help is-danger">{{ errorBags.first('Count') }}</span>
     </div>
     <div class="weui-cell">
-      <popup-radio title="options" :options="options1" v-model="option1"></popup-radio>
-      <div class="weui-cell-top" :class="{ 'control': true }">
-          <label class="label" for="">有效期单位</label>
-          <select name="" v-model="reqParams.EffectiveType">
-            <option :value="1">年</option>
-            <option :value="2">月</option>
-            <option :value="3">日</option>
-          </select>
-          <i class="iconfont icon-jiantouyou"></i>
-      </div>
+      <popup-radio title='有效期单位：' :options="expiryUnitList" v-model="EffectiveValue">
+        <p slot="popup-header" class="vux-1px-b popup_title">请选择有效期单位</p>
+      </popup-radio>
       <span v-show="errorBags.has('EffectiveType')" class="help is-danger">{{ errorBags.first('EffectiveType') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
-          <label class="label" for="">有效期时长</label>
-          <input v-model="reqParams.EffectiveValue" v-validate="'required|min_value:1'" name="EffectiveValue" type="text" placeholder="请输入有效期时长">
+          <x-input title = '有效期时长：' v-model="reqParams.EffectiveValue" v-validate="'required|min_value:1'" name="EffectiveValue" placeholder="请输入有效期时长"></x-input>
       </div>
       <span v-show="errorBags.has('EffectiveValue')" class="help is-danger">{{ errorBags.first('EffectiveValue') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top">
-          <label class="label" for="">服务包介绍</label>
-          <textarea v-model="reqParams.Description" v-validate="'required'" name="PackageDescription" placeholder="请输入服务包介绍"></textarea>
+          <x-textarea title="服务介绍：" placeholder="请输入服务包介绍" :show-counter="false" :rows="1" autosize v-model="templateDetail.Content"></x-textarea>
       </div>
       <span v-show="errorBags.has('PackageDescription')" class="help is-danger">{{ errorBags.first('PackageDescription') }}</span>
     </div>
@@ -64,52 +51,77 @@
 
 <script>
 import http from '@/api'
-import { TransferDom,PopupRadio, Popup, Confirm } from 'vux'
+import { TransferDom, XTextarea, XInput, PopupRadio, Popup, Confirm } from 'vux'
 export default {
+  metaInfo: {
+    title: '新增服务'
+  },
   directives: {
     TransferDom
   },
   components: {
+    XInput,
     Confirm,
-    Popup
+    Popup,
+    PopupRadio,
+    XTextarea
   },
   data () {
     return {
+      EffectiveValue: '年',
+      expiryUnitList: [
+        {
+          key: '1',
+          value: '年'
+        },
+        {
+          key: '2',
+          value: '月'
+        },
+        {
+          key: '3',
+          value: '日'
+        }
+      ],
+      templateDetail: {},
       submitBtn: false,
-      addItemPopup: false, // 添加服务项
-      addType: false, // 新增分类
-      serviceItem: [],
-      serviceType: 1,
-      imgList1: [],
-      uploadeId1: [],
-      serviceItemList: [], // 服务项列表
       reqParams: {
-        TemplateID: '',
-        ID: '',
-        Name: '',
-        Price: '',
-        ViewPrice: '',
-        PackageTypeID: 1,
-        EffectiveValue: '',
-        EffectiveType: 1,
-        Count: '',
-        Description: '',
-        PackageImg: '',
-        ImageAllInOne: ''
+        EffectiveValue: '', // 有效期值
+        EffectiveType: 1, // 有效期单位
+        Count: '' // 库存
       }
     }
   },
-  mounted () {
-    if (this.$route.params.id !== 'add') {
-      this.getData()
+  computed: {
+    templateID () {
+      return this.$route.params.id
+    },
+    ViewPrice: {
+      get () {
+        return (this.templateDetail.Price * 1.2).toFixed(2)
+      },
+      set (val) {
+        return val
+      }
     }
   },
+  created () {
+    this.init()
+  },
   methods: {
-    getData () {
-      const info = this.setEffectiveType(JSON.parse(sessionStorage.getItem('packageDetail')))
-      this.reqParams = Object.assign(this.reqParams, info)
-      this.reqParams.Price = this.convertToyuan(this.reqParams.Price)
-      this.reqParams.ViewPrice = this.convertToyuan(this.reqParams.ViewPrice * 1.2)
+    async init () {
+      await this.getData().then(value => {
+        if (value.Code === 100000) {
+          this.templateDetail = value.Data
+        }
+      })
+    },
+    /**
+     * 获取服务项模板
+     */
+    async getData () {
+      const res = await this.$http.get(`/ItemTemplate/${this.templateID}`)
+      return res.data
     },
     setEffectiveType (data) {
       if (data.EffectiveYear) {
@@ -128,9 +140,6 @@ export default {
         return data
       }
     },
-    countPrice () {
-      this.reqParams.ViewPrice = this.Price * 1.2
-    },
     convertToyuan (val) {
       return (val / 100).toFixed(2)
     },
@@ -146,9 +155,16 @@ export default {
       const res = await this.$validator.validateAll()
       if (res) {
         this.submitBtn = true
-        this.reqParams.Price = this.reqParams.Price * 100
-        this.reqParams.ViewPrice = this.reqParams.PackageViewPrice * 100
-        const res = await http.post('/CertificatePackage', this.reqParams)
+        const res = await http.post('/CertificatePackage', {
+          TemplateID: that.templateID,
+          Name: that.templateDetail.Name,
+          Price: that.templateDetail.Price * 100,
+          ViewPrice: that.ViewPrice * 100,
+          EffectiveValue: that.reqParams.EffectiveValue,
+          EffectiveType: that.reqParams.EffectiveType,
+          Count: that.reqParams.Count,
+          Description: that.templateDetail.Content
+        })
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
             text: '提交成功',
@@ -273,5 +289,13 @@ export default {
   .delete {
     color: #FF5722;
   }
+}
+.popup_title {
+  text-align: center;
+  padding: 8px 0;
+  height: 35px;
+  line-height: 35px;
+  color: #999;
+  background-color: #fff
 }
 </style>
