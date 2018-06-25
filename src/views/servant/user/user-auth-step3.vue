@@ -37,7 +37,7 @@
       <router-link to="/user/authstep2" class="weui-btn">上一步</router-link>
     </div>
     <div class="step-btn"  v-if="userState === 3">
-      <router-link to="/user" class="weui-btn">开始使用</router-link>
+      <router-link to="/user" class="weui-btn">进入主页</router-link>
     </div>
   </div>
 </template>

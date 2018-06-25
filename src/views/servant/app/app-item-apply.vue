@@ -44,7 +44,7 @@ export default {
     },
     go (id, index) {
       sessionStorage.setItem('packageDetail', JSON.stringify(this.itemList[index]))
-      this.$router.push(`/app/packageEdit/${id}?isAdd=1`)
+      this.$router.push(`/app/itemEdit/${id}?isAdd=1`)
     },
     getRoleList (list) {
       list.map((item) => {

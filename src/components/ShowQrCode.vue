@@ -1,17 +1,17 @@
 <template>
   <div class="wrap_container">
     <div class="userInfo_container">
-      <img class="avatar" :src="userAccount.Avatar" alt="">
+      <img class="avatar" :src="userAccount.Avatar | transformImgUrl" alt="">
       <div class="right">
         <h3 class="nickName">
           {{userAccount.NickName}}
-          <span class="actor">主治医师</span>  
+          <span class="actor">护士</span>
         </h3>
-        <p class="desc">四川大学华西医院妇儿院四川大学华西医院妇儿院</p>
+        <p class="desc">{{userAccount.Description}}</p>
       </div>
     </div>
     <div class="qr_code_box">
-      <qrcode class="qr_code_box_img" :value="userAccount.QRCodeStr"  type="img"></qrcode>
+      <img :src="API_PATH+'/QRCode/'+userAccount.ID" alt="">
     </div>
     <p class="hint_desc">扫一扫二维码，可加我为好友</p>
   </div>
@@ -26,7 +26,10 @@ export default {
   computed: {
     ...mapGetters([
       'userAccount'
-    ])
+    ]),
+    API_PATH () {
+      return process.env.API_PATH
+    }
   }
 }
 </script>

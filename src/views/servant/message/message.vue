@@ -2,7 +2,7 @@
   <div>
     <sticky>
       <router-link class="system_message_entrance_container" to="/systemMail">
-        <div class="avatar_container"><img :src="userAccount.Avatar" alt=""></div>
+        <div class="avatar_container"><img :src="userAccount.Avatar | transformImgUrl" alt=""></div>
         <div class="content">
           {{userInfo.RealName}}
           <span class="professional_title">护士</span>
@@ -92,6 +92,7 @@ export default {
   background-color: #fff;
   box-shadow: 0 1px 6px rgba(153, 153, 153, 0.5);
   padding-left: 5px; 
+  box-sizing: border-box;
   .avatar_container
   {
     display: flex;

@@ -4,32 +4,33 @@
     <div class="weui-cell nobor">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">服务包名称</label>
-          <input v-model="reqParams.Name" v-validate="'required'" :readonly="true" name="PackageName" type="text" placeholder="请输入服务包名称">
+          {{reqParams.Name}}
       </div>
-      <span v-show="errors.has('PackageName')" class="help is-danger">{{ errors.first('PackageName') }}</span>
+      <span v-show="errorBags.has('PackageName')" class="help is-danger">{{ errorBags.first('PackageName') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">真实售价</label>
           <input v-model="reqParams.Price" @blur="countPrice" v-validate="'required'" name="Price" type="text" placeholder="请输入真实售价">
       </div>
-      <span v-show="errors.has('Price')" class="help is-danger">{{ errors.first('Price') }}</span>
+      <span v-show="errorBags.has('Price')" class="help is-danger">{{ errorBags.first('Price') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">展示价格</label>
           <input v-model="reqParams.ViewPrice" v-validate="'required'" name="PackageViewPrice" type="text" placeholder="请输入展示价格">
       </div>
-      <span v-show="errors.has('PackageViewPrice')" class="help is-danger">{{ errors.first('PackageViewPrice') }}</span>
+      <span v-show="errorBags.has('PackageViewPrice')" class="help is-danger">{{ errorBags.first('PackageViewPrice') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">库存数量</label>
           <input v-model="reqParams.Count" v-validate="'required|min_value:1|max_value:500'" name="Count" type="text" placeholder="请输入库存数量">
       </div>
-      <span v-show="errors.has('Count')" class="help is-danger">{{ errors.first('Count') }}</span>
+      <span v-show="errorBags.has('Count')" class="help is-danger">{{ errorBags.first('Count') }}</span>
     </div>
     <div class="weui-cell">
+      <popup-radio title="options" :options="options1" v-model="option1"></popup-radio>
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">有效期单位</label>
           <select name="" v-model="reqParams.EffectiveType">
@@ -39,21 +40,21 @@
           </select>
           <i class="iconfont icon-jiantouyou"></i>
       </div>
-      <span v-show="errors.has('EffectiveType')" class="help is-danger">{{ errors.first('EffectiveType') }}</span>
+      <span v-show="errorBags.has('EffectiveType')" class="help is-danger">{{ errorBags.first('EffectiveType') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">有效期时长</label>
           <input v-model="reqParams.EffectiveValue" v-validate="'required|min_value:1'" name="EffectiveValue" type="text" placeholder="请输入有效期时长">
       </div>
-      <span v-show="errors.has('EffectiveValue')" class="help is-danger">{{ errors.first('EffectiveValue') }}</span>
+      <span v-show="errorBags.has('EffectiveValue')" class="help is-danger">{{ errorBags.first('EffectiveValue') }}</span>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top">
           <label class="label" for="">服务包介绍</label>
           <textarea v-model="reqParams.Description" v-validate="'required'" name="PackageDescription" placeholder="请输入服务包介绍"></textarea>
       </div>
-      <span v-show="errors.has('PackageDescription')" class="help is-danger">{{ errors.first('PackageDescription') }}</span>
+      <span v-show="errorBags.has('PackageDescription')" class="help is-danger">{{ errorBags.first('PackageDescription') }}</span>
     </div>
     <div class="weui-cell">
       <button type="button" class="weui-btn weui-btn_primary" @click="submit" :disabled="submitBtn">提交</button>
@@ -63,7 +64,7 @@
 
 <script>
 import http from '@/api'
-import { TransferDom, Popup, Confirm } from 'vux'
+import { TransferDom,PopupRadio, Popup, Confirm } from 'vux'
 export default {
   directives: {
     TransferDom

@@ -14,11 +14,11 @@
             <img src="@/assets/images/icon-my-manager.png" >
             <span>消息</span>
         </router-link>
-        <router-link to="/" class="user-panel_item">
+        <router-link to="/mission" class="user-panel_item">
             <img src="@/assets/images/icon-my-service.png" >
             <span>任务</span>
         </router-link>
-        <router-link to="/" class="user-panel_item">
+        <router-link to="/app" class="user-panel_item">
             <img src="@/assets/images/icon-my-calendar.png" >
             <span>应用</span>
         </router-link>
@@ -47,6 +47,11 @@
         <router-link to="/user/complaint" class="setting-panel_item vux-1px-b">
           <img src="@/assets/images/icon-my-phone.png" >
           <span class="title">我的投诉</span>
+          <i class="iconfont icon-jiantouyou"></i>
+        </router-link>
+        <router-link to="/user/authstep3" class="setting-panel_item">
+          <img src="@/assets/images/icon-my-phone.png" >
+          <span class="title">我的执业证</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
         <router-link to="/user/date" class="setting-panel_item">
@@ -116,7 +121,7 @@ export default {
   },
   created () {
   },
-  methods: {
+  mounted () {
   }
 }
 </script>

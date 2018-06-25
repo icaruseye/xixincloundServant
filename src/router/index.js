@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
         next('/user')
       }
 
-      if (to.path === '/user/authstep3' || to.path === '/user/authstep3-1') { // 进入添加执业证页面
+      if ((userState === 1 || userState === 3) && (to.path === '/user/authstep3' || to.path === '/user/authstep3-1')) { // 进入添加执业证页面
         next()
         return false
       }

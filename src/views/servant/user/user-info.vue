@@ -106,7 +106,7 @@ export default {
         }
       },
       reqParam: {
-        Introduction: JSON.parse(sessionStorage.getItem('userAccount')).Description,
+        Introduction: JSON.parse(sessionStorage.getItem('userAccount')).Description || '',
         nickname: JSON.parse(sessionStorage.getItem('userAccount')).NickName,
         Avatar: ''
       },
@@ -116,6 +116,11 @@ export default {
       avatarUrl: [{
         url: JSON.parse(sessionStorage.getItem('userAccount')).Avatar
       }]
+    }
+  },
+  computed: {
+    currentAvatar () {
+      return JSON.parse(sessionStorage.getItem('userAccount')).Avatar
     }
   },
   created () {
@@ -132,8 +137,13 @@ export default {
     })
   },
   methods: {
-    onUpdate5 (id) {
-      this.uploadId4 = id
+    onUpdate5 (value) {
+      let imgsStr = ''
+      value.map((item) => {
+        imgsStr += item + ','
+      })
+
+      this.reqParam.Avatar = imgsStr.substring(0, imgsStr.lastIndexOf(','))
     },
     async validateBeforeSubmit () {
       const that = this
