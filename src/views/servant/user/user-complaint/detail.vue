@@ -293,6 +293,7 @@ export default {
       font-weight: 400;
       height: 30px;
       line-height: 30px;
+      width: 100%;
       .mission_id
       {
         position: absolute;

@@ -197,7 +197,7 @@ export default {
       detail: {}, // 任务单详情
       actionListValue: '', // 动作列表选中的值
       actionList: [], // 动作列表
-      attributeListValue: '', // 采集信息的值
+      attributeListValue: [], // 采集信息的值
       attributeList: [], // 采集信息列表
       serviceResult: '', // 服务结果
       remark: '', // 备注
