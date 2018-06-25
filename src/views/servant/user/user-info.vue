@@ -106,8 +106,8 @@ export default {
         }
       },
       reqParam: {
-        Introduction: '',
-        nickname: '',
+        Introduction: JSON.parse(sessionStorage.getItem('userAccount')).Description,
+        nickname: JSON.parse(sessionStorage.getItem('userAccount')).NickName,
         Avatar: ''
       },
       gender: '',

@@ -25,7 +25,7 @@
       </div>
     </div>
     <xx-occupied-box v-else>
-      没有{{modelComplaintTabIndex === 0 ? '进行中' : '已完成'}}的投诉
+      {{occupiedText}}
     </xx-occupied-box>
   </div>
 </template>
@@ -42,7 +42,8 @@ export default {
   },
   data () {
     return {
-      list: []
+      list: [],
+      occupiedText: ''
     }
   },
   filters: {
@@ -72,9 +73,8 @@ export default {
   methods: {
     ...mapMutations(['SET_COMPLAINT_TAB_INDEX']),
     async initList () {
-      this.$vux.loading.show({
-        text: '加载中'
-      })
+      this.$vux.loading.show('加载中')
+      this.occupiedText = '正在请求数据…'
       await this.getComplaintList().then(value => {
         this.list = value.Data
       })
@@ -85,6 +85,7 @@ export default {
      */
     async getComplaintList () {
       const res = await this.$http.get(`/ComplaintList/${this.complaintTabIndex === 0 ? 'Complainting' : 'Complate'}`)
+      this.occupiedText = this.complaintTabIndex === 0 ? '没有被投诉中的记录' : '没有已完成的投诉记录'
       return res.data
     },
     redirectDetail (id) {

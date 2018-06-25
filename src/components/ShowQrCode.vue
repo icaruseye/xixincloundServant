@@ -11,14 +11,18 @@
       </div>
     </div>
     <div class="qr_code_box">
-      <img :src="'/api/Servant/QRCode/'+userAccount.ID" alt="">
+      <qrcode class="qr_code_box_img" :value="userAccount.QRCodeStr"  type="img"></qrcode>
     </div>
     <p class="hint_desc">扫一扫二维码，可加我为好友</p>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import { Qrcode } from 'vux'
 export default {
+  components: {
+    Qrcode
+  },
   computed: {
     ...mapGetters([
       'userAccount'
@@ -38,11 +42,14 @@ export default {
   width: 200px;
   height: 200px;
   margin-top: 30px;
-  img
+  .qr_code_box_img
   {
     width: 100%;
     height: 100%;
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 

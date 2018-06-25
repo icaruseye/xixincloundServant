@@ -1,6 +1,19 @@
 <template>
   <div>
-    <step-bar :list="stepInfo"></step-bar>
+    <xx-step-bar step="1">
+      <xx-step-items slot="items">
+        手机认证
+      </xx-step-items>
+      <xx-step-items slot="items">
+        实名认证
+      </xx-step-items>
+      <xx-step-items slot="items">
+        执业认证
+      </xx-step-items>
+      <xx-step-items slot="items">
+        开始服务
+      </xx-step-items>
+    </xx-step-bar>
     <div class="panel">
       <div class="cell vux-1px-b">
         <input v-model="mobile" type="text" placeholder="请输入手机号">
@@ -28,19 +41,6 @@ export default {
   },
   data () {
     return {
-      stepInfo: [{
-        text: '手机认证',
-        type: 1
-      }, {
-        text: '实名认证',
-        type: 0
-      }, {
-        text: '执业认证',
-        type: 0
-      }, {
-        text: '开始服务',
-        type: 0
-      }],
       mobile: '',
       code: '',
       disabled_code: false,

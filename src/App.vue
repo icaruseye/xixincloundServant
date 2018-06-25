@@ -1,12 +1,23 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <xx-occupied-box v-if="routerLoading">
+      页面加载中…
+    </xx-occupied-box>
+    <template v-else>
+      <router-view></router-view>
+    </template>
   </div>
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 export default {
-  name: 'app'
+  name: 'app',
+  computed: {
+    ...mapGetters([
+      'routerLoading'
+    ])
+  }
 }
 </script>
 

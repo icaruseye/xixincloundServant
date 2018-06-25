@@ -1,6 +1,22 @@
 <template>
   <div>
-    <step-bar :list="stepInfo"></step-bar>
+    <xx-step-bar step="3">
+      <xx-step-items slot="items">
+        手机认证
+      </xx-step-items>
+      <xx-step-items slot="items">
+        实名认证
+      </xx-step-items>
+      <xx-step-items slot="items">
+        执业认证
+      </xx-step-items>
+      <xx-step-items slot="items">
+        开始服务
+      </xx-step-items>
+    </xx-step-bar>
+    <div class="auth_state_container" v-if="userState === 1">
+      身份证审核中
+    </div>
     <div class="panel">
         <template v-for="(item, index) in list">
           <div class="cell" :class="list.length !== index + 1 ? 'vux-1px-b' : ''" :key="index">
@@ -17,38 +33,35 @@
     <div class="weui-form-title">
       *以上执业资格证书审核通过任意一项后，即可申请 相关服务项，进行服务
     </div>
-    <!-- <div class="step-btn">
-      <button class="weui-btn">上一步</button>
-    </div> -->
+    <div class="step-btn"  v-if="userState === 0">
+      <router-link to="/user/authstep2" class="weui-btn">上一步</router-link>
+    </div>
+    <div class="step-btn"  v-if="userState === 3">
+      <router-link to="/user" class="weui-btn">开始使用</router-link>
+    </div>
   </div>
 </template>
 
 <script>
 import http from '@/api'
 import stepBar from './user-auth-stepbar'
+import {mapGetters} from 'vuex'
 export default {
   components: {
     stepBar
   },
   data () {
     return {
-      stepInfo: [{
-        text: '手机认证',
-        type: 1
-      }, {
-        text: '实名认证',
-        type: 1
-      }, {
-        text: '执业认证',
-        type: 1
-      }, {
-        text: '开始服务',
-        type: 0
-      }],
       list: []
     }
   },
+  computed: {
+    ...mapGetters([
+      'userState'
+    ])
+  },
   created () {
+    this.$store.dispatch('getAccount')
     this.getCertificateType()
   },
   methods: {
@@ -64,6 +77,18 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.auth_state_container
+{
+  height: 40px;
+  margin: 10px 40px;
+  border: 1px solid #ffe58f;
+  background-color: #fff1b8;
+  color: #faad14;
+  text-align: center;
+  line-height: 40px;
+  border-radius: 5px;
+
+}
 .panel {
   margin-top: 10px;
   background: #fff;

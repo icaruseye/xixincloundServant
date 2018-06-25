@@ -40,7 +40,7 @@
         </div>
       </div>
       <xx-occupied-box v-else>
-        任务列表空空如也
+        {{occupiedText}}
       </xx-occupied-box>
     </div>
     <xx-tabbar></xx-tabbar>
@@ -79,11 +79,12 @@ export default {
   data () {
     return {
       dataList: [],
-      checkerIndexLoack: true
+      checkerIndexLoack: true,
+      occupiedText: ''
     }
   },
   watch: {
-    missionTabIndex (val) {
+    modelMissionTabIndex (val) {
       this.initData()
     }
   },
@@ -107,40 +108,42 @@ export default {
       初始化
      */
     async initData () {
-      const that = this
-      that.$vux.loading.show({
-        text: '加载中'
-      })
-      if (that.modelMissionTabIndex === 0) {
-        that.dataList = []
-        switch (that.missionSmallTabIndex) {
+      this.$vux.loading.show('加载中')
+      this.occupiedText = '正在请求数据…'
+      if (this.modelMissionTabIndex === 0) {
+        this.dataList = []
+        switch (this.missionSmallTabIndex) {
           case 0:
-            await that.getAll()
+            await this.getAll()
+            this.occupiedText = '任务列表空空如也'
             break
           case 1:
-            await that.getUserReserveServiceList().then(value => {
-              that.dataList = value
-              that.checkerIndexLoack = true
+            await this.getUserReserveServiceList().then(value => {
+              this.dataList = value
+              this.checkerIndexLoack = true
+              this.occupiedText = '没有待确认的任务'
             })
             break
           case 2:
-            await that.getAllWaitForService()
+            await this.getAllWaitForService()
+            this.occupiedText = '没有待服务的任务'
             break
           case 3:
-            await that.getWaitForReview().then(value => {
-              that.dataList = value
-              that.checkerIndexLoack = true
+            await this.getWaitForReview().then(value => {
+              this.dataList = value
+              this.checkerIndexLoack = true
+              this.occupiedText = '没有待评价的任务'
             })
             break
         }
-        that.$vux.loading.hide()
       }
-      if (that.modelMissionTabIndex === 1) {
-        that.getComplateMissionList().then(value => {
-          that.dataList = value.Data
-          that.$vux.loading.hide()
+      if (this.modelMissionTabIndex === 1) {
+        await this.getComplateMissionList().then(value => {
+          this.dataList = value.Data
+          this.occupiedText = '没有已完成的任务'
         })
       }
+      this.$vux.loading.hide()
     },
     async getAllWaitForService () {
       const that = this

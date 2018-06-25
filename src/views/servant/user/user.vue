@@ -6,8 +6,8 @@
         <span class="name">{{userAccount.NickName}}</span>
         <img class="qrcode" src="@/assets/images/code-1.png"  @click="maskShow = true">
       </div>
-      <div class="user-info_percent">
-        你的资料完整度为 0%，完善资料和验证手机后您才能为用户提供服务
+      <div v-if="userInfoCompleteProgress<100" class="user-info_percent">
+        你的资料完整度为 {{userInfoCompleteProgress}}%，完善资料和验证手机后您才能为用户提供服务
       </div>
       <div class="user-panel">
         <router-link to="/" class="user-panel_item">
@@ -88,8 +88,31 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userAccount'
-    ])
+      'userAccount',
+      'userInfo'
+    ]),
+    userInfoCompleteProgress () {
+      let step = 0
+      if (this.userInfo.Mobile) {
+        step += 1
+      }
+      if (this.userInfo.IDCard) {
+        step += 1
+      }
+      if (this.userAccount.NickName) {
+        step += 1
+      }
+      if (this.userInfo.RealName) {
+        step += 1
+      }
+      if (this.userInfo.RealName) {
+        step += 1
+      }
+      if (this.userAccount.Description) {
+        step += 1
+      }
+      return Math.ceil((step / 6) * 100)
+    }
   },
   created () {
   },

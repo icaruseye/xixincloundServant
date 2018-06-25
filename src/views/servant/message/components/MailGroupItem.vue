@@ -5,20 +5,20 @@
     </div>
     <div class="right">  
       <h3 class="title text-overflow-1">
-        {{title}}
+        系统消息
       </h3>
-      <p class="desc text-overflow-1"><slot></slot></p>
-      <span class="time">{{time}}</span>
-      <i class="mail_num_icon" v-if="count != null">{{count}}</i>
+      <p class="desc text-overflow-1">
+        荣获《财资》杂志 “2016年最佳企业金奖”
+      </p>
+      <span class="time">2018/06/08 15:20</span>
+      <i class="mail_num_icon" v-if="count > 0">{{count}}</i>
     </div>
   </div>
 </template>
 <script>
 export default {
   props: {
-    title: '',
-    count: null,
-    time: ''
+    count: 0
   }
 }
 </script>

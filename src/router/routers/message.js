@@ -11,6 +11,10 @@ export default [
     component: _import('/servant/message/message')
   },
   {
+    path: '/message',
+    component: _import('/servant/message/message')
+  },
+  {
     path: '/message/chat/:id',
     component: _import('/servant/message/chat')
   },

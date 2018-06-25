@@ -29,7 +29,6 @@ const actions = {
       userInfo: userInfo.data.Data || {},
       userAccount: userAccount.data.Data || {}
     }
-    commit(SET_TOKEN, res.token)
     commit(GET_USER_ACC, res)
   }
 }
@@ -37,7 +36,34 @@ const actions = {
 const getters = {
   userAccount: state => state.userAccount,
   userInfo: state => state.userInfo,
-  token: state => state.token
+  token: state => state.token,
+  userState: state => {
+    let userAccount = state.userAccount
+    let accountState = userAccount.State
+    let userInfo = state.userInfo
+
+    if (!userInfo.Mobile) {
+      return -4 // 用户没有绑定手机
+    }
+    if (accountState === -2) {
+      return -2 // 账户锁定中
+    }
+    if (accountState === -1) {
+      return -1 // 账户已删除
+    }
+    if (accountState === 0) {
+      return 0 // 账户未提交身份证
+    }
+    if (accountState === 1) {
+      return 1 // 账户提交身份证 待审核
+    }
+    if (accountState === 2) {
+      return 2 // 账户审核未通过
+    }
+    if (accountState === 3) {
+      return 3 // 账户审核通过
+    }
+  }
 }
 
 export default {
