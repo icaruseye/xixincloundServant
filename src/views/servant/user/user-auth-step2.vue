@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom: 100px">
     <xx-step-bar step="2">
       <xx-step-items slot="items">
         手机认证
@@ -35,14 +35,14 @@
       <xx-uploader
       title="身份证正面"
       :limit="1"
-      :maxSize="1024 * 1024 * 4"
+      :maxSize="1024 * 1024 * 5"
       :imgList="imgList1"
       @onUpdate="onUpdate1"
     ></xx-uploader>
     <xx-uploader
       title="身份证背面"
       :limit="1"
-      :maxSize="1024 * 1024 * 2"
+      :maxSize="1024 * 1024 * 5"
       :imgList="imgList2"
       @onUpdate="onUpdate2"
     ></xx-uploader>
@@ -119,6 +119,8 @@ export default {
           } else {
             this.$vux.toast.text(res.data.Msg)
           }
+        } else {
+          alert('身份证格式不正确')
         }
       }
     }

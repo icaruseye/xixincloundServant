@@ -25,11 +25,13 @@
       </div>
       <span v-show="errorBags.has('Count')" class="help is-danger">{{ errorBags.first('Count') }}</span>
     </div>
-    <div class="weui-cell">
-      <popup-radio title='有效期单位：' :options="expiryUnitList" v-model="EffectiveValue">
-        <p slot="popup-header" class="vux-1px-b popup_title">请选择有效期单位</p>
-      </popup-radio>
-      <span v-show="errorBags.has('EffectiveType')" class="help is-danger">{{ errorBags.first('EffectiveType') }}</span>
+    <div class="weui-cell" @click="expiryUnitVisable = true">
+      <div class="weui-cell-top" :class="{ 'control': true }">
+        <cell primary="content" title = '有效期单位：' value-align="left" style="width: 100%">
+          <span style="padding: 0 15px" slot="after-title">{{EffectiveValue | expiryUnitFilter}}</span>
+        </cell>
+        <span v-show="errorBags.has('EffectiveType')" class="help is-danger">{{ errorBags.first('EffectiveType') }}</span>
+      </div>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top" :class="{ 'control': true }">
@@ -39,19 +41,25 @@
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top">
-          <x-textarea title="服务介绍：" placeholder="请输入服务包介绍" :show-counter="false" :rows="1" autosize v-model="templateDetail.Content"></x-textarea>
+          <x-textarea title="服务介绍：" placeholder="请输入服务包介绍" :show-counter="false" v-validate="'required'" :rows="1" autosize v-model="templateDetail.Content"></x-textarea>
       </div>
       <span v-show="errorBags.has('PackageDescription')" class="help is-danger">{{ errorBags.first('PackageDescription') }}</span>
     </div>
     <div class="weui-cell">
       <button type="button" class="weui-btn weui-btn_primary" @click="submit" :disabled="submitBtn">提交</button>
     </div>
+    
+    <popup v-model="expiryUnitVisable">
+      <p class="vux-1px-b popup_title">请选择有效期单位</p>
+      <radio title='有效期单位：' class="select_radio" :options="expiryUnitList" v-model="EffectiveValue">
+      </radio>
+    </popup>
   </div>
 </template>
 
 <script>
 import http from '@/api'
-import { TransferDom, XTextarea, XInput, PopupRadio, Popup, Confirm } from 'vux'
+import { TransferDom, XTextarea, XInput, Radio, Popup, Confirm, Cell } from 'vux'
 export default {
   metaInfo: {
     title: '新增服务'
@@ -63,12 +71,31 @@ export default {
     XInput,
     Confirm,
     Popup,
-    PopupRadio,
-    XTextarea
+    XTextarea,
+    Radio,
+    Cell
+  },
+  filters: {
+    expiryUnitFilter (val) {
+      switch (val) {
+        case '1':
+          return '年'
+        case '2':
+          return '月'
+        case '3':
+          return '日'
+      }
+    }
+  },
+  watch: {
+    EffectiveValue () {
+      this.expiryUnitVisable = !this.expiryUnitVisable
+    }
   },
   data () {
     return {
-      EffectiveValue: '年',
+      expiryUnitVisable: false,
+      EffectiveValue: '1',
       expiryUnitList: [
         {
           key: '1',
@@ -86,9 +113,9 @@ export default {
       templateDetail: {},
       submitBtn: false,
       reqParams: {
-        EffectiveValue: '', // 有效期值
+        EffectiveValue: 1, // 有效期值
         EffectiveType: 1, // 有效期单位
-        Count: '' // 库存
+        Count: 10 // 库存
       }
     }
   },
@@ -108,13 +135,22 @@ export default {
   created () {
     this.init()
   },
+  beforeDestroy () {
+    sessionStorage.removeItem('packageServiceDetail')
+  },
   methods: {
     async init () {
-      await this.getData().then(value => {
-        if (value.Code === 100000) {
-          this.templateDetail = value.Data
-        }
-      })
+      let packageDetail = JSON.parse(sessionStorage.getItem('packageServiceDetail'))
+      if (packageDetail) {
+        this.reqParams = packageDetail
+        this.templateDetail = packageDetail
+      } else {
+        await this.getData().then(value => {
+          if (value.Code === 100000) {
+            this.templateDetail = value.Data
+          }
+        })
+      }
     },
     /**
      * 获取服务项模板
@@ -144,27 +180,30 @@ export default {
       return (val / 100).toFixed(2)
     },
     submit () {
-      if (+this.$route.query.isAdd) {
-        this.addSubmit()
+      const that = this
+      if (+that.$route.query.isAdd) {
+        that.addSubmit()
       } else {
-        this.editSubmit()
+        that.editSubmit()
       }
     },
     async addSubmit () {
       const that = this
+      let params = {
+        TemplateID: +that.templateID,
+        Name: that.templateDetail.Name,
+        Price: Math.abs(that.templateDetail.Price * 100),
+        ViewPrice: Math.abs(that.ViewPrice * 100),
+        EffectiveValue: that.reqParams.EffectiveValue,
+        EffectiveType: that.reqParams.EffectiveType,
+        Count: that.reqParams.Count,
+        Description: that.templateDetail.Content
+      }
       const res = await this.$validator.validateAll()
       if (res) {
         this.submitBtn = true
-        const res = await http.post('/CertificatePackage', {
-          TemplateID: that.templateID,
-          Name: that.templateDetail.Name,
-          Price: that.templateDetail.Price * 100,
-          ViewPrice: that.ViewPrice * 100,
-          EffectiveValue: that.reqParams.EffectiveValue,
-          EffectiveType: that.reqParams.EffectiveType,
-          Count: that.reqParams.Count,
-          Description: that.templateDetail.Content
-        })
+        const res = await http.post('/CertificatePackage', params)
+        this.submitBtn = false
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
             text: '提交成功',
@@ -187,15 +226,24 @@ export default {
     },
     async editSubmit () {
       const that = this
+      let params = {
+        ID: that.templateDetail.ID,
+        Name: that.templateDetail.Name,
+        Price: Math.abs(that.templateDetail.Price * 100),
+        ViewPrice: Math.abs(that.ViewPrice * 100),
+        EffectiveValue: that.reqParams.EffectiveValue,
+        EffectiveType: that.reqParams.EffectiveType,
+        Count: that.reqParams.Count,
+        Description: that.templateDetail.Content
+      }
       const res = await this.$validator.validateAll()
       if (res) {
         this.submitBtn = true
-        this.reqParams.Price = this.reqParams.Price * 100
-        this.reqParams.ViewPrice = this.reqParams.PackageViewPrice * 100
-        const res = await http.put('/Package', this.reqParams)
+        const res = await http.put('/Package', params)
+        this.submitBtn = false
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
-            text: '提交成功',
+            text: '修改成功',
             onHide () {
               that.$router.back()
             }

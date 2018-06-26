@@ -97,7 +97,11 @@
           <li class="desc_list_items">
             <p class="normal_title_p">服务相关图片</p>
             <div class="thumbs_container" style="margin-top: 14px">
-              <xx-uploader :limit="4" @onUpdate="onUpdate"></xx-uploader>
+              <xx-uploader 
+              :limit="4"
+              :maxSize="1024 * 1024 * 5"
+              @onUpdate="onUpdate"
+              ></xx-uploader>
             </div>
           </li>
         </ul>

@@ -43,7 +43,6 @@ export default {
       this.itemList = this.allItems[index - 1]
     },
     go (id, index) {
-      sessionStorage.setItem('packageDetail', JSON.stringify(this.itemList[index]))
       this.$router.push(`/app/itemEdit/${id}?isAdd=1`)
     },
     getRoleList (list) {
@@ -78,6 +77,7 @@ export default {
   .weui-cell-top {
     display: flex;
     align-items: center;
+    width: 100%;
     .icon {
       width: 29px;
       height: 29px;

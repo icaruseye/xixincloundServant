@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom: 100px">
     <xx-step-bar :step="step">
       <xx-step-items slot="items">
         申请

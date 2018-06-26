@@ -27,7 +27,7 @@
       </div>
     </div> -->
     <!-- 面板信息 -->
-    <div class="income-panel-wrap">
+    <!-- <div class="income-panel-wrap">
       <div class="income-panel">
         <div class="item">
           <div class="row-1">
@@ -60,7 +60,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- 列表 -->
     <div class="weui-panel weui-list-panel">
       <div class="weui-cell">
@@ -70,13 +70,13 @@
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
-      <div class="weui-cell nobor">
+      <!-- <div class="weui-cell nobor">
         <div class="weui-cell-top">
           <div class="icon"><img src="@/assets/images/app-yhgl.png"></div>
           <div class="title">用户管理</div>
           <i class="iconfont icon-jiantouyou"></i>
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="empty-bar"></div>
     <div class="weui-panel weui-list-panel">
@@ -87,13 +87,13 @@
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
-      <div class="weui-cell">
+      <!-- <div class="weui-cell">
         <div class="weui-cell-top">
           <div class="icon"><img src="@/assets/images/app-pbsz.png"></div>
           <div class="title">排班设置</div>
           <i class="iconfont icon-jiantouyou"></i>
         </div>
-      </div>
+      </div> -->
     </div>
     <xx-tabbar></xx-tabbar>
   </div>

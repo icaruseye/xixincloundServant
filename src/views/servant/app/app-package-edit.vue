@@ -53,7 +53,6 @@
       <div class="weui-cell-top">
           <label class="label" for="">服务包分类</label>
           <select v-model="reqParams.BundleTypeID" @change="serviceTypeChange">
-            <option :value="1">默认分类</option>
             <option v-for="(item, index) in BundleTypeList" :key="index" :value="item.ID">{{item.Name}}</option>
             <option :value="0">新增分类</option>
           </select>

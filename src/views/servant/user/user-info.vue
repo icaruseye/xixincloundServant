@@ -8,7 +8,7 @@
           style="flex:1"
           class="upload"
           :isAvatar="true"
-          :maxSize="1024 * 1024 * 2"
+          :maxSize="1024 * 1024 * 5"
           :imgList="avatarUrl"
           @onUpdate="onUpdate5"
         ></xx-uploader>

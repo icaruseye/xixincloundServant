@@ -36,6 +36,7 @@ router.beforeEach((to, from, next) => {
       }
       if (userState !== -4 && to.path === '/user/authstep1') { // 绑定了手机号后就不能进入绑定手机的页面了
         next('/user')
+        return false
       }
 
       if ((userState === 1 || userState === 3) && (to.path === '/user/authstep3' || to.path === '/user/authstep3-1')) { // 进入添加执业证页面

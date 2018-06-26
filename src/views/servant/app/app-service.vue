@@ -10,23 +10,26 @@
         <div :key="pIndex">
           <div class="weui-list-title">{{item.PackageTypeName}}</div>
           <div class="weui-list-panel weui-panel">
-            <template v-for="(i, cIndex) in item.PackageList">
-              <div class="weui-cell" :key="cIndex">
-                <div class="weui-cell-top">
-                  <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
-                  <div class="mid">
-                    <div class="name">{{i.Name}}</div>
-                    <div class="price"><span>￥</span>{{(i.Price / 100).toFixed(2)}}</div>
-                  </div>
-                  <div class="btns">
-                    <button class="gray btn">库存:90</button>
-                    <button class="default btn" @click="changeStatusDown(i.ID, pIndex, cIndex)" v-if="i.State === 1">下架</button>
-                    <button class="default btn" @click="changeStatusUp(i.ID)" v-if="i.State === 0">上架</button>
-                    <button class="default btn" @click="showPopup(i.ID, pIndex, cIndex)">操作</button>
-                  </div>
-                </div>
-              </div>
+            <template v-if="item.PackageList.length > 0">
+              <service-item v-for="(service, serviceIndex) in item.PackageList" 
+              :key="serviceIndex"
+              :id="service.ID"
+              :title="service.Name"
+              :price="service.Price/100"
+              :count="service.Count"
+              :state ="service.State"
+              :effectiveDay ="service.EffectiveDay"
+              :effectiveMonth ="service.EffectiveMonth"
+              :effectiveYear ="service.EffectiveYear"
+              :description ="service.Description"
+              @changeState = "service.State = service.State === 0 ? 1 : 0"
+              ></service-item>
             </template>
+            <div  style="position: relative;height:200px" v-else>
+              <xx-occupied-box>
+                {{item.PackageTypeName}}列表为空
+              </xx-occupied-box>
+            </div>
           </div>
         </div>
       </template>
@@ -47,7 +50,7 @@
                     <div class="price"><span>￥</span>{{i.PackageInfo.Price === 0 ? '0' : (i.PackageInfo.Price / 100).toFixed(2)}}</div>
                   </div>
                   <div class="btns">
-                    <button class="gray btn">库存:90</button>
+                    <button class="gray btn">库存:{{i.PackageInfo.Count}}</button>
                     <button class="danger btn" @click="changeStatusDown(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 1">下架</button>
                     <button class="default btn" @click="changeStatusUp(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 0">上架</button>
                     <button class="default btn" @click="showPopup(i.PackageInfo.ID, typeIndex, index)">操作</button>
@@ -64,7 +67,7 @@
       <popup v-model="isShowPopup">
         <div class="popup">
           <ul>
-            <li v-show="index" @click="recommend">推荐</li>
+            <!-- <li v-show="index" @click="recommend">推荐</li> -->
             <li @click="modify">修改</li>
             <li @click="removoe">删除</li>
           </ul>
@@ -77,13 +80,18 @@
 
 <script>
 import http from '@/api'
+import ServiceItem from './components/serviceItems'
 import { TransferDom, Popup } from 'vux'
 export default {
+  metaInfo: {
+    title: '服务设置'
+  },
   directives: {
     TransferDom
   },
   components: {
-    Popup
+    Popup,
+    ServiceItem
   },
   data () {
     return {
@@ -150,8 +158,7 @@ export default {
       const res = await http.put(`/Bundle/${id}/OffTheShelf`)
       if (res.data.Code === 100000) {
         this.$vux.toast.text('下架成功')
-        // this.getBundleType()
-        console.log(pIndex)
+        this.getBundleType()
       }
     },
     async changeStatusUp (id) {
@@ -164,7 +171,6 @@ export default {
     // 服务项列表
     async getItemList () {
       const res = await http.get(`/PackageList?pageIndex=${this.itemPageIndex}`)
-      console.log(res)
       this.itemList = res.data.Data
     },
     // 服务套餐列表
@@ -235,7 +241,8 @@ export default {
   }
   .btns {
     .btn {
-      width: 50px;
+      padding: 0 8px;
+      min-width: 50px;
       height: 25px;
       line-height: 25px;
       font-size: 13px;
@@ -293,5 +300,9 @@ export default {
     background: #fff;
     color: inherit;
   }
+}
+.weui-cell-top
+{
+  width: 100%;
 }
 </style>

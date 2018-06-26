@@ -4,7 +4,7 @@
       <xx-uploader
         title="执业证照片"
         :limit="limit"
-        :maxSize="1024 * 1024 * 2"
+        :maxSize="1024 * 1024 * 5"
         @onUpdate="onUpdate1"
       ></xx-uploader>
     </div>

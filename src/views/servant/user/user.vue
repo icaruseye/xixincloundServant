@@ -34,7 +34,7 @@
           <span class="title">手机认证</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
-        <router-link to="/user/withdraw" class="setting-panel_item vux-1px-b">
+        <!-- <router-link to="/user/withdraw" class="setting-panel_item vux-1px-b">
           <img src="@/assets/images/icon-my-phone.png" >
           <span class="title">提现</span>
           <i class="iconfont icon-jiantouyou"></i>
@@ -43,7 +43,7 @@
           <img src="@/assets/images/icon-my-phone.png" >
           <span class="title">我的银行卡</span>
           <i class="iconfont icon-jiantouyou"></i>
-        </router-link>
+        </router-link> -->
         <router-link to="/user/complaint" class="setting-panel_item vux-1px-b">
           <img src="@/assets/images/icon-my-phone.png" >
           <span class="title">我的投诉</span>
@@ -54,16 +54,11 @@
           <span class="title">我的执业证</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
-        <router-link to="/user/date" class="setting-panel_item">
+        <!-- <router-link to="/user/date" class="setting-panel_item">
           <img src="@/assets/images/icon-my-phone.png" >
           <span class="title">我的日程</span>
           <i class="iconfont icon-jiantouyou"></i>
-        </router-link>
-        <router-link to="/Servant/Login" class="setting-panel_item">
-          <img src="@/assets/images/icon-my-phone.png" >
-          <span class="title">登录测试接口</span>
-          <i class="iconfont icon-jiantouyou"></i>
-        </router-link>
+        </router-link> -->
       </div>
       
     </div>

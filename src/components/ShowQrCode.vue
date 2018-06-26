@@ -5,7 +5,7 @@
       <div class="right">
         <h3 class="nickName">
           {{userAccount.NickName}}
-          <span class="actor">护士</span>
+          <!-- <span class="actor">护士</span> -->
         </h3>
         <p class="desc">{{userAccount.Description}}</p>
       </div>
@@ -45,14 +45,10 @@ export default {
   width: 200px;
   height: 200px;
   margin-top: 30px;
-  .qr_code_box_img
-  {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  overflow: hidden;
+  img {
+    position: relative;
+    z-index: 2;
   }
 }
 
@@ -68,6 +64,7 @@ export default {
   transform: scale(0.5, 0.5);
   box-sizing: border-box;
   border-radius: 10px;
+  z-index: 1;
 }
 .userInfo_container
 {
