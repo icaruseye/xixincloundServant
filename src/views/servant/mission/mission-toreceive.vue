@@ -221,7 +221,8 @@ export default {
         dayRow: '{value}日',
         hourRow: '{value}时',
         minuteRow: '{value}分',
-        minHour: new Date().getHours(),
+        minHour: 6,
+        maxHour: 20,
         format: dataFormatRule,
         onConfirm (val) {
           that.arrivalTime = val

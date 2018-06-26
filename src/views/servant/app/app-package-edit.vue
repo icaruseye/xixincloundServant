@@ -4,7 +4,7 @@
     <div class="weui-cell nobor">
       <div class="weui-cell-top" :class="{ 'control': true }">
           <label class="label" for="">服务包名称</label>
-          <input v-model="reqParams.BundleName" v-validate="'required'" name="PackageName" type="text" placeholder="请输入服务包名称">
+          <input v-model="reqParams.Name" v-validate="'required'" name="PackageName" type="text" placeholder="请输入服务包名称">
       </div>
       <span v-show="errorBags.has('PackageName')" class="help is-danger">{{ errorBags.first('PackageName') }}</span>
     </div>
@@ -22,7 +22,7 @@
           <div class="title">{{item.Name}}</div>
           <div class="mid">
             <label for="">单价:</label><input type="text" v-model="item.Price" @change="totalPrice">
-            <label for="">数量:</label><input type="text" v-model="item.number" @change="totalPrice">
+            <label for="">数量:</label><input type="text" v-model="item.ItemNumber" @change="totalPrice">
           </div>
           <span class="delete" @click="deleteItems(index)">删除</span>
         </div>
@@ -52,7 +52,7 @@
     <div class="weui-cell">
       <div class="weui-cell-top">
           <label class="label" for="">服务包分类</label>
-          <select v-model="reqParams.BundleTypeID" @change="serviceTypeChange">
+          <select v-model="reqParams.PackageType" @change="serviceTypeChange">
             <option v-for="(item, index) in BundleTypeList" :key="index" :value="item.ID">{{item.Name}}</option>
             <option :value="0">新增分类</option>
           </select>
@@ -81,7 +81,7 @@
     <div class="weui-cell">
       <div class="weui-cell-top">
           <label class="label" for="">服务包介绍</label>
-          <textarea v-model="reqParams.PackageDescription" v-validate="'required'" name="PackageDescription" placeholder="请输入服务包介绍"></textarea>
+          <textarea v-model="reqParams.Description" v-validate="'required'" name="PackageDescription" placeholder="请输入服务包介绍"></textarea>
       </div>
       <span v-show="errorBags.has('PackageDescription')" class="help is-danger">{{ errorBags.first('PackageDescription') }}</span>
     </div>
@@ -94,7 +94,7 @@
         <div class="popup">
           <div class="service-item_list">
             <ul>
-              <li @click="chooseItem(index)" v-for="(item, index) in serviceItemList" :key="index">
+              <li @click="chooseItem(index, item.ID)" v-for="(item, index) in serviceItemList" :key="index">
                 <div>
                   <img class="poster" src="@/assets/images/icon_tcmr.png" >
                 </div>
@@ -145,7 +145,7 @@ export default {
         BundleName: '',
         Price: '',
         BundleViewPrice: '',
-        BundleTypeID: 1,
+        PackageType: 1,
         EffectiveValue: '',
         EffectiveType: 1,
         Count: '',
@@ -163,10 +163,21 @@ export default {
   },
   methods: {
     getData () {
-      const info = JSON.parse(sessionStorage.getItem('packageDetail'))
-      this.reqParams = Object.assign(this.reqParams, info)
+      // 获取服务套餐信息
+      const info = JSON.parse(sessionStorage.getItem('packageDetail')).PackageInfo
+      // 获取包含服务项
+      const itemsInfoList = JSON.parse(sessionStorage.getItem('packageDetail')).ItemsInfo
+      // 回填数据
+      this.reqParams = Object.assign(info, {itemsInfoList: itemsInfoList})
+      console.log(this.reqParams)
+      // 转换套餐价格
+      this.reqParams.BundleViewPrice = this.convertToyuan(this.reqParams.Price * 1.2)
       this.reqParams.Price = this.convertToyuan(this.reqParams.Price)
-      this.reqParams.BundleViewPrice = this.convertToyuan(this.reqParams.BundleViewPrice * 1.2)
+      // 转换服务项价格
+      this.reqParams.itemsInfoList.map((item) => {
+        item.Price = this.convertToyuan(item.Price)
+      })
+      this.setEffectiveType(this.reqParams)
     },
     setEffectiveType (data) {
       if (data.EffectiveYear) {
@@ -189,10 +200,11 @@ export default {
       const itemList = this.reqParams.itemsInfoList
       let res = 0
       for (let i = 0; i < itemList.length; i++) {
-        res += parseFloat(itemList[i].Price) * parseFloat(itemList[i].number)
+        res += parseFloat(itemList[i].Price) * parseFloat(itemList[i].ItemNumber)
       }
       this.reqParams.Price = parseFloat(res).toFixed(2)
       this.reqParams.BundleViewPrice = (res * 1.2).toFixed(2)
+      console.log(this.reqParams.Price)
     },
     convertToyuan (val) {
       return (val / 100).toFixed(2)
@@ -201,9 +213,10 @@ export default {
       this.$router.push(`/app/${name}`)
     },
     chooseItem (index) {
-      let obj = Object.assign({number: 1}, this.serviceItemList[index])
+      let obj = Object.assign({ItemNumber: 1}, this.serviceItemList[index])
       for (var i = 0; i < this.reqParams.itemsInfoList.length; i++) {
-        if (this.reqParams.itemsInfoList[i] === obj.ID) {
+        if (this.reqParams.itemsInfoList[i].ID === obj.ID) {
+          this.$vux.toast.text('已有此服务项')
           return false
         }
       }
@@ -214,14 +227,15 @@ export default {
     },
     deleteItems (index) {
       this.reqParams.itemsInfoList.splice(index, 1)
+      this.totalPrice()
     },
     serviceTypeChange () {
-      if (this.reqParams.BundleTypeID === 0) {
+      if (this.reqParams.PackageType === 0) {
         this.addType = true
       }
     },
     addTypeCancel () {
-      this.reqParams.BundleTypeID = 1
+      this.reqParams.PackageType = 3
     },
     async addTypeonConfirm (val) {
       const res = await http.post('/BundleType', {
@@ -229,7 +243,7 @@ export default {
       })
       if (res.data.Code === 100000) {
         this.getBundleType()
-        this.reqParams.BundleTypeID = res.data.Data
+        this.reqParams.PackageType = res.data.Data
       }
     },
     async getItemList () {
@@ -249,14 +263,30 @@ export default {
       let res = await this.$validator.validateAll()
       if (res) {
         this.submitBtn = true
-        this.reqParams.Price = this.reqParams.Price * 100
-        this.reqParams.BundleViewPrice = this.reqParams.BundleViewPrice * 100
-        for (let i = 0; i < this.reqParams.itemsInfoList.length; i++) {
-          this.reqParams.itemsInfoList[i].Price = this.reqParams.itemsInfoList[i].Price * 100
+        let itemsInfoList = this.reqParams.itemsInfoList.slice(0)
+
+        for (let i = 0; i < itemsInfoList.length; i++) {
+          itemsInfoList[i].Price = itemsInfoList[i].Price * 100
         }
-        const res = await http.post('/Bundle', this.reqParams)
-        if (res.data.Code === 100000) {
-          this.$router.back()
+
+        let reqParams = {
+          Price: this.reqParams.Price * 100,
+          BundleViewPrice: this.reqParams.BundleViewPrice * 100,
+          itemsInfoList: itemsInfoList,
+          Name: this.reqParams.Name,
+          PackageType: this.reqParams.PackageType,
+          EffectiveValue: this.reqParams.EffectiveValue,
+          EffectiveType: this.reqParams.EffectiveType,
+          Count: this.reqParams.Count,
+          Description: this.reqParams.Description
+        }
+
+        if (this.$route.params.id === 'add') {
+          // 新增服务套餐
+          this.postPackage(reqParams)
+        } else {
+          // 编辑服务套餐
+          this.putPackage(reqParams)
         }
       } else {
         // 设置焦点到第一个未验证通过的表单元素
@@ -266,6 +296,36 @@ export default {
             return i.el.focus()
           }
         })
+      }
+    },
+    // 新增服务套餐
+    async postPackage (reqParams) {
+      const that = this
+      const res = await http.post('/Bundle', reqParams)
+      if (res.data.Code === 100000) {
+        this.$vux.toast.show({
+          text: '提交成功',
+          onHide () {
+            that.$router.back()
+          }
+        })
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
+    },
+    // 编辑服务套餐
+    async putPackage (reqParams) {
+      const that = this
+      const res = await http.put(`/Bundle?packageID=${this.$route.params.id}`, reqParams)
+      if (res.data.Code === 100000) {
+        this.$vux.toast.show({
+          text: '提交成功',
+          onHide () {
+            that.$router.back()
+          }
+        })
+      } else {
+        this.$vux.toast.text(res.data.Msg)
       }
     }
   }
