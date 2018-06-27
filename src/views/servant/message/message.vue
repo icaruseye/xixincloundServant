@@ -5,7 +5,7 @@
         <div class="avatar_container"><img :src="userAccount.Avatar | transformImgUrl" alt=""></div>
         <div class="content">
           {{userInfo.RealName}}
-          <span class="professional_title">护士</span>
+          <!-- <span class="professional_title">护士</span> -->
         </div>
         <div class="icon_box">
           <div class="sysetem_message_img_icon">
@@ -18,7 +18,7 @@
 
     <div v-if="list.length > 0" class="tabbox-list vux-1px-b vux-1px-t mt10px">
       <div v-for="(item, index) in list" class="item vux-1px-b" @click="goChat(item.FriendViewID, index)" :key="index">
-        <div><img class="avatar" :src="item.FriendAvatar" ></div>
+        <div><img class="avatar" :src="item.FriendAvatar | transformImgUrl" ></div>
         <div class="mid">
           <div class="name">{{item.FriendName}}</div>
           <p class="text fof">{{item.AddMessage}}</p>

@@ -26,7 +26,7 @@
           院内陪诊
           <span class="mission_id">服务单号：{{detail.MissionID}}</span>
         </h3>
-        <p class="mission_content">工作于急诊，擅长消化道危急重症…</p>
+        <!-- <p class="mission_content">工作于急诊，擅长消化道危急重症…</p> -->
       </div>
     </div>
     <div v-if="detail.State >= 1" class="card_titile_container">
@@ -81,8 +81,8 @@
         </p>
       </xx-cell-items>
       <xx-cell-items label="其他备注" :labelStyle="labelStyle" class="noraml_cell_right">
-        <p class="cell_content_desc">  
-          {{detail.UserComplaintContent}}  
+        <p class="cell_content_desc">
+          {{detail.UserComplaintContent}}
         </p>  
       </xx-cell-items>
       <xx-cell-items v-if="detail.UserComplaintImgs != null && detail.UserComplaintImgs != ''" label="相关图片" :labelStyle="labelStyle" class="noraml_cell_right" style="color:#3AC7F5">
@@ -102,7 +102,7 @@
         </div>
       </xx-cell-items>
       <xx-cell-items label="相关图片上传" direction="vertical">
-        <xx-uploader :limit="4" @onUpdate="onUpdate"></xx-uploader>
+        <xx-uploader :limit="9" @onUpdate="onUpdate"></xx-uploader>
       </xx-cell-items>
     </xx-cell>
     <div v-if="detail.State === 0" class="btn_bar">
@@ -111,7 +111,7 @@
   </div>
 </template>
 <script>
-import { dateFormat, Confirm, TransferDom } from 'vux'
+import { Confirm, TransferDom } from 'vux'
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 export default {
   metaInfo: {
@@ -135,8 +135,9 @@ export default {
     }
   },
   filters: {
-    timeFormat (value) {
-      return dateFormat(new Date(value), 'YYYY-MM-DD HH:mm:ss')
+    timeFormat (value = '') {
+      value = value.replace('T', ' ')
+      return value
     },
     stepFileter (value) {
       if (value === 0) {
@@ -220,7 +221,7 @@ export default {
       })
     },
     async commitAppealContent () {
-      const res = await this.$http.post(`/Complaint/Appeal?MissionID=${this.detail.MissionID}`, {
+      const res = await this.$http.post(`/Complaint/Appeal?ID=${this.detail.ID}`, {
         AppealTitle: `【申诉】${this.detail.UserComplaintTitle}`,
         AppealContent: this.remark,
         EvidenceImgs: this.imageList
@@ -318,7 +319,8 @@ export default {
   font-size: 12px;
   max-width: 216px;
   color: #999;
-  text-align: left;
+  word-break: break-all;
+  text-align: justify;
 }
 .btn_bar
 {

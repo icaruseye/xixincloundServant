@@ -145,7 +145,7 @@ export default {
         BundleName: '',
         Price: '',
         BundleViewPrice: '',
-        PackageType: 1,
+        PackageType: 3,
         EffectiveValue: '',
         EffectiveType: 1,
         Count: '',
@@ -303,12 +303,8 @@ export default {
       const that = this
       const res = await http.post('/Bundle', reqParams)
       if (res.data.Code === 100000) {
-        this.$vux.toast.show({
-          text: '提交成功',
-          onHide () {
-            that.$router.back()
-          }
-        })
+        this.$vux.toast.show('提交成功')
+        that.$router.back()
       } else {
         this.$vux.toast.text(res.data.Msg)
       }
@@ -318,12 +314,8 @@ export default {
       const that = this
       const res = await http.put(`/Bundle?packageID=${this.$route.params.id}`, reqParams)
       if (res.data.Code === 100000) {
-        this.$vux.toast.show({
-          text: '提交成功',
-          onHide () {
-            that.$router.back()
-          }
-        })
+        this.$vux.toast.show('提交成功')
+        that.$router.back()
       } else {
         this.$vux.toast.text(res.data.Msg)
       }

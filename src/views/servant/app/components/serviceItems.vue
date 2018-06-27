@@ -238,7 +238,7 @@ export default {
       .danger {
         color: #fff;
         border: 1px solid #ff9800;
-        background: #ff9800;
+        color: #ff9800;
       }
     }
   }

@@ -29,7 +29,10 @@
                 <div class="title" style="font-weight:normal">{{item.ItemName}}</div>
               </div>
               <div style="font-size:13px;color:#999;">患者：{{item.UserName}}</div>
-              <div style="font-size:13px;color:#999;">内容：{{item.Result?item.Result:'该患者没有留言'}}</div>
+              <div style="font-size:13px;color:#999;">
+                <p>药品：{{item.NeedDrug?'需要': '不需要'}}</p>
+                <p>工具：{{item.NeedTools?'需要': '不需要'}}</p>
+              </div>
               <div class="describe">时间：{{item.EndTime | timeFormat}}</div>
             </div>
             <img v-if="item.State == 0 && item.Type == 0" style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
@@ -48,12 +51,13 @@
 </template>
 
 <script>
-import { Sticky, dateFormat } from 'vux'
+import { Sticky } from 'vux'
 import { mapMutations, mapGetters } from 'vuex'
 export default {
   filters: {
-    timeFormat (value) {
-      return dateFormat(new Date(value), 'YYYY-MM-DD HH:mm:ss')
+    timeFormat (value = '') {
+      value = value.replace('T', ' ')
+      return value
     }
   },
   metaInfo: {

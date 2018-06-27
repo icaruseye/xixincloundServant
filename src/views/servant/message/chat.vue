@@ -67,9 +67,9 @@ export default {
     }
   },
   filters: {
-    timeFormat (val) {
-      const d = new Date(val)
-      return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDay()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`
+    timeFormat (value = '') {
+      value = value.replace('T', ' ')
+      return value
     }
   },
   async created () {
@@ -80,8 +80,8 @@ export default {
     setTimeout(function () {
       that.goDown()
     }, 0)
-    window.servantTimer = setInterval(function () {
-      that.chatRecordTimePoll()
+    window.servantTimer = setInterval(async function () {
+      await that.chatRecordTimePoll()
     }, 5000)
   },
   mounted () {
@@ -131,7 +131,7 @@ export default {
           this.chatList.push(item)
           setTimeout(function () {
             that.goDown()
-          }, 500)
+          }, 1)
         })
       }
     },
@@ -150,12 +150,11 @@ export default {
         Content: this.chatMsg,
         time: new Date()
       }
-      const res = await http.post('/ChatRecord', {
+      await http.post('/ChatRecord', {
         UserViewID: this.userAccount.ViewID,
         MsgType: 1,
         Content: this.chatMsg
       })
-      console.log(res)
       let _msg = Object.assign({}, msg)
       this.chatList.push(_msg)
       this.chatMsg = ''
@@ -294,6 +293,8 @@ export default {
       padding: 0px 20px;
       border-radius: 5px;
       display: inline-block;
+      user-select: none;
+      outline: none
     }
     .iconfont {
       margin: 0 5px;

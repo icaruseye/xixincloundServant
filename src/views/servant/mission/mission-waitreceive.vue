@@ -25,14 +25,14 @@
             <p class="normal_desc_p" style="font-size: 14px; color: #666">任务名称：{{detail.ItemName}}</p>
             <p class="normal_desc_p">服务对象：{{detail.UserName}}</p>
             <p class="normal_desc_p">执行人：{{detail.ServantName}}</p>
-            <p class="normal_desc_p">时间：2018/01/01 13:30</p>
-            <p class="normal_desc_p" style="color:#FF3939;">工具：{{detail.NeedTools?'需要准备':'不需要准备'}}</p>
-            <p class="normal_desc_p" style="color:#666666">药品：{{detail.NeedDrug?'需要准备':'不需要准备'}}</p>
-            <p v-if="detail.ReserveRemark" class="normal_desc_p">备注：{{detail.ReserveRemark}}</p>
+            <p class="normal_desc_p">时间：{{detail.CreateTime | timeFormat}}</p>
+            <p class="normal_desc_p" :class="[detail.NeedTools?'redColor':'']" >工具：{{detail.NeedTools?'需要准备':'不需要准备'}}</p>
+            <p class="normal_desc_p" :class="[detail.NeedDrug?'redColor':'']" >药品：{{detail.NeedDrug?'需要准备':'不需要准备'}}</p>
+            <p v-if="detail.ReserveRemark" class="normal_desc_p" style="word-break: break-all">备注：{{detail.ReserveRemark}}</p>
           </li>
           <li class="desc_list_items">
             <h5 class="desc_list_items_title">用户描述</h5>
-            <p class="normal_desc_p">{{detail.ReserveDiscreption?detail.ReserveDiscreption: '该患者没有留言'}}</p>
+            <p class="normal_desc_p" style="word-break: break-all">{{detail.ReserveDiscreption?detail.ReserveDiscreption: '该患者没有留言'}}</p>
           </li>
           <li class="desc_list_items" v-if="detail.ReserveImgs != null && detail.ReserveImgs != ''">
             <h5 class="desc_list_items_title">相关图片</h5>
@@ -52,7 +52,7 @@
           <li class="desc_list_items">
             <p class="normal_desc_p">
               用户联系电话：
-              <span style="font-size: 12px;color: #999999;">{{detail.Mobile}}</span>
+              <a :href="'tel:'+detail.Mobile" style="font-size: 12px;color: #999999;">{{detail.Mobile}}</a>
             </p>
             <p class="normal_desc_p">
               用户服务地址：
@@ -64,7 +64,7 @@
           </li>
         </ul>
         <ul v-if="detail.State == 3">
-          <li class="desc_list_items">
+          <li v-if="actionList.length > 0" class="desc_list_items">
             <p class="normal_title_p">任务服务需要完成标准动作</p>
             <div style="padding-top: 11px; margin: 0 10px">
               <xx-checker-box  v-model="actionListValue">
@@ -74,7 +74,7 @@
               </xx-checker-box>
             </div>
           </li>
-          <li class="desc_list_items">
+          <li v-if="attributeList.length > 0" class="desc_list_items">
             <p class="normal_title_p">任务服务需要采集的信息</p>
             <div style="padding-top: 11px; margin: 0 10px">
               <xx-input-group-box ref="attributeInputGroup" v-model="attributeListValue">
@@ -107,7 +107,7 @@
         </ul>
         <!-- 待评价 -->
         <ul v-if="detail.State >= 4">
-          <li class="desc_list_items">
+          <li v-if="actionList.length > 0" class="desc_list_items">
             <p class="normal_title_p">任务服务需要完成标准动作</p>
             <div style="padding-top: 11px; margin: 0 10px">
               <p class="finished_action_list_item" v-for="(item, index) in actionList" :key="index">
@@ -116,7 +116,7 @@
               </p>
             </div>
           </li>
-          <li class="desc_list_items">
+          <li v-if="attributeList.length > 0" class="desc_list_items">
             <p class="normal_title_p">任务服务需要采集的信息</p>
             <div style="padding-top: 11px; margin: 0 10px">
               <p class="finished_action_list_item" v-for="(item, index) in attributeList" :key="index">
@@ -132,14 +132,14 @@
           </li>
           <li v-if="detail.Result != null && detail.Result != ''" class="desc_list_items">
             <p class="normal_title_p">服务结果</p>
-            <p class="normal_desc_p">
+            <p class="normal_desc_p" style="word-break: break-all">
               {{detail.Result}}
             </p>
           </li>
           <li v-if="detail.Discription != null && detail.Discription != ''" class="desc_list_items">
             <p class="normal_title_p">备注 <span style="font-size: 12px; color:#A7A7A7">（患者不可见）</span></p>
             <div class="service_remark_textarea_container" style="height: 65px">
-              <p class="normal_desc_p">
+              <p class="normal_desc_p" style="word-break: break-all">
                 {{detail.Discription}}
               </p>
             </div>
@@ -186,7 +186,7 @@
 
 <script>
 import ImagePreviewItem from '@/components/ImagePreViewItem'
-import { dateFormat, Rater } from 'vux'
+import { Rater } from 'vux'
 export default {
   metaInfo: {
     title: '任务详情'
@@ -215,8 +215,9 @@ export default {
     }
   },
   filters: {
-    timeFormat (value) {
-      return dateFormat(new Date(value), 'YYYY-MM-DD HH:mm')
+    timeFormat (value = '') {
+      value = value.replace('T', ' ')
+      return value
     },
     stepFileter (value) {
       if (value === 0) {
@@ -243,7 +244,7 @@ export default {
       if (that.submitLocked) {
         return false
       }
-      if (!that.$refs.attributeInputGroup.verify) {
+      if (that.attributeList.length > 0 && !that.$refs.attributeInputGroup.verify) {
         that.$vux.toast.show({
           width: '60%',
           type: 'text',
@@ -371,7 +372,12 @@ export default {
         text: '加载中'
       })
       await that.getData().then(value => {
-        that.detail = value.Data
+        if (value.Code === 100000) {
+          that.detail = value.Data
+        } else {
+          that.$vux.loading.hide()
+          that.$vux.toast.show(value.Msg)
+        }
       })
       if (that.detail.State >= 3) {
         await that.getActionList().then(value => {
@@ -460,6 +466,10 @@ export default {
     color: #999999;
     text-align: justify;
     line-height: 25px;
+    &.redColor
+    {
+      color: #FF3939
+    }
   }
   .desc_list_items
   {

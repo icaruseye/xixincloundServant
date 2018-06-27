@@ -3,7 +3,7 @@
     <tabbar class="">
       <tabbar-item
         link="/message"
-        :selected="'message' == this.$route.path.split('/')[1]"
+        :selected="'message' == this.$route.path.split('/')[1] || '' == this.$route.path.split('/')[1]"
         class="weui-tabbar__icon_1">
         <div slot="icon"></div>
         <span slot="label">消息</span>

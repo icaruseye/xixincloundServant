@@ -19,8 +19,8 @@
       <xx-cell-items label="服务对象" class="noraml_cell_right">
         {{detail.UserName}}
       </xx-cell-items>
-      <xx-cell-items label="联系电话" class="noraml_cell_right" style="color:#3AC7F5">
-        {{detail.Mobile}}
+      <xx-cell-items label="联系电话" class="noraml_cell_right">
+        <a :href="'tel:'+detail.Mobile" style="color: #3AC7F5;">{{detail.Mobile}}</a>
       </xx-cell-items>
       <xx-cell-items label="地址" class="noraml_cell_right" style="color:#3AC7F5">
         <p style="font-size: 12px;max-width: 216px;text-align: justify;float: right;">
@@ -32,14 +32,14 @@
       用户需求描述
     </h2>
     <xx-cell>
-      <xx-cell-items label="工具" class="noraml_cell_right" style="color: #FF3939">
+      <xx-cell-items label="工具" :class="['noraml_cell_right', detail.IsNeedTools?'redColor':'']">
         {{detail.IsNeedTools?'':'不'}}需要准备工具
       </xx-cell-items>
-      <xx-cell-items label="药品" class="noraml_cell_right">
+      <xx-cell-items label="药品"  :class="['noraml_cell_right', detail.IsNeedDrug?'redColor':'']">
         {{detail.IsNeedDrug?'':'不'}}需要准备药品
       </xx-cell-items>
       <xx-cell-items label="用户描述" direction="vertical">
-        <p style="margin-top: 20px;font-size: 13px;color: #999;text-align: justify;">
+        <p style="margin-top: 20px;font-size: 13px;color: #999;text-align: justify;word-break: break-all">
           {{detail.Discription?detail.Discription:'该患者没有留言'}}
         </p>
       </xx-cell-items>
@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { Group, Datetime, dateFormat } from 'vux'
+import { Group, Datetime } from 'vux'
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 import CancelMissionPopup from '@/components/cancelMissionPopup'
 const dataFormatRule = 'YYYY/MM/DD HH:mm'
@@ -107,8 +107,9 @@ export default {
     CancelMissionPopup
   },
   filters: {
-    timeFormat (value) {
-      return dateFormat(new Date(value), 'YYYY-MM-DD HH:mm:ss')
+    timeFormat (value = '') {
+      value = value.replace('T', ' ')
+      return value
     }
   },
   data () {
@@ -317,5 +318,9 @@ export default {
     line-height: 18px;
     color: #999999;
     font-size: 13px;
+  }
+  .redColor
+  {
+    color: #FF3939
   }
 </style>

@@ -17,7 +17,7 @@
         <div class="right">
           <div class="title">
             {{item.MissionName}}
-            <span class="username">用户：{{item.UserName}}</span>
+            <span class="username" v-if="item.UserName">用户：{{item.UserName}}</span>
           </div>
           <div class="desc">投诉原因:{{item.UserComplaintTitle}}</div>
           <div class="time">投诉时间:{{item.CreateTime | timeFormat}}</div>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { Sticky, dateFormat } from 'vux'
+import { Sticky } from 'vux'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
   metaInfo: {
@@ -47,8 +47,9 @@ export default {
     }
   },
   filters: {
-    timeFormat (value) {
-      return dateFormat(new Date(value), 'YYYY-MM-DD HH:mm:ss')
+    timeFormat (value = '') {
+      value = value.replace('T', ' ')
+      return value
     }
   },
   watch: {

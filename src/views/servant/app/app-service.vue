@@ -249,6 +249,7 @@ export default {
       border-radius: 2px;
       margin-right: 8px;
       border: 0;
+      background-color: #fff;
       &:last-child {
         margin-right: 0;
       }
@@ -264,9 +265,8 @@ export default {
       background: transparent;
     }
     .danger {
-      color: #fff;
       border: 1px solid #ff9800;
-      background: #ff9800;
+      color: #ff9800;
     }
   }
 }

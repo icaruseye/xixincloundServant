@@ -72,5 +72,10 @@ export default [
     name: 'addBankCard',
     path: '/user/bankCard/add',
     component: _import('/servant/user/user-bankCard/addBankCard')
+  },
+  { // 我的订单
+    name: 'order',
+    path: '/user/order',
+    component: _import('/servant/user/user-order/list')
   }
 ]

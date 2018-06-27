@@ -3,7 +3,7 @@
     <div class="has-tabbar">
       <div class="user-info">
         <img class="avatar" :src="userAccount.Avatar | transformImgUrl" >
-        <span class="name">{{userAccount.NickName}}</span>
+        <p class="name">{{userAccount.NickName}}</p>
         <img class="qrcode" src="@/assets/images/code-1.png"  @click="maskShow = true">
       </div>
       <div v-if="userInfoCompleteProgress<100" class="user-info_percent">
@@ -11,32 +11,45 @@
       </div>
       <div class="user-panel">
         <router-link to="/" class="user-panel_item">
-            <img src="@/assets/images/icon-my-manager.png" >
-            <span>消息</span>
+            <img src="@/assets/images/ic_message_account.png" >
+            <p class="text">消息</p>
         </router-link>
         <router-link to="/mission" class="user-panel_item">
-            <img src="@/assets/images/icon-my-service.png" >
-            <span>任务</span>
+            <img src="@/assets/images/ic_mission_account.png" >
+            <p class="text">任务</p>
         </router-link>
-        <router-link to="/app" class="user-panel_item">
-            <img src="@/assets/images/icon-my-calendar.png" >
-            <span>应用</span>
+        <router-link to="/user/order" class="user-panel_item">
+            <img src="@/assets/images/ic_order_account.png" >
+            <p class="text">订单</p>
         </router-link>
       </div>
-      <div class="setting-panel vux-1px-t vux-1px-b" style="margin-top:10px">
+      <div class="setting-panel vux-1px-t vux-1px-b mt10px">
         <router-link to="/user/info" class="setting-panel_item vux-1px-b">
-          <img src="@/assets/images/icon-my-set.png" >
+          <img src="@/assets/images/ic_myInfo_account.png" >
           <span class="title">个人资料</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
-        <router-link to="/user/phone" class="setting-panel_item vux-1px-b">
-          <img src="@/assets/images/icon-my-phone.png" >
-          <span class="title">手机认证</span>
+        
+        <router-link to="/user/withdraw" class="setting-panel_item vux-1px-b">
+          <img src="@/assets/images/ic_ withdraw_account.png" >
+          <span class="title">提现</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
-        <!-- <router-link to="/user/withdraw" class="setting-panel_item vux-1px-b">
+      </div>
+      <div class="setting-panel vux-1px-t vux-1px-b mt10px">
+        <router-link to="/user/complaint" class="setting-panel_item vux-1px-b">
+          <img src="@/assets/images/ic_complaint_account.png" >
+          <span class="title">投诉</span>
+          <i class="iconfont icon-jiantouyou"></i>
+        </router-link>
+        <a href="javascript:alert('开发中')" class="setting-panel_item vux-1px-b">
+          <img src="@/assets/images/ic_help_account.png" >
+          <span class="title">帮助</span>
+          <i class="iconfont icon-jiantouyou"></i>
+        </a>
+        <!-- <router-link to="/user/phone" class="setting-panel_item vux-1px-b">
           <img src="@/assets/images/icon-my-phone.png" >
-          <span class="title">提现</span>
+          <span class="title">手机认证</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
         <router-link to="/user/bankCard" class="setting-panel_item vux-1px-b">
@@ -44,21 +57,24 @@
           <span class="title">我的银行卡</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link> -->
-        <router-link to="/user/complaint" class="setting-panel_item vux-1px-b">
-          <img src="@/assets/images/icon-my-phone.png" >
-          <span class="title">我的投诉</span>
-          <i class="iconfont icon-jiantouyou"></i>
-        </router-link>
-        <router-link to="/user/authstep3" class="setting-panel_item">
+        <!-- <router-link to="/user/authstep3" class="setting-panel_item">
           <img src="@/assets/images/icon-my-phone.png" >
           <span class="title">我的执业证</span>
           <i class="iconfont icon-jiantouyou"></i>
-        </router-link>
+        </router-link> -->
         <!-- <router-link to="/user/date" class="setting-panel_item">
           <img src="@/assets/images/icon-my-phone.png" >
           <span class="title">我的日程</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link> -->
+      </div>
+      
+      <div class="setting-panel vux-1px-t vux-1px-b mt10px">
+        <router-link to="/user/info" class="setting-panel_item vux-1px-b">
+          <img src="@/assets/images/ic_setting_account.png" >
+          <span class="title">设置</span>
+          <i class="iconfont icon-jiantouyou"></i>
+        </router-link>
       </div>
       
     </div>
@@ -129,25 +145,46 @@ export default {
   color: #3ac7f5;
 }
 .user-panel {
-  padding: 10px 0;
+  height: 60px;
   display: flex;
   background: #fff;
-  border-bottom: #9fe6e6 1px solid;
   font-size: 12px;
   .user-panel_item {
+    position: relative;
     display: flex;
     flex: 1;
+    flex-flow: column;
     align-items: center;
     justify-content: center;
-    border-right: #d9f7f5  1px solid;
     color: #666;
-    &:last-child {
-      border: 0;
-    }
     img {
-      width: 31px;
-      margin-right: 10px;
+      display: block;
+      width: auto;
+      height: 22px;
     }
+    .text
+    {
+      text-align: center;
+      margin-top: 4px;
+      width: 100%;
+      color: #666;
+      font-size: 14px;
+    }
+  }
+  .user-panel_item::after
+  {
+    position: absolute;
+    content: '';
+    display: block;
+    top: 10px;
+    bottom: 10px;
+    width: 1px;
+    right: 0;
+    background-color: #CCF0EE;
+    transform: scaleX(.5) translateX(-50%)
+  }
+  .user-panel_item:last-child:after{
+    display: none;
   }
 }
 
@@ -162,26 +199,26 @@ export default {
   }
   .setting-panel_item {
     width: 90%;
+    height: 45px;
     margin: 0 auto;
     box-sizing: border-box;
-    padding: 15px 0;
     display: flex;
     align-items: center;
     color: #666;
     font-size: 12px;
     &.vux-1px-b:after {
-      border-color: #daf6f5;
+      border-color: RGBA(0, 180, 171, .2);
     }
     img {
-      width: 24px;
-      height: 24px;
+      width: auto;
+      height: 15px;
       padding-right: 10px;
     }
     .title {
       flex: 1;
     }
     .iconfont {
-      color: #f8a519
+      color: #ccc
     }
   }
 }

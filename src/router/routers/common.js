@@ -13,5 +13,12 @@ export default [
     meta: {
       notNeedLogin: true
     }
+  },
+  {
+    path: '*',
+    component: _import('/servant/NotFound'),
+    meta: {
+      notNeedLogin: true
+    }
   }
 ]
