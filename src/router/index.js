@@ -19,13 +19,17 @@ router.beforeEach((to, from, next) => {
   if (to.meta.notNeedLogin) {
     next()
   } else {
-    const userAccount = JSON.parse(window.sessionStorage.getItem('userAccount'))
-    if (!userAccount) { // 未登录的状态去微信登录
+    const token = sessionStorage.getItem('servant_token')
+    const userAccount = sessionStorage.getItem('userAccount')
+    if (!token || !userAccount) { // 未登录的状态去微信登录
+      sessionStorage.removeItem('servant_token')
+      sessionStorage.removeItem('userAccount')
+      sessionStorage.removeItem('userInfo')
       sessionStorage.setItem('to_path', to.fullPath)
       window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${process.env.wechatOption.appId}&redirect_uri=` +
       encodeURIComponent(process.env.wechatOption.redirectUrl) + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
     } else { // 已登录的状态
-      const userState = router.app.$store.getters.userState // 用户状态 -4：未绑定手机；-2：账户锁定中；-1：账户已被删除；0：账户未提交身份证；1：账户提交身份证 待审核；2：3：账户审核未通过；；3：账户已审核通过
+      const userState = router.app.$store.getters.userState // 用户状态 -4：未绑定手机；-2：账户锁定中；-1：账户已被删除；0：账户未提交身份证；1：账户提交身份证 待审核；2：未提交审核资料3：账户审核未通过；；3：账户已审核通过
       if (userState === -4) { // 没有绑定手机
         if (to.path !== '/user/authstep1') {
           next('/user/authstep1')

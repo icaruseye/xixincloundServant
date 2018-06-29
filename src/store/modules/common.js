@@ -4,12 +4,14 @@ const SET_COMPLAINT_TAB_INDEX = 'SET_COMPLAINT_TAB_INDEX'
 const SET_ORDER_TAB_INDEX = 'SET_ORDER_TAB_INDEX'
 const SET_ROUTER_LOADING = 'SET_ROUTER_LOADING'
 const SET_WITHDRAW_TAB_INDEX = 'SET_WITHDRAW_TAB_INDEX'
+const SET_SERVICE_LIST_TAB_INDEX = 'SET_SERVICE_LIST_TAB_INDEX'
 
 const state = {
   missionTabIndex: 0, // 任务列表第一级tab
   missionSmallTabIndex: 0, // 任务列表第二级tab：0、全部；1、待确认；2、待服务；3、待评价
   orderTabIndex: 0, // 订单列表tabIndex
   withDrawTabIndex: 0, // 提现列表tabIndex
+  serviceListTabIndex: 0, // 服务项列表tabIndex
   complaintTabIndex: 0,
   routerLoading: false
 }
@@ -32,6 +34,9 @@ const mutations = {
   },
   [SET_WITHDRAW_TAB_INDEX] (state, flag) {
     state.withDrawTabIndex = flag
+  },
+  [SET_SERVICE_LIST_TAB_INDEX] (state, flag) {
+    state.serviceListTabIndex = flag
   }
 }
 
@@ -44,7 +49,8 @@ const getters = {
   complaintTabIndex: state => state.complaintTabIndex,
   routerLoading: state => state.routerLoading,
   orderTabIndex: state => state.orderTabIndex,
-  withDrawTabIndex: state => state.withDrawTabIndex
+  withDrawTabIndex: state => state.withDrawTabIndex,
+  serviceListTabIndex: state => state.serviceListTabIndex
 }
 
 export default {

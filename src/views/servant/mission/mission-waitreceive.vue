@@ -18,14 +18,14 @@
         title="已确认"
       >
         <template v-if="detail.State >= 3" slot="subhead">
-            到达时间：{{detail.StartTime | timeFormat}}
+            到达时间：{{detail.StartTime | xxTimeFormatFilter}}
         </template>
         <ul>
           <li class="desc_list_items">
             <p class="normal_desc_p" style="font-size: 14px; color: #666">任务名称：{{detail.ItemName}}</p>
             <p class="normal_desc_p">服务对象：{{detail.UserName}}</p>
             <p class="normal_desc_p">执行人：{{detail.ServantName}}</p>
-            <p class="normal_desc_p">时间：{{detail.CreateTime | timeFormat}}</p>
+            <p class="normal_desc_p">约定到达时间：{{detail.ConfirmArriveTime | xxTimeFormatFilter}}</p>
             <p class="normal_desc_p" :class="[detail.NeedTools?'redColor':'']" >工具：{{detail.NeedTools?'需要准备':'不需要准备'}}</p>
             <p class="normal_desc_p" :class="[detail.NeedDrug?'redColor':'']" >药品：{{detail.NeedDrug?'需要准备':'不需要准备'}}</p>
             <p v-if="detail.ReserveRemark" class="normal_desc_p" style="word-break: break-all">备注：{{detail.ReserveRemark}}</p>
@@ -46,7 +46,7 @@
         :title="detail.State>=4?'已服务': '服务中'"
       >
         <template v-if="detail.State >= 4" slot="subhead">
-            完成时间：{{detail.EndTime | timeFormat}}
+            完成时间：{{detail.EndTime | xxTimeFormatFilter}}
         </template>
         <ul v-if="detail.State == 0">
           <li class="desc_list_items">
@@ -98,7 +98,7 @@
             <p class="normal_title_p">服务相关图片</p>
             <div class="thumbs_container" style="margin-top: 14px">
               <xx-uploader 
-              :limit="4"
+              :limit="9"
               :maxSize="1024 * 1024 * 5"
               @onUpdate="onUpdate"
               ></xx-uploader>
@@ -160,7 +160,7 @@
         <p v-if="detail.State == 4" class="normal_desc_p">等待患者对本次服务进行评价！</p>
         
         <template v-if="detail.State == 5 || detail.State == 6" slot="subhead">
-            评价时间：{{reviewDetail.ReviewTime | timeFormat}}
+            评价时间：{{reviewDetail.ReviewTime | xxTimeFormatFilter}}
         </template>
         <div v-if="detail.State == 5 || detail.State == 6" class="evaluate_content_container">
           <h4 style="font-size: 12px;color: #666;font-weight:400">服务评价</h4>
@@ -215,10 +215,6 @@ export default {
     }
   },
   filters: {
-    timeFormat (value = '') {
-      value = value.replace('T', ' ')
-      return value
-    },
     stepFileter (value) {
       if (value === 0) {
         return '1'

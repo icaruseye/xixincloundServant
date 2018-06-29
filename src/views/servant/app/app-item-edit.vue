@@ -1,76 +1,83 @@
 <template>
   <div class="weui-form">
     <div class="weui-cell-form-title">填写服务项目的信息</div>
-    <div class="weui-cell nobor" style="background-color:#3ac7f5;color:#fff">
-      <div class="weui-cell-top" :class="{ 'control': true }">
-          <label class="label" for="">服务包名称：</label>
+    <xx-cell>
+      <xx-cell-items label="服务包名称：" class="noraml_cell_right" labelClass="the-cells-items_label">
+        <div class="input_control_container">
           {{templateDetail.Name}}
-      </div>
-    </div>
-    <div class="weui-cell">
-      <div class="weui-cell-top" :class="{ 'control': true }">
-          <x-input title = '真实售价：' v-model="templateDetail.Price" v-validate="'required'" name="Price" placeholder="请输入真实售价"></x-input>
-      </div>
-      <span v-show="errorBags.has('Price')" class="help is-danger">{{ errorBags.first('Price') }}</span>
-    </div>
-    <div class="weui-cell">
-      <div class="weui-cell-top" :class="{ 'control': true }">
-          <x-input title = '展示价格：' v-model="ViewPrice" v-validate="'required'" name="PackageViewPrice" placeholder="请输入展示价格"></x-input>
-      </div>
-      <span v-show="errorBags.has('PackageViewPrice')" class="help is-danger">{{ errorBags.first('PackageViewPrice') }}</span>
-    </div>
-    <div class="weui-cell">
-      <div class="weui-cell-top" :class="{ 'control': true }">
-          <x-input title = '库存数量：' v-model="reqParams.Count" v-validate="'required|min_value:1|max_value:500'" name="Count" placeholder="请输入库存数量"></x-input>
-      </div>
-      <span v-show="errorBags.has('Count')" class="help is-danger">{{ errorBags.first('Count') }}</span>
-    </div>
-    <div class="weui-cell" @click="expiryUnitVisable = true">
-      <div class="weui-cell-top" :class="{ 'control': true }">
-        <cell primary="content" title = '有效期单位：' value-align="left" style="width: 100%">
-          <span style="padding: 0 15px" slot="after-title">{{EffectiveValue | expiryUnitFilter}}</span>
-        </cell>
-        <span v-show="errorBags.has('EffectiveType')" class="help is-danger">{{ errorBags.first('EffectiveType') }}</span>
-      </div>
-    </div>
-    <div class="weui-cell">
-      <div class="weui-cell-top" :class="{ 'control': true }">
-          <x-input title = '有效期时长：' v-model="reqParams.EffectiveValue" v-validate="'required|min_value:1'" name="EffectiveValue" placeholder="请输入有效期时长"></x-input>
-      </div>
-      <span v-show="errorBags.has('EffectiveValue')" class="help is-danger">{{ errorBags.first('EffectiveValue') }}</span>
-    </div>
-    <div class="weui-cell">
-      <div class="weui-cell-top">
-          <x-textarea title="服务介绍：" placeholder="请输入服务包介绍" :show-counter="false" v-validate="'required'" :rows="1" autosize v-model="templateDetail.Content"></x-textarea>
-      </div>
-      <span v-show="errorBags.has('PackageDescription')" class="help is-danger">{{ errorBags.first('PackageDescription') }}</span>
-    </div>
-    <div class="weui-cell">
-      <button type="button" class="weui-btn weui-btn_primary" @click="submit" :disabled="submitBtn">提交</button>
-    </div>
+        </div>
+      </xx-cell-items>
+      <xx-cell-items label="真实售价：" class="noraml_cell_right" labelClass="the-cells-items_label">
+        <div class="input_control_container">
+          <input @blur="priceBlur" class="input_control" type="Number" v-model="templateDetail.Price" v-validate="'currency|required'" name="Price" placeholder="请输入真实售价">
+          <span class="input_control_suffix">元</span>
+          <p v-show="errorBags.has('Price')" class="help is-danger">{{ errorBags.first('Price') }}</p>
+        </div>
+      </xx-cell-items>
+      <xx-cell-items label="展示价格：" class="noraml_cell_right" labelClass="the-cells-items_label">
+        <div class="input_control_container">
+          <input readonly class="input_control" type="Number" v-model="ViewPrice" v-validate="'currency|required'" name="PackageViewPrice" placeholder="请输入展示价格">
+          <span class="input_control_suffix">元</span>
+          <p v-show="errorBags.has('PackageViewPrice')" class="help is-danger">{{ errorBags.first('PackageViewPrice') }}</p>
+        </div>
+      </xx-cell-items>
+      <xx-cell-items label="库存数量：" class="noraml_cell_right" labelClass="the-cells-items_label">
+        <div class="input_control_container">
+          <input class="input_control" type="Number" v-model="reqParams.Count" v-validate="'required|min_value:1|max_value:500'" name="Count" placeholder="请输入库存数量">
+          <p v-show="errorBags.has('Count')" class="help is-danger">{{ errorBags.first('Count') }}</p>
+        </div>
+      </xx-cell-items>
+      <xx-cell-items label="有效期单位：" class="noraml_cell_right" @click.native="expiryUnitVisable = true" labelClass="the-cells-items_label">
+        <div class="input_control_container">
+          <p class="EffectiveValue_select">{{EffectiveValue | expiryUnitFilter}}</p>
+          <p v-show="errorBags.has('EffectiveType')" class="help is-danger">{{ errorBags.first('EffectiveType') }}</p>
+        </div>
+      </xx-cell-items>
+      <xx-cell-items label="有效期时长：" class="noraml_cell_right" labelClass="the-cells-items_label">
+        <div class="input_control_container">
+          <input class="input_control" type="Number" v-model="reqParams.EffectiveValue" v-validate="'required|min_value:1|max_value:500'" name="EffectiveValue" placeholder="请输入有效期时长">
+          <span class="input_control_suffix" @click="expiryUnitVisable = true">{{EffectiveValue | expiryUnitFilter}}</span>
+          <p v-show="errorBags.has('EffectiveValue')" class="help is-danger">{{ errorBags.first('EffectiveValue') }}</p>
+        </div>
+      </xx-cell-items>
+      <xx-cell-items label="服务介绍：" class="noraml_cell_right" labelClass="the-cells-items_label">
+        <div class="input_control_container">
+          <textarea class="textarea_control"  v-model="templateDetail.Content"  v-validate="'required'" name="PackageDescription" placeholder="请输入服务包介绍"></textarea>
+          <p v-show="errorBags.has('PackageDescription')" class="help is-danger">{{ errorBags.first('PackageDescription') }}</p>
+        </div>
+      </xx-cell-items>
+      <xx-cell-items labelClass="the-cells-items_label">
+        <button type="button" class="weui-btn weui-btn_primary" @click="submit" :disabled="submitBtn">{{submitBtnText}}</button>
+      </xx-cell-items>
+    </xx-cell>
     
     <popup v-model="expiryUnitVisable">
-      <p class="vux-1px-b popup_title">请选择有效期单位</p>
-      <radio title='有效期单位：' class="select_radio" :options="expiryUnitList" v-model="EffectiveValue">
-      </radio>
+      <popup-header
+        left-text="取消"
+        @on-click-left="expiryUnitVisable = false"
+        title="请选择有效期单位"
+        :show-bottom-border="false"
+      >
+      </popup-header>
+      <group style="padding: 0 0 45px 0">
+        <radio title='有效期单位：' :options="expiryUnitList" v-model="EffectiveValue"></radio>
+      </group>
     </popup>
   </div>
 </template>
 
 <script>
-import http from '@/api'
-import { TransferDom, XTextarea, XInput, Radio, Popup, Confirm, Cell } from 'vux'
+import { TransferDom, XTextarea, XInput, Group, Radio, Popup, PopupHeader, Confirm, Cell } from 'vux'
 export default {
-  metaInfo: {
-    title: '新增服务'
-  },
   directives: {
     TransferDom
   },
   components: {
+    Group,
     XInput,
     Confirm,
     Popup,
+    PopupHeader,
     XTextarea,
     Radio,
     Cell
@@ -96,6 +103,7 @@ export default {
     return {
       expiryUnitVisable: false,
       EffectiveValue: '1',
+      submitBtnText: '',
       expiryUnitList: [
         {
           key: '1',
@@ -111,6 +119,7 @@ export default {
         }
       ],
       templateDetail: {},
+      ViewPriceTemp: null,
       submitBtn: false,
       reqParams: {
         EffectiveValue: 1, // 有效期值
@@ -125,10 +134,14 @@ export default {
     },
     ViewPrice: {
       get () {
-        return (this.templateDetail.Price * 1.2).toFixed(2)
+        if (this.ViewPriceTemp !== null) {
+          return this.ViewPriceTemp
+        } else {
+          return ((Math.ceil((this.templateDetail.Price * 1.2 * 100)).toFixed(2)) / 100)
+        }
       },
       set (val) {
-        return val
+        this.ViewPriceTemp = val
       }
     }
   },
@@ -139,15 +152,34 @@ export default {
     sessionStorage.removeItem('packageServiceDetail')
   },
   methods: {
+    priceBlur () {
+      let parsePrice = parseFloat(this.templateDetail.Price)
+      console.log(parsePrice)
+      this.templateDetail.Price = (isNaN(parsePrice) ? 0 : parsePrice)
+    },
     async init () {
       let packageDetail = JSON.parse(sessionStorage.getItem('packageServiceDetail'))
       if (packageDetail) {
         this.reqParams = packageDetail
         this.templateDetail = packageDetail
+        this.submitBtnText = '修改'
+        document.title = '修改服务项'
       } else {
+        document.title = '新增服务项'
+        this.submitBtnText = '提交'
         await this.getData().then(value => {
           if (value.Code === 100000) {
-            this.templateDetail = value.Data
+            let tempData = value.Data
+            this.templateDetail = {
+              ID: tempData.ID,
+              Name: tempData.Name,
+              Price: tempData.Price / 100,
+              PackageType: tempData.PackageType,
+              Img: tempData.Img,
+              State: tempData.State,
+              UseType: tempData.UseType,
+              Content: tempData.Content
+            }
           }
         })
       }
@@ -202,7 +234,7 @@ export default {
       const res = await this.$validator.validateAll()
       if (res) {
         this.submitBtn = true
-        const res = await http.post('/CertificatePackage', params)
+        const res = await this.$http.post('/CertificatePackage', params)
         this.submitBtn = false
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
@@ -239,7 +271,7 @@ export default {
       const res = await this.$validator.validateAll()
       if (res) {
         this.submitBtn = true
-        const res = await http.put('/Package', params)
+        const res = await this.$http.put('/Package', params)
         this.submitBtn = false
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
@@ -265,85 +297,68 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .weui-form {
   min-height: 100vh;
-  background: #f8f8f8;
+  background: #ffffff;
+  padding-bottom: 100px;
 }
-
-.iconfont {
-  color: #f8a519
-}
-
-.service-item_list {
-  padding: 0 15px 50px;
-  li {
-    position: relative;
-    display: flex;
-    padding: 15px 0;
-    align-items: center;
-    &::before {
-      content: " ";
-      position: absolute;
-      left: 0;
-      top: 0;
-      right: 0;
-      height: 1px;
-      border-top: 1px solid #d9f7f5;
-      color: #e5e5e5;
-      -webkit-transform-origin: 0 0;
-      transform-origin: 0 0;
-      -webkit-transform: scaleY(0.5);
-      transform: scaleY(0.5);
-      z-index: 2;
-    }
-    .poster {
-      display: block;
-      width: 40px;
-      margin-right: 10px;
-    }
-    .title {
-      flex: 1;
-
-    }
-  }
-}
-
-.weui-cell-add {
-  display: flex;
-  border-left: 3px solid #3ecccc;
-  margin-bottom: 5px;
-  margin: 10px 0;
-  padding: 0 10px;
-  .title {
-    flex: 1;
-  }
-  .mid {
-    width: 200px;
-    display: flex;
-    align-items: center;
-    input {
-      width: 40px;
-      background: #e5e5e5;
-      margin: 0 5px;
-      color: #3ecccc;
-      border-radius: 2px;
-      height: 20px;
-      line-height: 1;
-      padding: 0 5px;
-      text-align: center;
-    }
-  }
-  .delete {
-    color: #FF5722;
-  }
-}
-.popup_title {
-  text-align: center;
-  padding: 8px 0;
-  height: 35px;
-  line-height: 35px;
+.the-cells-items_label
+{
+  flex: 0 0 100px;
+  height: 100%;
+  text-align: right;
+  font-size: 12px;
   color: #999;
-  background-color: #fff
+  padding-right: 10px;
+}
+.input_control_container
+{
+  position: relative;
+  .input_control,
+  .textarea_control
+  {
+    background-color: #f8f8f8;
+    font-size: 12px;
+    color: #666;
+    outline: none
+  }
+  .input_control
+  {
+    height: 45px;
+    padding: 0 15px;
+  }
+  .textarea_control
+  {
+    width: 80%;
+    border: none;
+    resize: none;
+    padding: 15px;
+    height: 100px;
+    box-sizing: border-box
+  }
+  .input_control_suffix
+  {
+    font-size: 14px;
+    color: #999;
+    padding: 0 10px
+  }
+  .help
+  {
+    position: absolute;
+    font-size: 12px;
+    top: -20px;
+    height: 20px;
+  }
+  .help.is-danger
+  {
+    color: #ff0000;
+  }
+  .EffectiveValue_select
+  {
+    font-size: 14px;
+    color: #666;
+    padding:  0 15px
+  }
 }
 </style>

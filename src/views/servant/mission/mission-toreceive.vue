@@ -33,10 +33,10 @@
     </h2>
     <xx-cell>
       <xx-cell-items label="工具" :class="['noraml_cell_right', detail.IsNeedTools?'redColor':'']">
-        {{detail.IsNeedTools?'':'不'}}需要准备工具
+        {{detail.NeedTools?'':'不'}}需要准备工具
       </xx-cell-items>
       <xx-cell-items label="药品"  :class="['noraml_cell_right', detail.IsNeedDrug?'redColor':'']">
-        {{detail.IsNeedDrug?'':'不'}}需要准备药品
+        {{detail.NeedDrug?'':'不'}}需要准备药品
       </xx-cell-items>
       <xx-cell-items label="用户描述" direction="vertical">
         <p style="margin-top: 20px;font-size: 13px;color: #999;text-align: justify;word-break: break-all">
@@ -53,12 +53,12 @@
     <xx-cell>
       <xx-cell-items label="用户申请服务时间段" direction="vertical">
         <div class="select-time_container">
-          <div class="select-time_items">
-            {{detail.StartTime | timeFormat}}
+          <div class="select-time_items" style="text-align: left">
+            {{detail.StartTime | xxTimeFormatFilter}}
           </div>
           <span class="select-time_interval">至</span>
-          <div class="select-time_items">
-            {{detail.EndTime | timeFormat}}
+          <div class="select-time_items" style="text-align: right">
+            {{detail.EndTime | xxTimeFormatFilter}}
           </div>
         </div>
       </xx-cell-items>
@@ -105,12 +105,6 @@ export default {
     Datetime,
     ImagePreviewItem,
     CancelMissionPopup
-  },
-  filters: {
-    timeFormat (value = '') {
-      value = value.replace('T', ' ')
-      return value
-    }
   },
   data () {
     return {
@@ -280,7 +274,6 @@ export default {
   .select-time_items
   {
     flex: 1;
-    text-align: center;
     font-size: 15px;
     color: #999999;
   }

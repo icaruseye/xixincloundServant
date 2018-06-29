@@ -84,6 +84,7 @@
 
 <script>
 import http from '@/api/index'
+import {mapActions} from 'vuex'
 import util from '@/plugins/util'
 export default {
   data () {
@@ -137,6 +138,13 @@ export default {
     })
   },
   methods: {
+    ...mapActions([
+      'getUserAccount'
+    ]),
+    async updateUserAccount () {
+      await this.getUserAccount()
+      return true
+    },
     onUpdate5 (value) {
       let imgsStr = ''
       value.map((item) => {
@@ -155,7 +163,7 @@ export default {
           this.$vux.toast.show({
             text: '提交成功',
             onHide () {
-              that.$store.dispatch('getAccount').then(() => {
+              that.updateUserAccount().then(() => {
                 that.$router.back()
               })
             }

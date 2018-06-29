@@ -57,3 +57,12 @@ Validator.extend('idcard', {
     return util.CheckIDCardNum(value)
   }
 })
+
+Validator.extend('currency', {
+  messages: {
+    zh_CN: field => '请输入正确的金额'
+  },
+  validate: value => {
+    return /^([1-9]\d{0,9}|0)([.]?|(\.\d{1,2})?)$/.test(value)
+  }
+})

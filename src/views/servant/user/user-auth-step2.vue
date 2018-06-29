@@ -55,6 +55,7 @@
 
 <script>
 import stepBar from './user-auth-stepbar'
+import {mapActions} from 'vuex'
 import util from '@/plugins/util'
 export default {
   metaInfo: {
@@ -95,6 +96,15 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'getUserAccount',
+      'getUserInfo'
+    ]),
+    async updateUserAccountAndUserInfo () {
+      await this.getUserAccount()
+      await this.getUserInfo()
+      return true
+    },
     onUpdate1 (id) {
       this.reqParam.IDCardImg = id.toString()
     },
@@ -111,7 +121,7 @@ export default {
             this.$vux.toast.show({
               text: '提交成功',
               onHide () {
-                that.$store.dispatch('getAccount').then(() => {
+                that.updateUserAccountAndUserInfo().then(() => {
                   that.$router.push('/user/authstep3')
                 })
               }

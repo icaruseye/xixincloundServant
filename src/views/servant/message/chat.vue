@@ -7,7 +7,7 @@
     <div class="chat-list" id="chatList" :style="{paddingBottom : faceHeight + 'px'}">
       <template v-for="(item, index) in chatList">
         <div class="chat-item" :key="index">
-          <div class="chat-item-time" v-if="item.SendTime"><span>{{item.SendTime | timeFormat}}</span></div>
+          <div class="chat-item-time" v-if="item.SendTime"><span>{{item.SendTime | xxTimeFormatFilter}}</span></div>
           <div :class="[item.IsServantReceive ? 'chat-item-left' : 'chat-item-right']">
             <div class="chat-item-avatar" v-if="item.IsServantReceive">
               <img :src="userAccount.Avatar | transformImgUrl">
@@ -64,12 +64,6 @@ export default {
       chatList: [],
       userAccount: {},
       mineAccount: JSON.parse(sessionStorage.getItem('userAccount'))
-    }
-  },
-  filters: {
-    timeFormat (value = '') {
-      value = value.replace('T', ' ')
-      return value
     }
   },
   async created () {

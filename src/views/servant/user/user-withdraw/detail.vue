@@ -1,6 +1,6 @@
 <template>
   <div style="padding-bottom: 100px">
-    <xx-step-bar :step="step">
+    <xx-step-bar :step="detail.State | stepFilter">
       <xx-step-items slot="items">
         申请
       </xx-step-items>
@@ -15,27 +15,28 @@
       </xx-step-items>
     </xx-step-bar>
 
-    <template v-if="step != 1">
+    <template v-if="detail.State != 0">
       <section class="order_idNo_container">
-        提现单号：12015410
-        <p class="pull-right">2018/06/03 15:30</p>
+        提现单号：
+        {{detail.ForwardID}}
+        <p class="pull-right">{{detail.ApplyTime | xxTimeFormatFilter}}</p>
       </section>
       <section class="status_show_container">
         <p style="font-size: 14px;line-height:20px; color:#FABB51;width: 240px;text-align:center">
-          <template v-if="step == 2">
+          <template v-if="detail.State == 1">
             客服审核中！
           </template>
-          <template v-if="step == 3">
-            客服已审核通过，2小时之内转账到申请提现银行卡，请注意查收！
+          <template v-if="detail.State == 2">
+            客服已审核通过，请注意查收！
           </template>
-          <template v-if="step == 4">
+          <template v-if="detail.State == 3">
             提现已成功！<br/>
-            2018/06/03 16:30
+            <!-- 2018/06/03 16:30 -->
           </template>
         </p>
         <p style="font-size: 12px;margin-top:5px;color:#999">
           申请提现方式：
-          <span style="color:#3AC7F5">民生银行</span>
+          <span style="color:#3AC7F5">{{detail.BankName}}</span>
         </p>
       </section>
     </template>
@@ -47,7 +48,7 @@
           服务单号
         </label>
         <p class="cell_items_centent">
-          201806031203
+          {{detail.MissionID}}
         </p>
         <span class="cell_items_right">
           <i class="iconfont icon-jiantouyou"></i>
@@ -59,12 +60,12 @@
           <img src="@/assets/images/icon_tcmr.png" alt="">
         </div>
         <div class="service_item_content_container">
-          <h3 class="service_item_content_title">院内陪诊</h3>
-          <p class="service_item_content_desc text-overflow-1">工作于急诊，擅长消化道危急重症…</p>
-          <p class="service_item_nickName">用户：张梦霞</p>
+          <h3 class="service_item_content_title">{{detail.MissionName}}</h3>
+          <!-- <p class="service_item_content_desc text-overflow-1">工作于急诊，擅长消化道危急重症…</p> -->
+          <p class="service_item_nickName">用户：{{detail.UserName}}</p>
         </div>
         <div class="service_item_right">
-          ￥169元
+          ￥{{detail.TotalPrice | amountFilter}}元
         </div>
       </div>
 
@@ -74,10 +75,10 @@
           服务费
         </label>
         <p class="cell_items_centent">
-          60%
+          {{((detail.ServicePrice/detail.TotalPrice)|0)*100}}%
         </p>
         <span class="cell_items_right cell_items_right_amount">
-          ￥100
+          ￥{{detail.ServicePrice | amountFilter}}
         </span>
       </div>
 
@@ -88,10 +89,10 @@
           税收
         </label>
         <p class="cell_items_centent">
-          20%
+          {{((detail.TexPrice/detail.TotalPrice)|0)*100}}%
         </p>
         <span class="cell_items_right cell_items_right_amount">
-          ￥2
+          ￥{{detail.TexPrice | amountFilter}}
         </span>
       </div>
 
@@ -101,10 +102,10 @@
           平台佣金
         </label>
         <p class="cell_items_centent">
-          10%
+          {{((detail.PlatformPrice/detail.TotalPrice)|0)*100}}%
         </p>
         <span class="cell_items_right cell_items_right_amount">
-          ￥10
+          ￥{{detail.PlatformPrice | amountFilter}}
         </span>
       </div>
 
@@ -115,28 +116,28 @@
           机构佣金
         </label>
         <p class="cell_items_centent">
-          10%
+          {{((detail.ShopPrice/detail.TotalPrice)|0)*100}}%
         </p>
         <span class="cell_items_right cell_items_right_amount">
-          ￥59
+          ￥{{detail.ShopPrice | amountFilter}}
         </span>
       </div>
       <div class="withdraw_order_count clearfix">
         <div class="pull-right">  
           <p class="pull-left" style="margin-right: 27px">
             用户支付金额 
-            <span style="font-size: 15px;color: #666">￥169</span> 
+            <span style="font-size: 15px;color: #666">￥{{detail.TotalPrice | amountFilter}}</span> 
           </p>
           <p class="pull-left">
             服务者实际收入
-            <span style="font-size:18px;color:#FF5F5F">￥109</span>   
+            <span style="font-size:18px;color:#FF5F5F">￥{{detail.LiftPrice | amountFilter}}</span>   
           </p>
         </div>
       </div>
     </div>
 
 
-    <template  v-if="step == 1">
+    <template  v-if="detail.State == 0">
       <!-- 提现方式选择 -->
       <div class="choose_withdraw_type_btn" @click="withdrawTypeVisible= !withdrawTypeVisible">
         <div class="cell_items">
@@ -144,41 +145,60 @@
               提现方式
             </label>
             <span class="cell_items_right" style="line-height: 40px;color:#9F9F9F">
-              请选择提现方式
+              {{currentWithdrawType?currentWithdrawType.name:'选择提现方式'}}
+              {{currentWithdrawType&&(currentWithdrawType.code != null)?`（${currentWithdrawType.code}）`:''}}
               <i class="iconfont icon-jiantouyou pull-right"></i>
             </span>
         </div>
       </div>
       <!-- 申请提现按钮 -->
       <div class="btn_bar">
-        <button @click="reload('2')">
+        <button @click="withdrawApplyEvent()">
           申请提现
         </button>
       </div>
     </template>
     <!-- 取消申请按钮 -->
-    <div v-if="step == 2" style="padding: 15px 10px" class="clearfix">
-      <a href="javascript:void(0)" class="cancle_apply_btn pull-right">取消申请</a>
+    <div v-if="detail.State == 1" style="padding: 15px 10px" class="clearfix">
+      <a href="javascript:void(0)" class="cancle_apply_btn pull-right" @click="cancelWithdrawApply">取消申请</a>
     </div>
 
     
     <div v-transfer-dom>
       <popup v-model="withdrawTypeVisible" position="bottom" max-height="50%">
         <div class="withdrawTypeVisible_container">
-          <div class="head_box">
-            <i class="iconfont icon-fanhui" @click="withdrawTypeVisible= !withdrawTypeVisible"></i>
-            选择提现方式
-          </div>
+          <sticky
+            ref="sticky"
+            :offset="0"
+            :check-sticky-support="true">
+                <popup-header
+                  left-text="取消"
+                  @on-click-left="withdrawTypeVisible = false"
+                  title="选择提现方式"
+                  :show-bottom-border="false"
+                >
+                </popup-header>
+          </sticky>
           <ul class="withdrawType_list">
-            <li class="withdrawType_item">
-              民生银行
-            </li>
-            <li class="withdrawType_item">
-              微信提现
-            </li>
-            <li class="withdrawType_item">
+            <template v-if="withdrawTypeList.length > 0">
+              <li v-for="(item, index) in withdrawTypeList" 
+                :key="index"
+                @click="currentWithdrawType = item;withdrawTypeVisible = false"
+                :class="['withdrawType_item', (currentWithdrawType && currentWithdrawType.id === item.id)?'selected':'']"
+              >
+                <i class="icon_box">
+                  <svg class="icon" aria-hidden="true">
+                    <use :xlink:href="`#icon-${item.icon}`"></use>
+                  </svg>
+                </i>
+                {{item.name}}
+                <span v-if="item.code" class="code_box">（{{item.code}}）</span>
+                <i v-if="currentWithdrawType &&currentWithdrawType.id === item.id" class="select_gougou_box iconfont icon-xuanzhong"></i>
+              </li>
+            </template>
+            <router-link class="withdrawType_item" to="/user/bankCard/add">
               添加银行卡
-            </li>
+            </router-link>
           </ul>
         </div>
       </popup>
@@ -186,24 +206,172 @@
   </div>
 </template>
 <script>
-import { TransferDom, Popup, InlineLoading } from 'vux'
+import { TransferDom, Sticky, Popup, PopupHeader, InlineLoading } from 'vux'
 export default {
   directives: {
     TransferDom
   },
   components: {
     Popup,
+    Sticky,
+    PopupHeader,
     InlineLoading
+  },
+  computed: {
+    ID () {
+      return this.$route.params.id
+    }
   },
   data () {
     return {
-      step: '1',
-      withdrawTypeVisible: false
+      currentWithdrawType: null,
+      withdrawTypeList: [],
+      withdrawTypeVisible: false,
+      detail: {
+        ServicePrice: 0,
+        PlatformPrice: 0,
+        TotalPrice: 0,
+        LiftPrice: 0
+      },
+      withdrawTypeChangeEvent: () => {}
     }
   },
+  watch: {
+    currentWithdrawType (val) {
+      (val != null) && this.withdrawTypeChangeEvent()
+    },
+    withdrawTypeVisible (val) {
+      (val === false) && (this.withdrawTypeChangeEvent = () => {})
+    },
+    step () {
+      this.withdrawTypeChangeEvent = () => {}
+    }
+  },
+  created () {
+    this.init()
+    this.getMyBankCardList()
+  },
   methods: {
-    reload (val) {
-      this.step = '2'
+    async init () {
+      await this.getData().then(result => {
+        if (result.Code === 100000) {
+          this.detail = result.Data
+        } else {
+          this.$vux.toast.show(result.Msg)
+        }
+      })
+    },
+    async getData () {
+      const res = await this.$http.get(`/ServantWithDrawRecord/${this.ID}`)
+      return res.data
+    },
+    withdrawApplyEvent () {
+      if (!this.currentWithdrawType) {
+        this.withdrawTypeChangeEvent = () => {
+          this.withdrawApplyConfirm()
+        }
+        this.withdrawTypeVisible = true
+      } else {
+        this.withdrawApplyConfirm()
+      }
+    },
+    withdrawApplyConfirm () {
+      const that = this
+      that.$vux.confirm.show({
+        content: `提现到${that.currentWithdrawType.name}${that.currentWithdrawType.code ? '(' + that.currentWithdrawType.code + ')' : ''}吗？`,
+        confirmText: '确定',
+        cancelText: '放弃提现',
+        onConfirm () {
+          that.submitWithdrawApply()
+        }
+      })
+    },
+    async submitWithdrawApply () {
+      const res = await this.$http.put(`/ServantWithDrawRecordApply/${this.ID}?bankInfoID=${this.currentWithdrawType.id}`)
+      if (res.data.Code === 100000) {
+        this.init()
+      } else {
+        this.$vux.toast.show(res.data.Msg)
+      }
+    },
+    /**
+     * 取消提现申请
+     */
+    cancelWithdrawApply () {
+      const that = this
+      that.$vux.confirm.show({
+        content: '确定取消提现申请？',
+        confirmText: '确定',
+        cancelText: '不',
+        async onConfirm () {
+          const res = await that.$http.put(`/ServantWithReawRecordRemove/${that.ID}`)
+          if (res.data.Code === 100000) {
+            that.$vux.toast.show({
+              text: '取消成功',
+              onHide () {
+                that.init()
+              }
+            })
+          } else {
+            that.$vux.toast.show(res.data.Msg)
+          }
+        }
+      })
+    },
+    // 获取并组装我的银行卡
+    async getMyBankCardList () {
+      const res = await this.$http.get('/ServantBankInfoList')
+      if (res.data.Code === 100000) {
+        this.withdrawTypeList = []
+        res.data.Data.map((item, index) => {
+          this.withdrawTypeList.push({
+            id: item.ID,
+            name: item.BankName,
+            code: this.getBankCardEndNum(item.BankCard),
+            icon: this.getBankCardLogo(item.BankAbbreviation)
+          })
+        })
+      }
+    },
+    /**
+     * 获取银行卡尾号
+     */
+    getBankCardEndNum (bankCardNum) {
+      return bankCardNum.substring(bankCardNum.lastIndexOf('*'), bankCardNum.length)
+    },
+    /**
+     * 获取银行卡logo
+     */
+    getBankCardLogo (BankAbbreviation = 'CMBC') {
+      switch (BankAbbreviation) {
+        case 'CMBC':
+          return 'minshengyinhang'
+        case 'WECHATPAY':
+          return 'weixin'
+        default:
+          return 'minshengyinhang'
+      }
+    }
+  },
+  filters: {
+    amountFilter (value) {
+      if (value === 0 || isNaN(value)) {
+        return '0.00'
+      } else {
+        return (value / 100).toFixed(2)
+      }
+    },
+    stepFilter (value = 0) {
+      switch (value) {
+        case 0:
+          return '1'
+        case 1:
+          return '2'
+        case 2:
+          return '3'
+        case 3:
+          return '4'
+      }
     }
   }
 }
@@ -262,10 +430,12 @@ export default {
     .withdrawType_item
     {
       position: relative;
+      display: block;
       height: 50px;
       line-height: 50px;
       padding-left: 54px;
-    }::before
+      color: #666;
+      &::before
       {
         position: absolute;
         top: 0;
@@ -275,6 +445,31 @@ export default {
         display: block;
         height: 1px;
         background-color: #E8F9FE
+      }
+      .code_box
+      {
+        font-size: 14px;
+        color: #999;
+      }
+      .select_gougou_box
+      {
+        position: absolute;
+        right: 15px;
+        top: 0;
+        display: block;
+        color: #3AC7F5;
+      }
+    }
+      .icon_box
+      {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        font-size: 26px;
       }
   }
 // 客服审核

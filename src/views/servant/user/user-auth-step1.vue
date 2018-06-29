@@ -35,6 +35,7 @@
 <script>
 import http from '@/api/index'
 import stepBar from './user-auth-stepbar'
+import {mapActions} from 'vuex'
 export default {
   components: {
     stepBar
@@ -54,6 +55,15 @@ export default {
     }
   },
   methods: {
+    ...mapActions([
+      'getUserAccount',
+      'getUserInfo'
+    ]),
+    async updateUserAccountAndUserInfo () {
+      await this.getUserAccount()
+      await this.getUserInfo()
+      return true
+    },
     async getCode () {
       const mobile = this.mobile
       if (!(mobile.length === 11 && /^((13|14|15|17|18)[0-9]{1}\d{8})$/.test(mobile))) {
@@ -97,7 +107,7 @@ export default {
         this.$vux.toast.show({
           text: '绑定成功',
           onHide () {
-            that.$store.dispatch('getAccount').then(() => {
+            that.updateUserAccountAndUserInfo().then(() => {
               that.$router.push('/user/authstep2')
             })
           }

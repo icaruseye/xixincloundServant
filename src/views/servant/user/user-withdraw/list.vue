@@ -11,7 +11,10 @@
       </xx-tab>
     </sticky>
     <div  v-if="list.length > 0" class="mt10px">
-      <list-item></list-item>
+      <list-item v-for="(item, index) in list" 
+        :key="index"
+        :OrderInfo="item"
+      ></list-item>
     </div>
     <xx-occupied-box v-else>
       {{occupiedText}}

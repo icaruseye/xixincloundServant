@@ -16,11 +16,11 @@
         </div>
         <div class="right">
           <div class="title">
-            {{item.MissionName}}
+            {{item.MissionName | textFilter(6)}}
             <span class="username" v-if="item.UserName">用户：{{item.UserName}}</span>
           </div>
-          <div class="desc">投诉原因:{{item.UserComplaintTitle}}</div>
-          <div class="time">投诉时间:{{item.CreateTime | timeFormat}}</div>
+          <div class="desc">投诉原因:{{item.UserComplaintTitle | textFilter}}</div>
+          <div class="time">投诉时间:{{item.CreateTime | xxTimeFormatFilter}}</div>
         </div>
       </div>
     </div>
@@ -47,9 +47,8 @@ export default {
     }
   },
   filters: {
-    timeFormat (value = '') {
-      value = value.replace('T', ' ')
-      return value
+    textFilter (value = '', len = 10) {
+      return value.length > len ? value.substring(0, len) + '…' : value
     }
   },
   watch: {

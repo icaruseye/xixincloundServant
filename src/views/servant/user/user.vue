@@ -6,9 +6,9 @@
         <p class="name">{{userAccount.NickName}}</p>
         <img class="qrcode" src="@/assets/images/code-1.png"  @click="maskShow = true">
       </div>
-      <div v-if="userInfoCompleteProgress<100" class="user-info_percent">
+      <!-- <div v-if="userInfoCompleteProgress<100" class="user-info_percent">
         你的资料完整度为 {{userInfoCompleteProgress}}%，完善资料和验证手机后您才能为用户提供服务
-      </div>
+      </div> -->
       <div class="user-panel">
         <router-link to="/" class="user-panel_item">
             <img src="@/assets/images/ic_message_account.png" >
@@ -23,43 +23,44 @@
             <p class="text">订单</p>
         </router-link>
       </div>
-      <div class="setting-panel vux-1px-t vux-1px-b mt10px">
-        <router-link to="/user/info" class="setting-panel_item vux-1px-b">
+      <div class="setting-panel mt10px">
+        <router-link to="/user/info" class="setting-panel_item">
           <img src="@/assets/images/ic_myInfo_account.png" >
           <span class="title">个人资料</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
         
-        <router-link to="/user/withdraw" class="setting-panel_item vux-1px-b">
-          <img src="@/assets/images/ic_ withdraw_account.png" >
+        <router-link to="/user/withdraw" class="setting-panel_item">
+          <img src="@/assets/images/ic_withdraw_account.png" >
           <span class="title">提现</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
+
+        <router-link to="/user/bankCard" class="setting-panel_item">
+          <img src="@/assets/images/ic_withdraw_account.png" >
+          <span class="title">我的银行卡</span>
+          <i class="iconfont icon-jiantouyou"></i>
+        </router-link>
       </div>
-      <div class="setting-panel vux-1px-t vux-1px-b mt10px">
-        <router-link to="/user/complaint" class="setting-panel_item vux-1px-b">
+      <div class="setting-panel mt10px">
+        <router-link to="/user/authstep3" class="setting-panel_item">
+          <img src="@/assets/images/ic_myInfo_account.png" >
+          <span class="title">我的执业证</span>
+          <i class="iconfont icon-jiantouyou"></i>
+        </router-link>
+        <router-link to="/user/complaint" class="setting-panel_item">
           <img src="@/assets/images/ic_complaint_account.png" >
           <span class="title">投诉</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
-        <a href="javascript:alert('开发中')" class="setting-panel_item vux-1px-b">
+        <a href="javascript:alert('开发中')" class="setting-panel_item">
           <img src="@/assets/images/ic_help_account.png" >
           <span class="title">帮助</span>
           <i class="iconfont icon-jiantouyou"></i>
         </a>
-        <!-- <router-link to="/user/phone" class="setting-panel_item vux-1px-b">
+        <!-- <router-link to="/user/phone" class="setting-panel_item">
           <img src="@/assets/images/icon-my-phone.png" >
           <span class="title">手机认证</span>
-          <i class="iconfont icon-jiantouyou"></i>
-        </router-link>
-        <router-link to="/user/bankCard" class="setting-panel_item vux-1px-b">
-          <img src="@/assets/images/icon-my-phone.png" >
-          <span class="title">我的银行卡</span>
-          <i class="iconfont icon-jiantouyou"></i>
-        </router-link> -->
-        <!-- <router-link to="/user/authstep3" class="setting-panel_item">
-          <img src="@/assets/images/icon-my-phone.png" >
-          <span class="title">我的执业证</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link> -->
         <!-- <router-link to="/user/date" class="setting-panel_item">
@@ -69,8 +70,8 @@
         </router-link> -->
       </div>
       
-      <div class="setting-panel vux-1px-t vux-1px-b mt10px">
-        <router-link to="/user/info" class="setting-panel_item vux-1px-b">
+      <div class="setting-panel mt10px">
+        <router-link to="/user/info" class="setting-panel_item">
           <img src="@/assets/images/ic_setting_account.png" >
           <span class="title">设置</span>
           <i class="iconfont icon-jiantouyou"></i>
@@ -86,7 +87,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { XDialog } from 'vux'
 import ShowQrcode from '@/components/ShowQrCode'
 export default {
@@ -100,6 +101,16 @@ export default {
   data () {
     return {
       maskShow: false
+    }
+  },
+  methods: {
+    ...mapActions([
+      'getUserAccount',
+      'getUserInfo'
+    ]),
+    async updateUserAccountAndUserInfo () {
+      await this.getUserAccount()
+      await this.getUserInfo()
     }
   },
   computed: {
@@ -131,6 +142,7 @@ export default {
     }
   },
   created () {
+    this.updateUserAccountAndUserInfo()
   },
   mounted () {
   }
@@ -194,10 +206,11 @@ export default {
     border-color: #e5e5e5;
   }
 
-  &.vux-1px-b:after {
+  &:after {
     border-color: #e5e5e5;
   }
   .setting-panel_item {
+    position: relative;
     width: 90%;
     height: 45px;
     margin: 0 auto;
@@ -206,8 +219,15 @@ export default {
     align-items: center;
     color: #666;
     font-size: 12px;
-    &.vux-1px-b:after {
-      border-color: RGBA(0, 180, 171, .2);
+    &:after {
+      position: absolute;
+      display: block;
+      content: '';
+      height: 1px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(58,199,245,.1);
     }
     img {
       width: auto;
@@ -221,8 +241,11 @@ export default {
       color: #ccc
     }
   }
+.setting-panel_item:last-child::after
+{
+  display: none;
 }
-
+}
 .weui-mask {
   img {
     position: absolute;

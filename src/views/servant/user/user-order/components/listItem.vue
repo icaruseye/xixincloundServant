@@ -1,30 +1,65 @@
 <template>
-  <div class="container">
-    <div class="avatar_box">
-      <img src="http://xixincloud.com:6883/File/GetImage/5b30fc12ce3fab03b81f5bfb" alt="">
+  <div class="container" :class="UserOrder.State == 2? 'has_payed' : 'no_pay'">
+    <div class="head_container">
+      <p class="order_no">{{UserOrder.OrderID}}</p>
+      <span class="state_box">{{UserOrder.State == 2 ? '已付款' : '待付款'}}</span>
     </div>
     <div class="content_container">
-      <h3 class="title">{{'给智障儿童服药' | titleFilter}}</h3>
-      <p class="username">用户：假病人</p>
-      <p class="time">{{PayTime | timeFormat}}</p>
+      <div class="avatar_box">
+        <img :src="Avatar | transformImgUrl" alt="">
+      </div>
+      <h3 class="title">{{PackageName}}</h3>
+      <p class="small_desc_text" style="margin-top: 10px">购买用户：{{UserName}}</p>
+      <p class="small_desc_text">
+        创建时间：{{UserOrder.CreateTime | xxTimeFormatFilter}}
+      </p>
+      <p class="small_desc_text" v-if="UserOrder.State == 2">
+        付款时间：{{UserOrder.PayTime | xxTimeFormatFilter}}
+      </p>
     </div>
     <div class="price_container">
-      <p class="order_price_box">
-         价格：<span class="red_font"><span class="big_font">169</span>元</span>
-      </p>
-      <p class="order_no">订单编号201806031508</p>
-    </div>
-    <div class="state_container orange_font">
-      待付款
+      <template v-if="UserOrder.State === 2">
+        已付款：
+        <b class="price_account">￥{{UserOrder.RealPayPrice | amountFilter}}</b>
+      </template>
+      <template v-else>
+        应付款：
+        <b class="price_account">￥{{UserOrder.ShouldPayPrice | amountFilter}}</b>
+      </template>
     </div>
   </div>
 </template>
 <script>
 export default {
   props: {
-    PayTime: ''
+    Avatar: {
+      type: String,
+      default: ''
+    },
+    PackageName: {
+      type: String,
+      default: ''
+    },
+    UserName: {
+      type: String,
+      default: ''
+    },
+    UserOrder: {
+      type: Object,
+      default: () => {
+        return {
+          OrderID: '',
+          PayTime: '',
+          RealPayPrice: 0,
+          State: 0
+        }
+      }
+    }
   },
   filters: {
+    amountFilter (value = 0) {
+      return (value / 100).toFixed(2)
+    },
     titleFilter (value = '') {
       return value.length > 5 ? value.substring(0, 5) + '…' : value
     },
@@ -41,101 +76,85 @@ export default {
 .container
 {
   position: relative;
-  display: flex;
-  flex-flow: nowrap;
-  align-items: center;
-  height: 90px;
   background-color: #fff;
-  &::after
+  margin-bottom: 10px;
+  .head_container
   {
-    position: absolute;
-    display: block;
-    bottom: 0;
-    left: 10px;
-    right: 10px;
-    content: '';
-    height: 1px;
-    background-color: RGBA(58, 199, 245, .2); 
-    transform: scaleY(.5)
-  }
-  .avatar_box
-  {
-    display: flex;
-    flex: 0 0 60px;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-    img
+    position: relative;
+    height: 40px;
+    padding: 0 10px;
+    .order_no
     {
+      font-size: 12px;
+      color: #999;
+      height: 40px;
+      line-height: 40px;
+    }
+    .state_box
+    {
+      position: absolute;
+      right: 10px;
+      top: 0;
+      font-size: 12px;
       display: block;
-      width: 37px;
-      border-radius: 50%
+      height: 40px;
+      line-height: 40px;
+      color: #999;
     }
   }
   .content_container
   {
-    flex: 1;
+    position: relative;
+    padding: 15px 10px 15px 60px;
+    min-height: 50px;
+    background-color: RGBA(246, 246, 246, .8);
+    .avatar_box
+    {
+      position: absolute;
+      left: 10px;
+      top: 15px;
+      width: 40px;
+      height: 40px;
+      img{
+        display: block;
+        border-radius: 50%
+      }
+    }
     .title
     {
-      color: #333333;
-      font-size: 18px;
-      font-weight: 400;
-      height: 25px;
-    }
-    .username
-    {
       font-size: 14px;
-      color: #666;
-      height: 21px;
+      color: #333;
+      line-height: 18px;
+      text-align: justify;
+      word-break: break-all;
+      font-weight: normal;
     }
-    .time
+    .small_desc_text
     {
       font-size: 12px;
+      line-height: 18px;
       color: #999;
-      height: 14px;
     }
   }
   .price_container
   {
-    display: flex;
-    flex-flow: column;
-    justify-content: flex-start;
-    .order_price_box
+    height: 40px;
+    line-height: 40px;
+    padding: 0 10px;
+    text-align: right;
+    font-size: 14px;
+    color: #999;
+    .price_account
     {
-      height: 25px;
-      font-size: 13px;
-      color: #666;
-      letter-spacing: 0;
-      .red_font
-      {
-        color: #FF5F5F;
-      }
-      .big_font
-      {
-        font-size: 18px;
-      }
-    }
-    .order_no
-    {
-      display: block;
-      height: 14px;
-      font-size: 12px;
-      color: #999999;
-      margin-top: 21px;
+      font-size: 16px;
+      font-weight: normal;
     }
   }
-  .state_container
-  {
-    flex: 0 0 60px;
-    height: 60px;
-    justify-content: flex-start;
-    color: #999999;
-    font-size: 15px;
-    &.orange_font
-    {
-      color: #F8A519;
-    }
-  }
+}
+.container.no_pay .head_container .state_box,
+.container.no_pay .price_container .price_account
+{
+  color: #3AC7F5;
 }
 </style>
 

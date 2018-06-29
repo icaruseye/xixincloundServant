@@ -12,7 +12,10 @@
     </sticky>
     <div v-if="list.length > 0" class="mt10px">
         <list-item v-for="(item, index) in list" :key="index"
-          :PayTime="item.PayTime"
+          :UserOrder="item.UserOrder"
+          :Avatar="item.Avatar"
+          :PackageName="item.PackageName"
+          :UserName="item.UserName"
         ></list-item>
     </div>
     <xx-occupied-box v-else>
@@ -65,6 +68,7 @@ export default {
     async init () {
       let stateName = ''
       this.list = []
+      this.$vux.loading.show('加载中')
       this.occupiedText = '正在请求数据…'
       switch (this.modelOrderTabIndex) {
         case 0:
@@ -84,7 +88,6 @@ export default {
           this.occupiedText = '没有已付款的订单'
           break
       }
-      this.$vux.loading.show('加载中')
       this.occupiedText = '正在请求数据…'
       this.occupiedText = `没有${stateName}的订单`
       this.$vux.loading.hide()

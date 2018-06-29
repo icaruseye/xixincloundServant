@@ -1,6 +1,6 @@
 <template>
     <div class="xx-cells-items box_border" :class="direction + '_direction'">
-      <label v-if="label" class="xx-cells-items_label" :style="labelStyle">
+      <label v-if="label" :style="labelStyle" :class="[labelClass?labelClass:'xx-cells-items_label']">
         <span v-if="required" style="color:#FF3939; padding-right: 5px">* </span>{{label}}
       </label>
       <div class="content_container">
@@ -26,6 +26,10 @@
       labelStyle: {
         type: String,
         default: ''
+      },
+      labelClass: {
+        type: String,
+        default: null
       }
     }
   }

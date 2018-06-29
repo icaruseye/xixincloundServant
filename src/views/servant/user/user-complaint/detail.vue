@@ -23,7 +23,7 @@
       </div>
       <div class="right">
         <h3 class="mission_title">
-          院内陪诊
+          {{detail.MissionName}}
           <span class="mission_id">服务单号：{{detail.MissionID}}</span>
         </h3>
         <!-- <p class="mission_content">工作于急诊，擅长消化道危急重症…</p> -->
@@ -66,7 +66,7 @@
     <div class="card_titile_container">
       用户投诉内容
       <span class="right">
-        提交时间：{{detail.CreateTime | timeFormat}}
+        提交时间：{{detail.CreateTime | xxTimeFormatFilter}}
       </span>
     </div>
     <xx-cell>

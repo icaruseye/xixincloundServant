@@ -1,11 +1,16 @@
 <template>
   <div class="has-tabbar">
-    <xx-tab v-model="index" custom-bar-width="25px">
-      <xx-tabItem selected @on-item-click="changeTab">服务项</xx-tabItem>
-      <xx-tabItem @on-item-click="changeTab">服务套餐</xx-tabItem>
-    </xx-tab>
+    <sticky
+      ref="sticky"
+      :offset="0"
+      :check-sticky-support="true">
+      <xx-tab v-model="modelServiceListTabIndex" custom-bar-width="25px">
+        <xx-tabItem @on-item-click="changeTab">服务项</xx-tabItem>
+        <xx-tabItem @on-item-click="changeTab">服务套餐</xx-tabItem>
+      </xx-tab>
+    </sticky>
     <!-- 服务项 -->
-    <div v-if="index === 0">
+    <div v-if="modelServiceListTabIndex === 0">
       <template v-for="(item, pIndex) in itemList">
         <div :key="pIndex">
           <div class="weui-list-title">{{item.PackageTypeName}}</div>
@@ -25,7 +30,7 @@
               @changeState = "service.State = service.State === 0 ? 1 : 0"
               ></service-item>
             </template>
-            <div  style="position: relative;height:200px" v-else>
+            <div  v-else style="position: relative; height:200px">
               <xx-occupied-box>
                 {{item.PackageTypeName}}列表为空
               </xx-occupied-box>
@@ -36,7 +41,7 @@
       <button type="button" class="weui-btn weui-btn_primary" @click="addServiceItem">申请开通</button>
     </div>
     <!-- 服务套餐 -->
-    <div v-if="index === 1">
+    <div v-if="modelServiceListTabIndex === 1">
       <template v-for="(item, typeIndex) in packageList">
         <div :key="typeIndex" v-if="packageList.length > 0">
           <div class="weui-list-title">{{BundleType[typeIndex].Name}}</div>
@@ -81,7 +86,8 @@
 <script>
 import http from '@/api'
 import ServiceItem from './components/serviceItems'
-import { TransferDom, Popup } from 'vux'
+import { TransferDom, Popup, Sticky } from 'vux'
+import { mapGetters, mapMutations } from 'vuex'
 export default {
   metaInfo: {
     title: '服务设置'
@@ -90,12 +96,25 @@ export default {
     TransferDom
   },
   components: {
+    Sticky,
     Popup,
     ServiceItem
   },
+  computed: {
+    ...mapGetters([
+      'serviceListTabIndex'
+    ]),
+    modelServiceListTabIndex: {
+      set (val) {
+        this.SET_SERVICE_LIST_TAB_INDEX(val)
+      },
+      get () {
+        return this.serviceListTabIndex
+      }
+    }
+  },
   data () {
     return {
-      index: 0,
       isShowPopup: false,
       currentId: '',
       itemPageIndex: 1,
@@ -111,13 +130,16 @@ export default {
     this.getBundleType()
   },
   methods: {
+    ...mapMutations([
+      'SET_SERVICE_LIST_TAB_INDEX'
+    ]),
     showPopup (id, typeIndex, index) {
       this.currentId = id
       this.isShowPopup = true
       this.singleItem = this.packageList[typeIndex][index]
     },
     changeTab (index) {
-      this.index = index
+      this.modelServiceListTabIndex = index
     },
     addServicePackage () {
       this.$router.push(`/app/packageEdit/add`)
@@ -129,7 +151,7 @@ export default {
     // 修改服务项/套餐
     modify () {
       sessionStorage.setItem('packageDetail', JSON.stringify(this.singleItem))
-      if (this.index) {
+      if (this.modelServiceListTabIndex) {
         this.$router.push(`/app/packageEdit/${this.currentId}?isAdd=0`)
       } else {
         this.$router.push(`/app/itemEdit/${this.currentId}?isAdd=0`)
@@ -204,7 +226,7 @@ export default {
 .weui-list-title {
   padding: 13px 0 2px 10px;
   font-size:16px;
-  font-weight: bold;
+  font-weight: normal;
   color:#787878;
   border-bottom: 1px solid rgba(187,187,187,.2);
   background: #fff;
@@ -229,7 +251,7 @@ export default {
     .name {
       color: #666;
       font-size: 16px;
-      font-weight: bold;
+      font-weight: 400;
     }
     .price {
       span {
@@ -304,5 +326,10 @@ export default {
 .weui-cell-top
 {
   width: 100%;
+}
+.weui-cell_radio
+{
+  display: block;
+  height: 40px;
 }
 </style>

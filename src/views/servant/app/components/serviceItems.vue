@@ -183,7 +183,7 @@ export default {
       .title
       {
         font-size: 16px;
-        font-weight: 600;
+        font-weight: normal;
         color: #666666;
         white-space: nowrap;
         overflow: hidden;

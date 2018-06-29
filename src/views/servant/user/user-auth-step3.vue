@@ -16,6 +16,7 @@
     </xx-step-bar>
     <div class="auth_state_container" v-if="userState === 1">
       身份证审核中
+      <span class="auth_state_refresh" @click="updateUserAccountAndUserInfo">刷新</span>
     </div>
     <div class="panel">
         <template v-for="(item, index) in list">
@@ -23,9 +24,9 @@
             <div class="cell-in">
               <div class="title"><span>{{item.Name}}</span></div>
               <button v-if="item.State === 2" class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">申请</button>
-              <button v-if="item.State === 0" style="background-color:#F8A519" class="btn">待审核</button>
+              <button v-if="item.State === 0" style="background-color:#F8A519" class="btn" @click="getCertificateType">等待审核</button>
               <button v-if="item.State === 1" style="background-color:#3eb94e" class="btn">审核通过</button>
-              <button v-if="item.State === -1" style="background-color:#e15f63" class="btn">审核驳回</button>
+              <button v-if="item.State === -1" style="background-color:#e15f63" class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)" >审核驳回</button>
             </div>
           </div>
         </template>
@@ -45,7 +46,7 @@
 <script>
 import http from '@/api'
 import stepBar from './user-auth-stepbar'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 export default {
   components: {
     stepBar
@@ -61,10 +62,18 @@ export default {
     ])
   },
   created () {
-    this.$store.dispatch('getAccount')
+    this.updateUserAccountAndUserInfo()
     this.getCertificateType()
   },
   methods: {
+    ...mapActions([
+      'getUserAccount',
+      'getUserInfo'
+    ]),
+    async updateUserAccountAndUserInfo () {
+      await this.getUserAccount()
+      await this.getUserInfo()
+    },
     toNext (ShopCertificateTypeID, ImgNums) {
       this.$router.push(`/user/authstep3-1?ShopCertificateTypeID=${ShopCertificateTypeID}&ImgNums=${ImgNums}`)
     },
@@ -79,6 +88,7 @@ export default {
 <style lang="less" scoped>
 .auth_state_container
 {
+  position: relative;
   height: 40px;
   margin: 10px 40px;
   border: 1px solid #ffe58f;
@@ -87,7 +97,15 @@ export default {
   text-align: center;
   line-height: 40px;
   border-radius: 5px;
-
+  .auth_state_refresh
+  {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: rgb(62, 185, 78);
+  }
 }
 .panel {
   margin-top: 10px;
@@ -107,7 +125,8 @@ export default {
       color: #666;
     }
     .btn {
-      width: 65px;
+      padding: 0 15px;
+      min-width: 65px;
       height: 28px;
       color: #fff;
       border-radius: 2px;

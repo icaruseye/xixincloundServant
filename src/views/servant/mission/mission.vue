@@ -33,7 +33,7 @@
                 <p>药品：{{item.NeedDrug?'需要': '不需要'}}</p>
                 <p>工具：{{item.NeedTools?'需要': '不需要'}}</p>
               </div>
-              <div class="describe">时间：{{item.EndTime | timeFormat}}</div>
+              <div class="describe">时间：{{item.EndTime | xxTimeFormatFilter}}</div>
             </div>
             <img v-if="item.State == 0 && item.Type == 0" style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
             <img v-if="(item.State == 0  && item.Type == 1) || item.State == 3 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dff.png" alt="">

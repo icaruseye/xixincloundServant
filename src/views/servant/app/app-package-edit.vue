@@ -169,7 +169,6 @@ export default {
       const itemsInfoList = JSON.parse(sessionStorage.getItem('packageDetail')).ItemsInfo
       // 回填数据
       this.reqParams = Object.assign(info, {itemsInfoList: itemsInfoList})
-      console.log(this.reqParams)
       // 转换套餐价格
       this.reqParams.BundleViewPrice = this.convertToyuan(this.reqParams.Price * 1.2)
       this.reqParams.Price = this.convertToyuan(this.reqParams.Price)
@@ -204,7 +203,6 @@ export default {
       }
       this.reqParams.Price = parseFloat(res).toFixed(2)
       this.reqParams.BundleViewPrice = (res * 1.2).toFixed(2)
-      console.log(this.reqParams.Price)
     },
     convertToyuan (val) {
       return (val / 100).toFixed(2)
@@ -255,7 +253,6 @@ export default {
     async getBundleType () {
       const res = await http.get('/BundleType')
       if (res.data.Code === 100000) {
-        console.log(res.data.Data)
         this.BundleTypeList = res.data.Data
       }
     },

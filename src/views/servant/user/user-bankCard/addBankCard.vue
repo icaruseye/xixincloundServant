@@ -52,7 +52,8 @@ export default {
   },
   methods: {
     async submitEvent () {
-      if (this.bankCard === null || this.bankCard === '') {
+      const that = this
+      if (that.bankCard === null || that.bankCard === '') {
         this.$vux.toast.show({
           width: '60%',
           type: 'text',
@@ -62,8 +63,8 @@ export default {
         return false
       }
       const reg = /^([1-9]{1})(\d{15}|\d{18})$/
-      if (!reg.test(this.bankCard)) {
-        this.$vux.toast.show({
+      if (!reg.test(that.bankCard)) {
+        that.$vux.toast.show({
           width: '60%',
           type: 'text',
           position: 'middle',
@@ -71,14 +72,18 @@ export default {
         })
         return false
       }
-      this.$vux.loading.show('正在提交')
-      this.submit().then(value => {
-        this.$vux.loading.hide()
+      that.$vux.loading.show('正在提交')
+      that.submit().then(value => {
+        that.$vux.loading.hide()
         if (value.Code === 100000) {
-          this.$vux.toast.show('添加成功')
-          this.$router.push('/user/bankCard')
+          that.$vux.toast.show({
+            text: '添加成功',
+            onHide () {
+              that.$router.go(-1)
+            }
+          })
         } else {
-          this.$vux.toast.show({
+          that.$vux.toast.show({
             width: '60%',
             type: 'text',
             position: 'middle',

@@ -5,10 +5,13 @@ import Vue from 'vue'
 axios.interceptors.response.use(response => {
   return response
 }, error => {
+  Vue.$vux.loading.hide()
   if (error.response.status === 401) {
     // token无效，重新登录
     if (error.response.data.Code === 100010) {
+      sessionStorage.removeItem('servant_token')
       sessionStorage.removeItem('userAccount')
+      sessionStorage.removeItem('userInfo')
       window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${process.env.wechatOption.appId}&redirect_uri=` +
       encodeURIComponent(process.env.wechatOption.redirectUrl) + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
     }
@@ -39,7 +42,7 @@ function checkCode (res) {
 
 export default {
   post (url, data, header) {
-    var token = localStorage.getItem('servant_token')
+    var token = sessionStorage.getItem('servant_token')
     var headers = {
       'Content-Type': 'application/json; charset=UTF-8'
     }
@@ -59,7 +62,7 @@ export default {
     return axios(options).then(checkStatus).then(checkCode)
   },
   put (url, data, header) {
-    var token = localStorage.getItem('servant_token')
+    var token = sessionStorage.getItem('servant_token')
     var headers = {
       'Content-Type': 'application/json; charset=UTF-8'
     }
@@ -79,7 +82,7 @@ export default {
     return axios(options).then(checkStatus).then(checkCode)
   },
   get (url, params) {
-    var token = localStorage.getItem('servant_token')
+    var token = sessionStorage.getItem('servant_token')
     var headers = {
       'Content-Type': 'application/json; charset=UTF-8'
     }
@@ -95,7 +98,7 @@ export default {
     }).then(checkStatus).then(checkCode)
   },
   delete (url, params) {
-    var token = localStorage.getItem('servant_token')
+    var token = sessionStorage.getItem('servant_token')
     var headers = {
       'Content-Type': 'application/json; charset=UTF-8'
     }
