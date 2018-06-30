@@ -2,7 +2,7 @@
   <div>
     <!-- 筛选 -->
     <xx-filtrate :list="roleList" :roleIndex="roleIndex" @onItemClick="changeFilter"></xx-filtrate>
-    <div class="weui-panel weui-list-panel">
+    <div v-if="itemList.length > 0" class="weui-panel weui-list-panel">
       <template v-for="(item, index) in itemList">
         <div class="weui-cell" :key="index">
           <div class="weui-cell-top">
@@ -17,11 +17,16 @@
         </div>
       </template>
     </div>
+    <div  v-else style="height: 400px;position: relative">
+      <xx-occupied-box>
+        没有可以申请的服务项
+        <router-link to="/user/authstep3" style="display: block; color: #3ac7f5">添加执业证</router-link>
+      </xx-occupied-box>
+    </div>
   </div>
 </template>
 
 <script>
-import http from '@/api'
 export default {
   data () {
     return {
@@ -36,11 +41,30 @@ export default {
   },
   methods: {
     changeFilter (index) {
+      let tempList = []
+      const that = this
       if (index === 0) {
-        this.itemList = this.$_.flatten(this.allItems)
-        return false
+        tempList = that.$_.flatten(that.allItems)
+      } else {
+        tempList = this.allItems[index - 1]
       }
-      this.itemList = this.allItems[index - 1]
+      that.distinctList(tempList)
+    },
+    /**
+     * 去重
+     * @param arr
+     */
+    distinctList (arr) {
+      const that = this
+      that.itemList = []
+      let idStrs = ''
+      arr.map(item => {
+        if (idStrs.indexOf(item.ID + ',') >= 0) {
+        } else {
+          idStrs += (item.ID + ',')
+          that.itemList.push(item)
+        }
+      })
     },
     go (id, index) {
       this.$router.push(`/app/itemEdit/${id}?isAdd=1`)
@@ -56,8 +80,7 @@ export default {
       })
     },
     async getList () {
-      const res = await http.get('/PackageList')
-      console.log(res)
+      const res = await this.$http.get('/PackageList')
       if (res.data.Code === 100000) {
         this.getRoleList(res.data.Data)
         this.getAllItems(res.data.Data)
