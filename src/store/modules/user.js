@@ -58,10 +58,10 @@ const getters = {
     if (accountState === -1) {
       return -1 // 账户已删除
     }
-    if (accountState === 0) {
+    if (!userInfo.IDCard) {
       return 0 // 账户未提交身份证
     }
-    if (accountState === 1) {
+    if (accountState === 1 && userInfo.IDCard) {
       return 1 // 账户提交身份证 待审核
     }
     if (accountState === 2) {

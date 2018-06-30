@@ -29,11 +29,11 @@ const dictionary = {
       mobile: '请输入手机号',
       PackageName: '服务包名称',
       Price: '真实价格',
-      PackageViewPrice: '展示价格',
       Count: '库存数量',
       EffectiveValue: '有效期时长',
       PackageDescription: '服务包介绍',
-      itemsInfoList: '服务项'
+      itemsInfoList: '服务项',
+      PackageBundleViewPrice: '展示价格'
     }
   }
 }

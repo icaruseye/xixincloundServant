@@ -14,6 +14,10 @@
         开始服务
       </xx-step-items>
     </xx-step-bar>
+    <div style="padding: 20px 0;background-color:#fff" v-if="userAccount.State === 2">
+      <p style="font-size: 18px;text-align:center;color:#333">审核驳回</p>
+      <p style="font-size: 14px; text-align:center;margin-top:5px;color:#F8A519">驳回原因：{{userAccount.FailReason}}</p>
+    </div>
     <div class="weui-form step-form">
       <div class="weui-cell nobor">
         <div class="weui-cell-top">
@@ -28,19 +32,23 @@
         </div>
       </div>
     </div>
-    <div class="weui-form-title">
-      *上传身份证正反面照片
-    </div>
-    <div style="padding: 0 20px">
+    <p class="warring_text">
+      * 服务者需保证提供的资料真实、准确、完整且合法有效。因提供的资料不合法、不真实、不准确、不完整的平台有权拒绝为服务者提供服务并删除该账号，且服务者需承担因此引起的相应责任及后果
+    </p>
+    <div style="padding: 40px 20px; background-color:#fff">
+      <div class="weui-form-title">
+        *上传身份证正面照片
+      </div>
       <xx-uploader
-      title="身份证正面"
       :limit="1"
       :maxSize="1024 * 1024 * 5"
       :imgList="imgList1"
       @onUpdate="onUpdate1"
     ></xx-uploader>
+    <div class="weui-form-title">
+      *上传身份证反面照片
+    </div>
     <xx-uploader
-      title="身份证背面"
       :limit="1"
       :maxSize="1024 * 1024 * 5"
       :imgList="imgList2"
@@ -48,14 +56,14 @@
     ></xx-uploader>
     </div>
     <div class="step-btn">
-      <button class="weui-btn" @click="submit">下一步</button>
+      <button class="weui-btn" :class="[submitLocked?'disabled_btn':'']" @click="submit">下一步</button>
     </div>
   </div>
 </template>
 
 <script>
 import stepBar from './user-auth-stepbar'
-import {mapActions} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import util from '@/plugins/util'
 export default {
   metaInfo: {
@@ -69,6 +77,7 @@ export default {
       count: 3,
       imgList1: [],
       imgList2: [],
+      submitLocked: false,
       reqParam: {
         RealName: '',
         IDCard: '',
@@ -95,6 +104,14 @@ export default {
       }
     }
   },
+  created () {
+    this.updateUserAccountAndUserInfo()
+  },
+  computed: {
+    ...mapGetters([
+      'userAccount'
+    ])
+  },
   methods: {
     ...mapActions([
       'getUserAccount',
@@ -113,24 +130,30 @@ export default {
     },
     async submit () {
       const that = this
+      if (that.submitLocked) {
+        return false
+      }
       const isValidate = util.validateForm(this.reqParam, this.authText)
       if (isValidate) {
         if (util.CheckIDCardNum(this.reqParam.IDCard)) {
+          that.submitLocked = true
           const res = await this.$http.put('/Info', this.reqParam)
           if (res.data.Code === 100000) {
             this.$vux.toast.show({
               text: '提交成功',
               onHide () {
                 that.updateUserAccountAndUserInfo().then(() => {
+                  that.submitLocked = false
                   that.$router.push('/user/authstep3')
                 })
               }
             })
           } else {
+            that.submitLocked = false
             this.$vux.toast.text(res.data.Msg)
           }
         } else {
-          alert('身份证格式不正确')
+          return this.$vux.toast.text('身份证格式不正确')
         }
       }
     }
@@ -161,8 +184,8 @@ export default {
 }
 
 .weui-form-title {
-  padding: 10px 24px;
-  color: #D4D4D4;
+  padding: 10px 0;
+  color: #999;
   font-size: 14px;
 }
 
@@ -180,5 +203,16 @@ export default {
     border-radius: 20px;
     font-size: 16px;
   }
+  .disabled_btn
+  {
+    background-color: #ccc
+  }
+}
+.warring_text
+{
+  padding: 20px;
+  font-size: 14px;
+  color: #f44336;
+  text-align: justify;
 }
 </style>

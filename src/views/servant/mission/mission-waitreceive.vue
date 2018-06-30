@@ -277,6 +277,18 @@ export default {
             that.submitLocked = false
             if (value.Code === 100000) {
               that.initDetail()
+              that.$vux.toast.show({
+                position: 'middle',
+                width: '60%',
+                text: '服务已完成，请等待用户评价'
+              })
+            } else {
+              that.$vux.toast.show({
+                type: 'text',
+                width: '60%',
+                position: 'middle',
+                text: value.Msg
+              })
             }
           })
         }

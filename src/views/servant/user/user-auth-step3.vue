@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding: 0 0 120px 0">
     <xx-step-bar step="3">
       <xx-step-items slot="items">
         手机认证
@@ -14,37 +14,62 @@
         开始服务
       </xx-step-items>
     </xx-step-bar>
-    <div class="auth_state_container" v-if="userState === 1">
+    <div  v-if="userState === 1" class="auth_state_container">
       身份证审核中
       <span class="auth_state_refresh" @click="updateUserAccountAndUserInfo">刷新</span>
     </div>
-    <div class="panel">
-        <template v-for="(item, index) in list">
-          <div class="cell" :class="list.length !== index + 1 ? 'vux-1px-b' : ''" :key="index">
-            <div class="cell-in">
-              <div class="title"><span>{{item.Name}}</span></div>
-              <button v-if="item.State === 2" class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">申请</button>
-              <button v-if="item.State === 0" style="background-color:#F8A519" class="btn" @click="getCertificateType">等待审核</button>
-              <button v-if="item.State === 1" style="background-color:#3eb94e" class="btn">审核通过</button>
-              <button v-if="item.State === -1" style="background-color:#e15f63" class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)" >审核驳回</button>
-            </div>
-          </div>
-        </template>
+    <div style="padding: 20px 0">
+      <div v-for="(item, index) in list" :key="index" class="certificate_card">
+        <div class="certificate_name">
+          {{item.Name}}
+          <button class="apply_certificate_btn" v-if="item.State === 2" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">申请</button>
+          <p v-if="item.State === 0" style="color:#F8A519" class="certificate_status_text">审核中</p>
+          <p v-if="item.State === -1" style="color:#e15f63" class="certificate_status_text">审核失败</p>
+          <p v-if="item.State === 1" style="color:#3eb94e" class="certificate_status_text">审核通过</p>
+        </div>
+        <div v-if="item.State !== 2" class="content_container">
+          <p>
+            证书编号：{{item.CertificateNum}}
+          </p>
+          <p v-if="item.State === -1" style="color:#e15f63">
+            失败原因：{{item.ErrorMsg}}
+          </p>
+          <p v-if="item.State === 1">
+            到期时间：{{item.EffectiveTime | xxTimeFormatFilter}}
+          </p>
+        </div>
+        <div v-if="item.State !== 2 " class="btn_container">
+          <router-link class="certificate_btn" style="border-color:#3eb94e; color:#3eb94e" v-if="item.State === 1" to = "/app/itemApply">服务设置</router-link>
+          <button class="certificate_btn" v-if="item.State === 0 || item.State === 1" @click="getCertificateType">刷新状态</button>
+          <button class="certificate_btn" style="border-color:#e15f63; color:#e15f63" v-if="item.State === -1" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">重新申请</button>
+        </div>
+      </div>
     </div>
+    <template>
+
+      <!-- <div class="cell" :class="list.length !== index + 1 ? 'vux-1px-b' : ''" :key="index">
+        <div class="cell-in">
+          <div class="title"><span>{{item.Name}}</span></div>
+          <button v-if="item.State === 2" class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">申请</button>
+          <button v-if="item.State === 0" style="background-color:#F8A519" class="btn" @click="getCertificateType">等待审核</button>
+          <button v-if="item.State === 1" style="background-color:#3eb94e" class="btn">审核通过</button>
+          <button v-if="item.State === -1" style="background-color:#e15f63" class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)" >审核驳回</button>
+        </div>
+      </div> -->
+    </template>
     <div class="weui-form-title">
       *以上执业资格证书审核通过任意一项后，即可申请 相关服务项，进行服务
     </div>
     <div class="step-btn"  v-if="userState === 0">
       <router-link to="/user/authstep2" class="weui-btn">上一步</router-link>
     </div>
-    <div class="step-btn"  v-if="userState === 3">
+    <div class="step-btn" v-if="userState === 3">
       <router-link to="/user" class="weui-btn">进入主页</router-link>
     </div>
   </div>
 </template>
 
 <script>
-import http from '@/api'
 import stepBar from './user-auth-stepbar'
 import {mapGetters, mapActions} from 'vuex'
 export default {
@@ -58,11 +83,13 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userState'
+      'userState',
+      'userAccount'
     ])
   },
   created () {
-    this.updateUserAccountAndUserInfo()
+    this.getUserAccount()
+    this.getUserInfo()
     this.getCertificateType()
   },
   methods: {
@@ -71,14 +98,19 @@ export default {
       'getUserInfo'
     ]),
     async updateUserAccountAndUserInfo () {
+      this.$vux.loading.show('加载中')
       await this.getUserAccount()
       await this.getUserInfo()
+      this.$vux.loading.hide()
+      if (this.userAccount.State === 2) {
+        this.$router.push('/user/authstep2')
+      }
     },
     toNext (ShopCertificateTypeID, ImgNums) {
       this.$router.push(`/user/authstep3-1?ShopCertificateTypeID=${ShopCertificateTypeID}&ImgNums=${ImgNums}`)
     },
     async getCertificateType () {
-      const res = await http.get('/CertificateType')
+      const res = await this.$http.get('/CertificateType')
       this.list = res.data.Data
     }
   }
@@ -107,9 +139,78 @@ export default {
     color: rgb(62, 185, 78);
   }
 }
+.certificate_card
+{
+  background: #fff;
+  margin-bottom: 10px;
+  .certificate_name
+  {
+    position: relative;
+    height: 45px;
+    line-height: 45px;
+    padding: 0 15px;
+    .apply_certificate_btn
+    {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      height: 30px;
+      background-color: #fff;
+      padding: 0 20px;
+      border: 1px solid #3BC8F6;
+      border-radius: 20px;
+      color: #3BC8F6;
+      outline: none
+    }
+  }
+  .certificate_status_text
+  {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #999;
+    line-height: 45px;
+  }
+  .content_container
+  {
+    padding: 10px 15px;
+    background-color: RGBA(246, 246, 246, .8);
+    p
+    {
+      font-size: 14px;
+      color: #666;
+      line-height: 25px;
+    }
+  }
+  .btn_container
+  {
+    position: relative;
+    height: 50px;
+    padding: 10px 10px;
+    box-sizing: border-box; 
+    .certificate_btn
+    {
+      float: right;
+      height: 30px;
+      background-color: #fff;
+      padding: 0 15px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      color: #999;
+      font-size: 14px;
+      line-height: 30px;
+      outline: none;
+      margin-left: 15px;
+      box-sizing: border-box
+    }
+  }
+}
+/////
 .panel {
   margin-top: 10px;
-  background: #fff;
 }
 
 .cell {

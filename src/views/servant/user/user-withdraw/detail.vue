@@ -75,7 +75,7 @@
           服务费
         </label>
         <p class="cell_items_centent">
-          {{((detail.ServicePrice/detail.TotalPrice)|0)*100}}%
+          {{detail.ServicePrice | percentFilter(detail.TotalPrice)}}
         </p>
         <span class="cell_items_right cell_items_right_amount">
           ￥{{detail.ServicePrice | amountFilter}}
@@ -89,7 +89,7 @@
           税收
         </label>
         <p class="cell_items_centent">
-          {{((detail.TexPrice/detail.TotalPrice)|0)*100}}%
+          {{detail.TexPrice | percentFilter(detail.TotalPrice)}}
         </p>
         <span class="cell_items_right cell_items_right_amount">
           ￥{{detail.TexPrice | amountFilter}}
@@ -102,7 +102,7 @@
           平台佣金
         </label>
         <p class="cell_items_centent">
-          {{((detail.PlatformPrice/detail.TotalPrice)|0)*100}}%
+          {{detail.PlatformPrice | percentFilter(detail.TotalPrice) }}
         </p>
         <span class="cell_items_right cell_items_right_amount">
           ￥{{detail.PlatformPrice | amountFilter}}
@@ -116,7 +116,7 @@
           机构佣金
         </label>
         <p class="cell_items_centent">
-          {{((detail.ShopPrice/detail.TotalPrice)|0)*100}}%
+          {{detail.ShopPrice | percentFilter(detail.TotalPrice)}}
         </p>
         <span class="cell_items_right cell_items_right_amount">
           ￥{{detail.ShopPrice | amountFilter}}
@@ -354,6 +354,13 @@ export default {
     }
   },
   filters: {
+    percentFilter (numerator, denominator) {
+      if (denominator === 0) {
+        return (numerator * 100) + '%'
+      } else {
+        return (numerator / denominator * 100) + '%'
+      }
+    },
     amountFilter (value) {
       if (value === 0 || isNaN(value)) {
         return '0.00'

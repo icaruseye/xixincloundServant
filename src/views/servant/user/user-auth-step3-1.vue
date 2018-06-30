@@ -1,27 +1,36 @@
 <template>
-  <div style="min-height:100vh;position:relative">
-    <div style="padding:20px">
-      <xx-uploader
-        title="执业证照片"
-        :limit="limit"
-        :maxSize="1024 * 1024 * 5"
-        @onUpdate="onUpdate1"
-      ></xx-uploader>
+  <div style="min-height:100vh;position:relative;padding-bottom:100px">
+    <div style="padding:20px;background-color: #fff">
+      <h1 style="font-size: 18px;font-weight: normal;border-bottom: 1px solid #ddd;line-height:40px;margin-bottom: 20px">
+        {{datail.Name}}
+      </h1>
+      <div class="certificateImg_box" v-for="(item, index) in CertificateImgList" :key="index">
+        <xx-uploader
+          :limit="1"
+          :title = "item"
+          ref = "uploaderRef"
+          :maxSize="1024 * 1024 * 5"
+          @onUpdate="onUpdate(index)"
+        ></xx-uploader>
+      </div>
     </div>
     <div class="weui-form-title">
-      *执业证信息
+      *{{datail.Name}}信息
     </div>
     <div class="weui-form step-form">
       <div class="weui-cell nobor">
         <div class="weui-cell-top">
-          <label for="">执业证编号</label>
-          <input v-model="reqParam.CertificateNum" type="text" placeholder="输入执业证编号">
+          <label for="">{{datail.Name}}编号</label>
+          <input v-model="reqParam.CertificateNum" type="text" :placeholder="`输入${datail.Name}编号`">
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
-      <group>
+      <!-- <group>
         <x-switch title="是否默认" v-model="reqParam.IsDefault" :value-map="[0, 1]"></x-switch>
       </group>
+      <p style="padding: 15px 15px;font-size: 14px;color: #f44336;text-align: justify;">
+        * 由于您可以申请认证多个证书，选择默认意为用户端展示您的默认身份
+      </p> -->
     </div>
     <div class="step-btn">
       <button class="weui-btn" @click="submit">提交</button>
@@ -31,7 +40,6 @@
 
 <script>
 import util from '@/plugins/util'
-import http from '@/api'
 import { Group, XSwitch } from 'vux'
 export default {
   components: {
@@ -40,9 +48,12 @@ export default {
   },
   data () {
     return {
-      limit: +this.$route.query.ImgNums,
+      datail: {
+        Name: '学生证',
+        ImgNames: '正面,反面'
+      },
+      uploadImg: null,
       reqParam: {
-        ShopCertificateTypeID: this.$route.query.ShopCertificateTypeID,
         Imgs: '',
         CertificateNum: '',
         IsDefault: 0
@@ -62,15 +73,39 @@ export default {
       }
     }
   },
+  computed: {
+    ShopCertificateTypeID () {
+      return this.$route.query.ShopCertificateTypeID
+    },
+    CertificateImgList () {
+      let list = this.datail.ImgNames.split(',')
+      return list
+    }
+  },
   methods: {
-    onUpdate1 (id) {
-      this.reqParam.Imgs = id.toString()
+    onUpdate (index) {
+      const that = this
+      let imglist = ''
+      that.uploadImg = null
+      this.$refs.uploaderRef.map((item, index) => {
+        console.log(item.title)
+        that.uploadImg.push({
+          title: item.title,
+          value: !(item.guid[0] === undefined)
+        })
+        imglist += (item.guid[0] + ',')
+      })
+      that.reqParam.Imgs = imglist.substring(0, imglist.lastIndexOf(','))
+    },
+    async getData () {
+      const res = await this.$http.get()
+      return res.data
     },
     async submit () {
       const that = this
       const isValidate = util.validateForm(this.reqParam, this.authText)
       if (isValidate) {
-        const res = await http.post('/ServantShopCertificate', this.reqParam)
+        const res = await this.$http.post('/ServantShopCertificate', this.reqParam)
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
             text: '提交成功',
@@ -87,9 +122,30 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+.certificateImg_box
+{
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  &:last-child
+  {
+    border-bottom: none
+  }
+}
+.weui-uploader__hd
+{
+  font-size: 14px;
+  height: 35px;
+  color: #999;
+  line-height: 35px;
+  font-weight: normal;
+}
+
+
+
 .weui-form-title {
-  padding: 10px 24px;
+  padding: 10px 15px;
   color: #D4D4D4;
   font-size: 14px;
 }
@@ -134,7 +190,7 @@ export default {
 }
 
 .step-btn {
-  position: absolute;
+  position: fixed;
   bottom: 23px;
   width: 100%;
   padding: 0 12px;

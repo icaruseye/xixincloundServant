@@ -3,7 +3,7 @@
     <div class="weui-cell_bd">
       <!-- 普通图片 -->
       <div v-if="!isAvatar" class="weui-uploader">
-        <div class="weui-uploader__hd">
+        <div v-if="title" class="weui-uploader__hd">
           {{title}}
         </div>
         <div class="weui-uploader__bd">
