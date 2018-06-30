@@ -18,11 +18,11 @@
       身份证审核中
       <span class="auth_state_refresh" @click="updateUserAccountAndUserInfo">刷新</span>
     </div>
-    <div style="padding: 20px 0">
+    <div v-if="list.length > 0" style="padding: 20px 0">
       <div v-for="(item, index) in list" :key="index" class="certificate_card">
         <div class="certificate_name">
           {{item.Name}}
-          <button class="apply_certificate_btn" v-if="item.State === 2" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">申请</button>
+          <button class="apply_certificate_btn" v-if="item.State === 2" @click="toNext(item.ShopCertificateTypeID, item.ImgNums, item.ImgNames, item.Name)">申请</button>
           <p v-if="item.State === 0" style="color:#F8A519" class="certificate_status_text">审核中</p>
           <p v-if="item.State === -1" style="color:#e15f63" class="certificate_status_text">审核失败</p>
           <p v-if="item.State === 1" style="color:#3eb94e" class="certificate_status_text">审核通过</p>
@@ -39,25 +39,18 @@
           </p>
         </div>
         <div v-if="item.State !== 2 " class="btn_container">
-          <router-link class="certificate_btn" style="border-color:#3eb94e; color:#3eb94e" v-if="item.State === 1" to = "/app/itemApply">服务设置</router-link>
+          <router-link class="certificate_btn" style="border-color:#3eb94e; color:#3eb94e" v-if="item.State === 1 && userState === 3" to = "/app/itemApply">服务设置</router-link>
           <button class="certificate_btn" v-if="item.State === 0 || item.State === 1" @click="getCertificateType">刷新状态</button>
-          <button class="certificate_btn" style="border-color:#e15f63; color:#e15f63" v-if="item.State === -1" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">重新申请</button>
+          <button class="certificate_btn" style="border-color:#e15f63; color:#e15f63" v-if="item.State === -1" @click="toNext(item.ShopCertificateTypeID, item.ImgNums, item.ImgNames, item.Name)">重新申请</button>
         </div>
       </div>
     </div>
-    <template>
-
-      <!-- <div class="cell" :class="list.length !== index + 1 ? 'vux-1px-b' : ''" :key="index">
-        <div class="cell-in">
-          <div class="title"><span>{{item.Name}}</span></div>
-          <button v-if="item.State === 2" class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)">申请</button>
-          <button v-if="item.State === 0" style="background-color:#F8A519" class="btn" @click="getCertificateType">等待审核</button>
-          <button v-if="item.State === 1" style="background-color:#3eb94e" class="btn">审核通过</button>
-          <button v-if="item.State === -1" style="background-color:#e15f63" class="btn" @click="toNext(item.ShopCertificateTypeID, item.ImgNums)" >审核驳回</button>
-        </div>
-      </div> -->
-    </template>
-    <div class="weui-form-title">
+    <div v-else style="position: relative; height: 400px">
+      <xx-occupied-box>
+        当前没有可以申请的执业证书，请联系客服
+      </xx-occupied-box>
+    </div>
+    <div class="weui-form-title" v-if="list.length > 0">
       *以上执业资格证书审核通过任意一项后，即可申请 相关服务项，进行服务
     </div>
     <div class="step-btn"  v-if="userState === 0">
@@ -106,11 +99,13 @@ export default {
         this.$router.push('/user/authstep2')
       }
     },
-    toNext (ShopCertificateTypeID, ImgNums) {
-      this.$router.push(`/user/authstep3-1?ShopCertificateTypeID=${ShopCertificateTypeID}&ImgNums=${ImgNums}`)
+    toNext (ShopCertificateTypeID, ImgNums, ImgNames, Name) {
+      this.$router.push(`/user/authstep3-1?ShopCertificateTypeID=${ShopCertificateTypeID}&ImgNums=${ImgNums}&ImgNames=${ImgNames}&Name=${Name}`)
     },
     async getCertificateType () {
+      this.$vux.loading.show('加载中')
       const res = await this.$http.get('/CertificateType')
+      this.$vux.loading.hide()
       this.list = res.data.Data
     }
   }
@@ -190,7 +185,7 @@ export default {
     position: relative;
     height: 50px;
     padding: 10px 10px;
-    box-sizing: border-box; 
+    box-sizing: border-box;
     .certificate_btn
     {
       float: right;

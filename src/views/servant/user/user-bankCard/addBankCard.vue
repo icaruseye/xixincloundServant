@@ -9,20 +9,32 @@
         <div class="form_content">
           <p class="form_content_p">{{userInfo.RealName}}</p>
         </div>
-        
+
         <i class="exclamation_mark_icon"></i>
       </div>
+      <div class="form_items" v-if = "currentCardType != null">
+        <label class="form_label" for="bankCard">
+          银行
+        </label>
+        <div class="form_content">
+          <p class="form_content_p" style="background-color: #fff;position: relative">
+            {{currentCardType.bankName}}
+            <span style="position: absolute;right:0;top: 0;color: #3AC7F5">{{currentCardType.cardTypeName}}</span>
+          </p>
+        </div>
+      </div>
       <div class="form_items">
-        <label class="form_label" id="bankCard">
+        <label class="form_label" for="bankCard">
           卡号
         </label>
         <div class="form_content">
-          <input type="text" id="bankCard" placeholder="请输入银行卡号" v-model="bankCard">
+          <input type="text" @blur="bankCardBlur" id="bankCard" placeholder="请输入银行卡号" v-model="bankCard">
         </div>
       </div>
       <div style="margin: 20px 10px;">
         <button class="weui-btn weui-btn_primary" style="border-radius:4px;box-sizing: border-box" @click="submitEvent">确认绑定</button>
       </div>
+      <p style="padding: 0 10px;text-align: center;font-size:14px;color: #999">当前仅支持中国民生银行的储蓄卡</p>
     </div>
     <x-dialog v-model="hintDialogVisible">
       <div class="hint_dialog_container">
@@ -36,6 +48,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import {XDialog} from 'vux'
+import getBankNameByCard from '@/plugins/getBankNameByCard'
 export default {
   components: {
     XDialog
@@ -44,6 +57,7 @@ export default {
     return {
       hintDialogVisible: true,
       submitLocked: false,
+      currentCardType: null,
       bankCard: ''
     }
   },
@@ -51,38 +65,40 @@ export default {
     ...mapGetters(['userInfo'])
   },
   methods: {
+    bankCardBlur () {
+      if (this.bankCard !== null && this.bankCard !== '') {
+        let cardType = getBankNameByCard(this.bankCard)
+        if (cardType === 'error') {
+          this.$vux.toast.text('无效的银行卡号')
+          this.currentCardType = null
+        } else {
+          this.currentCardType = getBankNameByCard(this.bankCard)
+          console.log(this.currentCardType)
+        }
+      }
+    },
     async submitEvent () {
       const that = this
-      if (that.bankCard === null || that.bankCard === '') {
-        this.$vux.toast.show({
-          width: '60%',
-          type: 'text',
-          position: 'middle',
-          text: '请填写银行卡号'
-        })
+      if (that.currentCardType === null) {
+        this.$vux.toast.text('请填写正确的银行卡号')
         return false
       }
-      const reg = /^([1-9]{1})(\d{15}|\d{18})$/
-      if (!reg.test(that.bankCard)) {
-        that.$vux.toast.show({
-          width: '60%',
-          type: 'text',
-          position: 'middle',
-          text: '请填写正确的银行卡号'
-        })
+      if (that.currentCardType.bankCode !== 'CMBC' || that.currentCardType.cardType !== 'DC') {
+        that.$vux.toast.text('当前仅支持中国民生银行的储蓄卡')
         return false
       }
       that.$vux.loading.show('正在提交')
       that.submit().then(value => {
-        that.$vux.loading.hide()
         if (value.Code === 100000) {
           that.$vux.toast.show({
             text: '添加成功',
             onHide () {
+              that.$vux.loading.hide()
               that.$router.go(-1)
             }
           })
         } else {
+          that.$vux.loading.hide()
           that.$vux.toast.show({
             width: '60%',
             type: 'text',
@@ -95,7 +111,7 @@ export default {
     async submit () {
       const res = await this.$http.post('/ServantBankInfo', {
         BankCard: this.bankCard,
-        BankName: '中国民生银行'
+        BankName: this.currentCardType.bankName
       })
       return res.data
     }

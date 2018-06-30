@@ -1,7 +1,8 @@
 <template>
   <div class="warp_container">
-    <bank-card-item v-if="list.length > 0" v-for="(item, index) in list" class="mb10px" 
+    <bank-card-item v-if="list.length > 0" v-for="(item, index) in list" class="mb10px"
       :key="index"
+      :BankAbbreviation="item.BankAbbreviation"
       :bankName="item.BankName"
       :cardNo="item.BankCard"
     >

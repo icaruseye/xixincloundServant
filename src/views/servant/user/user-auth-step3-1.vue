@@ -2,7 +2,7 @@
   <div style="min-height:100vh;position:relative;padding-bottom:100px">
     <div style="padding:20px;background-color: #fff">
       <h1 style="font-size: 18px;font-weight: normal;border-bottom: 1px solid #ddd;line-height:40px;margin-bottom: 20px">
-        {{datail.Name}}
+        {{Name}}认证
       </h1>
       <div class="certificateImg_box" v-for="(item, index) in CertificateImgList" :key="index">
         <xx-uploader
@@ -15,13 +15,13 @@
       </div>
     </div>
     <div class="weui-form-title">
-      *{{datail.Name}}信息
+      *{{Name}}信息
     </div>
     <div class="weui-form step-form">
       <div class="weui-cell nobor">
         <div class="weui-cell-top">
-          <label for="">{{datail.Name}}编号</label>
-          <input v-model="reqParam.CertificateNum" type="text" :placeholder="`输入${datail.Name}编号`">
+          <label for="CertificateNum">{{Name}}编号</label>
+          <input id="CertificateNum" v-model="reqParam.CertificateNum" type="text" :placeholder="`输入${Name}编号`">
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
@@ -48,11 +48,6 @@ export default {
   },
   data () {
     return {
-      datail: {
-        Name: '学生证',
-        ImgNames: '正面,反面'
-      },
-      uploadImg: null,
       reqParam: {
         Imgs: '',
         CertificateNum: '',
@@ -74,38 +69,45 @@ export default {
     }
   },
   computed: {
+    Name () {
+      return this.$route.query.Name
+    },
+    ImgNames () {
+      return this.$route.query.ImgNames
+    },
     ShopCertificateTypeID () {
       return this.$route.query.ShopCertificateTypeID
     },
     CertificateImgList () {
-      let list = this.datail.ImgNames.split(',')
+      let list = this.ImgNames.split(',')
       return list
     }
   },
   methods: {
-    onUpdate (index) {
+    onUpdate () {
       const that = this
       let imglist = ''
-      that.uploadImg = null
-      this.$refs.uploaderRef.map((item, index) => {
-        console.log(item.title)
-        that.uploadImg.push({
-          title: item.title,
-          value: !(item.guid[0] === undefined)
-        })
+      this.$refs.uploaderRef.map(item => {
         imglist += (item.guid[0] + ',')
       })
       that.reqParam.Imgs = imglist.substring(0, imglist.lastIndexOf(','))
     },
-    async getData () {
-      const res = await this.$http.get()
-      return res.data
-    },
     async submit () {
       const that = this
-      const isValidate = util.validateForm(this.reqParam, this.authText)
+      await that.validateCertificateImgs().then(value => {
+        if (value) {
+          that.submitPost()
+        } else {
+          return value
+        }
+      })
+    },
+    async submitPost () {
+      const that = this
+      const isValidate = util.validateForm(that.reqParam, that.authText)
       if (isValidate) {
-        const res = await this.$http.post('/ServantShopCertificate', this.reqParam)
+        that.reqParam.ShopCertificateTypeID = this.ShopCertificateTypeID
+        const res = await that.$http.post('/ServantShopCertificate', that.reqParam)
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
             text: '提交成功',
@@ -114,9 +116,19 @@ export default {
             }
           })
         } else {
-          this.$vux.toast.text(res.data.Msg)
+          that.$vux.toast.text(res.data.Msg)
         }
       }
+    },
+    async validateCertificateImgs () {
+      for (let index in this.$refs.uploaderRef) {
+        let item = this.$refs.uploaderRef[index]
+        if (item.guid[0] === undefined) {
+          this.$vux.toast.text(`请上传${item.title}`)
+          return false
+        }
+      }
+      return true
     }
   }
 }

@@ -1,6 +1,10 @@
 <template>
   <div class="bank_card_container">
-    <img class="bank_card_logo" src="@/assets/images/user-face-1.jpg" alt="">
+    <i class="bank_card_logo">
+      <svg class="icon" aria-hidden="true">
+        <use :xlink:href="BankAbbreviation | getBankCardLogoFilter"></use>
+      </svg>
+    </i>
     <h2 class="bank_Name">{{bankName}}</h2>
     <p class="bank_card_type">储蓄卡</p>
     <p class="bank_card_num">{{cardNo}}</p>
@@ -9,8 +13,24 @@
 <script>
 export default {
   props: {
+    BankAbbreviation: '',
     bankName: '',
     cardNo: ''
+  },
+  filters: {
+    /**
+     * 获取银行卡logo
+     */
+    getBankCardLogoFilter (BankAbbreviation = 'CMBC') {
+      switch (BankAbbreviation) {
+        case 'CMBC':
+          return '#icon-minshengyinhang'
+        case 'WECHATPAY':
+          return '#icon-weixin'
+        default:
+          return '#icon-minshengyinhang'
+      }
+    }
   }
 }
 </script>
@@ -32,7 +52,10 @@ export default {
       left: 7px;
       width: 50px;
       height: 50px;
-      border-radius: 50%
+      border-radius: 50%;
+      font-size: 36px;
+      text-align: center;
+      line-height: 50px;
     }
     .bank_Name
     {

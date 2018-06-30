@@ -6,10 +6,10 @@
         <template v-if="OrderInfo.State === 0">
           可提现
         </template>
-        <template v-if="OrderInfo.State === 1">
+        <template v-if="OrderInfo.State === 1 || OrderInfo.State === 2">
           提现中
         </template>
-        <template v-if="OrderInfo.State === 2">
+        <template v-if="OrderInfo.State === 3">
           已提现
         </template>
       </span>

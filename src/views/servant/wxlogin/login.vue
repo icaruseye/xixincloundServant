@@ -40,10 +40,13 @@ export default {
       await this.getToken().then(tokenResult => {
         if (tokenResult.Code === 100000) {
           sessionStorage.setItem('servant_token', tokenResult.Data)
+          this.getUserAccountAndInfo()
         } else {
-          this.occupiedText = '验证身份失败'
+          this.occupiedText = '验证身份失败，请联系客服'
         }
       })
+    },
+    async getUserAccountAndInfo () {
       this.occupiedText = '正在为您获取身份信息…'
       await this.getUserAccount()
       this.occupiedText = '正在为您加载个人资料…'

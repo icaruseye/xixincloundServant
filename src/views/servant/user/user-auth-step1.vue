@@ -38,7 +38,7 @@
     <div class="btn_bar">
       <button class="btn" :class="[submitLocked?'disabled_btn':'']"  @click="submit">下一步</button>
     </div>
-    
+
     <!-- <div class="panel">
       <div class="cell vux-1px-b">
         <input v-model="mobile" type="text" placeholder="请输入手机号">
@@ -103,17 +103,19 @@ export default {
           let remainingTime = (new Date().getTime() - sendTime) / 1000
           if (remainingTime < 60) {
             this.$vux.toast.text('重发时间未到')
-            this.countDownTime = Math.ceil(remainingTime)
+            this.countDownTime = Math.ceil(60 - remainingTime)
             this.setTimeIntervalTimer()
             return false
           }
         }
+        this.disabled_code = true
         this.codeText = '发送中'
         await this.sendMobileCode().then(value => {
           if (value.Code === 100000) {
             sessionStorage.setItem(`${this.mobile}GetMobileCode`, new Date().getTime())
             this.setTimeIntervalTimer()
           } else {
+            this.disabled_code = false
             this.codeText = '重新发送'
             this.$vux.toast.text('验证码发送失败')
           }
