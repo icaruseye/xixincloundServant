@@ -94,7 +94,7 @@ export default {
     if (val.indexOf('http') === -1) {
       if (val.indexOf('Upload') === -1) {
         // 值为id
-        return 'http://xixincloud.com:6883/File/GetImage/' + val
+        return `${process.env.IMAGE_HOST}/File/GetImage/${val}`
       } else {
         // 第三种情况
         return val

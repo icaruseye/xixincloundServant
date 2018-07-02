@@ -33,6 +33,10 @@
             提现已成功！<br/>
             <!-- 2018/06/03 16:30 -->
           </template>
+          <template v-if="detail.State == -1">
+            提现被驳回！<br/>
+            <!-- 2018/06/03 16:30 -->
+          </template>
         </p>
         <p style="font-size: 12px;margin-top:5px;color:#999">
           申请提现方式：
@@ -249,13 +253,16 @@ export default {
   },
   created () {
     this.init()
-    this.getMyBankCardList()
   },
   methods: {
     async init () {
       await this.getData().then(result => {
         if (result.Code === 100000) {
           this.detail = result.Data
+          if (result.Data.State === 0) {
+            // 初始化我的银行卡
+            this.getMyBankCardList()
+          }
         } else {
           this.$vux.toast.show(result.Msg)
         }

@@ -83,7 +83,7 @@
             </div>
           </li>
           <li class="desc_list_items">
-            <p class="normal_title_p">服务结果</p>
+            <p class="normal_title_p">服务报告</p>
             <div class="service_remark_textarea_container">
               <textarea class="service_remark_textarea" placeholder="请输入文本" v-model="serviceResult"></textarea>
             </div>
@@ -131,7 +131,7 @@
             </div>
           </li>
           <li v-if="detail.Result != null && detail.Result != ''" class="desc_list_items">
-            <p class="normal_title_p">服务结果</p>
+            <p class="normal_title_p">服务报告</p>
             <p class="normal_desc_p" style="word-break: break-all">
               {{detail.Result}}
             </p>
@@ -249,6 +249,15 @@ export default {
         })
         return false
       }
+      if (!that.serviceResult) {
+        that.$vux.toast.show({
+          width: '60%',
+          type: 'text',
+          position: 'middle',
+          text: '请先完善服务报告'
+        })
+        return false
+      }
       if (that.serviceResult.length > 200) {
         that.$vux.toast.show({
           width: '60%',
@@ -268,9 +277,9 @@ export default {
         return false
       }
       that.$vux.confirm.show({
-        content: '请确定已经正确填写了相关信息？',
+        content: '请确认已经正确填写了所有信息',
         confirmText: '确认完成',
-        cancelText: '没有完成',
+        cancelText: '继续填写',
         onConfirm () {
           that.submitLocked = true
           that.completeMission().then(value => {

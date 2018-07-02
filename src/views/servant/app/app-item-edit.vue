@@ -9,21 +9,28 @@
       </xx-cell-items>
       <xx-cell-items label="真实售价：" class="noraml_cell_right" labelClass="the-cells-items_label">
         <div class="input_control_container">
-          <input @blur="priceBlur" class="input_control" type="Number" v-model="templateDetail.Price" v-validate="'currency|required'" name="Price" placeholder="请输入真实售价">
+          <div class="input_control_inner_box">
+            <input @blur="priceBlur" class="input_control" type="Number" v-model="templateDetail.Price" v-validate="'currency|required'" name="Price" placeholder="请输入真实售价">
+          </div>
           <span class="input_control_suffix">元</span>
           <p v-show="errorBags.has('Price')" class="help is-danger">{{ errorBags.first('Price') }}</p>
         </div>
       </xx-cell-items>
       <xx-cell-items label="展示价格：" class="noraml_cell_right" labelClass="the-cells-items_label">
         <div class="input_control_container">
-          <input readonly class="input_control" type="Number" v-model="ViewPrice" v-validate="'currency|required'" name="PackageViewPrice" placeholder="请输入展示价格">
+          <div class="input_control_inner_box">
+            <input readonly class="input_control" type="Number" v-model="ViewPrice" v-validate="'currency|required'" name="PackageViewPrice" placeholder="请输入展示价格">
+          </div>
           <span class="input_control_suffix">元</span>
           <p v-show="errorBags.has('PackageViewPrice')" class="help is-danger">{{ errorBags.first('PackageViewPrice') }}</p>
         </div>
       </xx-cell-items>
       <xx-cell-items label="库存数量：" class="noraml_cell_right" labelClass="the-cells-items_label">
         <div class="input_control_container">
-          <input class="input_control" type="Number" v-model="reqParams.Count" v-validate="'required|min_value:1|max_value:500'" name="Count" placeholder="请输入库存数量">
+          <div class="input_control_inner_box">
+            <input class="input_control" type="Number" v-model="reqParams.Count" v-validate="'required|min_value:1|max_value:500'" name="Count" placeholder="请输入库存数量">
+          </div>
+          <span class="input_control_suffix"></span>
           <p v-show="errorBags.has('Count')" class="help is-danger">{{ errorBags.first('Count') }}</p>
         </div>
       </xx-cell-items>
@@ -35,14 +42,19 @@
       </xx-cell-items>
       <xx-cell-items label="有效期时长：" class="noraml_cell_right" labelClass="the-cells-items_label">
         <div class="input_control_container">
-          <input class="input_control" type="Number" v-model="reqParams.EffectiveValue" v-validate="'required|min_value:1|max_value:500'" name="EffectiveValue" placeholder="请输入有效期时长">
+          <div class="input_control_inner_box">
+            <input class="input_control" type="Number" v-model="reqParams.EffectiveValue" v-validate="'required|min_value:1|max_value:500'" name="EffectiveValue" placeholder="请输入有效期时长">
+          </div>
           <span class="input_control_suffix" @click="expiryUnitVisable = true">{{EffectiveValue | expiryUnitFilter}}</span>
           <p v-show="errorBags.has('EffectiveValue')" class="help is-danger">{{ errorBags.first('EffectiveValue') }}</p>
         </div>
       </xx-cell-items>
       <xx-cell-items label="服务介绍：" class="noraml_cell_right" labelClass="the-cells-items_label">
         <div class="input_control_container">
-          <textarea class="textarea_control"  v-model="templateDetail.Content"  v-validate="'required'" name="PackageDescription" placeholder="请输入服务包介绍"></textarea>
+          <div class="input_control_inner_box">
+            <textarea class="textarea_control"  v-model="templateDetail.Content"  v-validate="'required'" name="PackageDescription" placeholder="请输入服务包介绍"></textarea>
+          </div>
+          <span class="input_control_suffix"></span>
           <p v-show="errorBags.has('PackageDescription')" class="help is-danger">{{ errorBags.first('PackageDescription') }}</p>
         </div>
       </xx-cell-items>
@@ -268,11 +280,13 @@ export default {
         Count: that.reqParams.Count,
         Description: that.templateDetail.Content
       }
-      const res = await this.$validator.validateAll()
+      const res = await that.$validator.validateAll()
       if (res) {
         this.submitBtn = true
-        const res = await this.$http.put('/Package', params)
-        this.submitBtn = false
+        that.$vux.loading.show('加载中')
+        const res = await that.$http.put('/Package', params)
+        that.submitBtn = false
+        that.$vux.loading.hide()
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
             text: '修改成功',
@@ -281,12 +295,13 @@ export default {
             }
           })
         } else {
-          this.$vux.toast.text(res.data.Msg)
+          that.$vux.toast.text(res.data.Msg)
         }
       } else {
+        that.$vux.loading.hide()
         // 设置焦点到第一个未验证通过的表单元素
-        let field = this.$validator.errors.items[0].field
-        this.$validator.fields.items.map((i) => {
+        let field = that.$validator.errors.items[0].field
+        that.$validator.fields.items.map((i) => {
           if (i.name === field) {
             return i.el.focus()
           }
@@ -315,22 +330,29 @@ export default {
 .input_control_container
 {
   position: relative;
-  .input_control,
+  display: flex;
+  flex-flow: nowrap;
+  .input_control_inner_box
+  {
+    flex: 1;
+    .input_control,
+    .textarea_control
+    {
+      background-color: #f8f8f8;
+      font-size: 12px;
+      color: #666;
+      width: 100%;
+      outline: none
+    }
+    .input_control
+    {
+      height: 45px;
+      padding: 0 15px;
+      box-sizing: border-box;
+    }
+  }
   .textarea_control
   {
-    background-color: #f8f8f8;
-    font-size: 12px;
-    color: #666;
-    outline: none
-  }
-  .input_control
-  {
-    height: 45px;
-    padding: 0 15px;
-  }
-  .textarea_control
-  {
-    width: 80%;
     border: none;
     resize: none;
     padding: 15px;
@@ -339,9 +361,15 @@ export default {
   }
   .input_control_suffix
   {
+    flex: 0 0 25px;
     font-size: 14px;
     color: #999;
-    padding: 0 10px
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+
   }
   .help
   {

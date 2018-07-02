@@ -39,6 +39,10 @@
       <button class="btn" :class="[submitLocked?'disabled_btn':'']"  @click="submit">下一步</button>
     </div>
 
+    <div v-transfer-dom>
+      <alert v-model="showHintAlert" title="悉心服务" content="请先完善个人资料及资格认证，方可进入主界面
+"></alert>
+    </div>
     <!-- <div class="panel">
       <div class="cell vux-1px-b">
         <input v-model="mobile" type="text" placeholder="请输入手机号">
@@ -58,16 +62,21 @@
 </template>
 
 <script>
-import http from '@/api/index'
 import stepBar from './user-auth-stepbar'
 import {mapActions} from 'vuex'
+import {Alert, TransferDomDirective as TransferDom} from 'vux'
 import { clearInterval, setInterval } from 'timers'
 export default {
+  directives: {
+    TransferDom
+  },
   components: {
-    stepBar
+    stepBar,
+    Alert
   },
   data () {
     return {
+      showHintAlert: true,
       mobile: '',
       code: '',
       userAgreement: false,
@@ -78,6 +87,9 @@ export default {
       codeText: '获取验证码',
       submitLocked: false
     }
+  },
+  mounted () {
+
   },
   methods: {
     ...mapActions([
@@ -142,26 +154,9 @@ export default {
      * 发送验证码
      */
     async sendMobileCode () {
-      const res = await http.get('/ValidateCode', { mobile: this.mobile })
+      const res = await this.$http.get('/ValidateCode', { mobile: this.mobile })
       return res.data
     },
-    // setTimer: function () {
-    //   if (!this.timer) {
-    //     this.disabled_code = true
-    //     this.timer = setInterval(() => {
-    //       if (this.time > 0 && this.time <= 60) {
-    //         this.time--
-    //         sessionStorage.setItem('AuthCodeTime', this.time)
-    //       } else {
-    //         this.disabled_code = false
-    //         sessionStorage.setItem('AuthCodeTime', 60)
-    //         this.time = 60
-    //         clearInterval(this.timer)
-    //         this.timer = null
-    //       }
-    //     }, 1000)
-    //   }
-    // },
     async submit () {
       const that = this
       if (that.submitLocked) {
@@ -174,10 +169,10 @@ export default {
         return this.$vux.toast.text('请填写验证码')
       }
       if (!this.userAgreement) {
-        return this.$vux.toast.text('请填勾选同意用户协议')
+        return this.$vux.toast.text('请仔细阅读《用户注册协议》并勾选后，才可点击下一步')
       }
       this.submitLocked = true
-      const res = await http.put(`/ValidateMobile?mobile=${this.mobile}&validateCode=${this.code}`)
+      const res = await this.$http.put(`/ValidateMobile?mobile=${this.mobile}&validateCode=${this.code}`)
       if (res.data.Code === 100000) {
         this.$vux.toast.show({
           text: '绑定成功',

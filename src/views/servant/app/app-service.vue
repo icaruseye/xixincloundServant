@@ -42,8 +42,8 @@
     </div>
     <!-- 服务套餐 -->
     <div v-if="modelServiceListTabIndex === 1">
-      <template v-for="(item, typeIndex) in packageList">
-        <div :key="typeIndex" v-if="packageList.length > 0">
+      <template v-if="packageList.length > 0">
+        <div  v-for="(item, typeIndex) in packageList" :key="typeIndex" v-if="packageList.length > 0">
           <div class="weui-list-title">{{BundleType[typeIndex].Name}}</div>
           <div class="weui-list-panel weui-panel">
             <template v-for="(i, index) in packageList[typeIndex]">
@@ -66,6 +66,11 @@
           </div>
         </div>
       </template>
+      <div  v-else style="position: relative; height:200px">
+        <xx-occupied-box>
+          没有可用的套餐包
+        </xx-occupied-box>
+      </div>
       <button type="button" class="weui-btn weui-btn_primary" @click="addServicePackage">创建套餐包</button>
     </div>
     <div v-transfer-dom>
@@ -159,7 +164,8 @@ export default {
     },
     // 删除服务项/套餐
     async removoe () {
-      if (this.index) {
+      console.log(this.modelServiceListTabIndex)
+      if (this.modelServiceListTabIndex) {
         const res = await http.delete(`/Bundle/${this.currentId}`)
         if (res.data.Code === 100000) {
           this.$vux.toast.text('删除成功')
