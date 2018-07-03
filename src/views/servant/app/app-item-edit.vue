@@ -36,8 +36,7 @@
       </xx-cell-items>
       <xx-cell-items label="有效期单位：" class="noraml_cell_right" @click.native="expiryUnitVisable = true" labelClass="the-cells-items_label">
         <div class="input_control_container">
-          <p class="EffectiveValue_select">{{EffectiveValue | expiryUnitFilter}}</p>
-          <p v-show="errorBags.has('EffectiveType')" class="help is-danger">{{ errorBags.first('EffectiveType') }}</p>
+          <p class="EffectiveValue_select">{{EffectiveType | expiryUnitFilter}}</p>
         </div>
       </xx-cell-items>
       <xx-cell-items label="有效期时长：" class="noraml_cell_right" labelClass="the-cells-items_label">
@@ -45,7 +44,7 @@
           <div class="input_control_inner_box">
             <input class="input_control" type="Number" v-model="reqParams.EffectiveValue" v-validate="'required|min_value:1|max_value:500'" name="EffectiveValue" placeholder="请输入有效期时长">
           </div>
-          <span class="input_control_suffix" @click="expiryUnitVisable = true">{{EffectiveValue | expiryUnitFilter}}</span>
+          <span class="input_control_suffix" @click="expiryUnitVisable = true">{{EffectiveType | expiryUnitFilter}}</span>
           <p v-show="errorBags.has('EffectiveValue')" class="help is-danger">{{ errorBags.first('EffectiveValue') }}</p>
         </div>
       </xx-cell-items>
@@ -72,7 +71,7 @@
       >
       </popup-header>
       <group style="padding: 0 0 45px 0">
-        <radio title='有效期单位：' :options="expiryUnitList" v-model="EffectiveValue"></radio>
+        <radio title='有效期单位：' :options="expiryUnitList" v-model="EffectiveType" @on-change="expiryUnitVisable = false"></radio>
       </group>
     </popup>
   </div>
@@ -97,36 +96,31 @@ export default {
   filters: {
     expiryUnitFilter (val) {
       switch (val) {
-        case '1':
+        case 1:
           return '年'
-        case '2':
+        case 2:
           return '月'
-        case '3':
+        case 3:
           return '日'
       }
-    }
-  },
-  watch: {
-    EffectiveValue () {
-      this.expiryUnitVisable = !this.expiryUnitVisable
     }
   },
   data () {
     return {
       expiryUnitVisable: false,
-      EffectiveValue: '1',
+      EffectiveType: 1,
       submitBtnText: '',
       expiryUnitList: [
         {
-          key: '1',
+          key: 1,
           value: '年'
         },
         {
-          key: '2',
+          key: 2,
           value: '月'
         },
         {
-          key: '3',
+          key: 3,
           value: '日'
         }
       ],
@@ -166,14 +160,15 @@ export default {
   methods: {
     priceBlur () {
       let parsePrice = parseFloat(this.templateDetail.Price)
-      console.log(parsePrice)
       this.templateDetail.Price = (isNaN(parsePrice) ? 0 : parsePrice)
     },
     async init () {
       let packageDetail = JSON.parse(sessionStorage.getItem('packageServiceDetail'))
       if (packageDetail) {
+        console.log(packageDetail)
         this.reqParams = packageDetail
         this.templateDetail = packageDetail
+        this.EffectiveType = packageDetail.EffectiveType
         this.submitBtnText = '修改'
         document.title = '修改服务项'
       } else {
@@ -239,7 +234,7 @@ export default {
         Price: Math.abs(that.templateDetail.Price * 100),
         ViewPrice: Math.abs(that.ViewPrice * 100),
         EffectiveValue: that.reqParams.EffectiveValue,
-        EffectiveType: that.reqParams.EffectiveType,
+        EffectiveType: that.EffectiveType,
         Count: that.reqParams.Count,
         Description: that.templateDetail.Content
       }
@@ -276,7 +271,7 @@ export default {
         Price: Math.abs(that.templateDetail.Price * 100),
         ViewPrice: Math.abs(that.ViewPrice * 100),
         EffectiveValue: that.reqParams.EffectiveValue,
-        EffectiveType: that.reqParams.EffectiveType,
+        EffectiveType: that.EffectiveType,
         Count: that.reqParams.Count,
         Description: that.templateDetail.Content
       }

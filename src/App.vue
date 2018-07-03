@@ -1,8 +1,8 @@
 <template>
   <div id="app">
-    <xx-occupied-box v-if="routerLoading">
-      页面加载中…
-    </xx-occupied-box>
+    <div v-if="routerLoading" style="height:100vh;display:flex;justify-content: center;align-items: center">
+      <inline-loading></inline-loading>
+    </div>
     <template v-else>
       <router-view></router-view>
     </template>
@@ -11,8 +11,12 @@
 
 <script>
 import {mapGetters} from 'vuex'
+import {InlineLoading} from 'vux'
 export default {
   name: 'app',
+  components: {
+    InlineLoading
+  },
   computed: {
     ...mapGetters([
       'routerLoading'

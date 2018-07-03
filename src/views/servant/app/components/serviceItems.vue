@@ -92,13 +92,13 @@ export default {
     },
     effectiveType () {
       if (this.effectiveDay > 0) {
-        return 1
+        return 3
       }
       if (this.effectiveMonth > 0) {
         return 2
       }
       if (this.effectiveYear > 0) {
-        return 3
+        return 1
       }
     },
     effectiveValue () {

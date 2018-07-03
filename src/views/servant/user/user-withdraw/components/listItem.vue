@@ -12,6 +12,9 @@
         <template v-if="OrderInfo.State === 3">
           已提现
         </template>
+        <template v-if="OrderInfo.State === -1">
+          <span style="color:#FF5F5F">申请被拒</span>
+        </template>
       </span>
     </div>
     <div class="content_container">
@@ -22,10 +25,18 @@
       <p class="small_desc_text" style="margin-top: 10px">用户：{{OrderInfo.UserName}}</p>
     </div>
     <div class="bottom_container">
-      {{(OrderInfo.State === 0)? '可提现' : '提现金额'}}：
+      {{(OrderInfo.State === 0 || OrderInfo.State === -1)? '可提现' : '提现金额'}}：
       <b class="price_account">￥{{OrderInfo.LiftPrice | amountFilter}}</b>
       <router-link class="btn" :class="[OrderInfo.State === 0?'blue_btn':'']" :to="`/user/withdraw/${OrderInfo.ID}/detail`">
-        {{OrderInfo.State === 0 ? '去提现' : '查看详情'}}
+        <template v-if="OrderInfo.State === 0">
+          去提现
+        </template>
+        <template v-if="OrderInfo.State === -1">
+          再次申请
+        </template>
+        <template v-if="OrderInfo.State === 1 || OrderInfo.State === 2 || OrderInfo.State === 3">
+          查看详情
+        </template>
       </router-link>
     </div>
   </div>

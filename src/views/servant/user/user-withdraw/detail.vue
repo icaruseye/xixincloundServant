@@ -16,6 +16,12 @@
     </xx-step-bar>
 
     <template v-if="detail.State != 0">
+      <div class="fail_reason_container" v-if="detail.State == -1">
+        <div class="fail_reason_box">
+          <label class="fail_reason_title">驳回原因：</label>
+          {{detail.FailReason}}
+        </div>
+      </div>
       <section class="order_idNo_container">
         提现单号：
         {{detail.ForwardID}}
@@ -31,10 +37,6 @@
           </template>
           <template v-if="detail.State == 3">
             提现已成功！<br/>
-            <!-- 2018/06/03 16:30 -->
-          </template>
-          <template v-if="detail.State == -1">
-            提现被驳回！<br/>
             <!-- 2018/06/03 16:30 -->
           </template>
         </p>
@@ -141,7 +143,7 @@
     </div>
 
 
-    <template  v-if="detail.State == 0">
+    <template  v-if="detail.State == 0 || detail.State == -1">
       <!-- 提现方式选择 -->
       <div class="choose_withdraw_type_btn" @click="withdrawTypeVisible= !withdrawTypeVisible">
         <div class="cell_items">
@@ -259,7 +261,7 @@ export default {
       await this.getData().then(result => {
         if (result.Code === 100000) {
           this.detail = result.Data
-          if (result.Data.State === 0) {
+          if (result.Data.State === 0 || result.Data.State === -1) {
             // 初始化我的银行卡
             this.getMyBankCardList()
           }
@@ -391,6 +393,34 @@ export default {
 }
 </script>
 <style lang="less">
+.fail_reason_container{
+  background-color: #fff;
+  padding: 10px 20px;
+  .fail_reason_box
+  {
+    position: relative;
+    padding: 10px 15px 10px 90px;
+    font-size: 14px;
+    border: 1px solid #ebccd1;
+    background-color: #f2dede;
+    color: #a94442;
+    text-align: justify;
+    border-radius: 5px;
+    line-height: 20px;
+    min-height: 20px;
+    .fail_reason_title
+    {
+      position: absolute;
+      display: block;
+      height: 20px;
+      width: 80px;
+      text-align: left;
+      line-height: 20px;
+      left: 15px;
+      top: 10px;
+    }
+  }
+}
 // 申请中
 .choose_withdraw_type_btn
   {
