@@ -114,9 +114,6 @@
 import { Confirm, TransferDom } from 'vux'
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 export default {
-  metaInfo: {
-    title: '投诉详情'
-  },
   directives: {
     TransferDom
   },

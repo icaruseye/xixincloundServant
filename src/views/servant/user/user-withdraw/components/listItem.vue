@@ -19,7 +19,7 @@
     </div>
     <div class="content_container">
       <div class="avatar_box">
-        <img src="http://xixincloud.com:6883/File/GetImage/5b30fc12ce3fab03b81f5bfb" alt="">
+        <img :src="OrderInfo.UserAvatar | transformImgUrl" alt="">
       </div>
       <h3 class="title">{{OrderInfo.MissionName}}</h3>
       <p class="small_desc_text" style="margin-top: 10px">用户：{{OrderInfo.UserName}}</p>

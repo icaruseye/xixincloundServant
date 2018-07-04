@@ -37,9 +37,6 @@
 <script>
 import http from '@/api/index'
 export default {
-  metaInfo: {
-    title: '通讯录'
-  },
   data () {
     return {
       list: []

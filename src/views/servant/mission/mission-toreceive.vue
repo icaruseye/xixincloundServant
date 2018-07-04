@@ -97,9 +97,6 @@ import ImagePreviewItem from '@/components/ImagePreViewItem'
 import CancelMissionPopup from '@/components/cancelMissionPopup'
 const dataFormatRule = 'YYYY/MM/DD HH:mm'
 export default {
-  metaInfo: {
-    title: '预约单详情'
-  },
   components: {
     Group,
     Datetime,

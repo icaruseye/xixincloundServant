@@ -66,9 +66,6 @@ import stepBar from './user-auth-stepbar'
 import {mapActions, mapGetters} from 'vuex'
 import util from '@/plugins/util'
 export default {
-  metaInfo: {
-    title: '实名认证'
-  },
   components: {
     stepBar
   },

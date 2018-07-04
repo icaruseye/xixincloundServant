@@ -5,7 +5,6 @@ import FastClick from 'fastclick'
 import App from './App'
 import store from './store/index'
 import router from './router'
-import Meta from 'vue-meta'
 import './plugins/validate.js'
 import _ from 'lodash'
 import registryPopup from './components/common/popupTop/index'
@@ -23,7 +22,6 @@ Vue.use(LoadingPlugin)
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 FastClick.attach(document.body)
 Vue.config.productionTip = false
-Vue.use(Meta)
 
 Vue.prototype.$http = http
 

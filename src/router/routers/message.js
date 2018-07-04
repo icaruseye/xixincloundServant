@@ -8,18 +8,30 @@ import _import from '../_import'
 export default [
   {
     path: '/',
-    component: _import('/servant/message/message')
+    component: _import('/servant/message/message'),
+    meta: {
+      title: '我的消息'
+    }
   },
   {
     path: '/message',
-    component: _import('/servant/message/message')
+    component: _import('/servant/message/message'),
+    meta: {
+      title: '我的消息'
+    }
   },
   {
     path: '/message/chat/:id',
-    component: _import('/servant/message/chat')
+    component: _import('/servant/message/chat'),
+    meta: {
+      title: '聊天'
+    }
   },
   {
     path: '/systemMail',
-    component: _import('/servant/message/MailList')
+    component: _import('/servant/message/MailList'),
+    meta: {
+      title: '站内信列表'
+    }
   }
 ]

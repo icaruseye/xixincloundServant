@@ -2,10 +2,10 @@
   <div>
     <div style="font-size: 120px;text-align:center;margin-top:60px">
       <svg class="icon" aria-hidden="true">
-        <use :xlink:href="`#icon-Group`"></use>
+        <use :xlink:href="`#icon-icon-test1`"></use>
       </svg>
     </div>
-    <p style="font-size: 14px;text-align: center;color:#999">您的页面被外星人吸走了！</p>
+    <p style="font-size: 14px;text-align: center;color:#999">您访问的页面不存在！</p>
     <router-link class="btn" to="/">去首页</router-link>
   </div>
 </template>

@@ -83,6 +83,9 @@ export default {
       return list
     }
   },
+  mounted () {
+    document.title = `${this.Name}认证`
+  },
   methods: {
     onUpdate () {
       const that = this

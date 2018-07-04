@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import routerList from './routerList'
+import apiRequest from '@/api'
 
 Vue.use(Router)
 
@@ -22,12 +23,19 @@ router.beforeEach((to, from, next) => {
     const token = sessionStorage.getItem('servant_token')
     const userAccount = sessionStorage.getItem('userAccount')
     if (!token || !userAccount) { // 未登录的状态去微信登录
-      sessionStorage.removeItem('servant_token')
-      sessionStorage.removeItem('userAccount')
-      sessionStorage.removeItem('userInfo')
-      sessionStorage.setItem('to_path', to.fullPath)
-      window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${process.env.wechatOption.appId}&redirect_uri=` +
-      encodeURIComponent(process.env.wechatOption.redirectUrl) + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
+      const websiteHost = window.location.host
+      apiRequest.get(`/ShopInfo?host=${websiteHost}`).then(result => {
+        if (result.status === 200 && result.data.Code === 100000) {
+          sessionStorage.setItem('to_path', to.fullPath)
+          sessionStorage.removeItem('servant_token')
+          sessionStorage.removeItem('userAccount')
+          sessionStorage.removeItem('userInfo')
+          sessionStorage.setItem('shopName', result.data.Data.ShopName)
+          window.location.href = result.data.Data.LoginUrl
+        } else {
+          alert('非法访问')
+        }
+      })
     } else { // 已登录的状态
       const userState = router.app.$store.getters.userState // 用户状态 -4：未绑定手机；-2：账户锁定中；-1：账户已被删除；0：账户未提交身份证；1：账户提交身份证 待审核；2：未提交审核资料3：账户审核未通过；；3：账户已审核通过
       if (userState === -4) { // 没有绑定手机
@@ -71,7 +79,13 @@ router.beforeEach((to, from, next) => {
     }
   }
 })
-router.afterEach(() => {
+router.afterEach((to) => {
+  if (to.meta.title !== null && to.meta.title !== '') {
+    document.title = to.meta.title
+  } else {
+    console.log(1)
+    document.title = window.sessionStorage.getItem('shopName')
+  }
   router.app.$store.commit('SET_ROUTER_LOADING', false)
 })
 

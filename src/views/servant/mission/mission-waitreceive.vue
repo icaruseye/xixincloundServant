@@ -188,9 +188,6 @@
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 import { Rater } from 'vux'
 export default {
-  metaInfo: {
-    title: '任务详情'
-  },
   components: {
     ImagePreviewItem,
     Rater

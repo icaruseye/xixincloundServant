@@ -47,9 +47,6 @@
 import http from '@/api/index'
 import { InlineLoading } from 'vux'
 export default {
-  metaInfo: {
-    title: '聊天'
-  },
   components: {
     InlineLoading
   },

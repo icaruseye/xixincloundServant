@@ -11,13 +11,15 @@ export default [
     path: '/wxLogin',
     component: _import('/servant/wxlogin/login'),
     meta: {
-      notNeedLogin: true
+      notNeedLogin: true,
+      title: '登录'
     }
   },
   {
     path: '*',
     component: _import('/servant/NotFound'),
     meta: {
+      title: '404',
       notNeedLogin: true
     }
   }

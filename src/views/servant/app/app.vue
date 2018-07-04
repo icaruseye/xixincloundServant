@@ -101,9 +101,6 @@
 
 <script>
 export default {
-  metaInfo: {
-    title: '应用'
-  },
   methods: {
     go (name) {
       this.$router.push(`/app/${name}`)

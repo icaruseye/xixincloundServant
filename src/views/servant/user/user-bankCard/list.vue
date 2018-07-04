@@ -13,9 +13,6 @@
 <script>
 import bankCardItem from './bankCardItem'
 export default {
-  metaInfo: {
-    title: '我的银行卡'
-  },
   components: {
     bankCardItem
   },

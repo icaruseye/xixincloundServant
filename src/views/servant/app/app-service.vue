@@ -94,9 +94,6 @@ import ServiceItem from './components/serviceItems'
 import { TransferDom, Popup, Sticky } from 'vux'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
-  metaInfo: {
-    title: '服务设置'
-  },
   directives: {
     TransferDom
   },

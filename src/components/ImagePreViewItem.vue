@@ -66,7 +66,7 @@ export default {
       if (imageName.indexOf('http') === -1) {
         if (imageName.indexOf('Upload') === -1) {
           // 值为id
-          return 'http://xixincloud.com:6883/File/GetImage/' + imageName
+          return `${process.env.IMAGE_HOST}/File/Upload` + imageName
         } else {
           // 第三种情况
           return imageName

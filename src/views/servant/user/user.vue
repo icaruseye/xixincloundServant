@@ -53,12 +53,13 @@
           <span class="title">投诉</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
+        <!-- 
         <a href="javascript:alert('开发中')" class="setting-panel_item">
           <img src="@/assets/images/ic_help_account.png" >
           <span class="title">帮助</span>
           <i class="iconfont icon-jiantouyou"></i>
         </a>
-        <!-- <router-link to="/user/phone" class="setting-panel_item">
+        <router-link to="/user/phone" class="setting-panel_item">
           <img src="@/assets/images/icon-my-phone.png" >
           <span class="title">手机认证</span>
           <i class="iconfont icon-jiantouyou"></i>
@@ -70,13 +71,13 @@
         </router-link> -->
       </div>
       
-      <div class="setting-panel mt10px">
+      <!-- <div class="setting-panel mt10px">
         <router-link to="/user/info" class="setting-panel_item">
           <img src="@/assets/images/ic_setting_account.png" >
           <span class="title">设置</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
-      </div>
+      </div> -->
       
     </div>
     <xx-tabbar></xx-tabbar>
@@ -91,9 +92,6 @@ import { mapGetters, mapActions } from 'vuex'
 import { XDialog } from 'vux'
 import ShowQrcode from '@/components/ShowQrCode'
 export default {
-  metaInfo: {
-    title: '我的'
-  },
   components: {
     XDialog,
     ShowQrcode

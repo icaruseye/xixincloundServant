@@ -3,7 +3,7 @@
     <!-- <div>  
       <mail-group-item :count="1"></mail-group-item>
     </div> -->
-    <div v-if="list.length > 0" class="mt10px">  
+    <div v-if="list.length > 0" class="mt10px">
       <mail-list-item v-for="(item, index) in list" 
         :key="index" 
         :count="item.State === 0 ? '未读': null"
@@ -42,7 +42,7 @@ export default {
         this.list = value.Data
       })
       this.$vux.loading.hide()
-      this.occupiedText = '系统消息列表为空'
+      this.occupiedText = '站内信列表为空'
     },
     async getData () {
       const res = await this.$http.get('/SiteNoticeList')

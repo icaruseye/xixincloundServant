@@ -30,9 +30,6 @@ export default {
     Sticky,
     ListItem
   },
-  metaInfo: {
-    title: '提现订单'
-  },
   data () {
     return {
       list: [],

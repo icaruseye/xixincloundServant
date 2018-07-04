@@ -1,5 +1,5 @@
 <template>
-  <div class="main_item_container">
+  <div class="main_item_container" @click="showMessageDialog = true">
     <div class="left">
       <img class="icon_img" src="@/assets/images/app-yhgl.png" alt="">
     </div>
@@ -11,14 +11,41 @@
       <span class="time">{{time}}</span>
       <i class="mail_num_icon" v-if="count != null">{{count}}</i>
     </div>
+    <div v-transfer-dom>
+      <x-dialog v-model="showMessageDialog" :hide-on-blur="true">
+        <div style="padding: 20px;">
+          <h2 style="font-size: 16px;font-weight: normal;text-align:left">{{title}}</h2>
+          <p style="text-align: justify;font-size:14px;color:#999;margin-top:10px">
+            <slot></slot>
+          </p>
+        </div>
+      </x-dialog>
+    </div>
   </div>
 </template>
 <script>
+import { XDialog, TransferDom } from 'vux'
 export default {
+  directives: {
+    TransferDom
+  },
+  components: {
+    XDialog
+  },
   props: {
     title: '',
     count: null,
     time: ''
+  },
+  data () {
+    return {
+      showMessageDialog: false
+    }
+  },
+  methods: {
+    showMessage () {
+
+    }
   }
 }
 </script>

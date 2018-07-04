@@ -41,9 +41,6 @@ export default {
   components: {
     Sticky
   },
-  metaInfo: {
-    title: '我的消息'
-  },
   data () {
     return {
       list: [],

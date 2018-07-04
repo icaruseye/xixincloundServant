@@ -23,7 +23,7 @@
       <div  v-if="dataList.length >0"  class="weui-panel" style="margin-top:0">
         <div class="weui-list_container">
           <div class="weui-list_item" v-for="(item, index) in dataList" :key="index" @click="redirectDetail(item.State, item.Type, item.ID)">
-            <div class="avatar"><img src="https://tva1.sinaimg.cn/crop.0.0.180.180.50/5e9d399fjw1e8qgp5bmzyj2050050aa8.jpg" alt=""></div>
+            <div class="avatar"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
             <div class="mid">
               <div style="display: flex;justify-content: space-between;align-items: baseline;">
                 <div class="title" style="font-weight:normal">{{item.ItemName}}</div>
@@ -34,11 +34,12 @@
                 <p>工具：{{item.NeedTools?'需要': '不需要'}}</p>
               </div>
               <template v-if="item.State == 0 && item.Type == 0">
-                <div class="describe">开始时间：{{item.StartTime | xxTimeFormatFilter}}</div>
-                <div class="describe">结束时间：{{item.EndTime | xxTimeFormatFilter}}</div>
+                <div class="describe">下单时间：{{item.CreateTime | xxTimeFormatFilter}}</div>
               </template>
               <template v-else>
-                <div class="describe">时间：{{item.ViewTime | xxTimeFormatFilter}}</div>
+                <div class="describe">
+                  {{item.ViewTime}}
+                </div>
               </template>
             </div>
             <img v-if="item.State == 0 && item.Type == 0" style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
@@ -65,9 +66,6 @@ export default {
       value = value.replace('T', ' ')
       return value
     }
-  },
-  metaInfo: {
-    title: '任务列表'
   },
   components: {
     Sticky

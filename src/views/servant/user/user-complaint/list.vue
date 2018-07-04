@@ -34,9 +34,6 @@
 import { Sticky } from 'vux'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
-  metaInfo: {
-    title: '我的投诉'
-  },
   components: {
     Sticky
   },
