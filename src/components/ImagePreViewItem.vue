@@ -66,7 +66,7 @@ export default {
       if (imageName.indexOf('http') === -1) {
         if (imageName.indexOf('Upload') === -1) {
           // 值为id
-          return `${process.env.IMAGE_HOST}/File/Upload` + imageName
+          return `${process.env.IMAGE_HOST}/File/GetImage/` + imageName
         } else {
           // 第三种情况
           return imageName
