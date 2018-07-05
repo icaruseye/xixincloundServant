@@ -231,8 +231,8 @@ export default {
       let params = {
         TemplateID: +that.templateID,
         Name: that.templateDetail.Name,
-        Price: Math.abs(that.templateDetail.Price * 100),
-        ViewPrice: Math.abs(that.ViewPrice * 100),
+        Price: parseInt((that.templateDetail.Price * 100).toFixed(0)),
+        ViewPrice: parseInt((that.ViewPrice * 100).toFixed(0)),
         EffectiveValue: that.reqParams.EffectiveValue,
         EffectiveType: that.EffectiveType,
         Count: that.reqParams.Count,
@@ -268,8 +268,8 @@ export default {
       let params = {
         ID: that.templateDetail.ID,
         Name: that.templateDetail.Name,
-        Price: Math.abs(that.templateDetail.Price * 100),
-        ViewPrice: Math.abs(that.ViewPrice * 100),
+        Price: parseInt((that.templateDetail.Price * 100).toFixed(0)),
+        ViewPrice: parseInt((that.ViewPrice * 100).toFixed(0)),
         EffectiveValue: that.reqParams.EffectiveValue,
         EffectiveType: that.EffectiveType,
         Count: that.reqParams.Count,

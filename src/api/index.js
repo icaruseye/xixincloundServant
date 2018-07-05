@@ -12,8 +12,7 @@ axios.interceptors.response.use(response => {
       sessionStorage.removeItem('servant_token')
       sessionStorage.removeItem('userAccount')
       sessionStorage.removeItem('userInfo')
-      window.location.href = `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${process.env.wechatOption.appId}&redirect_uri=` +
-      encodeURIComponent(process.env.wechatOption.redirectUrl) + '&response_type=code&scope=snsapi_userinfo#wechat_redirect'
+      window.location.reload()
     }
   }
   Vue.prototype.$popupTop('出错了，请重试')

@@ -1,14 +1,13 @@
 <template>
   <div class="wrap_container">
     <div class="userInfo_container">
-      <img class="avatar" :src="userAccount.Avatar | transformImgUrl" alt="">
-      <div class="right">
-        <h3 class="nickName">
-          {{userAccount.NickName}}
-          <!-- <span class="actor">护士</span> -->
-        </h3>
-        <p class="desc">{{userAccount.Description}}</p>
+      <div class="user_avatar_container">
+        <img class="avatar" :src="userAccount.Avatar | transformImgUrl" alt="">
       </div>
+      <h3 class="nickName">
+        {{userAccount.NickName}}
+      </h3>
+      <p class="desc">{{userAccount.Description | stringSub(85)}}</p>
     </div>
     <div class="qr_code_box">
       <img :src="API_PATH+'/QRCode/'+userAccount.ID" alt="">
@@ -23,6 +22,12 @@ export default {
   components: {
     Qrcode
   },
+  filters: {
+    stringSub (value, len) {
+      console.log(value)
+      return value.length > len ? value.substring(0, len) + '…' : value
+    }
+  },
   computed: {
     ...mapGetters([
       'userAccount'
@@ -36,7 +41,7 @@ export default {
 <style lang="less" scoped>
 .wrap_container
 {
-  padding: 35px 20px;
+  padding: 25px 20px;
 }
 .qr_code_box
 {
@@ -44,7 +49,7 @@ export default {
   margin: 0 auto;
   width: 200px;
   height: 200px;
-  margin-top: 30px;
+  margin-top: 10px;
   overflow: hidden;
   img {
     position: relative;
@@ -68,43 +73,39 @@ export default {
 }
 .userInfo_container
 {
-  display: flex;
-  flex-flow: nowrap;
-  justify-content: center;
-  align-items: center;
   .avatar
   {
     display: block;
     width: 50px;
     height: 50px;
     border-radius: 50%;
+    margin: 0 auto;
   }
-  .right
+  .nickName
   {
-    margin-left: 20px;
-    .nickName
+    text-align: left;
+    color: #333;
+    font-weight: normal;
+    font-size: 18px;
+    height: 25px;
+    line-height: 25px;
+    text-align: center;
+    margin-top: 10px;
+    .actor
     {
-      text-align: left;
-      color: #333;
-      font-weight: normal;
-      font-size: 18px;
-      height: 25px;
-      line-height: 25px;
-      .actor
-      {
-        display: inline-block;
-        color: #666;
-        font-size: 14px;
-        margin-left: 15px;
-      }
+      display: inline-block;
+      color: #666;
+      font-size: 14px;
+      margin-left: 15px;
     }
-    .desc
-    {
-      font-size: 12px;
-      color: #999;
-      line-height: 20px;
-      text-align: left
-    }
+  }
+  .desc
+  {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #999;
+    line-height: 20px;
+    text-align: justify
   }
 }
 .hint_desc

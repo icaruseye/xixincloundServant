@@ -260,16 +260,16 @@ export default {
       let res = await this.$validator.validateAll()
       if (res) {
         this.submitBtn = true
-        let itemsInfoList = this.reqParams.itemsInfoList.slice(0)
-        debugger
-        for (let i = 0; i < itemsInfoList.length; i++) {
-          itemsInfoList[i].Price = itemsInfoList[i].Price * 100
+        let _itemsInfoList = [].concat(JSON.parse(JSON.stringify(this.reqParams.itemsInfoList)))
+
+        for (let i = 0; i < _itemsInfoList.length; i++) {
+          _itemsInfoList[i].Price = parseInt((_itemsInfoList[i].Price * 100).toFixed(0))
         }
 
         let reqParams = {
-          Price: this.reqParams.Price * 100,
-          BundleViewPrice: this.reqParams.BundleViewPrice * 100,
-          itemsInfoList: itemsInfoList,
+          Price: parseInt((this.reqParams.Price * 100).toFixed(0)),
+          BundleViewPrice: parseInt((this.reqParams.BundleViewPrice * 100).toFixed(0)),
+          itemsInfoList: _itemsInfoList,
           Name: this.reqParams.Name,
           PackageType: this.reqParams.PackageType,
           EffectiveValue: this.reqParams.EffectiveValue,
