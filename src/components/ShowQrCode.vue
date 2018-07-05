@@ -23,8 +23,7 @@ export default {
     Qrcode
   },
   filters: {
-    stringSub (value, len) {
-      console.log(value)
+    stringSub (value = '', len) {
       return value.length > len ? value.substring(0, len) + '…' : value
     }
   },
