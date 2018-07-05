@@ -4,7 +4,10 @@
       <inline-loading></inline-loading>
     </div>
     <template v-else>
-      <router-view></router-view>
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
     </template>
   </div>
 </template>

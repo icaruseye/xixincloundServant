@@ -261,7 +261,7 @@ export default {
       if (res) {
         this.submitBtn = true
         let itemsInfoList = this.reqParams.itemsInfoList.slice(0)
-
+        debugger
         for (let i = 0; i < itemsInfoList.length; i++) {
           itemsInfoList[i].Price = itemsInfoList[i].Price * 100
         }

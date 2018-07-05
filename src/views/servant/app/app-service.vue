@@ -32,7 +32,10 @@
             </template>
             <div  v-else style="position: relative; height:200px">
               <xx-occupied-box>
-                {{item.PackageTypeName}}列表为空
+                <p style="text-align:left">
+                  设置服务项是您业务开始的第一步，请点此查看<br/>
+                  <a style="color:#3AC7F5" href="https://mp.weixin.qq.com/s/QdJ588sPT5zUcVDLGtRIZQ">如何设置服务项&服务套餐</a>
+                </p>
               </xx-occupied-box>
             </div>
           </div>

@@ -18,6 +18,10 @@ export default{
   name: 'checkerItems',
   componentName: 'checkerItems',
   props: {
+    labelName: {
+      type: String,
+      default: ''
+    },
     name: {
       type: String,
       default: ''

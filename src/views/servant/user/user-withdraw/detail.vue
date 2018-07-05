@@ -76,7 +76,7 @@
       </div>
 
       
-      <div class="cell_items division_line">
+      <!-- <div class="cell_items division_line">
         <label class="cell_items_title">
           服务费
         </label>
@@ -86,7 +86,7 @@
         <span class="cell_items_right cell_items_right_amount">
           ￥{{detail.ServicePrice | amountFilter}}
         </span>
-      </div>
+      </div> -->
 
       
       

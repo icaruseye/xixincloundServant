@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-import {mapActions, mapGetters} from 'vuex'
+import {mapActions, mapGetters, mapMutations} from 'vuex'
 export default {
   data () {
     return {
@@ -31,15 +31,15 @@ export default {
       'getUserAccount',
       'getUserInfo'
     ]),
+    ...mapMutations([
+      'SET_TOKEN'
+    ]),
     async login () {
-      if (this.token && this.userInfo && this.userAccount) {
-        this.$router.push('/user')
-        return false
-      }
       this.occupiedText = '正在验证身份…'
       await this.getToken().then(tokenResult => {
         if (tokenResult.Code === 100000) {
           sessionStorage.setItem('servant_token', tokenResult.Data)
+          this.SET_TOKEN(tokenResult.Data)
           this.getUserAccountAndInfo()
         } else {
           this.occupiedText = '验证身份失败，请联系客服'
@@ -64,7 +64,12 @@ export default {
     }
   },
   created () {
-    this.login()
+    if (this.token && this.userAccount) {
+      this.$router.replace('/user')
+      return false
+    } else {
+      this.login()
+    }
   }
 }
 </script>

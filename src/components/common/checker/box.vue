@@ -15,7 +15,7 @@ export default {
     const that = this
     return {
       handleChecked () {
-        that.modelValue = []
+        that.modelValue = ''
         let defaultSlots = that.$slots.item
         defaultSlots.map((item, index) => {
           if (item.componentInstance.modelChecked) {

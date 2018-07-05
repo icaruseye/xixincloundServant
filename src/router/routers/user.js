@@ -3,8 +3,6 @@
  */
 import _import from '../_import'
 
-console.log(_import('/servant/user/user'))
-
 export default [
   /**
    * 医护端-个人中心

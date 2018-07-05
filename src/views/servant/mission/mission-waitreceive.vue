@@ -68,7 +68,7 @@
             <p class="normal_title_p">任务服务需要完成标准动作</p>
             <div style="padding-top: 11px; margin: 0 10px">
               <xx-checker-box  v-model="actionListValue">
-                <xx-checker-item v-for="(item, index) in actionList" :key="index" :value="item.ID" slot="item" name="testAction" style="display: block; margin-bottom: 18px;">
+                <xx-checker-item ref="actionCheckItems" v-for="(item, index) in actionList" :key="index" :value="item.ID" slot="item" name="testAction" :labelName="item.Name" style="display: block; margin-bottom: 18px;">
                   {{index+1}}：{{item.Name}}
                 </xx-checker-item>
               </xx-checker-box>
@@ -78,7 +78,7 @@
             <p class="normal_title_p">任务服务需要采集的信息</p>
             <div style="padding-top: 11px; margin: 0 10px">
               <xx-input-group-box ref="attributeInputGroup" v-model="attributeListValue">
-                <xx-input-group-items v-for="(item, index) in attributeList" :key="index" :label="item.Name" slot="item" :name="item.ID" :unit="item.Unit"></xx-input-group-items>
+                <xx-input-group-items ref="attributeItems" v-for="(item, index) in attributeList" :key="index" :label="item.Name" slot="item" :name="item.ID" :unit="item.Unit"></xx-input-group-items>
               </xx-input-group-box>
             </div>
           </li>
@@ -232,9 +232,48 @@ export default {
     /**
      * 完成任务
      */
+    verifyActionList () {
+      if (this.actionList.length > 0) {
+        const actionCheckItemsRefs = this.$refs.actionCheckItems
+        for (let i = 0; i < actionCheckItemsRefs.length; i++) {
+          let item = actionCheckItemsRefs[i]
+          if (!item.modelChecked) {
+            this.$vux.toast.text(`请确认是否完成【${item.labelName}】动作`)
+            return false
+          }
+        }
+        return true
+      } else {
+        return true
+      }
+    },
+    verifyAttributeList () {
+      if (this.attributeList.length > 0) {
+        const attributeItemsRefs = this.$refs.attributeItems
+        for (let i = 0; i < attributeItemsRefs.length; i++) {
+          let item = attributeItemsRefs[i]
+          if (item.modelValue.length <= 0) {
+            this.$vux.toast.text(`请填写【${item.label}】`)
+            return false
+          } else if (item.modelValue.length > item.maxLen) {
+            this.$vux.toast.text(`【${item.label}】不可超过${item.maxLen}字`)
+            return false
+          }
+        }
+        return true
+      } else {
+        return true
+      }
+    },
     completeMissionEvent () {
       const that = this
       if (that.submitLocked) {
+        return false
+      }
+      if (!that.verifyActionList()) {
+        return false
+      }
+      if (!that.verifyAttributeList()) {
         return false
       }
       if (that.attributeList.length > 0 && !that.$refs.attributeInputGroup.verify) {
