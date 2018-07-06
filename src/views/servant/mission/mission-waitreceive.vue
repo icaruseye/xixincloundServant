@@ -23,6 +23,7 @@
         <ul>
           <li class="desc_list_items">
             <p class="normal_desc_p" style="font-size: 14px; color: #666">任务名称：{{detail.ItemName}}</p>
+            <p class="normal_desc_p">服务单号：{{detail.ServiceID}}</p>
             <p class="normal_desc_p">服务对象：{{detail.UserName}}</p>
             <p class="normal_desc_p">执行人：{{detail.ServantName}}</p>
             <p class="normal_desc_p">约定到达时间：{{detail.ConfirmArriveTime | xxTimeFormatFilter}}</p>
@@ -97,7 +98,7 @@
           <li class="desc_list_items">
             <p class="normal_title_p">服务相关图片</p>
             <div class="thumbs_container" style="margin-top: 14px">
-              <xx-uploader 
+              <xx-uploader
               :limit="9"
               :maxSize="1024 * 1024 * 5"
               @onUpdate="onUpdate"
@@ -158,7 +159,7 @@
       >
         <p v-if="detail.State < 4" class="normal_desc_p">服务还未完成，不能进行评价</p>
         <p v-if="detail.State == 4" class="normal_desc_p">等待患者对本次服务进行评价！</p>
-        
+
         <template v-if="detail.State == 5 || detail.State == 6" slot="subhead">
             评价时间：{{reviewDetail.ReviewTime | xxTimeFormatFilter}}
         </template>

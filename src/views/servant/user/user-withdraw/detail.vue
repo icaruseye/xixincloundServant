@@ -46,7 +46,7 @@
         </p>
       </section>
     </template>
-    
+
 
     <div class="cell_container">
       <div class="cell_items">
@@ -54,7 +54,7 @@
           服务单号
         </label>
         <p class="cell_items_centent">
-          {{detail.MissionID}}
+          {{detail.ServiceID}}
         </p>
         <span class="cell_items_right">
           <i class="iconfont icon-jiantouyou"></i>
@@ -75,7 +75,7 @@
         </div>
       </div>
 
-      
+
       <!-- <div class="cell_items division_line">
         <label class="cell_items_title">
           服务费
@@ -88,8 +88,8 @@
         </span>
       </div> -->
 
-      
-      
+
+
       <div class="cell_items division_line">
         <label class="cell_items_title">
           税收
@@ -102,7 +102,7 @@
         </span>
       </div>
 
-      
+
       <div class="cell_items division_line">
         <label class="cell_items_title">
           平台佣金
@@ -116,7 +116,7 @@
       </div>
 
 
-      
+
       <div class="cell_items division_line">
         <label class="cell_items_title">
           机构佣金
@@ -129,14 +129,14 @@
         </span>
       </div>
       <div class="withdraw_order_count clearfix">
-        <div class="pull-right">  
+        <div class="pull-right">
           <p class="pull-left" style="margin-right: 27px">
-            用户支付金额 
-            <span style="font-size: 15px;color: #666">￥{{detail.TotalPrice | amountFilter}}</span> 
+            用户支付金额
+            <span style="font-size: 15px;color: #666">￥{{detail.TotalPrice | amountFilter}}</span>
           </p>
           <p class="pull-left">
             服务者实际收入
-            <span style="font-size:18px;color:#FF5F5F">￥{{detail.LiftPrice | amountFilter}}</span>   
+            <span style="font-size:18px;color:#FF5F5F">￥{{detail.LiftPrice | amountFilter}}</span>
           </p>
         </div>
       </div>
@@ -169,7 +169,7 @@
       <a href="javascript:void(0)" class="cancle_apply_btn pull-right" @click="cancelWithdrawApply">取消申请</a>
     </div>
 
-    
+
     <div v-transfer-dom>
       <popup v-model="withdrawTypeVisible" position="bottom" max-height="50%">
         <div class="withdrawTypeVisible_container">
@@ -187,7 +187,7 @@
           </sticky>
           <ul class="withdrawType_list">
             <template v-if="withdrawTypeList.length > 0">
-              <li v-for="(item, index) in withdrawTypeList" 
+              <li v-for="(item, index) in withdrawTypeList"
                 :key="index"
                 @click="currentWithdrawType = item;withdrawTypeVisible = false"
                 :class="['withdrawType_item', (currentWithdrawType && currentWithdrawType.id === item.id)?'selected':'']"

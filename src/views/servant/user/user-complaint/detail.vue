@@ -24,7 +24,7 @@
       <div class="right">
         <h3 class="mission_title">
           {{detail.MissionName}}
-          <span class="mission_id">服务单号：{{detail.MissionID}}</span>
+          <span class="mission_id">服务单号：{{detail.ServiceID}}</span>
         </h3>
         <!-- <p class="mission_content">工作于急诊，擅长消化道危急重症…</p> -->
       </div>
@@ -83,7 +83,7 @@
       <xx-cell-items label="其他备注" :labelStyle="labelStyle" class="noraml_cell_right">
         <p class="cell_content_desc">
           {{detail.UserComplaintContent}}
-        </p>  
+        </p>
       </xx-cell-items>
       <xx-cell-items v-if="detail.UserComplaintImgs != null && detail.UserComplaintImgs != ''" label="相关图片" :labelStyle="labelStyle" class="noraml_cell_right" style="color:#3AC7F5">
         <image-preview-item :list="detail.UserComplaintImgs"></image-preview-item>
