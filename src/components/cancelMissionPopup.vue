@@ -4,7 +4,7 @@
       <popup-header
         left-text="取消"
         right-text="确定"
-        title="确认取消任务"
+        :title="'确认取消'+typeName"
         :show-bottom-border="false"
         @on-click-left="modelValue = false"
         @on-click-right="cancelMissionEvent()"></popup-header>
@@ -26,9 +26,9 @@ export default {
       type: Boolean,
       default: false
     },
-    missionID: {
+    typeName: {
       type: String,
-      default: null
+      default: '任务'
     }
   },
   data () {
@@ -57,46 +57,20 @@ export default {
      */
     cancelMissionEvent () {
       const that = this
-      if (that.missionID === null) {
-        that.$vux.toast.show({
-          width: '60%',
-          type: 'text',
-          position: 'middle',
-          text: '任务单不存在'
-        })
-        return false
-      }
       that.$vux.confirm.show({
-        content: '任务取消后不可恢复，请谨慎操作！',
+        content: `${that.typeName}取消后不可恢复，请谨慎操作！`,
         confirmText: '仍然取消',
         cancelText: '放弃',
         onConfirm () {
-          that.cancelMission().then(value => {
-            if (value.Code === 100000) {
-              that.$vux.toast.show({
-                position: 'middle',
-                text: '取消成功'
-              })
-              that.$router.push('/mission')
-            } else {
-              that.$vux.toast.show({
-                width: '60%',
-                type: 'text',
-                position: 'middle',
-                text: value.Msg
-              })
-            }
-          })
+          that.cancelMission()
         }
       })
     },
-    async cancelMission () {
-      const that = this
-      const res = await that.$http.put('/ReserveService/Cancel?ID=' + that.missionID, {
-        CancelType: that.radioValue,
-        CancelDescription: that.cancelDescription
+    cancelMission () {
+      this.$emit('confirmCancel', {
+        CancelType: this.radioValue,
+        CancelDescription: this.cancelDescription
       })
-      return res.data
     }
   },
   computed: {

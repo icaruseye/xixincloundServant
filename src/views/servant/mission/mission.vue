@@ -28,7 +28,7 @@
               <div style="display: flex;justify-content: space-between;align-items: baseline;">
                 <div class="title" style="font-weight:normal">{{item.ItemName}}</div>
               </div>
-              <div style="font-size:13px;color:#999;">患者：{{item.UserName}}</div>
+              <div style="font-size:13px;color:#999;">用户：{{item.UserName}}</div>
               <div style="font-size:13px;color:#999;">
                 <p>药品：{{item.NeedDrug?'需要': '不需要'}}</p>
                 <p>工具：{{item.NeedTools?'需要': '不需要'}}</p>
@@ -46,6 +46,11 @@
             <img v-if="(item.State == 0  && item.Type == 1) || item.State == 3 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dff.png" alt="">
             <img v-if="item.State == 4 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dpj.png" alt="">
             <img v-if="item.State >= 5 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_ywj.png" alt="">
+            <div v-if="item.State == -1 && item.Type == 1" class="cancel_icon">
+              <svg class="icon" aria-hidden="true">
+                <use xlink:href="#icon-yiquxiao"></use>
+              </svg>
+            </div>
           </div>
         </div>
       </div>
@@ -317,6 +322,20 @@ export default {
     li.active {
       color: #3AC7F5;
     }
+  }
+}
+
+.cancel_icon
+{
+  font-size: 40px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  color: #999;
+  .icon
+  {
+    width: 50px;
+    height: 50px;
   }
 }
 </style>

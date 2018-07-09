@@ -79,7 +79,7 @@
         </xx-hint>
       </xx-cell>
       <xx-cell>
-        <xx-cell-items label="服务备注（该内容患者不可见）" direction="vertical">
+        <xx-cell-items label="服务备注（该内容用户不可见）" direction="vertical">
           <div class="service_remark_textarea_container">
             <textarea v-model="remark" class="service_remark_textarea" placeholder="请输入备注"></textarea>
             <span class="service_remark_textarea_nums_count">{{remark.length}} / 200</span>
@@ -174,7 +174,7 @@
               </div>
             </li>
             <li v-if="state == 3" class="desc_list_items">
-              <p class="normal_desc_p">备注 <span style="font-size: 12px; color:#A7A7A7">（患者不可见）</span></p>
+              <p class="normal_desc_p">备注 <span style="font-size: 12px; color:#A7A7A7">（用户不可见）</span></p>
               <div class="service_remark_textarea_container" style="height: 65px">
                 <textarea class="service_remark_textarea" placeholder="请输入文本"></textarea>
               </div>

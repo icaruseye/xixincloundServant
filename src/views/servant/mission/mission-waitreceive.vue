@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <xx-step-bar :step="detail.State | stepFileter">
+    <xx-step-bar v-if="detail.State != -1" :step="detail.State | stepFileter">
       <xx-step-items slot="items">
         已确认
       </xx-step-items>
@@ -11,6 +11,17 @@
         已完成
       </xx-step-items>
     </xx-step-bar>
+    <div class="canceled_container clearfix" v-else>
+      <div class="cancel_icon">
+        <svg class="icon" aria-hidden="true">
+          <use xlink:href="#icon-yiquxiao"></use>
+        </svg>
+      </div>
+      <h2 v-if="detail.CancelTypeMsg" class="canceled_title">
+        {{detail.CancelTypeMsg}}
+      </h2>
+      <p v-if="detail.CancelDescription" class="canceled_reason">{{detail.CancelDescription}}</p>
+    </div>
 
     <xx-timeLine :step="detail.State | stepFileter" class="mt10px">
       <xx-timeLine-items
@@ -32,7 +43,7 @@
           </li>
           <li class="desc_list_items">
             <h5 class="desc_list_items_title">用户描述</h5>
-            <p class="normal_desc_p" style="word-break: break-all">{{detail.ReserveDiscreption?detail.ReserveDiscreption: '该患者没有留言'}}</p>
+            <p class="normal_desc_p" style="word-break: break-all">{{detail.ReserveDiscreption?detail.ReserveDiscreption: '该用户没有留言'}}</p>
           </li>
           <li class="desc_list_items" v-if="detail.ReserveImgs != null && detail.ReserveImgs != ''">
             <h5 class="desc_list_items_title">相关图片</h5>
@@ -89,7 +100,7 @@
             </div>
           </li>
           <li class="desc_list_items">
-            <p class="normal_title_p">备注 <span style="font-size: 12px; color:#A7A7A7">（患者不可见）</span></p>
+            <p class="normal_title_p">备注 <span style="font-size: 12px; color:#A7A7A7">（用户不可见）</span></p>
             <div class="service_remark_textarea_container" style="height: 65px">
               <textarea class="service_remark_textarea" placeholder="请输入文本" v-model="remark"></textarea>
             </div>
@@ -137,7 +148,7 @@
             </p>
           </li>
           <li v-if="detail.Discription != null && detail.Discription != ''" class="desc_list_items">
-            <p class="normal_title_p">备注 <span style="font-size: 12px; color:#A7A7A7">（患者不可见）</span></p>
+            <p class="normal_title_p">备注 <span style="font-size: 12px; color:#A7A7A7">（用户不可见）</span></p>
             <div class="service_remark_textarea_container" style="height: 65px">
               <p class="normal_desc_p" style="word-break: break-all">
                 {{detail.Discription}}
@@ -157,7 +168,7 @@
         :title="detail.State<=4?'待评价': '已评价'"
       >
         <p v-if="detail.State < 4" class="normal_desc_p">服务还未完成，不能进行评价</p>
-        <p v-if="detail.State == 4" class="normal_desc_p">等待患者对本次服务进行评价！</p>
+        <p v-if="detail.State == 4" class="normal_desc_p">等待用户对本次服务进行评价！</p>
         
         <template v-if="detail.State == 5 || detail.State == 6" slot="subhead">
             评价时间：{{reviewDetail.ReviewTime | xxTimeFormatFilter}}
@@ -176,24 +187,28 @@
       </xx-timeLine-items>
     </xx-timeLine>
 
-    <div class="btn_bar">
-      <button v-if="detail.CanCancel && detail.State < 3"  class="weui-btn weui-btn_primary" style="flex:1 0 30%;background-color: #ffc349" @click="cancelMissionEvent">取消任务</button>
+    <div v-if="detail.State != -1" class="btn_bar">
+      <button v-if="detail.CanCancel && detail.State < 3"  class="weui-btn weui-btn_primary" style="background-color: #ffc349" @click="cancelMissionPopupVisible = true">取消任务</button>
       <button v-if="detail.State == 0" type="button" class="weui-btn weui-btn_primary" @click="startMissionEvent">已到达，开始服务</button>
       <button v-if="detail.State == 3" type="button" class="weui-btn weui-btn_primary" @click="completeMissionEvent">服务已完成</button>
     </div>
+    <cancel-mission-popup v-model="cancelMissionPopupVisible" @confirmCancel="cancelMissionEvent"></cancel-mission-popup>
   </div>
 </template>
 
 <script>
+import CancelMissionPopup from '@/components/cancelMissionPopup'
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 import { Rater } from 'vux'
 export default {
   components: {
     ImagePreviewItem,
-    Rater
+    Rater,
+    CancelMissionPopup
   },
   data () {
     return {
+      cancelMissionPopupVisible: false,
       submitLocked: false,
       detail: {}, // 任务单详情
       actionListValue: '', // 动作列表选中的值
@@ -373,47 +388,37 @@ export default {
       })
     },
     async startMission () {
-      const that = this
-      const res = await that.$http.put('/Mission/Start?MissionID=' + that.MissionID)
+      const res = await this.$http.put(`/Mission/Start?MissionID=${this.MissionID}`)
       return res.data
     },
     /**
      * 取消任务
      */
-    cancelMissionEvent () {
+    async cancelMissionEvent (option) {
       const that = this
       if (that.submitLocked) {
         return false
       }
-      that.$vux.confirm.show({
-        content: '任务取消后不可恢复，请谨慎操作！',
-        confirmText: '仍然取消',
-        cancelText: '放弃',
-        onConfirm () {
-          that.submitLocked = true
-          that.cancelMission().then(value => {
-            that.submitLocked = false
-            if (value.Code === 100000) {
-              that.$vux.toast.show({
-                position: 'middle',
-                text: '取消成功'
-              })
-              that.$router.push('/mission')
-            } else {
-              that.$vux.toast.show({
-                width: '60%',
-                type: 'text',
-                position: 'middle',
-                text: value.Msg
-              })
-            }
-          })
-        }
-      })
+      that.submitLocked = true
+      const res = await this.$http.put(`/Mission?missionID=${this.MissionID}`, option)
+      that.submitLocked = false
+      if (res.data.Code === 100000) {
+        that.$vux.toast.show({
+          position: 'middle',
+          text: '任务取消成功'
+        })
+        that.$router.push('/mission')
+      } else {
+        that.$vux.toast.show({
+          width: '60%',
+          type: 'text',
+          position: 'middle',
+          text: res.data.Msg
+        })
+      }
     },
     async cancelMission () {
-      const that = this
-      const res = await that.$http.put('/Mission?missionID=' + that.MissionID)
+      const res = await this.$http.put(`/Mission?missionID=${this.MissionID}`)
       return res.data
     },
     /**
@@ -617,6 +622,42 @@ export default {
     border-style: solid;
     border-color: transparent transparent #F2F2F2 transparent;
     border-width: 0px 10px 10px 10px;
+  }
+  .canceled_container
+  {
+    position: relative;
+    background-color: #fff;
+    text-align: left;
+    padding: 25px 20px 25px 100px;
+    height: 60px;
+    display: flex;
+    flex-flow: column;
+    .cancel_icon
+    {
+      position: absolute;
+      left: 20px;
+      top: 20px;
+      font-size: 60px;
+      height: 60px;
+      line-height: 60px;
+      color: #FF5F5F;
+    }
+    .canceled_title
+    {
+      font-size: 16px;
+      font-weight: normal;
+      color: #FF5F5F;
+      .iconfont{
+        font-size: 26px;
+      }
+    }
+    .canceled_reason
+    {
+      font-size: 14px;
+      color: #999;
+      height: 25px;
+      line-height: 25px;
+    }
   }
 </style>
 

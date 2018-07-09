@@ -40,7 +40,7 @@
       </xx-cell-items>
       <xx-cell-items label="用户描述" direction="vertical">
         <p style="margin-top: 20px;font-size: 13px;color: #999;text-align: justify;word-break: break-all">
-          {{detail.Discription?detail.Discription:'该患者没有留言'}}
+          {{detail.Discription?detail.Discription:'该用户没有留言'}}
         </p>
       </xx-cell-items>
       <xx-cell-items v-if="detail.Imgs != '' && detail.Imgs != null" label="相关图片" direction="vertical">
@@ -76,7 +76,7 @@
       </xx-hint>
     </xx-cell>
     <xx-cell>
-      <xx-cell-items label="服务备注（该内容患者不可见）" direction="vertical">
+      <xx-cell-items label="服务备注（该内容用户不可见）" direction="vertical">
         <div class="service_remark_textarea_container">
           <textarea v-model="remark" class="service_remark_textarea" placeholder="请输入备注"></textarea>
           <span class="service_remark_textarea_nums_count">{{remark.length}} / 200</span>
@@ -87,7 +87,7 @@
       <button type="button" class="weui-btn weui-btn_primary" @click="cancelMissionPopupVisible = true">取消任务</button>
       <button type="button" class="weui-btn weui-btn_primary" @click="createMissionEvent">生成任务</button>
     </div>
-    <cancel-mission-popup :missionID="MissionID" v-model="cancelMissionPopupVisible"></cancel-mission-popup>
+    <cancel-mission-popup v-model="cancelMissionPopupVisible" @confirmCancel="confirmCancelEvent"></cancel-mission-popup>
   </div>
 </template>
 
@@ -121,6 +121,26 @@ export default {
     this.initDetail()
   },
   methods: {
+    /**
+     * 取消预约
+     */
+    async confirmCancelEvent (options) {
+      const res = await this.$http.put(`/ReserveService/Cancel?ID=${this.MissionID}`, options)
+      if (res.data.Code === 100000) {
+        this.$vux.toast.show({
+          position: 'middle',
+          text: '任务取消成功'
+        })
+        this.$router.push('/mission')
+      } else {
+        this.$vux.toast.show({
+          width: '60%',
+          type: 'text',
+          position: 'middle',
+          text: res.data.Msg
+        })
+      }
+    },
     /**
      * 生成任务
      */
