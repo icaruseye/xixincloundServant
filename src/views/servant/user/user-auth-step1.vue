@@ -31,7 +31,7 @@
                   class="xx-checker__original">
             <span class="xx-checker__inner"></span>
           </span>
-          我已阅读并同意<a @click="agreementDialogVisable = true" href="javascript:viod(0);">《服务者服务协议》</a>
+          我已阅读并同意<a @click="agreementDialogVisable = true" href="javascript:viod(0);">《服务者使用协议》</a>
         </label>
       </div>
     </div>
@@ -45,7 +45,7 @@
     <div v-transfer-dom>
       <x-dialog v-model="agreementDialogVisable" :hide-on-blur="true">
         <div class="agreement_container">
-          <h1 class="agreement_title">医护服务者服务协议</h1>
+          <h1 class="agreement_title">医护服务者使用协议</h1>
           <p class="agreement_text">欢迎您与悉心云健康服务平台经营者（以下简称：平台经营者）签署《服务者服务协议》（以下简称：本协议），并使用悉心云健康服务平台（以下简称：平台）提供的各项服务！本协议的双方为悉心云健康服务平台经营者重庆齐悦安康医院股份有限公司与注册、使用平台的医护服务者用户。
           </p>
           <p class="agreement_text mt10px">
@@ -274,7 +274,7 @@
             （1）平台发现您向平台提供虚假个人资料的；
           </p>
           <p class="agreement_text">
-            （2）您有盗用他人账户、发布违禁信息、骗取他人财物的行为的； 
+            （2）您有盗用他人账户、发布违禁信息、骗取他人财物的行为的；
           </p>
           <p class="agreement_text">
             （3）您已经丧失或被暂停执业资格的；

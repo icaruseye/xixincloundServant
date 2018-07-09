@@ -34,6 +34,7 @@
         <ul>
           <li class="desc_list_items">
             <p class="normal_desc_p" style="font-size: 14px; color: #666">任务名称：{{detail.ItemName}}</p>
+            <p class="normal_desc_p">服务单号：{{detail.ServiceID}}</p>
             <p class="normal_desc_p">服务对象：{{detail.UserName}}</p>
             <p class="normal_desc_p">执行人：{{detail.ServantName}}</p>
             <p class="normal_desc_p">约定到达时间：{{detail.ConfirmArriveTime | xxTimeFormatFilter}}</p>
@@ -108,7 +109,7 @@
           <li class="desc_list_items">
             <p class="normal_title_p">服务相关图片</p>
             <div class="thumbs_container" style="margin-top: 14px">
-              <xx-uploader 
+              <xx-uploader
               :limit="9"
               :maxSize="1024 * 1024 * 5"
               @onUpdate="onUpdate"
