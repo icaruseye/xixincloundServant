@@ -50,12 +50,22 @@ export default {
       })
     },
     sendTextMsg () {
+      if (this.msg.length <= 0) {
+        this.$vux.toast.show({
+          text: '消息不可为空',
+          position: 'bottom',
+          type: 'text'
+        })
+        return false
+      }
       const msg = {
         originator: 'to',
         text: this.msg
       }
       this.msg = ''
-      this.$refs.chatInput.focus()
+      if (!this.emojiContainerShow) {
+        this.$refs.chatInput.focus()
+      }
       this.$emit('sendMsg', msg)
     },
     async uploadImg (e) {
