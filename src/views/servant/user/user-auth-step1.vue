@@ -40,7 +40,7 @@
     </div>
 
     <div v-transfer-dom>
-      <alert v-model="showHintAlert" title="悉心服务" content="请先完善个人资料及资格认证，方可进入主界面"></alert>
+      <alert v-model="showHintAlert" title="温馨提示" content="请先完善个人资料及资格认证，方可进入主界面"></alert>
     </div>
     <div v-transfer-dom>
       <x-dialog v-model="agreementDialogVisable" :hide-on-blur="true">

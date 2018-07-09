@@ -105,7 +105,7 @@
 
       <div class="cell_items division_line">
         <label class="cell_items_title">
-          平台佣金
+          平台技术维护
         </label>
         <p class="cell_items_centent">
           {{detail.PlatformPrice | percentFilter(detail.TotalPrice) }}

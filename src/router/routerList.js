@@ -6,13 +6,15 @@ import message from './routers/message'
 import app from './routers/app'
 import user from './routers/user'
 import mission from './routers/mission'
+import consult from './routers/consult'
 
 const routerList = [
   ...common,
   ...message,
   ...mission,
   ...app,
-  ...user
+  ...user,
+  ...consult
 ]
 
 export default routerList

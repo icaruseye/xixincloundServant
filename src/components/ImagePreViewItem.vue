@@ -2,7 +2,7 @@
   <div>
     <template  v-if="prewimgList != null">
       <div class="thumbs_container">
-        <img  v-for="(item, index) in prewimgList" :src="item.src" :key="index" @click="previewImage(index)" class="previewer-img" :class="groupClass" alt="">
+        <img v-for="(item, index) in prewimgList" :src="item.src" :key="index" @click="previewImage(index)" class="previewer-img" :class="groupClass" @load="onloaded" alt="">
       </div>
       <div v-transfer-dom>
         <previewer ref="previewer" :list="prewimgList" :options="options"></previewer>
@@ -58,6 +58,9 @@ export default {
     }
   },
   methods: {
+    onloaded () {
+      this.$emit('onloaded')
+    },
     previewImage (index) {
       this.$refs.previewer.show(index)
     },
