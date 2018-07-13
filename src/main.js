@@ -11,6 +11,7 @@ import registryPopup from './components/common/popupTop/index'
 import { DatetimePlugin, ToastPlugin, ConfirmPlugin, LoadingPlugin } from 'vux'
 import xxComponents from './components/common'
 import http from '@/api'
+import util from '@/plugins/util'
 
 Vue.use(xxComponents)
 Vue.use(registryPopup)
@@ -27,17 +28,12 @@ Vue.prototype.$http = http
 
 Vue.filter('transformImgUrl', function (val) {
   if (!val) return
-  if (val.indexOf('http') === -1) {
-    if (val.indexOf('Upload') === -1) {
-      // 值为id
-      return `${process.env.IMAGE_HOST}/File/GetImage/${val}`
-    } else {
-      // 第三种情况
-      return val
-    }
+  if (val.indexOf('http') === -1 && val.indexOf('Upload') === -1 && val.indexOf('base64') === -1) {
+    return `${process.env.IMAGE_HOST}/File/GetImage/${val}`
+  } else {
+    // 值为完整url
+    return val
   }
-  // 值为完整url
-  return val
 })
 
 Vue.filter('xxTimeFormatFilter', (value = '') => {
@@ -50,8 +46,13 @@ Vue.filter('xxTimeFormatFilter', (value = '') => {
   return value
 })
 
+Vue.filter('xxGetBankCardLogoFilter', (BankAbbreviation = 'CMBC') => {
+  const bankList = util.getSupportBankList()
+  return bankList[BankAbbreviation].icon
+})
+
 new Vue({
   router,
   store,
   render: h => h(App)
-}).$mount('#app-box')
+}).$mount('#app')

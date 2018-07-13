@@ -23,10 +23,9 @@
       </div>
       <div class="right">
         <h3 class="mission_title">
-          {{detail.MissionName}}
-          <span class="mission_id">服务单号：{{detail.ServiceID}}</span>
+          {{detail.MissionName |textFilter(25)}}
         </h3>
-        <!-- <p class="mission_content">工作于急诊，擅长消化道危急重症…</p> -->
+        <p class="mission_content">服务单号：{{detail.ServiceID}}</p>
       </div>
     </div>
     <div v-if="detail.State >= 1" class="card_titile_container">
@@ -132,6 +131,9 @@ export default {
     }
   },
   filters: {
+    textFilter (value = '', len = 10) {
+      return value.length > len ? value.substring(0, len) + '…' : value
+    },
     timeFormat (value = '') {
       value = value.replace('T', ' ')
       return value
@@ -262,7 +264,7 @@ export default {
 {
   display: flex;
   flex-flow: nowrap;
-  height: 80px;
+  padding: 10px 0;
   background-color: #fff;
   .left
   {
@@ -289,8 +291,7 @@ export default {
       font-size: 16px;
       color: #666;
       font-weight: 400;
-      height: 30px;
-      line-height: 30px;
+      line-height: 20px;
       width: 100%;
       .mission_id
       {
@@ -304,10 +305,8 @@ export default {
     .mission_content
     {
       font-size: 12px;
+      margin-top: 10px;
       color: #999;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis
     }
   }
 }

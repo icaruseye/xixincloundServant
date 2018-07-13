@@ -34,7 +34,7 @@
       <div style="margin: 20px 10px;">
         <button class="weui-btn weui-btn_primary" style="border-radius:4px;box-sizing: border-box" @click="submitEvent">确认绑定</button>
       </div>
-      <p style="padding: 0 10px;text-align: center;font-size:14px;color: #999">当前仅支持中国民生银行的储蓄卡</p>
+      <p style="text-align:center;font-size:14px;color:#3ac7f5" @click="supportBankListVisble=true">查看当前支持的银行卡</p>
     </div>
     <x-dialog v-model="hintDialogVisible">
       <div class="hint_dialog_container">
@@ -43,22 +43,36 @@
         <a class="hint_dialog_close_btn" href="javascript:void(0)" @click="hintDialogVisible = false">知道了</a>
       </div>
     </x-dialog>
+    
+    <x-dialog v-model="supportBankListVisble" :hide-on-blur="true">
+      <div class="hint_dialog_container">
+        <p class="supportBank_items" v-for="(item, index) in supportBankList" :key="index">
+          <svg class="icon" aria-hidden="true">
+            <use :xlink:href="item.icon"></use>
+          </svg>
+          {{item.name}}
+        </p>
+      </div>
+    </x-dialog>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
 import {XDialog} from 'vux'
 import getBankNameByCard from '@/plugins/getBankNameByCard'
+import util from '@/plugins/util'
 export default {
   components: {
     XDialog
   },
   data () {
     return {
+      supportBankListVisble: false,
       hintDialogVisible: true,
       submitLocked: false,
       currentCardType: null,
-      bankCard: ''
+      bankCard: '',
+      supportBankList: util.getSupportBankList()
     }
   },
   computed: {
@@ -73,7 +87,6 @@ export default {
           this.currentCardType = null
         } else {
           this.currentCardType = getBankNameByCard(this.bankCard)
-          console.log(this.currentCardType)
         }
       }
     },
@@ -83,10 +96,15 @@ export default {
         this.$vux.toast.text('请填写正确的银行卡号')
         return false
       }
-      if (that.currentCardType.bankCode !== 'CMBC' || that.currentCardType.cardType !== 'DC') {
-        that.$vux.toast.text('当前仅支持中国民生银行的储蓄卡')
+      if (that.currentCardType.cardType !== 'DC') {
+        that.$vux.toast.text('当前仅支持储蓄卡')
         return false
       }
+      if (!util.bankIsSupport(that.currentCardType.bankCode)) {
+        that.$vux.toast.text(`目前还不支持${that.currentCardType.bankName}`)
+        return false
+      }
+
       that.$vux.loading.show('正在提交')
       that.submit().then(value => {
         if (value.Code === 100000) {
@@ -246,6 +264,21 @@ export default {
     content: "";
     display: block;
     height: 4px;
+  }
+  .supportBank_container
+  {
+    padding: 15px;
+    p
+    {
+      font-size: 14px;
+      color: #999;
+    }
+  }
+  .supportBank_items
+  {
+    height: 35px;
+    color: #999;
+    text-align: left
   }
 </style>
 

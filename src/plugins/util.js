@@ -1,7 +1,28 @@
 import Vue from 'vue'
 import { ToastPlugin } from 'vux'
 Vue.use(ToastPlugin)
-
+const supportBankList = {
+  'BOC': {
+    name: '中国银行',
+    icon: '#icon-zhongguoyinhang'
+  },
+  'CCB': {
+    name: '中国建设银行',
+    icon: '#icon-jiansheyinhang'
+  },
+  'ICBC': {
+    name: '中国工商银行',
+    icon: '#icon-gongshangyinhang'
+  },
+  'ABC': {
+    name: '中国农业银行',
+    icon: '#icon-nongyeyinhang'
+  },
+  'CMBC': {
+    name: '中国民生银行',
+    icon: '#icon-mingshengyinhang'
+  }
+}
 export default {
   CheckIDCardNum: function (value) {
     // 验证身份证号方法 http://www.cnblogs.com/jiqing9006/p/3597549.html
@@ -102,5 +123,11 @@ export default {
     }
     // 值为完整url
     return val
+  },
+  // 支持的银行卡
+  getSupportBankList: () => supportBankList,
+  // 是否支持此银行
+  bankIsSupport: (BankAbbreviation) => {
+    return (supportBankList[BankAbbreviation] !== undefined)
   }
 }

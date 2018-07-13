@@ -22,24 +22,26 @@
       </div>
       <div  v-if="dataList.length >0"  class="weui-panel" style="margin-top:0">
         <div class="weui-list_container">
-          <div class="weui-list_item" v-for="(item, index) in dataList" :key="index" @click="redirectDetail(item.State, item.Type, item.ID)">
+          <div class="weui-list_item" v-for="(item, index) in dataList" :key="index" @click="redirectDetail(item.State, item.Type, item.ID, item.UseType)">
             <div class="avatar"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
             <div class="mid">
               <div style="display: flex;justify-content: space-between;align-items: baseline;">
                 <div class="title" style="font-weight:normal">{{item.ItemName}}</div>
               </div>
               <div style="font-size:13px;color:#999;">用户：{{item.UserName}}</div>
-              <div style="font-size:13px;color:#999;">
+              <div v-if="item.UseType !== 2" style="font-size:13px;color:#999;">
                 <p>药品：{{item.NeedDrug?'需要': '不需要'}}</p>
                 <p>工具：{{item.NeedTools?'需要': '不需要'}}</p>
               </div>
-              <template v-if="item.State == 0 && item.Type == 0">
-                <div class="describe">下单时间：{{item.CreateTime | xxTimeFormatFilter}}</div>
-              </template>
-              <template v-else>
-                <div class="describe">
-                  {{item.ViewTime}}
-                </div>
+              <template v-if="item.UseType !== 2">
+                <template v-if="item.State == 0 && item.Type == 0">
+                  <div class="describe">下单时间：{{item.CreateTime | xxTimeFormatFilter}}</div>
+                </template>
+                <template v-else>
+                  <div class="describe">
+                    {{item.ViewTime}}
+                  </div>
+                </template>
               </template>
             </div>
             <img v-if="item.State == 0 && item.Type == 0" style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
@@ -109,12 +111,15 @@ export default {
     /**
       跳转详情
      */
-    redirectDetail (state, type, id) {
-      const that = this
-      if (type === 0 && state === 0) {
-        that.$router.push('/mission/receive/' + id)
-      } else {
-        that.$router.push('/mission/waitreceive/' + id)
+    redirectDetail (state, type, id, UseType) {
+      if (UseType === 2) { // 咨询类
+        this.$router.push(`/consult/${id}/detail`)
+      } else { // 其它
+        if (type === 0 && state === 0) {
+          this.$router.push(`/mission/receive/${id}`)
+        } else {
+          this.$router.push(`/mission/waitreceive/${id}`)
+        }
       }
     },
     /**
@@ -272,6 +277,7 @@ export default {
       font-size: 15px;
       color: #666;
       font-weight: bold;
+      word-break: break-all
     }
     .balance {
       font-size: 12px;

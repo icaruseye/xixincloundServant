@@ -1,5 +1,6 @@
 <template>
   <div class="container" ref="operContainerRef">
+    <a class="finished_service_btn" @click="showFinishServicePopup" href="javascript:void(0)">完成服务</a>
     <div class="oper_container">
       <label class="select_img_btn">
         <label class="icon-tupian iconfont"  for="uploadImgBtn"></label>
@@ -40,7 +41,13 @@ export default {
       this.operContainerHeight()
     }
   },
+  props: {
+    missionID: ''
+  },
   methods: {
+    showFinishServicePopup () {
+      this.$router.push(`/consult/finishService/${this.missionID}`)
+    },
     chooseFace (face) {
       this.msg = this.msg + face
     },
@@ -59,8 +66,9 @@ export default {
         return false
       }
       const msg = {
-        originator: 'to',
-        text: this.msg
+        IsServantReceive: 0,
+        MsgType: 1,
+        Content: this.msg
       }
       this.msg = ''
       if (!this.emojiContainerShow) {
@@ -85,22 +93,25 @@ export default {
           that.imgUploadProgress = (progressEvent.loaded / progressEvent.total * 100 | 0)
         }
       }
-      let reader = new FileReader()
-      reader.readAsDataURL(file)
-      reader.onload = function (e) {
-        const msg = {
-          originator: 'to',
-          Imgs: this.result
-        }
-        that.$emit('sendMsg', msg)
-      }
-      e.target.value = ''
       try {
-        // that.$vux.loading.show(that.imgUploadProgress + '%')
-        await axios(options)
-        // that.$vux.loading.hide()
+        that.$vux.loading.show('发送中')
+        const res = await axios(options)
+        let reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload = function (e) {
+          const msg = {
+            IsServantReceive: 0,
+            MsgType: 2,
+            Content: this.result,
+            Image: res.data.data.objectId
+          }
+          that.$emit('sendMsg', msg)
+        }
+        e.target.value = ''
+        that.$vux.loading.hide()
       } catch (error) {
-        this.$vux.toast.text('网络错误，上传失败')
+        that.$vux.loading.hide()
+        this.$vux.toast.text('网络异常，发送失败')
       }
     },
     checkSize (file, e) {
@@ -123,6 +134,24 @@ export default {
   right: 0;
   background-color: #fff;
 }
+.finished_service_btn
+{
+  position: absolute;
+  top: -50px;
+  left: 0;
+  height: 30px;
+  padding: 0 15px;
+  display: block;
+  border-radius: 0 15px 15px 0;
+  background-color: rgba(255,255,255,.9);
+  font-size: 14px;
+  border: 1px solid #D8D8D8;
+  border-left: none;
+  line-height: 30px;
+  color: #999;
+  z-index: 10;
+}
+
 .oper_container
 {
   display: flex;

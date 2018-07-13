@@ -2,7 +2,7 @@
   <div style="padding: 5px 0">
     <label class="item-label_container">
       <span class="item-label_title">{{label}}{{unit?'('+unit+')': ''}}：</span>
-      <input :name="name" class="item-label_input" type="text" @change="change" v-model="modelValue" @keyup="keyup">
+      <input :name="name" class="item-label_input" type="text" :placeholder="`请输入${label}`" @change="change" v-model="modelValue" @keyup="keyup">
     </label>
     <p v-if="!verify" style="font-size: 12px;color: #ff3939;margin-top:5px">{{label}}不可超过{{maxLen}}个字!</p>
   </div>
@@ -43,16 +43,10 @@ export default {
 .item-label_container
 {
   position: relative;
-  height: 35px;
   display: block;
-  padding:0 0 0 120px;
 }
 .item-label_title
 {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 120px;
   height: 35px;
   line-height: 35px;
   color: #999;

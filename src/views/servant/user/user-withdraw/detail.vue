@@ -194,7 +194,7 @@
               >
                 <i class="icon_box">
                   <svg class="icon" aria-hidden="true">
-                    <use :xlink:href="`#icon-${item.icon}`"></use>
+                    <use :xlink:href="item.icon | xxGetBankCardLogoFilter"></use>
                   </svg>
                 </i>
                 {{item.name}}
@@ -337,7 +337,7 @@ export default {
             id: item.ID,
             name: item.BankName,
             code: this.getBankCardEndNum(item.BankCard),
-            icon: this.getBankCardLogo(item.BankAbbreviation)
+            icon: item.BankAbbreviation
           })
         })
       }
@@ -347,19 +347,6 @@ export default {
      */
     getBankCardEndNum (bankCardNum) {
       return bankCardNum.substring(bankCardNum.lastIndexOf('*'), bankCardNum.length)
-    },
-    /**
-     * 获取银行卡logo
-     */
-    getBankCardLogo (BankAbbreviation = 'CMBC') {
-      switch (BankAbbreviation) {
-        case 'CMBC':
-          return 'minshengyinhang'
-        case 'WECHATPAY':
-          return 'weixin'
-        default:
-          return 'minshengyinhang'
-      }
     }
   },
   filters: {

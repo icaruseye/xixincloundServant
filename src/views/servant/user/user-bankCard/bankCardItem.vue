@@ -2,7 +2,7 @@
   <div class="bank_card_container">
     <i class="bank_card_logo">
       <svg class="icon" aria-hidden="true">
-        <use :xlink:href="BankAbbreviation | getBankCardLogoFilter"></use>
+        <use :xlink:href="BankAbbreviation | xxGetBankCardLogoFilter"></use>
       </svg>
     </i>
     <h2 class="bank_Name">{{bankName}}</h2>
@@ -16,21 +16,6 @@ export default {
     BankAbbreviation: '',
     bankName: '',
     cardNo: ''
-  },
-  filters: {
-    /**
-     * 获取银行卡logo
-     */
-    getBankCardLogoFilter (BankAbbreviation = 'CMBC') {
-      switch (BankAbbreviation) {
-        case 'CMBC':
-          return '#icon-minshengyinhang'
-        case 'WECHATPAY':
-          return '#icon-weixin'
-        default:
-          return '#icon-minshengyinhang'
-      }
-    }
   }
 }
 </script>
@@ -56,6 +41,7 @@ export default {
       font-size: 36px;
       text-align: center;
       line-height: 50px;
+      background-color: #fff;
     }
     .bank_Name
     {

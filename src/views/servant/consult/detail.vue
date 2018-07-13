@@ -4,7 +4,7 @@
       ref="sticky"
       :offset="0"
       :check-sticky-support="true">
-      <xx-step-bar :step="detail.State">
+      <xx-step-bar :step="detail.State | stepFilter">
         <xx-step-items slot="items">
           已确认
         </xx-step-items>
@@ -20,27 +20,42 @@
       <system-msg-item>
         温馨提示：服务者的回复仅供参考，不能作为诊断及医疗依据
       </system-msg-item>
-      <div v-for="(item, index) in messageList" :key="index">
-        <system-msg-item v-if="item.time" msgType="time" class="mt25px">
-          {{item.time}}
-        </system-msg-item>
-        <text-chat-item
-          :originator="item.originator"
-          class="mt10px"
-          :avatar="userAccount.Avatar"
-          :text="item.text"
-          :imgs="item.Imgs"
-          :title="item.title"
-          :linkName="item.linkName"
-          @onloaded = "scrollToBottom"
-        >
-        </text-chat-item>
-      </div>
+      <a href="javascript:" class="moreMessage_text" @click="moreMessage">
+        <i class="icon-clock iconfont"></i>
+        查看更多消息
+      </a>
+      <template v-if="messageList.length > 0">
+        <div v-for="(item, index) in messageList" :key="index">
+          <system-msg-item v-if="item.SendTime" msgType="time" class="mt25px">
+            {{item.SendTime | xxTimeFormatFilter}}
+          </system-msg-item>
+          <text-chat-item
+            v-if="item.MsgType === 1 || item.MsgType === 2"
+            :IsServantReceive="item.IsServantReceive"
+            class="mt10px"
+            :avatar="userAccount.Avatar"
+            :Content="item.Content"
+            :MsgType="item.MsgType"
+            @onloaded = "scrollToBottom"
+          >
+          </text-chat-item>
+          <graphic-message 
+            v-if="item.MsgType === 5 || item.MsgType === 6"
+            class="mt10px"
+            :avatar="userAccount.Avatar"
+            :IsServantReceive="item.IsServantReceive"
+            :Content="detail"
+            @onloaded = "scrollToBottom"
+            :MsgType="item.MsgType"
+          >
+          </graphic-message>
+        </div>
+      </template>
     </div>
-    <!-- <div class="btn_bar">
-      <button @click="sendMsg">开始服务</button>
-    </div> -->
-    <send-msg-bar @changeHeight="changePaddingBottom" @sendMsg="sendMsg"></send-msg-bar>
+    <div v-if="detail.State === 0" class="btn_bar">
+      <button @click="confirmTheConsult">开始服务</button>
+    </div>
+    <send-msg-bar v-if="detail.State === 3" @changeHeight="changePaddingBottom" :missionID="ID" @sendMsg="sendMsg"></send-msg-bar>
  </div>
 </template>
 <script>
@@ -48,94 +63,124 @@ import { Sticky } from 'vux'
 import { mapGetters } from 'vuex'
 import SystemMsgItem from './components/systemMsgItem'
 import TextChatItem from './components/textChatItem'
+import GraphicMessage from './components/GraphicMessage'
 import SendMsgBar from './components/sendMsgBar'
 export default {
   components: {
     Sticky,
     SystemMsgItem,
     TextChatItem,
-    SendMsgBar
+    SendMsgBar,
+    GraphicMessage
+  },
+  filters: {
+    stepFilter (val = 0) {
+      switch (val) {
+        case 0: {
+          return '1'
+        }
+        case 3: {
+          return '2'
+        }
+        case 4: {
+          return '3'
+        }
+      }
+    }
   },
   data () {
     return {
-      detail: {
-        State: '1'
-      },
+      detail: {},
       boxPaddingBottom: 82,
-      messageList: [
-        {
-          originator: 'to',
-          time: '2018年07月4日12:21:05',
-          text: '好的，请稍等一下。好的，请稍等一下。好的，请稍等一下。'
-        },
-        {
-          originator: 'from',
-          title: '图文咨询',
-          time: '2018年07月4日12:21:05',
-          text: '目前咨询结果建议，注意观察肿瘤变化情况，皮肤有无破损情况，建议最好去医院做全面检查。',
-          Imgs: 'http://thirdwx.qlogo.cn/mmopen/vi_32/lDJ7C7uBGLbIwu6QHCoYs9BQ2be15GTILiaajhr1dbXuZMSptQLNm6uCBWgOiaDZv7GE4K7ItYUBAbYkUfL9Gmzg/132,http://thirdwx.qlogo.cn/mmopen/vi_32/lDJ7C7uBGLbIwu6QHCoYs9BQ2be15GTILiaajhr1dbXuZMSptQLNm6uCBWgOiaDZv7GE4K7ItYUBAbYkUfL9Gmzg/132'
-        },
-        {
-          originator: 'to',
-          title: '咨询结果',
-          time: '2018年07月4日12:21:05',
-          text: '目前咨询结果建议，注意观察肿瘤变化情况，皮肤有无破损情况，建议最好去医院做全面检查。',
-          Imgs: 'http://thirdwx.qlogo.cn/mmopen/vi_32/lDJ7C7uBGLbIwu6QHCoYs9BQ2be15GTILiaajhr1dbXuZMSptQLNm6uCBWgOiaDZv7GE4K7ItYUBAbYkUfL9Gmzg/132,http://thirdwx.qlogo.cn/mmopen/vi_32/lDJ7C7uBGLbIwu6QHCoYs9BQ2be15GTILiaajhr1dbXuZMSptQLNm6uCBWgOiaDZv7GE4K7ItYUBAbYkUfL9Gmzg/132',
-          linkName: '查看用户信息'
-        },
-        {
-          originator: 'to',
-          time: '2018年07月4日12:21:05',
-          Imgs: 'http://thirdwx.qlogo.cn/mmopen/vi_32/lDJ7C7uBGLbIwu6QHCoYs9BQ2be15GTILiaajhr1dbXuZMSptQLNm6uCBWgOiaDZv7GE4K7ItYUBAbYkUfL9Gmzg/132'
-        },
-        {
-          originator: 'from',
-          time: '2018年07月4日12:21:05',
-          Imgs: 'http://image.cloud.zqcj.net.cn/image/1530610010362rymNKFe5FdjUH13lYntMvM3b9WroGnxM.jpg'
-        },
-        {
-          originator: 'to',
-          time: '2018年07月4日12:21:05',
-          Imgs: 'http://image.cloud.zqcj.net.cn/image/1526526036498WcDCwwRxRpM2M3pXwrnsdJeIoBMtlwh6.png'
-        },
-        {
-          originator: 'to',
-          time: '2018年07月4日12:21:05',
-          Imgs: 'http://p3.pstatp.com/large/pgc-image/153106000350426f7d87641'
-        }
-      ]
+      messageList: [],
+      pageIndex: 1
     }
   },
   computed: {
     ...mapGetters([
       'userAccount',
       'userInfo'
-    ])
+    ]),
+    ID () {
+      return this.$route.params.id || ''
+    }
   },
   updated () {
+  },
+  created () {
     this.init()
   },
   methods: {
-    sendMsg (msg) {
+    // 向服务器推送消息
+    async sendMsg (msg) {
       this.messageList.push(msg)
       this.scrollToBottom()
+      await this.$http.post(`/Chat`, {
+        Content: (msg.MsgType === 2) ? msg.Image : msg.Content,
+        MsgType: msg.MsgType,
+        MissionID: this.ID
+      })
     },
+    // 接受并开始服务
+    async confirmTheConsult () {
+      this.$vux.loading.show('加载中')
+      const res = await this.$http.put(`/ConfirmTheConsult?mid=${this.ID}`)
+      this.$vux.loading.hide()
+      if (res.data.Code === 100000) {
+        this.init()
+      } else {
+        this.$vux.toast.text(`请求失败,错误码：${res.data.Code}`)
+      }
+    },
+    // 初始化
+    async init () {
+      this.getMissionDetail().then(result => {
+        if (result.Code === 100000) {
+          this.detail = result.Data
+        }
+      })
+      this.getMessageList().then(result => {
+        if (result.Code === 100000) {
+          this.messageList = result.Data.ContentList
+          this.scrollToBottom()
+        }
+      })
+    },
+    // 获取任务详情
+    async getMissionDetail () {
+      const res = await this.$http.get(`/QueryConsult?missionId=${this.ID}`)
+      return res.data
+    },
+    // 获取消息列表
+    async getMessageList () {
+      const res = await this.$http.get(`/QueryConsultDialog?missionId=${this.ID}&pageIndex=${this.pageIndex}`)
+      return res.data
+    },
+    // 更多的消息
+    moreMessage () {
+      this.pageIndex += 1
+      this.getMessageList().then(result => {
+        this.messageList = [
+          ...result.Data,
+          ...this.messageList
+        ]
+      })
+    },
+    // 更新聊天内容内边框
+    changePaddingBottom (height) {
+      this.boxPaddingBottom = (height + 30)
+      this.scrollToBottom()
+    },
+    // 滚动到底部
     scrollToBottom () {
       this.$nextTick(() => {
         document.body.scrollTop = document.documentElement.scrollTop = document.querySelector('body').scrollHeight
       })
-    },
-    init () {
-      this.scrollToBottom()
-    },
-    changePaddingBottom (height) {
-      this.boxPaddingBottom = (height + 30)
-      this.scrollToBottom()
     }
   }
 }
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .mt25px
 {
   margin-top: 25px
@@ -163,38 +208,12 @@ export default {
 {
   padding: 15px 15px 80px
 }
-
-// 聊天气泡内的样式
-.from_textChat_msg,
-.to_textChat_msg
+.moreMessage_text
 {
-  .thumbs_container
-  {
-  padding: 0 !important;
-  height: 65px;
-  img:last-child
-  {
-    margin-right: 0
-  }
-  }
-}
-.to_imgChat_msg,
-.from_imgChat_msg
-{
-  padding-top: 10px; 
-  .thumbs_container{
-    width: 120px;
-    padding-top: 0 !important;
-    img
-    {
-      width: 100% !important;
-      height: auto !important;
-      border-radius: 5px;
-    }
-  }
-}
-.to_imgChat_msg .thumbs_container
-{
-  float: right;
+  font-size: 14px;
+  text-align: center;
+  display: block;
+  padding: 20px 0;
+  color: #3ac7f5
 }
 </style>
