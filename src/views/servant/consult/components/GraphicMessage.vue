@@ -16,22 +16,27 @@
       <div class="msg_text_container">
         {{Content.Result}}
       </div>
-      <div class="msg_imsg_container">
-        <image-preview-item  v-if="MsgType === 5" :list="Content.ReserveImgs" @onloaded="onloaded"></image-preview-item>
-        <image-preview-item  v-if="MsgType === 6" :list="Content.ServiceImgs" @onloaded="onloaded"></image-preview-item>
+      <div v-if="MsgType === 5 && Content.ReserveImgs != null && Content.ReserveImgs != ''" class="msg_imsg_container">
+        <image-preview-item v-if="MsgType === 5" :list="Content.ReserveImgs" @onloaded="onloaded"></image-preview-item>
       </div>
-      <div v-if="MsgType === 6" class="msg_link_btn">
+      <div v-if="MsgType === 6 && Content.ServiceImgs != null && Content.ServiceImgs != ''" class="msg_imsg_container">
+        <image-preview-item v-if="MsgType === 6" :list="Content.ServiceImgs" @onloaded="onloaded"></image-preview-item>
+      </div>
+      <div v-if="MsgType === 6" class="msg_link_btn" @click="commentPanelVisible = true">
         去查看评价
         <i class="iconfont icon-jiantouyou"></i>
       </div>
     </div>
+    <comments v-model="commentPanelVisible" :result="Content.Result"></comments>
   </div>
 </template>
 <script>
 import ImagePreviewItem from '@/components/ImagePreViewItem'
+import comments from './comments'
 export default {
   components: {
-    ImagePreviewItem
+    ImagePreviewItem,
+    comments
   },
   props: {
     avatar: {
@@ -51,6 +56,11 @@ export default {
       default: ''
     }
   },
+  data () {
+    return {
+      commentPanelVisible: false
+    }
+  },
   computed: {
     originator () {
       return (this.IsServantReceive === 1) ? 'from' : 'to'
@@ -61,6 +71,9 @@ export default {
   methods: {
     onloaded () {
       this.$emit('onloaded')
+    },
+    showEvaluate () {
+
     }
   }
 }

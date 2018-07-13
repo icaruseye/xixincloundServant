@@ -20,7 +20,7 @@
       <system-msg-item>
         温馨提示：服务者的回复仅供参考，不能作为诊断及医疗依据
       </system-msg-item>
-      <a href="javascript:" class="moreMessage_text" @click="moreMessage">
+      <a v-if="pageIndex < totalPagesCount" href="javascript:" class="moreMessage_text" @click="moreMessage">
         <i class="icon-clock iconfont"></i>
         查看更多消息
       </a>
@@ -33,10 +33,9 @@
             v-if="item.MsgType === 1 || item.MsgType === 2"
             :IsServantReceive="item.IsServantReceive"
             class="mt10px"
-            :avatar="userAccount.Avatar"
+            :avatar="(item.IsServantReceive === 0)?userAccount.Avatar:FromAvatar"
             :Content="item.Content"
             :MsgType="item.MsgType"
-            @onloaded = "scrollToBottom"
           >
           </text-chat-item>
           <graphic-message 
@@ -45,7 +44,6 @@
             :avatar="userAccount.Avatar"
             :IsServantReceive="item.IsServantReceive"
             :Content="detail"
-            @onloaded = "scrollToBottom"
             :MsgType="item.MsgType"
           >
           </graphic-message>
@@ -65,6 +63,7 @@ import SystemMsgItem from './components/systemMsgItem'
 import TextChatItem from './components/textChatItem'
 import GraphicMessage from './components/GraphicMessage'
 import SendMsgBar from './components/sendMsgBar'
+import { setInterval, clearInterval } from 'timers'
 export default {
   components: {
     Sticky,
@@ -93,7 +92,10 @@ export default {
       detail: {},
       boxPaddingBottom: 82,
       messageList: [],
-      pageIndex: 1
+      pageIndex: 1,
+      chatIntervalTimer: null,
+      totalPagesCount: 0,
+      FromAvatar: ''
     }
   },
   computed: {
@@ -105,14 +107,16 @@ export default {
       return this.$route.params.id || ''
     }
   },
-  updated () {
-  },
   created () {
     this.init()
+  },
+  beforeDestroy () {
+    clearInterval(this.chatIntervalTimer)
   },
   methods: {
     // 向服务器推送消息
     async sendMsg (msg) {
+      this.lockToBottom = false
       this.messageList.push(msg)
       this.scrollToBottom()
       await this.$http.post(`/Chat`, {
@@ -134,17 +138,44 @@ export default {
     },
     // 初始化
     async init () {
-      this.getMissionDetail().then(result => {
+      await this.getMissionDetail().then(result => {
         if (result.Code === 100000) {
           this.detail = result.Data
         }
       })
-      this.getMessageList().then(result => {
+      await this.getMessageList().then(result => {
         if (result.Code === 100000) {
           this.messageList = result.Data.ContentList
+          this.totalPagesCount = result.Data.totalPagesCount
+          this.FromAvatar = result.Data.Avatar
           this.scrollToBottom()
         }
       })
+      // 消息轮询
+      if (this.detail.State === 0 || this.detail.State === 3) {
+        this.chatIntervalTimer = setInterval(() => {
+          this.getGraphicConsultationChat().then(result => {
+            if (result.Code === 100000) {
+              if (result.Data.length > 0) {
+                this.messageList = [
+                  ...this.messageList,
+                  ...result.Data
+                ]
+                if ((document.documentElement.clientHeight + document.documentElement.scrollTop) >= document.querySelector('body').scrollHeight - 20) {
+                  this.scrollToBottom()
+                } else {
+                  this.$vux.toast.show({
+                    text: '滚到底部查看新消息',
+                    position: 'bottom',
+                    type: 'text',
+                    width: '12em'
+                  })
+                }
+              }
+            }
+          })
+        }, 5000)
+      }
     },
     // 获取任务详情
     async getMissionDetail () {
@@ -161,10 +192,15 @@ export default {
       this.pageIndex += 1
       this.getMessageList().then(result => {
         this.messageList = [
-          ...result.Data,
+          ...result.Data.ContentList,
           ...this.messageList
         ]
       })
+    },
+    // 获取一次心跳内所有该任务用户发送的的新消息
+    async getGraphicConsultationChat () {
+      const res = await this.$http.get(`/GraphicConsultationChat?missionID=${this.ID}`)
+      return res.data
     },
     // 更新聊天内容内边框
     changePaddingBottom (height) {
