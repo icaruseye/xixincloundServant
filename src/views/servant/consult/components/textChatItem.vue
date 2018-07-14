@@ -132,6 +132,7 @@ export default {
     font-size: 14px;
     text-align: justify;
     color: #666;
+    word-break: break-all;
   }
 }
 .to_textChat_msg

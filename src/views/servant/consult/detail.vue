@@ -20,7 +20,7 @@
       <system-msg-item>
         温馨提示：服务者的回复仅供参考，不能作为诊断及医疗依据
       </system-msg-item>
-      <a v-if="pageIndex < totalPagesCount" href="javascript:" class="moreMessage_text" @click="moreMessage">
+      <a v-if="messageId !== -1" href="javascript:" class="moreMessage_text" @click="moreMessage">
         <i class="icon-clock iconfont"></i>
         查看更多消息
       </a>
@@ -41,7 +41,7 @@
           <graphic-message 
             v-if="item.MsgType === 5 || item.MsgType === 6"
             class="mt10px"
-            :avatar="userAccount.Avatar"
+            :avatar="(item.IsServantReceive === 0)?userAccount.Avatar:FromAvatar"
             :IsServantReceive="item.IsServantReceive"
             :Content="detail"
             :MsgType="item.MsgType"
@@ -92,9 +92,8 @@ export default {
       detail: {},
       boxPaddingBottom: 82,
       messageList: [],
-      pageIndex: 1,
+      messageId: 0,
       chatIntervalTimer: null,
-      totalPagesCount: 0,
       FromAvatar: ''
     }
   },
@@ -119,11 +118,8 @@ export default {
       this.lockToBottom = false
       this.messageList.push(msg)
       this.scrollToBottom()
-      await this.$http.post(`/Chat`, {
-        Content: (msg.MsgType === 2) ? msg.Image : msg.Content,
-        MsgType: msg.MsgType,
-        MissionID: this.ID
-      })
+      msg.MissionID = this.ID
+      await this.$http.post(`/Chat`, msg)
     },
     // 接受并开始服务
     async confirmTheConsult () {
@@ -146,8 +142,8 @@ export default {
       await this.getMessageList().then(result => {
         if (result.Code === 100000) {
           this.messageList = result.Data.ContentList
-          this.totalPagesCount = result.Data.totalPagesCount
           this.FromAvatar = result.Data.Avatar
+          this.messageId = result.Data.MessageID
           this.scrollToBottom()
         }
       })
@@ -161,7 +157,7 @@ export default {
                   ...this.messageList,
                   ...result.Data
                 ]
-                if ((document.documentElement.clientHeight + document.documentElement.scrollTop) >= document.querySelector('body').scrollHeight - 20) {
+                if ((document.documentElement.clientHeight + document.body.scrollTop) >= document.querySelector('body').scrollHeight - 20) {
                   this.scrollToBottom()
                 } else {
                   this.$vux.toast.show({
@@ -184,13 +180,13 @@ export default {
     },
     // 获取消息列表
     async getMessageList () {
-      const res = await this.$http.get(`/QueryConsultDialog?missionId=${this.ID}&pageIndex=${this.pageIndex}`)
+      const res = await this.$http.get(`/QueryConsultDialog?missionId=${this.ID}&messageId=${this.messageId}`)
       return res.data
     },
     // 更多的消息
     moreMessage () {
-      this.pageIndex += 1
       this.getMessageList().then(result => {
+        this.messageId = result.Data.MessageID
         this.messageList = [
           ...result.Data.ContentList,
           ...this.messageList
