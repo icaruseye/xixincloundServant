@@ -11,16 +11,16 @@
         <div>
           <div v-if="commentsContent != null" class="cells">
             <div class="left" style="font-size:16px;color:#333;font-weight:bold">已评价</div>
-            <div class="right" style="font-size:12px">评价时间： 2018/12/12</div>
+            <div class="right" style="font-size:12px">评价时间： {{commentsContent.ReviewTime | xxTimeFormatFilter}}</div>
           </div>
           <div v-else class="cells">
             <div class="left" style="font-size:16px;color:#333;font-weight:bold">待评价</div>
           </div>
           <div style="padding:15px;">
             <div v-if="commentsContent != null" class="comments-done">
-              <div class="comment">12</div>
+              <div class="comment">{{commentsContent.Remark}}</div>
               <div class="rates" style="text-align: right;">
-                <rater v-model="rater" disabled="disabled" active-color="#F8A519" :font-size="14"></rater>
+                <rater v-model="commentsContent.Score" disabled="disabled" active-color="#F8A519" :font-size="14"></rater>
               </div>
             </div>
             <p v-else style="font-size: 14px;color:#999">
