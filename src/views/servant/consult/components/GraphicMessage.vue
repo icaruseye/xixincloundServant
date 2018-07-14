@@ -13,7 +13,10 @@
       <p v-if="MsgType === 5" class="serviceID_p">
         服务单号：{{Content.ServiceID}}
       </p>
-      <div class="msg_text_container">
+      <div class="msg_text_container" v-if="MsgType === 5">
+        {{Content.ReserveRemark}}
+      </div>
+      <div class="msg_text_container" v-if="MsgType === 6">
         {{Content.Result}}
       </div>
       <div v-if="MsgType === 5 && Content.ReserveImgs != null && Content.ReserveImgs != ''" class="msg_imsg_container">
