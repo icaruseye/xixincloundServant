@@ -72,10 +72,6 @@ export default {
     },
     // 验证服务结果
     checkResult () {
-      if (this.result.length <= 0) {
-        this.resultError = '请输入服务结果'
-        return false
-      }
       if (this.result.length > 500) {
         this.resultError = '服务结果字数不可超过500字'
         return false

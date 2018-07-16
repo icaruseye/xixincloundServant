@@ -51,14 +51,17 @@
       </template>
     </div>
     <div v-if="detail.State === 0" class="btn_bar">
+      <button v-if="detail.CanCancel" style="background: #ffc349" @click="cancelMissionPopupVisible = true">取消</button>
       <button @click="confirmTheConsult">开始服务</button>
     </div>
+    <cancel-mission-popup v-model="cancelMissionPopupVisible" :options="cancelReason" @confirmCancel="cancelMissionEvent"></cancel-mission-popup>
     <send-msg-bar v-if="detail.State === 3" @changeHeight="changePaddingBottom" :missionID="ID" @sendMsg="sendMsg"></send-msg-bar>
  </div>
 </template>
 <script>
 import { Sticky } from 'vux'
 import { mapGetters } from 'vuex'
+import CancelMissionPopup from '@/components/cancelMissionPopup'
 import SystemMsgItem from './components/systemMsgItem'
 import TextChatItem from './components/textChatItem'
 import GraphicMessage from './components/GraphicMessage'
@@ -70,7 +73,8 @@ export default {
     SystemMsgItem,
     TextChatItem,
     SendMsgBar,
-    GraphicMessage
+    GraphicMessage,
+    CancelMissionPopup
   },
   filters: {
     stepFilter (val = 0) {
@@ -90,11 +94,18 @@ export default {
   data () {
     return {
       detail: {},
+      cancelMissionPopupVisible: false,
       boxPaddingBottom: 82,
       messageList: [],
       messageId: 0,
       chatIntervalTimer: null,
-      FromAvatar: ''
+      FromAvatar: '',
+      cancelReason: [
+        {
+          key: '999',
+          value: '请填写取消原因'
+        }
+      ]
     }
   },
   computed: {
@@ -113,6 +124,32 @@ export default {
     clearInterval(this.chatIntervalTimer)
   },
   methods: {
+    /**
+     * 取消任务
+     */
+    async cancelMissionEvent (option) {
+      const that = this
+      if (that.submitLocked) {
+        return false
+      }
+      this.$vux.loading.show('加载中')
+      const res = await this.$http.put(`/Mission?missionID=${this.ID}`, option)
+      this.$vux.loading.hide()
+      if (res.data.Code === 100000) {
+        that.$vux.toast.show({
+          position: 'middle',
+          text: '取消成功'
+        })
+        that.$router.push('/mission')
+      } else {
+        that.$vux.toast.show({
+          width: '60%',
+          type: 'text',
+          position: 'middle',
+          text: res.data.Msg
+        })
+      }
+    },
     // 向服务器推送消息
     async sendMsg (msg) {
       this.lockToBottom = false
@@ -134,6 +171,7 @@ export default {
     },
     // 初始化
     async init () {
+      this.$vux.loading.show('加载中')
       await this.getMissionDetail().then(result => {
         if (result.Code === 100000) {
           this.detail = result.Data
@@ -147,12 +185,13 @@ export default {
           this.scrollToBottom()
         }
       })
+      this.$vux.loading.hide()
       // 消息轮询
       if (this.detail.State === 0 || this.detail.State === 3) {
         this.chatIntervalTimer = setInterval(() => {
           this.getGraphicConsultationChat().then(result => {
             if (result.Code === 100000) {
-              if (result.Data.length > 0) {
+              if (result.Data && result.Data.length > 0) {
                 this.messageList = [
                   ...this.messageList,
                   ...result.Data
@@ -184,14 +223,16 @@ export default {
       return res.data
     },
     // 更多的消息
-    moreMessage () {
-      this.getMessageList().then(result => {
+    async moreMessage () {
+      this.$vux.loading.show('加载中')
+      await this.getMessageList().then(result => {
         this.messageId = result.Data.MessageID
         this.messageList = [
           ...result.Data.ContentList,
           ...this.messageList
         ]
       })
+      this.$vux.loading.hide()
     },
     // 获取一次心跳内所有该任务用户发送的的新消息
     async getGraphicConsultationChat () {

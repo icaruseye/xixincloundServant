@@ -29,13 +29,14 @@ export default {
     typeName: {
       type: String,
       default: '任务'
-    }
-  },
-  data () {
-    return {
-      radioValue: 1,
-      cancelDescription: '',
-      options: [
+    },
+    detaultValue: {
+      type: String,
+      default: '时间冲突'
+    },
+    options: {
+      type: Array,
+      default: () => [
         {
           key: '1',
           value: '时间冲突'
@@ -49,6 +50,13 @@ export default {
           value: '其他'
         }
       ]
+    }
+  },
+  data () {
+    const that = this
+    return {
+      radioValue: that.options[0].key,
+      cancelDescription: ''
     }
   },
   methods: {
