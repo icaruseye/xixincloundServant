@@ -26,13 +26,13 @@
           {{Content.Result ? Content.Result : '没有提交服务结果'}}
         </div>
         <div v-if="Content.ServiceImgs != null && Content.ServiceImgs != ''" class="msg_imsg_container">
-          <image-preview-item v-if="MsgType === 6" :list="Content.ServiceImgs" @onloaded="onloaded"></image-preview-item>
+          <image-preview-item :list="Content.ServiceImgs" @onloaded="onloaded"></image-preview-item>
+        </div>
+        <div v-if="MsgType === 6" class="msg_link_btn" @click="commentPanelVisible = true">
+          去查看评价
+          <i class="iconfont icon-jiantouyou"></i>
         </div>
       </template>
-      <div v-if="MsgType === 6" class="msg_link_btn" @click="commentPanelVisible = true">
-        去查看评价
-        <i class="iconfont icon-jiantouyou"></i>
-      </div>
     </div>
     <comments v-model="commentPanelVisible" :result="Content.Result"></comments>
   </div>
