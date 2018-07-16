@@ -22,5 +22,13 @@ export default [
       title: '404',
       notNeedLogin: true
     }
+  },
+  {
+    path: '/agreement/:id',
+    component: _import('/servant/agreement'),
+    meta: {
+      title: '',
+      notNeedLogin: true
+    }
   }
 ]

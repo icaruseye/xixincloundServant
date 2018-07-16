@@ -54,12 +54,16 @@
       <button v-if="detail.CanCancel" style="background: #ffc349" @click="cancelMissionPopupVisible = true">取消</button>
       <button @click="confirmTheConsult">开始服务</button>
     </div>
+    <toast @click.native="scrollToBottom" v-model="showNewMessageRemind" type="text" position= "bottom" width="12em">
+      您有新消息了
+      <i class="iconfont icon-arrow-down1"></i>
+    </toast>
     <cancel-mission-popup v-model="cancelMissionPopupVisible" :options="cancelReason" @confirmCancel="cancelMissionEvent"></cancel-mission-popup>
     <send-msg-bar v-if="detail.State === 3" @changeHeight="changePaddingBottom" :missionID="ID" @sendMsg="sendMsg"></send-msg-bar>
  </div>
 </template>
 <script>
-import { Sticky } from 'vux'
+import { Sticky, Toast } from 'vux'
 import { mapGetters } from 'vuex'
 import CancelMissionPopup from '@/components/cancelMissionPopup'
 import SystemMsgItem from './components/systemMsgItem'
@@ -74,7 +78,8 @@ export default {
     TextChatItem,
     SendMsgBar,
     GraphicMessage,
-    CancelMissionPopup
+    CancelMissionPopup,
+    Toast
   },
   filters: {
     stepFilter (val = 0) {
@@ -93,12 +98,12 @@ export default {
   },
   data () {
     return {
+      showNewMessageRemind: false,
       detail: {},
       cancelMissionPopupVisible: false,
       boxPaddingBottom: 82,
       messageList: [],
       messageId: 0,
-      chatIntervalTimer: null,
       FromAvatar: '',
       cancelReason: [
         {
@@ -119,9 +124,6 @@ export default {
   },
   created () {
     this.init()
-  },
-  beforeDestroy () {
-    clearInterval(this.chatIntervalTimer)
   },
   methods: {
     /**
@@ -200,7 +202,7 @@ export default {
       this.$vux.loading.hide()
       // 消息轮询
       if (this.detail.State === 0 || this.detail.State === 3) {
-        this.chatIntervalTimer = setInterval(() => {
+        const rotation = setInterval(() => {
           this.getGraphicConsultationChat().then(result => {
             if (result.Code === 100000) {
               if (result.Data && result.Data.length > 0) {
@@ -208,20 +210,24 @@ export default {
                   ...this.messageList,
                   ...result.Data
                 ]
-                if ((document.documentElement.clientHeight + document.body.scrollTop) >= document.querySelector('body').scrollHeight - 20) {
+                if ((document.documentElement.clientHeight + (document.body.scrollTop || document.documentElement.scrollTop)) >= document.querySelector('body').scrollHeight - 20) {
                   this.scrollToBottom()
                 } else {
-                  this.$vux.toast.show({
-                    text: '滚到底部查看新消息',
-                    position: 'bottom',
-                    type: 'text',
-                    width: '12em'
-                  })
+                  this.showNewMessageRemind = true
+                  // this.$vux.toast.show({
+                  //   text: '滚到底部查看新消息',
+                  //   position: 'bottom',
+                  //   type: 'text',
+                  //   width: '12em'
+                  // })
                 }
               }
             }
           })
         }, 5000)
+        this.$once('hook:beforeDestroy', () => {
+          clearInterval(rotation)
+        })
       }
     },
     // 获取任务详情

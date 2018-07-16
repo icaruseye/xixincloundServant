@@ -112,7 +112,7 @@ export default {
      *  获取协议内容
      */
     async getAgreement () {
-      const res = await this.$http.get('/ShopAgreement?ProtocalType=1&ShopCertificateID=0')
+      const res = await this.$http.get('/ShopAgreement?ProtocalType=3&ShopCertificateID=0')
       return res.data
     },
     /**

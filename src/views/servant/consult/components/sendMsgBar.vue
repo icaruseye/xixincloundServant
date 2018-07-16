@@ -10,6 +10,7 @@
         <input type="text"
          @focus="emojiContainerShow = false"
          ref="chatInput"
+         @keyup.enter="sendTextMsg"
          v-model="msg">
       </div>
       <div class="emoji_show_container" @click="emojiContainerShow = !emojiContainerShow">
