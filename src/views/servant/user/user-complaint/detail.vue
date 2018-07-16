@@ -43,6 +43,7 @@
       <template  v-if="detail.State === 3">
         <dt>您好，根据您和用户所提交的资料中和判定</dt>
         <dd><span style="color:#666">结果为：</span>投诉失败</dd>
+        <div style="font-size:12px;color:#999;margin-top: 10px">驳回原因：{{detail.FailReason}}</div>
       </template>
     </dl>
 

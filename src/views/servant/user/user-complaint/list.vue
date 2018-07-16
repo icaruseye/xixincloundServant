@@ -27,15 +27,17 @@
     <xx-occupied-box v-else>
       {{occupiedText}}
     </xx-occupied-box>
+    <alert title="系统提示" v-model="reminderDealComplaintVisible" content="若收到用户投诉，请尽快处理。从收到投诉的72小时内未处理，平台会自动判定为投诉成功，取消该服务单报酬，退回用户次数。"></alert>
   </div>
 </template>
 
 <script>
-import { Sticky } from 'vux'
+import { Sticky, Alert } from 'vux'
 import { mapGetters, mapMutations } from 'vuex'
 export default {
   components: {
-    Sticky
+    Sticky,
+    Alert
   },
   data () {
     return {
@@ -61,6 +63,18 @@ export default {
       },
       set (val) {
         this.SET_COMPLAINT_TAB_INDEX(val)
+      }
+    },
+    reminderDealComplaintVisible: {
+      get () {
+        let reminderDealComplaintVisibleStorage = sessionStorage.getItem('reminderDealComplaintVisibleStorage')
+        console.log(reminderDealComplaintVisibleStorage)
+        return reminderDealComplaintVisibleStorage === null
+      },
+      set (val) {
+        if (!val) {
+          sessionStorage.setItem('reminderDealComplaintVisibleStorage', Math.floor(Math.random() * 100000 + 100000))
+        }
       }
     }
   },

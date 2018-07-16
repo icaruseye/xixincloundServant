@@ -156,7 +156,11 @@ export default {
       this.messageList.push(msg)
       this.scrollToBottom()
       msg.MissionID = this.ID
-      await this.$http.post(`/Chat`, msg)
+      await this.$http.post(`/Chat`, {
+        Content: (msg.MsgType === 2) ? msg.Image : msg.Content,
+        MsgType: msg.MsgType,
+        MissionID: this.ID
+      })
     },
     // 接受并开始服务
     async confirmTheConsult () {
@@ -169,14 +173,16 @@ export default {
         this.$vux.toast.text(`请求失败,错误码：${res.data.Code}`)
       }
     },
-    // 初始化
-    async init () {
-      this.$vux.loading.show('加载中')
+    // 初始化任务
+    async initMission () {
       await this.getMissionDetail().then(result => {
         if (result.Code === 100000) {
           this.detail = result.Data
         }
       })
+    },
+    // 初始化聊天记录
+    async initMessageList () {
       await this.getMessageList().then(result => {
         if (result.Code === 100000) {
           this.messageList = result.Data.ContentList
@@ -185,6 +191,12 @@ export default {
           this.scrollToBottom()
         }
       })
+    },
+    // 全部初始化
+    async init () {
+      this.$vux.loading.show('加载中')
+      await this.initMission()
+      await this.initMessageList()
       this.$vux.loading.hide()
       // 消息轮询
       if (this.detail.State === 0 || this.detail.State === 3) {

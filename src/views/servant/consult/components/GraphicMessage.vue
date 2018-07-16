@@ -10,21 +10,25 @@
           咨询结果
         </template>
       </h4>
-      <p v-if="MsgType === 5" class="serviceID_p">
-        服务单号：{{Content.ServiceID}}
-      </p>
-      <div class="msg_text_container" v-if="MsgType === 5">
-        {{Content.ReserveRemark}}
-      </div>
-      <div class="msg_text_container" v-if="MsgType === 6">
-        {{Content.Result}}
-      </div>
-      <div v-if="MsgType === 5 && Content.ReserveImgs != null && Content.ReserveImgs != ''" class="msg_imsg_container">
-        <image-preview-item v-if="MsgType === 5" :list="Content.ReserveImgs" @onloaded="onloaded"></image-preview-item>
-      </div>
-      <div v-if="MsgType === 6 && Content.ServiceImgs != null && Content.ServiceImgs != ''" class="msg_imsg_container">
-        <image-preview-item v-if="MsgType === 6" :list="Content.ServiceImgs" @onloaded="onloaded"></image-preview-item>
-      </div>
+      <template v-if="MsgType === 5">
+        <p class="serviceID_p">
+          服务单号：{{Content.ServiceID}}
+        </p>
+        <div class="msg_text_container">
+          {{Content.ReserveRemark}}
+        </div>
+        <div v-if="Content.ReserveImgs != null && Content.ReserveImgs != ''" class="msg_imsg_container">
+          <image-preview-item v-if="MsgType === 5" :list="Content.ReserveImgs" @onloaded="onloaded"></image-preview-item>
+        </div>
+      </template>
+      <template  v-if="MsgType === 6">
+        <div class="msg_text_container">
+          {{Content.Result ? Content.Result : '没有提交服务结果'}}
+        </div>
+        <div v-if="Content.ServiceImgs != null && Content.ServiceImgs != ''" class="msg_imsg_container">
+          <image-preview-item v-if="MsgType === 6" :list="Content.ServiceImgs" @onloaded="onloaded"></image-preview-item>
+        </div>
+      </template>
       <div v-if="MsgType === 6" class="msg_link_btn" @click="commentPanelVisible = true">
         去查看评价
         <i class="iconfont icon-jiantouyou"></i>

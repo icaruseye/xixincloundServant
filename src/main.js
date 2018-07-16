@@ -26,26 +26,23 @@ Vue.config.productionTip = false
 
 Vue.prototype.$http = http
 
+/**
+ * 图片地址格式化过滤器
+ */
 Vue.filter('transformImgUrl', function (val) {
-  if (!val) return
-  if (val.indexOf('http') === -1 && val.indexOf('Upload') === -1 && val.indexOf('base64') === -1) {
-    return `${process.env.IMAGE_HOST}/File/GetImage/${val}`
-  } else {
-    // 值为完整url
-    return val
-  }
+  return util.transformImgUrl(val)
 })
 
+/**
+ * 时间格式化过滤器
+ */
 Vue.filter('xxTimeFormatFilter', (value = '') => {
-  let lastIndexOf = value.lastIndexOf('.')
-  if (lastIndexOf > 0) {
-    value = value.replace('T', ' ').substring(0, lastIndexOf)
-  } else {
-    value = value.replace('T', ' ')
-  }
-  return value
+  return util.timeFormatFilter(value)
 })
 
+/**
+ * 银行卡logo过滤器
+ */
 Vue.filter('xxGetBankCardLogoFilter', (BankAbbreviation = 'CMBC') => {
   const bankList = util.getSupportBankList()
   return bankList[BankAbbreviation].icon

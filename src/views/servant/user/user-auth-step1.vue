@@ -45,9 +45,9 @@
     <div v-transfer-dom>
       <x-dialog v-model="agreementDialogVisable" :hide-on-blur="true">
         <div class="agreement_container">
-          <h1 class="agreement_title">医护服务者使用协议</h1>
+          <h1 v-if="agreementContent !== null" class="agreement_title">{{agreementContent.Title}}</h1>
           <template v-if="agreementContent !== null">
-            {{agreementContent}}
+            <div class="agreement_context_container" v-html="agreementContent.Content"></div>
             <div style="margin-top:40px;" class="clearfix">
               <a style="display:inline-block; border: 1px solid #3ac7f5;padding: 15px 40px;color:#3ac7f5" href="javascript:void(0)" @click="agreementDialogVisable = false">我已阅读完毕</a>
             </div>
@@ -112,7 +112,7 @@ export default {
      *  获取协议内容
      */
     async getAgreement () {
-      const res = await this.$http.get('/ShopAgreement?ProtocalType=3&ShopCertificateID=0')
+      const res = await this.$http.get('/ShopAgreement?ProtocalType=1&ShopCertificateID=0')
       return res.data
     },
     /**
@@ -437,9 +437,25 @@ export default {
   .agreement_container
   {
     padding: 20px 20px 60px 20px;
-    max-height: 90vh;
+    max-height: 80vh;
+    max-width: 80vw;
+    box-sizing: border-box;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch
+    -webkit-overflow-scrolling: touch;
+    .agreement_context_container
+    {
+      width: 100% !important;
+      word-break: break-all;
+      span
+      {
+        width: 100% !important;
+        word-break: break-all;
+      }
+    }
+    span {
+      width: 100% !important;
+      word-break: break-all;
+    }
   }
   .agreement_title
   {

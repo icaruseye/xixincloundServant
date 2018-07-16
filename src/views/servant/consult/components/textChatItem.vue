@@ -7,7 +7,7 @@
         <img :src="Content | transformImgUrl" @click="previewImage(0)" class="previewer-img" :class="[imgGroupClass]" @load="onloaded">
       </div>
       <div v-transfer-dom>
-        <previewer ref="previewer" :list="[{src: Content}]" :options="options"></previewer>
+        <previewer ref="previewer" :list="previewImgUrlList" :options="options"></previewer>
       </div>
     </div>
     <!-- 文本 -->
@@ -20,6 +20,7 @@
 </template>
 <script>
 import { Previewer, TransferDom } from 'vux'
+import util from '@/plugins/util'
 export default {
   directives: {
     TransferDom
@@ -46,6 +47,14 @@ export default {
     }
   },
   computed: {
+    previewImgUrlList () {
+      const that = this
+      return [
+        {
+          src: util.transformImgUrl(that.Content)
+        }
+      ]
+    },
     originator () {
       return (this.IsServantReceive === 1) ? 'from' : 'to'
     },

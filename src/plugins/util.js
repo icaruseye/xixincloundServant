@@ -110,19 +110,29 @@ export default {
     }
     return flag
   },
+  /**
+   * 图片地址格式化
+   */
   transformImgUrl: function (val) {
     if (!val) return
-    if (val.indexOf('http') === -1) {
-      if (val.indexOf('Upload') === -1) {
-        // 值为id
-        return `${process.env.IMAGE_HOST}/File/GetImage/${val}`
-      } else {
-        // 第三种情况
-        return val
-      }
+    if (val.indexOf('http') === -1 && val.indexOf('Upload') === -1 && val.indexOf('base64') === -1) {
+      return `${process.env.IMAGE_HOST}/File/GetImage/${val}`
+    } else {
+      // 值为完整url
+      return val
     }
-    // 值为完整url
-    return val
+  },
+  /**
+   * 时间格式化
+   */
+  timeFormatFilter: function (value) {
+    let lastIndexOf = value.lastIndexOf('.')
+    if (lastIndexOf > 0) {
+      value = value.replace('T', ' ').substring(0, lastIndexOf)
+    } else {
+      value = value.replace('T', ' ')
+    }
+    return value
   },
   // 支持的银行卡
   getSupportBankList: () => supportBankList,
