@@ -24,7 +24,7 @@
               </div>
             </div>
             <p v-else style="font-size: 14px;color:#999">
-              服务还未完成，不能进行评价
+              用户还没有对您进行评价，请耐心等待
             </p>
           </div>
           <button type="button" class="weui-btn" @click="modelValue = false">关闭</button>

@@ -54,7 +54,6 @@ export default {
       if (!this.checkResult()) return false
       if (!this.checkRemark()) return false
       this.putConsult().then(result => {
-        console.log(result)
         if (result.Code === 100000) {
           this.redirectUrlToDetail()
         } else {
