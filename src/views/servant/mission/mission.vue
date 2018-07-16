@@ -20,7 +20,7 @@
           <li :class="missionSmallTabIndex === 3 ? 'active' : ''" @click="changeChecker(3)">待评价</li>
         </ul>
       </div>
-      <div  v-if="dataList.length >0"  class="weui-panel" style="margin-top:0">
+      <div v-if="dataList.length >0" class="weui-panel" style="margin-top:0">
         <div class="weui-list_container">
           <div class="weui-list_item" v-for="(item, index) in dataList" :key="index" @click="redirectDetail(item.State, item.Type, item.ID, item.UseType)">
             <div class="avatar"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
@@ -136,11 +136,9 @@ export default {
             this.occupiedText = '任务列表空空如也'
             break
           case 1:
-            await this.getUserReserveServiceList().then(value => {
-              this.dataList = value
-              this.checkerIndexLoack = true
-              this.occupiedText = '没有待确认的任务'
-            })
+            await this.getTotalWaitForConfirm()
+            this.checkerIndexLoack = true
+            this.occupiedText = '没有待确认的任务'
             break
           case 2:
             await this.getAllWaitForService()
@@ -188,8 +186,21 @@ export default {
         that.dataList = that.dataList.concat(value)
       })
     },
-
-    /** 待确认 */
+    /** 合并待确认 */
+    async getTotalWaitForConfirm () {
+      await this.getWaitForConfirm().then(value => {
+        this.dataList = this.dataList.concat(value)
+      })
+      await this.getUserReserveServiceList().then(value => {
+        this.dataList = this.dataList.concat(value)
+      })
+    },
+    /** 图文待确认 */
+    async getWaitForConfirm () {
+      const res = await this.$http.get('/ConsultList/WaitForConfirm')
+      return res.data.Data
+    },
+    /** 任务待确认 */
     async getUserReserveServiceList () {
       const res = await this.$http.get('/UserReserveServiceList')
       return res.data.Data
