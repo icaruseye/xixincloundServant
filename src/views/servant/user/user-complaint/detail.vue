@@ -19,7 +19,8 @@
     </div>
     <div class="mission_card_container" @click="redirectMissionDetail">
       <div class="left">
-        <img src="@/assets/images/icon_tcmr.png" alt="">
+        <img v-if="detail.UseType === 2" src="@/assets/images/icon_consult_item.png" alt="图文咨询">
+        <img v-else src="@/assets/images/icon_tcmr.png" alt="任务">
       </div>
       <div class="right">
         <h3 class="mission_title">

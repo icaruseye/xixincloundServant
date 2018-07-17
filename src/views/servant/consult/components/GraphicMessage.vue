@@ -28,22 +28,19 @@
         <div v-if="Content.ServiceImgs != null && Content.ServiceImgs != ''" class="msg_imsg_container">
           <image-preview-item :list="Content.ServiceImgs" @onloaded="onloaded"></image-preview-item>
         </div>
-        <div v-if="MsgType === 6" class="msg_link_btn" @click="commentPanelVisible = true">
+        <div v-if="MsgType === 6" class="msg_link_btn" @click="showCommentPanel">
           去查看评价
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </template>
     </div>
-    <comments v-model="commentPanelVisible" :result="Content.Result"></comments>
   </div>
 </template>
 <script>
 import ImagePreviewItem from '@/components/ImagePreViewItem'
-import comments from './comments'
 export default {
   components: {
-    ImagePreviewItem,
-    comments
+    ImagePreviewItem
   },
   props: {
     avatar: {
@@ -79,8 +76,8 @@ export default {
     onloaded () {
       this.$emit('onloaded')
     },
-    showEvaluate () {
-
+    showCommentPanel () {
+      this.$emit('showCommentPanel')
     }
   }
 }

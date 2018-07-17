@@ -1,5 +1,5 @@
 <template>
- <div>
+ <div @click="closeEmojiBox">
     <sticky
       ref="sticky"
       :offset="0"
@@ -45,6 +45,7 @@
             :IsServantReceive="item.IsServantReceive"
             :Content="detail"
             :MsgType="item.MsgType"
+            @showCommentPanel ="commentPanelVisible = true"
           >
           </graphic-message>
         </div>
@@ -54,12 +55,25 @@
       <button v-if="detail.CanCancel" style="background: #ffc349" @click="cancelMissionPopupVisible = true">取消</button>
       <button @click="confirmTheConsult">开始服务</button>
     </div>
+    
+
+    <!-- 新消息提醒toast -->
     <toast @click.native="scrollToBottom" v-model="showNewMessageRemind" type="text" position= "bottom" width="12em">
       您有新消息了
       <i class="iconfont icon-arrow-down1"></i>
     </toast>
+    
+    <!-- 查看评价弹出框 -->
+    <div v-if="detail.State === 4 || detail.State === 5" class="btn_bar">
+      <button @click="commentPanelVisible = true">查看评价</button>
+    </div>
+    <comments v-model="commentPanelVisible" :result="detail.Result"></comments>
+
+    <!-- 取消任务弹窗 -->
     <cancel-mission-popup v-model="cancelMissionPopupVisible" :options="cancelReason" @confirmCancel="cancelMissionEvent"></cancel-mission-popup>
-    <send-msg-bar v-if="detail.State === 3" @changeHeight="changePaddingBottom" :missionID="ID" @sendMsg="sendMsg"></send-msg-bar>
+
+    <!-- 发送消息组件 -->
+    <send-msg-bar @click.native.stop="sendMessageBarClick" ref="SendMsgBarRef" v-if="detail.State === 3" @changeHeight="changePaddingBottom" :missionID="ID" @sendMsg="sendMsg"></send-msg-bar>
  </div>
 </template>
 <script>
@@ -71,6 +85,7 @@ import TextChatItem from './components/textChatItem'
 import GraphicMessage from './components/GraphicMessage'
 import SendMsgBar from './components/sendMsgBar'
 import { setInterval, clearInterval } from 'timers'
+import comments from './components/comments'
 export default {
   components: {
     Sticky,
@@ -79,7 +94,8 @@ export default {
     SendMsgBar,
     GraphicMessage,
     CancelMissionPopup,
-    Toast
+    Toast,
+    comments
   },
   filters: {
     stepFilter (val = 0) {
@@ -98,6 +114,7 @@ export default {
   },
   data () {
     return {
+      commentPanelVisible: false,
       showNewMessageRemind: false,
       detail: {},
       cancelMissionPopupVisible: false,
@@ -126,6 +143,11 @@ export default {
     this.init()
   },
   methods: {
+    sendMessageBarClick (e) {
+    },
+    closeEmojiBox (e) {
+      this.$refs.SendMsgBarRef.emojiContainerShow = false
+    },
     /**
      * 取消任务
      */

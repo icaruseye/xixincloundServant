@@ -71,6 +71,7 @@ export default {
 
 <style lang="less" scoped>
 .xixin-filtrate-active {
+  box-sizing: border-box;
   z-index: 12;
   position: absolute;
   width: 100%;

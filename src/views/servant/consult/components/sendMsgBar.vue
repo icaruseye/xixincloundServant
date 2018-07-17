@@ -1,5 +1,5 @@
 <template>
-  <div class="container" ref="operContainerRef">
+  <div class="container send_message_container" ref="operContainerRef">
     <a class="finished_service_btn" @click="showFinishServicePopup" href="javascript:void(0)">完成服务</a>
     <div class="oper_container">
       <label class="select_img_btn">

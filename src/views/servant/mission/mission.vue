@@ -23,7 +23,10 @@
       <div v-if="dataList.length >0" class="weui-panel" style="margin-top:0">
         <div class="weui-list_container">
           <div class="weui-list_item" v-for="(item, index) in dataList" :key="index" @click="redirectDetail(item.State, item.Type, item.ID, item.UseType)">
-            <div class="avatar"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
+            <div class="avatar">
+              <img v-if="item.UseType === 2" src="@/assets/images/icon_consult_item.png" alt="图文咨询">
+              <img v-else src="@/assets/images/icon_tcmr.png" alt="任务">
+            </div>
             <div class="mid">
               <div style="display: flex;justify-content: space-between;align-items: baseline;">
                 <div class="title" style="font-weight:normal">{{item.ItemName}}</div>
@@ -43,11 +46,20 @@
                   </div>
                 </template>
               </template>
+              <template v-else>
+                <div class="describe">
+                  咨询时间：{{item.CreateTime | xxTimeFormatFilter}}
+                </div>
+              </template>
             </div>
-            <img v-if="item.State == 0 && item.Type == 0" style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="">
-            <img v-if="(item.State == 0  && item.Type == 1) || item.State == 3 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dff.png" alt="">
-            <img v-if="item.State == 4 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dpj.png" alt="">
-            <img v-if="item.State >= 5 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_ywj.png" alt="">
+            <img v-if="(item.State === 0 && item.Type === 0) || (item.State === 0 && item.Type === 1 && item.UseType === 2)" style="width:50px;height:50px;" src="@/assets/images/ic_dqr.png" alt="待确认">
+            <img v-if="(item.State == 0 && item.Type == 1 && item.UseType != 2) 
+              || (item.State == 3 && item.Type == 1 && item.UseType != 2) 
+              || (item.State == 3 && item.UseType == 2)"
+              style="width:50px;height:50px;" src="@/assets/images/ic_dff.png" alt="待服务"
+             >
+            <img v-if="item.State == 4 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dpj.png" alt="待评价">
+            <img v-if="item.State >= 5 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_ywj.png" alt="已完结">
             <div v-if="item.State == -1 && item.Type == 1" class="cancel_icon">
               <svg class="icon" aria-hidden="true">
                 <use xlink:href="#icon-yiquxiao"></use>
@@ -173,9 +185,7 @@ export default {
     /** 查看全部 */
     async getAll () {
       const that = this
-      await that.getUserReserveServiceList().then(value => {
-        that.dataList = that.dataList.concat(value)
-      })
+      await that.getTotalWaitForConfirm()
       await that.getInServiceList().then(value => {
         that.dataList = that.dataList.concat(value)
       })
