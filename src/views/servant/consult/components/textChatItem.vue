@@ -122,6 +122,7 @@ export default {
   box-sizing: border-box;
   background-color: #fff;
   border: 1px solid #eee;
+  max-width: 100%;
   &::after
   {
     position: absolute;
@@ -141,7 +142,7 @@ export default {
     font-size: 14px;
     text-align: justify;
     color: #666;
-    word-break: break-all;
+    word-break: break-word;
   }
 }
 .to_textChat_msg

@@ -1,9 +1,6 @@
 <template>
- <div @click="closeEmojiBox">
-    <sticky
-      ref="sticky"
-      :offset="0"
-      :check-sticky-support="true">
+ <div @click="closeEmojiBox" style="padding-top:100px;overflow:hidden">
+    <div style="position:fixed;top:0;left:0;right:0;z-index:1000">
       <xx-step-bar :step="detail.State | stepFilter">
         <xx-step-items slot="items">
           已确认
@@ -15,7 +12,7 @@
           已完成
         </xx-step-items>
       </xx-step-bar>
-    </sticky>
+    </div>
     <div class="content_container" :style="'padding-bottom:'+ boxPaddingBottom+'px'">
       <system-msg-item>
         温馨提示：服务者的回复仅供参考，不能作为诊断及医疗依据
@@ -32,7 +29,7 @@
           <text-chat-item
             v-if="item.MsgType === 1 || item.MsgType === 2"
             :IsServantReceive="item.IsServantReceive"
-            class="mt10px"
+            :class="['mt10px', 'message_item_'+item.ID]"
             :avatar="(item.IsServantReceive === 0)?userAccount.Avatar:FromAvatar"
             :Content="item.Content"
             :MsgType="item.MsgType"
@@ -40,7 +37,7 @@
           </text-chat-item>
           <graphic-message 
             v-if="item.MsgType === 5 || item.MsgType === 6"
-            class="mt10px"
+            :class="['mt10px', 'message_item_'+item.ID]"
             :avatar="(item.IsServantReceive === 0)?userAccount.Avatar:FromAvatar"
             :IsServantReceive="item.IsServantReceive"
             :Content="detail"
@@ -264,6 +261,8 @@ export default {
     },
     // 更多的消息
     async moreMessage () {
+      const prePageLastDomClass = `.message_item_${this.messageList[0].ID}`
+      const prePageLastDomTop = document.querySelector(prePageLastDomClass).offsetTop
       this.$vux.loading.show('加载中')
       await this.getMessageList().then(result => {
         this.messageId = result.Data.MessageID
@@ -271,6 +270,9 @@ export default {
           ...result.Data.ContentList,
           ...this.messageList
         ]
+      })
+      this.$nextTick(() => {
+        document.body.scrollTop = document.documentElement.scrollTop = document.querySelector(prePageLastDomClass).offsetTop - prePageLastDomTop
       })
       this.$vux.loading.hide()
     },

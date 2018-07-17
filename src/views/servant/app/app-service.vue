@@ -33,7 +33,7 @@
             <div  v-else style="position: relative; height:200px">
               <xx-occupied-box>
                 <p style="text-align:center">
-                  <a style="color:#3AC7F5" href="https://mp.weixin.qq.com/s/QdJ588sPT5zUcVDLGtRIZQ">如何设置服务项&服务套餐</a>
+                  <a style="color:#3AC7F5" href="/agreement/4">如何设置服务项&服务套餐</a>
                 </p>
               </xx-occupied-box>
             </div>

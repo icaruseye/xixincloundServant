@@ -194,6 +194,7 @@ export default {
     margin-left: 15px;
     background: #fff;
     border: 1px solid #f3f1f1;
+    word-break: break-all;
     &::before {
       content: "";
       position: absolute;
@@ -216,6 +217,7 @@ export default {
     margin: 0 15px 0 10px;
     background: #90d936;
     border: 1px solid #87d02d;
+    word-break: break-all;
     &::after {
       content: "";
       position: absolute;

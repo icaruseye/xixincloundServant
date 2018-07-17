@@ -28,6 +28,9 @@
         <div v-if="Content.ServiceImgs != null && Content.ServiceImgs != ''" class="msg_imsg_container">
           <image-preview-item :list="Content.ServiceImgs" @onloaded="onloaded"></image-preview-item>
         </div>
+        <div class="msg_text_container">
+          {{Content.Discription ? Content.Discription : '没有填写备注'}}
+        </div>
         <div v-if="MsgType === 6" class="msg_link_btn" @click="showCommentPanel">
           去查看评价
           <i class="iconfont icon-jiantouyou"></i>

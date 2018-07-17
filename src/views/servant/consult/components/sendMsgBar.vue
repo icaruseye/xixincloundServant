@@ -81,9 +81,9 @@ export default {
         })
         return false
       }
-      if (this.msg.length > 100) {
+      if (this.msg.length > 200) {
         this.$vux.toast.show({
-          text: '消息不可超过100字符',
+          text: '消息不可超过200字符',
           position: 'bottom',
           type: 'text'
         })

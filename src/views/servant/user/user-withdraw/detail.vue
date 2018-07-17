@@ -157,6 +157,7 @@
               <i class="iconfont icon-jiantouyou pull-right"></i>
             </span>
         </div>
+        <router-link style="display:block;font-size:12px;color:#3AC7F5;text-align:center;margin-top: 10px" to="/agreement/17">点击查看《提现规则》</router-link>
       </div>
       <!-- 申请提现按钮 -->
       <div class="btn_bar">
