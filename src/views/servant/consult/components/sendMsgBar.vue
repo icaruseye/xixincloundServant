@@ -7,11 +7,12 @@
         <input id="uploadImgBtn" type="file" @change="uploadImg">
       </label>
       <div class="input_control_box">
-        <input type="text"
+        <textarea
          @focus="emojiContainerShow = false"
          ref="chatInput"
          @keyup.enter="sendTextMsg"
          v-model="msg">
+        </textarea>
       </div>
       <div class="emoji_show_container" @click="emojiContainerShow = !emojiContainerShow">
         <i v-if="!emojiContainerShow" class="iconfont icon-biaoqing-xue"></i>
@@ -22,7 +23,8 @@
       </div>
     </div>
     <div v-if="emojiContainerShow" class="emoji_container">
-      <a href="javascript:;" style="margin:0 3px;" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">{{item}}</a>
+      <a href="javascript:;" class="emoji_items" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">{{item}}</a>
+      <i class="iconfont icon-delete" @click="backspaceInputValue"></i>
     </div>
   </div>
 </template>
@@ -46,11 +48,24 @@ export default {
     missionID: ''
   },
   methods: {
+    backspaceInputValue () {
+      const emojiReg = /(\ud83c[\udf00-\udfff])|(\ud83d[\udc00-\ude4f])|(\ud83d[\ude80-\udeff])/
+      const len = this.msg.length
+      const lastTwoChar = this.msg.substring(len - 2, len)
+      if (lastTwoChar.search(emojiReg) === 0) {
+        this.msg = this.msg.substring(0, len - 2)
+      } else {
+        this.msg = this.msg.substring(0, len - 1)
+      }
+    },
     showFinishServicePopup () {
       this.$router.push(`/consult/finishService/${this.missionID}`)
     },
     chooseFace (face) {
       this.msg = this.msg + face
+      this.$nextTick(() => {
+        this.$refs.chatInput.scrollTop = this.$refs.chatInput.scrollHeight
+      })
     },
     operContainerHeight () {
       this.$nextTick(() => {
@@ -61,6 +76,14 @@ export default {
       if (this.msg.length <= 0) {
         this.$vux.toast.show({
           text: '消息不可为空',
+          position: 'bottom',
+          type: 'text'
+        })
+        return false
+      }
+      if (this.msg.length > 100) {
+        this.$vux.toast.show({
+          text: '消息不可超过100字符',
           position: 'bottom',
           type: 'text'
         })
@@ -189,18 +212,19 @@ export default {
     flex: 1;
     padding: 11px 0;
     box-sizing: border-box;
-    input
+    textarea
     {
       border: none;
       border-bottom: 1px solid #979797;
       width: 100%;
-      height: 100%;
-      padding: 0 10px;
+      height: 30px;
+      padding: 5px 10px;
       outline: none;
       color: #999;
       border-radius: 0;
       font-size: 14px;
       box-sizing: border-box;
+      resize: none;
       -webkit-tap-highlight-color: rgba(0,0,0,0)
     }
   }
@@ -236,8 +260,31 @@ export default {
 }
 .emoji_container
 {
+  position: relative;
+  display: flex;
   padding: 15px;
-  font-size: 22px;
-  text-align: justify
+  width: 100%;
+  box-sizing: border-box;
+  flex-flow: wrap;
+  .emoji_items
+  {
+    display: block;
+    flex: 0 0 10%;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+  }
+  .iconfont
+  {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    display: block;
+    width: 10%;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    font-size: 26px;
+  }
 }
 </style>
