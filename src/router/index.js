@@ -83,7 +83,7 @@ router.afterEach((to) => {
   if (to.meta.title !== null && to.meta.title !== '') {
     document.title = to.meta.title
   } else {
-    document.title = window.sessionStorage.getItem('shopName')
+    document.title = window.sessionStorage.getItem('shopName') || ''
   }
   router.app.$store.commit('SET_ROUTER_LOADING', false)
 })

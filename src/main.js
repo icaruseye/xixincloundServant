@@ -8,7 +8,7 @@ import router from './router'
 import './plugins/validate.js'
 import _ from 'lodash'
 import registryPopup from './components/common/popupTop/index'
-import { DatetimePlugin, ToastPlugin, ConfirmPlugin, LoadingPlugin } from 'vux'
+import { DatetimePlugin, ToastPlugin, ConfirmPlugin, LoadingPlugin, AlertPlugin } from 'vux'
 import xxComponents from './components/common'
 import http from '@/api'
 import util from '@/plugins/util'
@@ -20,6 +20,7 @@ Vue.use(ToastPlugin)
 Vue.use(ConfirmPlugin)
 Vue.use(registryPopup)
 Vue.use(LoadingPlugin)
+Vue.use(AlertPlugin)
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 FastClick.attach(document.body)
 Vue.config.productionTip = false

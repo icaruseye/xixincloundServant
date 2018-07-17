@@ -14,6 +14,9 @@ export default {
   computed: {
     ID () {
       return this.$route.params.id
+    },
+    shopID () {
+      return this.$route.query.shopID
     }
   },
   data () {
@@ -29,7 +32,8 @@ export default {
      *  获取协议内容
      */
     async getAgreement () {
-      const res = await this.$http.get(`/ShopAgreement?ProtocalType=${this.ID}&ShopCertificateID=0`)
+      let url = (this.shopID === undefined) ? `/ShopAgreement?ProtocalType=${this.ID}&ShopCertificateID=0` : `/Agreement?type=${this.ID}&shopID=${this.shopID}`
+      const res = await this.$http.get(url)
       if (res.data.Code === 100000 && res.data.Data != null) {
         this.agreement = res.data.Data
         document.title = res.data.Data.Title

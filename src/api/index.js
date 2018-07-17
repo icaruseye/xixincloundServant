@@ -12,7 +12,13 @@ axios.interceptors.response.use(response => {
       sessionStorage.removeItem('servant_token')
       sessionStorage.removeItem('userAccount')
       sessionStorage.removeItem('userInfo')
-      window.location.reload()
+      Vue.$vux.alert.show({
+        content: '登录已超时！',
+        buttonText: '点击重试',
+        onHide () {
+          window.location.reload()
+        }
+      })
     }
   }
   Vue.prototype.$popupTop('出错了，请重试')
