@@ -111,7 +111,7 @@
             <div class="thumbs_container" style="margin-top: 14px">
               <xx-uploader
               :limit="9"
-              :maxSize="1024 * 1024 * 5"
+              :maxSize="1024 * 1024 * 20"
               @onUpdate="onUpdate"
               ></xx-uploader>
             </div>

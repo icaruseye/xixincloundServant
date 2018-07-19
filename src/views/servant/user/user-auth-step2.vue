@@ -41,7 +41,7 @@
       </div>
       <xx-uploader
       :limit="1"
-      :maxSize="1024 * 1024 * 5"
+      :maxSize="1024 * 1024 * 20"
       :imgList="imgList1"
       @onUpdate="onUpdate1"
     ></xx-uploader>
@@ -50,7 +50,7 @@
     </div>
     <xx-uploader
       :limit="1"
-      :maxSize="1024 * 1024 * 5"
+      :maxSize="1024 * 1024 * 20"
       :imgList="imgList2"
       @onUpdate="onUpdate2"
     ></xx-uploader>
