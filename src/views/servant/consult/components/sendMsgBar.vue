@@ -4,7 +4,7 @@
     <div class="oper_container">
       <label class="select_img_btn">
         <label class="icon-tupian iconfont"  for="uploadImgBtn"></label>
-        <input id="uploadImgBtn" type="file" @change="uploadImg">
+        <input id="uploadImgBtn" type="file" @change="uploadImgChange">
       </label>
       <div class="input_control_box">
         <textarea
@@ -30,10 +30,15 @@
 </template>
 <script>
 import axios from 'axios'
+import util from '@/plugins/util'
+import EXIF from 'exif-js'
 export default {
   data () {
     return {
       msg: '',
+      snedMsgObject: {
+        IsServantReceive: 0
+      },
       emojiContainerShow: false,
       faceList: ['😀', '😂', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '😗', '😙', '😚', '😇', '😐', '😑', '😶', '😏', '😣', '😥', '😮', '😯', '😪', '😫', '😴', '😌', '😛', '😜', '😝', '😒', '😒', '😓', '😔', '😕', '😲', '😷', '😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😬', '😰', '😱', '😳', '😵', '😡', '😠', '💪', '👈', '👉', '✌', '👆', '👇', '✋', '👌', '👍', '👏', '👐', '🙏'],
       imgUploadProgress: 0
@@ -72,7 +77,11 @@ export default {
         this.$emit('changeHeight', this.$refs.operContainerRef.offsetHeight)
       })
     },
+    // 发送文本消息
     sendTextMsg () {
+      this.snedMsgObject = {
+        IsServantReceive: 0
+      }
       if (this.msg.length <= 0) {
         this.$vux.toast.show({
           text: '消息不可为空',
@@ -89,25 +98,54 @@ export default {
         })
         return false
       }
-      const msg = {
-        IsServantReceive: 0,
-        MsgType: 1,
-        Content: this.msg
-      }
+      this.snedMsgObject.MsgType = 1
+      this.snedMsgObject.Content = this.msg
       this.msg = ''
       if (!this.emojiContainerShow) {
         this.$refs.chatInput.focus()
       }
-      this.$emit('sendMsg', msg)
+      this.$emit('sendMsg', this.snedMsgObject)
     },
-    async uploadImg (e) {
+    // 发送图片消息
+    uploadImgChange (e) {
       const that = this
-      that.imgUploadProgress = 0
+      that.snedMsgObject = {
+        IsServantReceive: 0
+      }
       let file = e.target.files[0]
       if (!file) return false
-      if (!this.checkSize(file, e)) return false
+      if (!this.verifyFileType(file, e)) return false
+      let orientation = null
+      EXIF.getData(file, function () {
+        orientation = EXIF.getTag(this, 'Orientation')
+      })
+      const reader = new FileReader()
+      const uploadImage = new Image()
+      that.snedMsgObject.MsgType = 2
+      reader.onload = function (e) {
+        uploadImage.src = e.target.result
+      }
+      uploadImage.onload = function (e) {
+        util.compressImage(
+          {
+            Img: this,
+            maxWidth: 750,
+            maxHeight: 1334,
+            fileType: file.type,
+            orientation: orientation
+          }, (blob, base64Url) => {
+          that.snedMsgObject.Content = base64Url
+          that.uploadImg(blob)
+        })
+      }
+      reader.readAsDataURL(file)
+      e.target.value = ''
+    },
+    async uploadImg (blob) {
+      const that = this
+      that.imgUploadProgress = 0
       let fd = new FormData()
-      fd.append('fileUpload', file)
+      fd.append('fileUpload', blob)
       var options = {
         method: 'post',
         url: `${process.env.IMAGE_HOST}/File/Upload`,
@@ -120,30 +158,26 @@ export default {
       try {
         that.$vux.loading.show('发送中')
         const res = await axios(options)
-        let reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = function (e) {
-          const msg = {
-            IsServantReceive: 0,
-            MsgType: 2,
-            Content: this.result,
-            Image: res.data.data.objectId
-          }
-          that.$emit('sendMsg', msg)
-        }
-        e.target.value = ''
+        that.snedMsgObject.Image = res.data.data.objectId
+        that.$emit('sendMsg', that.snedMsgObject)
         that.$vux.loading.hide()
       } catch (error) {
         that.$vux.loading.hide()
         this.$vux.toast.text('网络异常，发送失败')
       }
     },
-    checkSize (file, e) {
-      if (file.size > 1024 * 1024 * 5) {
-        this.$vux.toast.text('上传图片大小超出限制')
+    verifyFileType (file, e) {
+      if (file.type.indexOf('image') < 0) {
+        this.$vux.toast.show({
+          text: '只能发送图片',
+          position: 'bottom',
+          type: 'text'
+        })
+        e.target.value = ''
         return false
+      } else {
+        return true
       }
-      return true
     }
   }
 }

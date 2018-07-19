@@ -7,7 +7,7 @@ module.exports = {
   API_PATH: '"http://192.168.2.100/api/Servant"',
   // API_PATH: '"http://beta-api.xixincloud.com/api/Servant"',
   DEV_PROXY_API: '"http://192.168.2.100"',
-  IMAGE_HOST: '"http://xixincloud.com:6883"',
+  IMAGE_HOST: '"http://www.xixincloud.com:6883"',
   wechatOption: {
     appId: '"wxfbe01c7777463d4f"',
     appsecret: '"appsecret"',

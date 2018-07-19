@@ -21,7 +21,6 @@
         <div class="mt10px">  
           <xx-uploader
             class="upload"
-            :maxSize="1024 * 1024 * 20"
             :limit="4"
             @onUpdate="onUpdate"
           ></xx-uploader>

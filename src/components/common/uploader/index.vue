@@ -41,6 +41,7 @@
 import axios from 'axios'
 import { AlertModule } from 'vux'
 import util from '@/plugins/util'
+import EXIF from 'exif-js'
 export default {
   props: {
     title: String,
@@ -50,7 +51,18 @@ export default {
     },
     url: String,
     maxSize: Number,
-    imgList: Array,
+    maxWidth: {
+      type: Number,
+      default: 750
+    },
+    maxHeight: {
+      type: Number,
+      default: 750
+    },
+    imgList: {
+      type: Array,
+      default: null
+    },
     onSuccess: Function,
     onRemove: Function,
     isAvatar: {
@@ -62,7 +74,12 @@ export default {
     return {
       count: 0,
       list: [],
-      guid: []
+      guid: [],
+      file: null,
+      imgPackage: {},
+      reader: new FileReader(),
+      uploadImage: new Image(),
+      orientation: null
     }
   },
   created () {
@@ -73,38 +90,48 @@ export default {
       })
     }
   },
+  mounted () {
+    const that = this
+    that.reader.onload = function (e) {
+      that.uploadImage.src = e.target.result
+    }
+    that.uploadImage.onload = function (e) {
+      util.compressImage({
+        Img: this,
+        maxWidth: that.maxWidth,
+        maxHeight: that.maxHeight,
+        fileType: that.file.type,
+        orientation: that.orientation
+      }, (blob, base64Url) => {
+        that.imgPackage.name = that.file.name
+        that.imgPackage.file = blob
+        that.imgPackage.url = base64Url
+        if (that.isAvatar) {
+          that.list = [that.imgPackage]
+        } else {
+          that.list.push(that.imgPackage)
+        }
+        that.upload(that.imgPackage)
+      })
+    }
+  },
   methods: {
     change (e) {
       const that = this
-      let file = e.target.files[0]
-      let reader = new FileReader()
-      if (!this.checkSize(file, e)) return false
-      if (!this.checkCount(e)) return false
-      // if (!this.checkName(file.name, e)) return false
-
-      let img = {
+      that.imgPackage = {
         url: '',
         status: 0,
         progress: 0,
         file: '',
         name: ''
       }
-
-      let _img = Object.assign({}, img)
-      _img.file = file
-      _img.name = file.name
-
-      reader.readAsDataURL(file)
-      reader.onload = function (e) {
-        _img.url = this.result
-        if (that.isAvatar) {
-          that.list = [_img]
-        } else {
-          that.list.push(_img)
-        }
-      }
-      this.upload(_img)
-
+      that.file = e.target.files[0]
+      if (!that.verifyFileType(that.file, e)) return false
+      if (!that.checkCount(e)) return false
+      EXIF.getData(that.file, function () {
+        that.orientation = EXIF.getTag(this, 'Orientation')
+      })
+      that.reader.readAsDataURL(that.file)
       e.target.value = ''
     },
     async upload (_img) {
@@ -160,6 +187,18 @@ export default {
       }
       return true
     },
+    verifyFileType (file, e) {
+      if (file.type.indexOf('image') < 0) {
+        AlertModule.show({
+          title: '提示',
+          content: '只能上传图片'
+        })
+        e.target.value = ''
+        return false
+      } else {
+        return true
+      }
+    },
     checkSize (file, e) {
       if (file.size > this.maxSize) {
         AlertModule.show({
@@ -171,20 +210,6 @@ export default {
       }
       return true
     }
-    // checkName (name, e) {
-    //   let flag = true
-    //   this.list.map((i) => {
-    //     if (name === i.name) {
-    //       flag = false
-    //       e.target.value = ''
-    //       AlertModule.show({
-    //         title: '提示',
-    //         content: '请勿重复选取图片'
-    //       })
-    //     }
-    //   })
-    //   return flag
-    // }
   }
 }
 </script>

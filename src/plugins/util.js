@@ -139,5 +139,65 @@ export default {
   // 是否支持此银行
   bankIsSupport: (BankAbbreviation) => {
     return (supportBankList[BankAbbreviation] !== undefined)
+  },
+  // 压缩图片
+  compressImage: ({
+    Img = null,
+    maxWidth = 750,
+    maxHeight = 750,
+    fileType = 'image/jpeg',
+    orientation = null
+  }, callback = () => {}) => {
+    if (Img === null) return false
+    const canvas = document.createElement('canvas')
+    const context = canvas.getContext('2d')
+    // 图片原始尺寸
+    let originWidth = Img.width
+    let originHeight = Img.height
+    // 目标尺寸
+    let targetWidth = originWidth
+    let targetHeight = originHeight
+    // 图片尺寸超过限制
+    if (originWidth > maxWidth || originHeight > maxHeight) {
+      if (originWidth / originHeight > maxWidth / maxHeight) {
+        // 更宽，按照宽度限定尺寸
+        targetWidth = maxWidth
+        targetHeight = Math.round(maxWidth * (originHeight / originWidth))
+      } else {
+        targetHeight = maxHeight
+        targetWidth = Math.round(maxHeight * (originWidth / originHeight))
+      }
+    }
+    // 图片压缩
+    if (orientation === 6) {
+      canvas.width = targetHeight
+      canvas.height = targetWidth
+      context.clearRect(0, 0, targetHeight, targetWidth)
+      context.rotate(90 * Math.PI / 180)
+      context.drawImage(Img, 0, -targetHeight, targetWidth, targetHeight)
+    } else if (orientation === 3) {
+      canvas.width = targetWidth
+      canvas.height = targetHeight
+      context.clearRect(0, 0, targetWidth, targetHeight)
+      context.rotate(180 * Math.PI / 180)
+      context.drawImage(Img, -targetWidth, -targetHeight, targetWidth, targetHeight)
+    } else if (orientation === 8) {
+      canvas.width = targetHeight
+      canvas.height = targetWidth
+      context.clearRect(0, 0, targetHeight, targetWidth)
+      context.rotate(270 * Math.PI / 180)
+      context.drawImage(Img, -targetWidth, 0, targetWidth, targetHeight)
+    } else {
+      canvas.width = targetWidth
+      canvas.height = targetHeight
+      context.clearRect(0, 0, targetWidth, targetHeight)
+      context.drawImage(Img, 0, 0, targetWidth, targetHeight)
+    }
+    // canvas转为blob并上传
+    canvas.toBlob(function (blob) {
+      let base64Url = canvas.toDataURL(fileType || 'image/jpeg', 1)
+      let files = new window.File([blob], `${Math.floor(Math.random() * 900000 + 100000)}.jpg`, {type: fileType})
+      callback(files, base64Url)
+    }, fileType || 'image/jpeg')
   }
 }

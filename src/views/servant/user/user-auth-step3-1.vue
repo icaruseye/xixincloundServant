@@ -9,7 +9,6 @@
           :limit="1"
           :title = "item"
           ref = "uploaderRef"
-          :maxSize="1024 * 1024 * 20"
           @onUpdate="onUpdate(index)"
         ></xx-uploader>
       </div>
