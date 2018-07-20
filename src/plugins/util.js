@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { ToastPlugin } from 'vux'
+import ChinaAddressV4Data from './datas/ChinaAddressV4Data.json'
 Vue.use(ToastPlugin)
 const supportBankList = {
   'BOC': {
@@ -101,7 +102,7 @@ export default {
     const keysArr = Object.keys(authText)
     let flag = true
     for (let i = 0; i < keysArr.length; i++) {
-      if (!data[keysArr[i]] && authText[keysArr[i]].required) {
+      if (!this.isFalse(data[keysArr[i]]) && authText[keysArr[i]].required) {
         flag = false
         Vue.$vux.toast.text(`${authText[keysArr[i]].text}不能为空`)
         break
@@ -109,6 +110,32 @@ export default {
       flag = true
     }
     return flag
+  },
+  isFalse (val) {
+    const type = toString.call(val)
+    if (type === '[object String]') {
+      return val
+    }
+    if (type === '[object Array]') {
+      return val.length
+    }
+    if (type === '[object Object]') {
+      return Object.keys(val).length
+    }
+    if (type === '[object Null]') {
+      return false
+    }
+  },
+  // 从地址库通过id换取名字
+  transformAddress (val) {
+    if (!/^\d+$/.test(val)) return val
+    let name = ''
+    ChinaAddressV4Data.map((item) => {
+      if (item.value === val) {
+        name = item.name
+      }
+    })
+    return name
   },
   /**
    * 图片地址格式化
@@ -143,6 +170,7 @@ export default {
   // 压缩图片
   compressImage: ({
     Img = null,
+    file = null,
     maxWidth = 750,
     maxHeight = 750,
     fileType = 'image/jpeg',
@@ -196,7 +224,7 @@ export default {
     // canvas转为blob并上传
     canvas.toBlob(function (blob) {
       let base64Url = canvas.toDataURL(fileType || 'image/jpeg', 1)
-      let files = new window.File([blob], `${Math.floor(Math.random() * 900000 + 100000)}.jpg`, {type: fileType})
+      let files = new window.File([blob], file.name, {type: fileType})
       callback(files, base64Url)
     }, fileType || 'image/jpeg')
   }

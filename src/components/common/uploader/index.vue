@@ -100,6 +100,7 @@ export default {
         Img: this,
         maxWidth: that.maxWidth,
         maxHeight: that.maxHeight,
+        file: that.file,
         fileType: that.file.type,
         orientation: that.orientation
       }, (blob, base64Url) => {

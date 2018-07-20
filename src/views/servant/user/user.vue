@@ -41,7 +41,14 @@
           <span class="title">我的银行卡</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
+        <router-link to="/user/address" class="setting-panel_item">
+          <img src="@/assets/images/icon-my-address.png" >
+          <span class="title">服务地址管理</span>
+          <i class="iconfont icon-jiantouyou"></i>
+        </router-link>
       </div>
+
+
       <div class="setting-panel mt10px">
         <router-link to="/user/authstep3" class="setting-panel_item">
           <img src="@/assets/images/ic_myInfo_account.png" >

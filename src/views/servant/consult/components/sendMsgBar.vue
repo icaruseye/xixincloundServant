@@ -131,6 +131,7 @@ export default {
             Img: this,
             maxWidth: 750,
             maxHeight: 1334,
+            file: file,
             fileType: file.type,
             orientation: orientation
           }, (blob, base64Url) => {

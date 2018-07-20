@@ -329,6 +329,7 @@ export default {
   text-align: center;
   display: block;
   padding: 20px 0;
-  color: #3ac7f5
+  color: #3ac7f5;
+  outline: none
 }
 </style>

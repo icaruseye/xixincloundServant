@@ -29,6 +29,13 @@ export default [
     }
   },
   {
+    path: '/user/address',
+    component: _import('/servant/user/user-address/list'),
+    meta: {
+      title: '服务地址管理'
+    }
+  },
+  {
     path: '/user/withdraw',
     component: _import('/servant/user/user-withdraw/list'),
     meta: {

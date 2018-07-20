@@ -1,7 +1,6 @@
 import axios from 'axios'
 import config from '@/config'
 import Vue from 'vue'
-
 axios.interceptors.response.use(response => {
   return response
 }, error => {
@@ -98,7 +97,7 @@ export default {
       method: 'get',
       url: process.env.API_PATH + url,
       params,
-      timeout: 15000,
+      timeout: config._TIMEOUT_,
       headers: headers
     }).then(checkStatus).then(checkCode)
   },
@@ -114,8 +113,28 @@ export default {
       method: 'delete',
       url: process.env.API_PATH + url,
       params,
-      timeout: 15000,
+      timeout: config._TIMEOUT_,
       headers: headers
     }).then(checkStatus).then(checkCode)
+  },
+  send (url, method, data, header) {
+    var token = sessionStorage.getItem('servant_token')
+    var headers = {
+      'Content-Type': 'application/json; charset=UTF-8'
+    }
+    if (header) {
+      var _headers = Object.assign(headers, header)
+    }
+    if (token) {
+      headers.token = token
+    }
+    var options = {
+      method: method,
+      url: process.env.API_PATH + url,
+      data: data,
+      timeout: config._TIMEOUT_,
+      headers: _headers || headers
+    }
+    return axios(options)
   }
 }
