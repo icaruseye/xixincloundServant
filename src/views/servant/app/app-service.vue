@@ -11,8 +11,8 @@
     </sticky>
     <!-- 服务项 -->
     <div v-if="modelServiceListTabIndex === 0">
-      <template v-for="(item, pIndex) in itemList">
-        <div :key="pIndex">
+      <div v-if="itemList.length > 0">
+        <div v-for="(item, pIndex) in itemList" v-if="item.PackageList.length > 0" :key="pIndex">
           <div class="weui-list-title">{{item.PackageTypeName}}</div>
           <div class="weui-list-panel weui-panel">
             <template v-if="item.PackageList.length > 0">
@@ -30,22 +30,22 @@
               @changeState = "service.State = service.State === 0 ? 1 : 0"
               ></service-item>
             </template>
-            <div  v-else style="position: relative; height:200px">
-              <xx-occupied-box>
-                <p style="text-align:center">
-                  <a style="color:#3AC7F5" href="/agreement/4">如何设置服务项&服务套餐</a>
-                </p>
-              </xx-occupied-box>
-            </div>
           </div>
         </div>
-      </template>
+      </div>
+      <div v-else style="position: relative; height:200px">
+        <xx-occupied-box>
+          <p style="text-align:center">
+            <a style="color:#3AC7F5" href="/agreement/4">如何设置服务项&服务套餐</a>
+          </p>
+        </xx-occupied-box>
+      </div>
       <button type="button" class="weui-btn weui-btn_primary" @click="addServiceItem">申请开通</button>
     </div>
     <!-- 服务套餐 -->
     <div v-if="modelServiceListTabIndex === 1">
       <template v-if="packageList.length > 0">
-        <div  v-for="(item, typeIndex) in packageList" :key="typeIndex" v-if="packageList.length > 0">
+        <div v-for="(item, typeIndex) in packageList" :key="typeIndex" v-if="packageList.length > 0">
           <div class="weui-list-title">{{BundleType[typeIndex].Name}}</div>
           <div class="weui-list-panel weui-panel">
             <template v-for="(i, index) in packageList[typeIndex]">

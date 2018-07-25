@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <div v-if="routerLoading" style="height:100vh;display:flex;justify-content: center;align-items: center">
-      <inline-loading></inline-loading>
+      <xx-occupied-box v-if="apiError">
+        访问异常
+      </xx-occupied-box>
+      <inline-loading v-else></inline-loading>
     </div>
     <template v-else>
       <keep-alive>
@@ -22,7 +25,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'routerLoading'
+      'routerLoading',
+      'apiError'
     ])
   }
 }

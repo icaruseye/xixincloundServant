@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { ToastPlugin } from 'vux'
+import http from '@/api'
 import ChinaAddressV4Data from './datas/ChinaAddressV4Data.json'
 Vue.use(ToastPlugin)
 const supportBankList = {
@@ -50,9 +51,9 @@ export default {
         return res
       case 18:
         if (parseInt(idcard.substr(6, 4)) % 4 === 0 || (parseInt(idcard.substr(6, 4)) % 100 === 0 && parseInt(idcard.substr(6, 4)) % 4 === 0)) {
-          ereg = /^[1-9][0-9]{5}19[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))[0-9]{3}[0-9Xx]$/ // 闰年出生日期的合法性正则表达式
+          ereg = /^[1-9][0-9]{5}(19|20)[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))[0-9]{3}[0-9Xx]$/ // 闰年出生日期的合法性正则表达式
         } else {
-          ereg = /^[1-9][0-9]{5}19[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|1[0-9]|2[0-8]))[0-9]{3}[0-9Xx]$/ // 平年出生日期的合法性正则表达式
+          ereg = /^[1-9][0-9]{5}(19|20)[0-9]{2}((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|1[0-9]|2[0-8]))[0-9]{3}[0-9Xx]$/ // 平年出生日期的合法性正则表达式
         }
         if (ereg.test(idcard)) {
           S = (parseInt(idcardArray[0]) + parseInt(idcardArray[10])) * 7 + (parseInt(idcardArray[1]) + parseInt(idcardArray[11])) * 9 + (parseInt(idcardArray[2]) + parseInt(idcardArray[12])) * 10 + (parseInt(idcardArray[3]) + parseInt(idcardArray[13])) * 5 + (parseInt(idcardArray[4]) + parseInt(idcardArray[14])) * 8 + (parseInt(idcardArray[5]) + parseInt(idcardArray[15])) * 4 + (parseInt(idcardArray[6]) + parseInt(idcardArray[16])) * 2 + parseInt(idcardArray[7]) * 1 + parseInt(idcardArray[8]) * 6 + parseInt(idcardArray[9]) * 3
@@ -227,5 +228,38 @@ export default {
       let files = new window.File([blob], file.name, {type: fileType})
       callback(files, base64Url)
     }, fileType || 'image/jpeg')
+  },
+  /**
+   * 十六进制颜色值转rgb
+   */
+  colorToRgb (color, clarity) {
+    var reg = /^#([0-9a-fA-f]{3}|[0-9a-fA-f]{6})$/
+    let sColor = color.toLowerCase()
+    if (sColor && reg.test(sColor)) {
+      if (sColor.length === 4) {
+        var sColorNew = '#'
+        for (let i = 1; i < 4; i += 1) {
+          sColorNew += sColor.slice(i, i + 1).concat(sColor.slice(i, i + 1))
+        }
+        sColor = sColorNew
+      }
+      // 处理六位的颜色值
+      let sColorChange = []
+      for (let i = 1; i < 7; i += 2) {
+        sColorChange.push(parseInt(`0x${sColor.slice(i, i + 2)}`))
+      }
+      if (clarity) {
+        return 'rgba(' + sColorChange.join(',') + ',' + clarity + ')'
+      } else {
+        return 'rgb(' + sColorChange.join(',') + ')'
+      }
+    } else {
+      return sColor
+    }
+  },
+   // 获取温馨提示
+  getWarmPrompt: async (protocalType, ItemID = 0) => {
+    const res = await http.get(`/ShopAgreement?protocalType=${protocalType}&itemID=${ItemID}`)
+    return res.data
   }
 }

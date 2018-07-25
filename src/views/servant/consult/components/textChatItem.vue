@@ -4,7 +4,7 @@
     <!-- 只有图片的类型 -->
     <div v-if="MsgType === 2" :class="[originator+'_imgChat_msg']">
       <div class="thumbs_container">
-        <x-img :src="Content | transformImgUrl" @click.native="previewImage(0)" class="previewer-img" :class="[imgGroupClass]" @load.native="onloaded" default-src="/src/assets/images/loading_img.gif" error-class="ximg-error" :offset="-100"></x-img>
+      <x-img :src="Content | transformImgUrl" @click.native="previewImage(0)" class="previewer-img" :class="[imgGroupClass]" @load.native="onloaded" default-src="/src/assets/images/loading_img.gif" error-class="ximg-error" :offset="-100"></x-img>
       </div>
       <div v-transfer-dom>
         <previewer ref="previewer" :list="previewImgUrlList" :options="options"></previewer>
@@ -174,6 +174,10 @@ export default {
     border-color: transparent transparent #eee #eee
   }
 }
-
+.thumbs_container
+{
+  display: inline-block;
+  background-color: #fff;
+}
 </style>
 

@@ -14,8 +14,8 @@
       </xx-step-bar>
     </div>
     <div class="content_container" :style="'padding-bottom:'+ boxPaddingBottom+'px'">
-      <system-msg-item>
-        温馨提示：服务者的回复仅供参考，不能作为诊断及医疗依据
+      <system-msg-item v-if="warmPrompt">
+        {{warmPrompt}}
       </system-msg-item>
       <a v-if="messageId !== -1" href="javascript:" class="moreMessage_text" @click="moreMessage">
         <i class="icon-clock iconfont"></i>
@@ -83,6 +83,7 @@ import GraphicMessage from './components/GraphicMessage'
 import SendMsgBar from './components/sendMsgBar'
 import { setInterval, clearInterval } from 'timers'
 import comments from './components/comments'
+import util from '@/plugins/util'
 export default {
   components: {
     Sticky,
@@ -119,6 +120,7 @@ export default {
       messageList: [],
       messageId: 0,
       FromAvatar: '',
+      warmPrompt: null,
       cancelReason: [
         {
           key: '999',
@@ -140,7 +142,16 @@ export default {
     this.init()
   },
   methods: {
+    // 获取温馨提示
+    getWarmPrompt () {
+      util.getWarmPrompt(18, this.detail.ItemID).then(value => {
+        if (value.Code === 100000 && value.Data) {
+          this.warmPrompt = value.Data.Content
+        }
+      })
+    },
     sendMessageBarClick (e) {
+      return false
     },
     closeEmojiBox (e) {
       this.$refs.SendMsgBarRef.emojiContainerShow = false
@@ -217,6 +228,7 @@ export default {
     async init () {
       this.$vux.loading.show('加载中')
       await this.initMission()
+      await this.getWarmPrompt()
       await this.initMessageList()
       this.$vux.loading.hide()
       // 消息轮询

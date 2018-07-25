@@ -1,10 +1,12 @@
 import axios from 'axios'
 import config from '@/config'
 import Vue from 'vue'
+import store from '@/store'
 axios.interceptors.response.use(response => {
   return response
 }, error => {
   Vue.$vux.loading.hide()
+  store.commit('SET_API_ERROT', true)
   if (error.response.status === 401) {
     // token无效，重新登录
     if (error.response.data.Code === 100010) {

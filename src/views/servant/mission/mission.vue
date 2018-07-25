@@ -32,10 +32,10 @@
                 <div class="title" style="font-weight:normal">{{item.ItemName}}</div>
               </div>
               <div style="font-size:13px;color:#999;">用户：{{item.UserName}}</div>
-              <div v-if="item.UseType !== 2" style="font-size:13px;color:#999;">
+              <!-- <div v-if="item.UseType !== 2" style="font-size:13px;color:#999;">
                 <p>药品：{{item.NeedDrug?'需要': '不需要'}}</p>
                 <p>工具：{{item.NeedTools?'需要': '不需要'}}</p>
-              </div>
+              </div> -->
               <template v-if="item.UseType !== 2">
                 <template v-if="item.State == 0 && item.Type == 0">
                   <div class="describe">下单时间：{{item.CreateTime | xxTimeFormatFilter}}</div>

@@ -5,6 +5,7 @@ const SET_ORDER_TAB_INDEX = 'SET_ORDER_TAB_INDEX'
 const SET_ROUTER_LOADING = 'SET_ROUTER_LOADING'
 const SET_WITHDRAW_TAB_INDEX = 'SET_WITHDRAW_TAB_INDEX'
 const SET_SERVICE_LIST_TAB_INDEX = 'SET_SERVICE_LIST_TAB_INDEX'
+const SET_API_ERROT = 'SET_API_ERROT'
 
 const state = {
   missionTabIndex: 0, // 任务列表第一级tab
@@ -13,7 +14,8 @@ const state = {
   withDrawTabIndex: 0, // 提现列表tabIndex
   serviceListTabIndex: 0, // 服务项列表tabIndex
   complaintTabIndex: 0,
-  routerLoading: false
+  routerLoading: false,
+  apiError: false // 接口请求是否异常
 }
 
 const mutations = {
@@ -37,6 +39,9 @@ const mutations = {
   },
   [SET_SERVICE_LIST_TAB_INDEX] (state, flag) {
     state.serviceListTabIndex = flag
+  },
+  [SET_API_ERROT] (state, flag) {
+    state.apiError = flag
   }
 }
 
@@ -50,7 +55,8 @@ const getters = {
   routerLoading: state => state.routerLoading,
   orderTabIndex: state => state.orderTabIndex,
   withDrawTabIndex: state => state.withDrawTabIndex,
-  serviceListTabIndex: state => state.serviceListTabIndex
+  serviceListTabIndex: state => state.serviceListTabIndex,
+  apiError: state => state.apiError
 }
 
 export default {

@@ -32,7 +32,7 @@ export default {
      *  获取协议内容
      */
     async getAgreement () {
-      let url = (this.shopID === undefined) ? `/ShopAgreement?ProtocalType=${this.ID}&ShopCertificateID=0` : `/Agreement?type=${this.ID}&shopID=${this.shopID}`
+      let url = (this.shopID === undefined) ? `/ShopAgreement?protocalType=${this.ID}&itemID=0` : `/Agreement?type=${this.ID}&shopID=${this.shopID}`
       const res = await this.$http.get(url)
       if (res.data.Code === 100000 && res.data.Data != null) {
         this.agreement = res.data.Data

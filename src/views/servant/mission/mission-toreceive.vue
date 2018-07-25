@@ -32,11 +32,10 @@
       用户需求描述
     </h2>
     <xx-cell>
-      <xx-cell-items label="工具" :class="['noraml_cell_right', detail.IsNeedTools?'redColor':'']">
-        {{detail.NeedTools?'':'不'}}需要准备工具
-      </xx-cell-items>
-      <xx-cell-items label="药品"  :class="['noraml_cell_right', detail.IsNeedDrug?'redColor':'']">
-        {{detail.NeedDrug?'':'不'}}需要准备药品
+      <xx-cell-items v-if="carryTags.length > 0">
+        <i v-for="(item, index) in carryTags" :key="index" class="i_tags" :style="{'background-color': colorToRgb('#f56c6c', .2),'color': '#f56c6c','borderColor': '#f56c6c'}">
+          {{item.ViewName}}
+        </i>
       </xx-cell-items>
       <xx-cell-items label="用户描述" direction="vertical">
         <p style="margin-top: 20px;font-size: 13px;color: #999;text-align: justify;word-break: break-all">
@@ -95,6 +94,7 @@
 import { Group, Datetime } from 'vux'
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 import CancelMissionPopup from '@/components/cancelMissionPopup'
+import util from '@/plugins/util'
 const dataFormatRule = 'YYYY/MM/DD HH:mm'
 export default {
   components: {
@@ -109,7 +109,8 @@ export default {
       cancelMissionPopupVisible: false,
       detail: {},
       arrivalTime: null,
-      remark: ''
+      remark: '',
+      carryTags: []
     }
   },
   computed: {
@@ -121,6 +122,9 @@ export default {
     this.initDetail()
   },
   methods: {
+    colorToRgb (color, clarity) {
+      return util.colorToRgb(color, clarity)
+    },
     /**
      * 取消预约
      */
@@ -213,6 +217,9 @@ export default {
       await this.getData().then(value => {
         this.detail = value
       })
+      await this.getCarryTags().then(value => {
+        this.carryTags = value
+      })
       if (this.detail.State !== 0) {
         this.$router.push('/mission')
       }
@@ -220,6 +227,17 @@ export default {
     async getData () {
       const res = await this.$http.get('/UserReserveService/' + this.MissionID)
       return res.data.Data
+    },
+    /**
+     * 获取携带物品标签
+     */
+    async getCarryTags () {
+      if (this.detail.PrepareGoodsTags) {
+        const res = await this.$http.get(`/CarryGoodsList?tags=${this.detail.PrepareGoodsTags}`)
+        return res.data.Data
+      } else {
+        return []
+      }
     },
     selectArrivalTime () {
       const that = this
@@ -332,5 +350,19 @@ export default {
   .redColor
   {
     color: #FF3939
+  }
+  .i_tags
+  {
+    display: inline-block;
+    margin-right: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+    padding: 0 5px;
+    font-style: normal;
+    word-break: break-word;
   }
 </style>

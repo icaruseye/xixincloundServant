@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import routerList from './routerList'
 import apiRequest from '@/api'
+// import wxShare from '@/plugins/wxShare'
 
 Vue.use(Router)
 
@@ -80,6 +81,12 @@ router.beforeEach((to, from, next) => {
   }
 })
 router.afterEach((to) => {
+  // wxShare({
+  //   title: to.meta.title,
+  //   desc: 'to.meta.shareDesc',
+  //   link: 'http://www.baidu.com',
+  //   logo: 'to.meta.shareLogo'
+  // })
   if (to.meta.title !== null && to.meta.title !== '') {
     document.title = to.meta.title
   } else {

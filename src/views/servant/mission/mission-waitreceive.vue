@@ -22,7 +22,6 @@
       </h2>
       <p v-if="detail.CancelDescription" class="canceled_reason">{{detail.CancelDescription}}</p>
     </div>
-
     <xx-timeLine :step="detail.State | stepFileter" class="mt10px">
       <xx-timeLine-items
         slot="items"
@@ -38,9 +37,12 @@
             <p class="normal_desc_p">服务对象：{{detail.UserName}}</p>
             <p class="normal_desc_p">执行人：{{detail.ServantName}}</p>
             <p class="normal_desc_p">约定到达时间：{{detail.ConfirmArriveTime | xxTimeFormatFilter}}</p>
-            <p class="normal_desc_p" :class="[detail.NeedTools?'redColor':'']" >工具：{{detail.NeedTools?'需要准备':'不需要准备'}}</p>
-            <p class="normal_desc_p" :class="[detail.NeedDrug?'redColor':'']" >药品：{{detail.NeedDrug?'需要准备':'不需要准备'}}</p>
             <p v-if="detail.ReserveRemark" class="normal_desc_p" style="word-break: break-all">备注：{{detail.ReserveRemark}}</p>
+            <div style="margin-top: 5px" v-if="carryTags.length > 0">
+              <i v-for="(item, index) in carryTags" :key="index" class="i_tags" :style="{'background-color': colorToRgb('#f56c6c', .2),'color': '#f56c6c','borderColor': '#f56c6c'}">
+                {{item.ViewName}}
+              </i>
+            </div>
           </li>
           <li class="desc_list_items">
             <h5 class="desc_list_items_title">用户描述</h5>
@@ -200,6 +202,7 @@
 import CancelMissionPopup from '@/components/cancelMissionPopup'
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 import { Rater } from 'vux'
+import util from '@/plugins/util'
 export default {
   components: {
     ImagePreviewItem,
@@ -218,7 +221,8 @@ export default {
       serviceResult: '', // 服务结果
       remark: '', // 备注
       serivicePic: '', // 服务相关图片
-      reviewDetail: {} // 评价
+      reviewDetail: {}, // 评价
+      carryTags: []
     }
   },
   computed: {
@@ -244,6 +248,9 @@ export default {
     this.initDetail()
   },
   methods: {
+    colorToRgb (color, clarity) {
+      return util.colorToRgb(color, clarity)
+    },
     /**
      * 完成任务
      */
@@ -437,6 +444,9 @@ export default {
           that.$vux.toast.show(value.Msg)
         }
       })
+      await this.getCarryTags().then(value => {
+        this.carryTags = value
+      })
       if (that.detail.State >= 3) {
         await that.getActionList().then(value => {
           that.actionList = value.Data
@@ -477,6 +487,17 @@ export default {
     async getReviewDetail () {
       const res = await this.$http.get('/ServantReviewDetails?missionID=' + this.MissionID)
       return res.data
+    },
+    /**
+     * 获取携带物品标签
+     */
+    async getCarryTags () {
+      if (this.detail.PrepareGoodsTags) {
+        const res = await this.$http.get(`/CarryGoodsList?tags=${this.detail.PrepareGoodsTags}`)
+        return res.data.Data
+      } else {
+        return []
+      }
     },
     /**
      * 图片上传回调
@@ -658,6 +679,20 @@ export default {
       height: 25px;
       line-height: 25px;
     }
+  }
+  .i_tags
+  {
+    display: inline-block;
+    margin-right: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 12px;
+    padding: 0 5px;
+    font-style: normal;
+    word-break: break-word;
   }
 </style>
 

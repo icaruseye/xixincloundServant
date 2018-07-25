@@ -304,4 +304,8 @@ export default {
     background: #f44336
   }
 }
+.weui-btn_cancel
+{
+  background-color: #ffc349
+}
 </style>

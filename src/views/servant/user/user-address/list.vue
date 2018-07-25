@@ -1,17 +1,16 @@
 <template>
   <div>
     <div class="form-panel">
-      <template v-if="addressList.length > 0" v-for="(item, index) in addressList">
-        <div class="weui-form-cell" @click="toEdit(item.ID, index)" :key="index">
+      <div v-if="addressList.length > 0" >
+        <div v-for="(item, index) in addressList" class="weui-form-cell" @click="toEdit(item.ID, index)" :key="index">
           <div class="tag">{{item.Remark}}<span v-if="index === 0">(默认)</span></div>
           <div class="detail">{{item.Province | transformAddress}}{{item.City | transformAddress}}{{item.Area | transformAddress}}{{item.SpecificAddress}}</div>
           <i class="iconfont icon-jiantouyou"></i>
         </div>
-      </template>
-      <!-- 空状态 -->
-      <xxOccupiedBox v-else>
-        <p>你还没有添加过地址哦</p>
-      </xxOccupiedBox>
+      </div>
+      <xx-occupied-box v-else>
+        你还没有添加过地址哦
+      </xx-occupied-box>
     </div>
       <button type="button" class="weui-btn weui-btn_primary" @click="toEdit(-1, 0)">新建地址</button>
     <div v-transfer-dom>
@@ -81,7 +80,7 @@ export default {
         this.UserAddress.IsDefault = (index === 0) ? 1 : 0
       } else {
         this.UserAddress = { // 新增
-          IsDefault: 0
+          IsDefault: this.addressList.length > 0 ? 0 : 1
         }
       }
       this.showAddress = true

@@ -6,7 +6,7 @@
         <div v-if="title" class="weui-uploader__hd">
           {{title}}
         </div>
-        <div class="weui-uploader__bd">
+        <div class="weui-uploader__bd clearfix">
             <ul class="weui-uploader__files uploaderFiles">
               <template v-for="(img, index) in list" >
                 <li
@@ -15,16 +15,20 @@
                   class="weui-uploader__file weui-uploader__file_status">
                   <div class="weui-uploader__file-content">
                     <div class="progress-bar">
-                      <div class="progress-bar_in" :style="{'width': img.progress + '%'}"></div>
+                      <div class="progress-bar_in" :style="{'width': img.progress + '%'}">
+                        <template v-if="img.progress >= 100">
+                          上传成功
+                        </template>
+                      </div>
                     </div>
-                    <i v-if="img.status === 1" class="iconfont iconfont-remove icon-shanchuguanbicha2" v-on:click="removeImg(index)"></i>
+                    <i v-if="img.status === 1" class="iconfont iconfont-remove icon-guanbi" v-on:click="removeImg(index)"></i>
                   </div>
                 </li>
               </template>
+              <div class="weui-uploader__input-box" v-show="count !== limit">
+                  <input class="weui-uploader__input" type="file" @change="change">
+              </div>
             </ul>
-            <div class="weui-uploader__input-box" v-show="count !== limit">
-                <input class="weui-uploader__input" type="file" @change="change">
-            </div>
         </div>
       </div>
       <!-- 头像 -->
@@ -150,9 +154,9 @@ export default {
         }
       }
       try {
+        this.count++
         let res = await axios(options)
         _img.status = 1
-        this.count++
         if (this.isAvatar) {
           this.guid = [res.data.data.objectId]
         } else {
@@ -160,6 +164,7 @@ export default {
         }
         this.$emit('onUpdate', this.guid)
       } catch (error) {
+        this.count--
         AlertModule.show({
           title: '提示',
           content: '网络错误，上传失败'
@@ -241,17 +246,18 @@ export default {
 .weui-uploader__bd {
   margin-bottom: -4px;
   margin-right: -9px;
-  overflow: hidden;
 }
 .weui-uploader__files {
   list-style: none;
+  display: flex;
+  flex-flow: wrap;
 }
 .weui-uploader__file {
-  float: left;
-  margin-right: 9px;
-  margin-bottom: 9px;
   width: 79px;
   height: 79px;
+  overflow: hidden;
+  margin: 0 10px 10px 0;
+  border: 1px solid #eee;
   background: no-repeat center center;
   background-size: cover;
   border-radius: 0;
@@ -266,7 +272,6 @@ export default {
   right: 0;
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, .6);
   border-radius: 0;
 }
 .weui-uploader__file_status .weui-uploader__file-content {
@@ -338,23 +343,27 @@ export default {
   bottom: 0;
   background: rgba(0, 0, 0, 0.4);
   width: 79px;
-  height: 8px;
+  height: 16px;
 }
 
 .progress-bar_in {
   width: 0;
   height: 100%;
-  background: #41b883;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  background: rgba(65, 184,131,.2);
   transition: .3s;
 }
 
 .iconfont-remove {
   position: absolute;
-  top: 45%;
-  left: 50%;
-  color: #d34330;
-  font-size: 20px;
-  transform: translate(-50%,-50%)
+  top: 0;
+  right: 0;
+  display: block;
+  color: rgba(0,0,0,.5);
+  line-height: 25px;
+  font-size: 25px;
 }
 
 .is-avatar {
