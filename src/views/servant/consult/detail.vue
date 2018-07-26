@@ -302,12 +302,6 @@ export default {
                   this.scrollToBottom()
                 } else {
                   this.showNewMessageRemind = true
-                  // this.$vux.toast.show({
-                  //   text: '滚到底部查看新消息',
-                  //   position: 'bottom',
-                  //   type: 'text',
-                  //   width: '12em'
-                  // })
                 }
               }
             }
@@ -331,18 +325,17 @@ export default {
     // 更多的消息
     async moreMessage () {
       const prePageLastDomClass = `.message_item_${this.messageList[0].ID}`
-      const prePageLastDomTop = document.querySelector(prePageLastDomClass).offsetTop
+      const prescrollTop = (document.body.scrollTop | document.documentElement.scrollTop)
+      const prePageLastDomTop = document.querySelector(prePageLastDomClass).offsetTop - prescrollTop
       this.$vux.loading.show('加载中')
       await this.getMessageList().then(result => {
         this.messageId = result.Data.MessageID
-        this.messageList = [
-          ...result.Data.ContentList,
-          ...this.messageList
-        ]
+        this.messageList.unshift(...result.Data.ContentList)
         this.changeMessageList()
       })
       this.$nextTick(() => {
-        document.body.scrollTop = document.documentElement.scrollTop = document.querySelector(prePageLastDomClass).offsetTop - prePageLastDomTop
+        const prePageLastDom = document.querySelector(prePageLastDomClass)
+        document.body.scrollTop = document.documentElement.scrollTop = (prePageLastDom.offsetTop - prePageLastDomTop)
       })
       this.$vux.loading.hide()
     },
