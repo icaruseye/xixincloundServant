@@ -2,7 +2,15 @@
   <div>
     <template  v-if="prewimgList != null">
       <div class="thumbs_container">
-        <img v-for="(item, index) in prewimgList" :src="item.src" :key="index" @click="previewImage(index)" class="previewer-img" :class="groupClass" @load="onloaded" alt="">
+        <img v-for="(item, index) in prewimgList" 
+          :src="item.src"
+          v-lazy="item.src"
+          :key="index"
+          @click="previewImage(index)"
+          class="previewer-img"
+          :class="groupClass"
+          @load="onloaded"
+        >
       </div>
       <div v-transfer-dom>
         <previewer ref="previewer" :list="prewimgList" :options="options"></previewer>

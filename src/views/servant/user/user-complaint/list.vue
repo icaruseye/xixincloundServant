@@ -12,8 +12,7 @@
     <div v-if="list.length > 0" class="weui-panel">
       <div v-for="(item, index) in list" :key="index" class="weui-cell" @click = "redirectDetail(item.ID)">
         <div class="left">
-          <img v-if="item.UseType === 2" class="img_icon" src="@/assets/images/icon_consult_item.png" alt="图文咨询">
-          <img v-else class="img_icon" src="@/assets/images/icon_tcmr.png" alt="任务">
+          <img class="img_icon" :src="item.UseType | xxMissionTypeIconFilter" alt="任务">
         </div>
         <div class="right">
           <div class="title">

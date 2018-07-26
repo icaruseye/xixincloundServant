@@ -147,7 +147,7 @@ export default {
         method: 'post',
         url: `${process.env.IMAGE_HOST}/File/Upload`,
         data: fd,
-        timeout: 15000,
+        timeout: 50000,
         onUploadProgress: function (progressEvent) {
           var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
           _img.progress = complete

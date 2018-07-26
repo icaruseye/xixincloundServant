@@ -1,5 +1,5 @@
 <template>
-  <div class="warp_container">
+  <div class="warp_container" v-if="detail">
     <xx-step-bar :step="detail.State | stepFileter">
       <xx-step-items slot="items">
         用户资料
@@ -19,8 +19,7 @@
     </div>
     <div class="mission_card_container" @click="redirectMissionDetail">
       <div class="left">
-        <img v-if="detail.UseType === 2" src="@/assets/images/icon_consult_item.png" alt="图文咨询">
-        <img v-else src="@/assets/images/icon_tcmr.png" alt="任务">
+        <img :src="detail.UseType | xxMissionTypeIconFilter" alt="任务">
       </div>
       <div class="right">
         <h3 class="mission_title">
@@ -170,7 +169,12 @@ export default {
         text: '加载中'
       })
       await this.getData().then(value => {
-        this.detail = value.Data
+        if (value.Data.State === -1) {
+          this.$vux.alert.show('用户已取消投诉')
+          this.$router.push('/user')
+        } else {
+          this.detail = value.Data
+        }
       })
       this.$vux.loading.hide()
       document.documentElement.scrollTop = 0

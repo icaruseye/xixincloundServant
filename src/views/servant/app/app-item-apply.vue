@@ -7,7 +7,9 @@
         <div class="weui-cell" :key="index">
           <div class="weui-cell-top">
             <!-- <div class="icon"><img :src="item.Img" alt=""></div> -->
-            <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
+            <div class="icon">
+              <img :src="item.UseType | xxMissionTypeIconFilter" alt="任务">
+            </div>
             <div class="name">{{item.Name}}</div>
             <div class="btn">
               <button v-if="item.State === 0" class="" @click="go(item.ID, index)">申请</button>

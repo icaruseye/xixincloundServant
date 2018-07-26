@@ -4,10 +4,12 @@
     <!-- 只有图片的类型 -->
     <div v-if="MsgType === 2" :class="[originator+'_imgChat_msg']">
       <div class="thumbs_container">
-      <x-img :src="Content | transformImgUrl" @click.native="previewImage(0)" class="previewer-img" :class="[imgGroupClass]" @load.native="onloaded" default-src="/src/assets/images/loading_img.gif" error-class="ximg-error" :offset="-100"></x-img>
-      </div>
-      <div v-transfer-dom>
-        <previewer ref="previewer" :list="previewImgUrlList" :options="options"></previewer>
+        <img
+          :src="modelImage"
+          @click="previewImage(imgIndex)"
+          :class="[`chat_imgs_thumb_${imgIndex}`]"
+          @load="onloaded"
+         >
       </div>
     </div>
     <!-- 文本 -->
@@ -19,16 +21,8 @@
   </div>
 </template>
 <script>
-import { Previewer, TransferDom, XImg } from 'vux'
 import util from '@/plugins/util'
 export default {
-  directives: {
-    TransferDom
-  },
-  components: {
-    Previewer,
-    XImg
-  },
   props: {
     avatar: {
       type: String,
@@ -45,38 +39,26 @@ export default {
     MsgType: {
       type: Number,
       default: ''
+    },
+    imgIndex: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
-    previewImgUrlList () {
-      const that = this
-      return [
-        {
-          src: util.transformImgUrl(that.Content)
-        }
-      ]
+    modelImage: {
+      cache: false,
+      get () {
+        return util.transformImgUrl(this.Content)
+      }
     },
     originator () {
       return (this.IsServantReceive === 1) ? 'from' : 'to'
-    },
-    imgGroupClass () {
-      return `preview_image_${Math.floor(Math.random() * 9999 + 1000)}`
-    },
-    options () {
-      const that = this
-      return {
-        getThumbBoundsFn (index) {
-          let thumbnail = document.querySelectorAll(`.${that.imgGroupClass}`)[index]
-          let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
-          let rect = thumbnail.getBoundingClientRect()
-          return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
-        }
-      }
     }
   },
   methods: {
     previewImage (index) {
-      this.$refs.previewer.show(index)
+      this.$emit('previewImage', index)
     },
     onloaded () {
       this.$emit('onloaded')

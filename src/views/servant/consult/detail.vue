@@ -1,5 +1,9 @@
 <template>
  <div @click="closeEmojiBox" style="padding-top:100px;overflow:hidden">
+    <!-- 图片预览 -->
+    <div v-transfer-dom>
+      <previewer ref="chatImagePreviewer" @on-close="chatImagePreviewerClose" :list="chatMsgImgs" :options="options"></previewer>
+    </div>
     <div style="position:fixed;top:0;left:0;right:0;z-index:1000">
       <xx-step-bar :step="detail.State | stepFilter">
         <xx-step-items slot="items">
@@ -33,6 +37,8 @@
             :avatar="(item.IsServantReceive === 0)?userAccount.Avatar:FromAvatar"
             :Content="item.Content"
             :MsgType="item.MsgType"
+            :imgIndex="item.imgIndex"
+            @previewImage="previewImage"
           >
           </text-chat-item>
           <graphic-message 
@@ -74,7 +80,7 @@
  </div>
 </template>
 <script>
-import { Sticky, Toast } from 'vux'
+import { Sticky, Toast, Previewer, TransferDom } from 'vux'
 import { mapGetters } from 'vuex'
 import CancelMissionPopup from '@/components/cancelMissionPopup'
 import SystemMsgItem from './components/systemMsgItem'
@@ -85,6 +91,9 @@ import { setInterval, clearInterval } from 'timers'
 import comments from './components/comments'
 import util from '@/plugins/util'
 export default {
+  directives: {
+    TransferDom
+  },
   components: {
     Sticky,
     SystemMsgItem,
@@ -93,7 +102,8 @@ export default {
     GraphicMessage,
     CancelMissionPopup,
     Toast,
-    comments
+    comments,
+    Previewer
   },
   filters: {
     stepFilter (val = 0) {
@@ -112,6 +122,8 @@ export default {
   },
   data () {
     return {
+      chatImagePreviewerVisible: false,
+      previewImageImage: new Image(),
       commentPanelVisible: false,
       showNewMessageRemind: false,
       detail: {},
@@ -126,7 +138,8 @@ export default {
           key: '999',
           value: '请填写取消原因'
         }
-      ]
+      ],
+      chatMsgImgs: []
     }
   },
   computed: {
@@ -136,12 +149,52 @@ export default {
     ]),
     ID () {
       return this.$route.params.id || ''
+    },
+    options () {
+      return {
+        getThumbBoundsFn (index) {
+          let thumbnail = document.querySelector(`.chat_imgs_thumb_${index}`)
+          let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
+          let rect = thumbnail.getBoundingClientRect()
+          return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
+        }
+      }
     }
   },
   created () {
     this.init()
   },
   methods: {
+    changeMessageList () {
+      const that = this
+      let imgs = []
+      let index = 0
+      for (let i = 0; i < that.messageList.length; i++) {
+        if (that.messageList[i].MsgType === 2) {
+          that.messageList[i].imgIndex = index
+          imgs.push({
+            src: util.transformImgUrl(that.messageList[i].Content)
+          })
+          index++
+        }
+      }
+      this.chatMsgImgs = imgs
+    },
+    chatImagePreviewerClose () {
+      this.chatImagePreviewerVisible = false
+    },
+    previewImage (index) {
+      if (!this.chatImagePreviewerVisible) {
+        this.$vux.loading.show('图片加载中')
+        this.chatImagePreviewerVisible = true
+        this.previewImageImage.onload = () => {}
+        this.previewImageImage.src = this.chatMsgImgs[index].src
+        this.previewImageImage.onload = () => {
+          this.$vux.loading.hide()
+          this.$refs.chatImagePreviewer.show(index)
+        }
+      }
+    },
     // 获取温馨提示
     getWarmPrompt () {
       util.getWarmPrompt(18, this.detail.ItemID).then(value => {
@@ -154,7 +207,9 @@ export default {
       return false
     },
     closeEmojiBox (e) {
-      this.$refs.SendMsgBarRef.emojiContainerShow = false
+      if (this.$refs.SendMsgBarRef) {
+        this.$refs.SendMsgBarRef.emojiContainerShow = false
+      }
     },
     /**
      * 取消任务
@@ -186,6 +241,7 @@ export default {
     async sendMsg (msg) {
       this.lockToBottom = false
       this.messageList.push(msg)
+      this.changeMessageList()
       this.scrollToBottom()
       msg.MissionID = this.ID
       await this.$http.post(`/Chat`, {
@@ -220,6 +276,7 @@ export default {
           this.messageList = result.Data.ContentList
           this.FromAvatar = result.Data.Avatar
           this.messageId = result.Data.MessageID
+          this.changeMessageList()
           this.scrollToBottom()
         }
       })
@@ -282,6 +339,7 @@ export default {
           ...result.Data.ContentList,
           ...this.messageList
         ]
+        this.changeMessageList()
       })
       this.$nextTick(() => {
         document.body.scrollTop = document.documentElement.scrollTop = document.querySelector(prePageLastDomClass).offsetTop - prePageLastDomTop

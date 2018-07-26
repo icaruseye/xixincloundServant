@@ -63,8 +63,7 @@
 
       <div class="service_item_container">
         <div class="service_item_icon_box">
-          <img v-if="detail.UseType === 2" src="@/assets/images/icon_consult_item.png" alt="图文咨询">
-          <img v-else src="@/assets/images/icon_tcmr.png" alt="任务">
+          <img :src="detail.UseType | xxMissionTypeIconFilter" alt="任务">
         </div>
         <div class="service_item_content_container">
           <h3 class="service_item_content_title">{{detail.MissionName}}</h3>

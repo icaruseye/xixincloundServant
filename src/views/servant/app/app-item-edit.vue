@@ -250,6 +250,15 @@ export default {
               that.$router.back()
             }
           })
+        } else if (res.data.Code === 300201) {
+          this.$vux.confirm.show({
+            title: '温馨提示',
+            content: res.data.Msg,
+            confirmText: '添加地址',
+            onConfirm () {
+              that.$router.push('/user/address')
+            }
+          })
         } else {
           this.$vux.toast.text(res.data.Msg)
         }

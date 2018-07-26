@@ -24,8 +24,7 @@
         <div class="weui-list_container">
           <div class="weui-list_item" v-for="(item, index) in dataList" :key="index" @click="redirectDetail(item.State, item.Type, item.ID, item.UseType)">
             <div class="avatar">
-              <img v-if="item.UseType === 2" src="@/assets/images/icon_consult_item.png" alt="图文咨询">
-              <img v-else src="@/assets/images/icon_tcmr.png" alt="任务">
+              <img :src="item.UseType | xxMissionTypeIconFilter" alt="任务">
             </div>
             <div class="mid">
               <div style="display: flex;justify-content: space-between;align-items: baseline;">
@@ -80,12 +79,6 @@
 import { Sticky } from 'vux'
 import { mapMutations, mapGetters } from 'vuex'
 export default {
-  filters: {
-    timeFormat (value = '') {
-      value = value.replace('T', ' ')
-      return value
-    }
-  },
   components: {
     Sticky
   },
