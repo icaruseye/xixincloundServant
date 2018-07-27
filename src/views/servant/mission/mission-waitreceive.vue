@@ -69,11 +69,11 @@
               <a :href="'tel:'+detail.Mobile" style="font-size: 12px;color: #999999;">{{detail.Mobile}}</a>
             </p>
             <p class="normal_desc_p">
-              用户服务地址：
+              服务地址：
               <span style="font-size: 12px;color: #999999;">{{detail.Address}}</span>
             </p>
             <xx-hint style="margin: 0;height: 30px;line-height:30px">
-              服务人员还未到达服务指定地点
+              {{detail.UseType === 3 ? '用户' : '服务人员'}}还未到达服务指定地点
             </xx-hint>
           </li>
         </ul>

@@ -58,14 +58,17 @@ Vue.filter('xxGetBankCardLogoFilter', (BankAbbreviation = 'CMBC') => {
   const bankList = util.getSupportBankList()
   return bankList[BankAbbreviation].icon
 })
+/**
+ * 任务图标
+ */
 Vue.filter('xxMissionTypeIconFilter', (useType = 1) => {
   switch (useType) {
     case 2:
-      return '/src/assets/images/icon_consult_item.png'
+      return require('@/assets/images/icon_consult_item.png')
     case 3:
-      return '/src/assets/images/icon_hospital.png'
+      return require('@/assets/images/icon_hospital.png')
     default:
-      return '/src/assets/images/icon_tcmr.png'
+      return require('@/assets/images/icon_tcmr.png')
   }
 })
 
