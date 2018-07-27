@@ -48,23 +48,34 @@
         <div v-for="(item, typeIndex) in packageList" :key="typeIndex" v-if="packageList.length > 0">
           <div class="weui-list-title">{{BundleType[typeIndex].Name}}</div>
           <div class="weui-list-panel weui-panel">
-            <template v-for="(i, index) in packageList[typeIndex]">
-              <div class="weui-cell" :key="index">
-                <div class="weui-cell-top">
-                  <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
-                  <div class="mid">
-                    <div class="name">{{i.PackageInfo.Name}}</div>
-                    <div class="price"><span>￥</span>{{i.PackageInfo.Price === 0 ? '0' : (i.PackageInfo.Price / 100).toFixed(2)}}</div>
-                  </div>
-                  <div class="btns">
-                    <button class="gray btn">库存:{{i.PackageInfo.Count}}</button>
-                    <button class="danger btn" @click="changeStatusDown(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 1">下架</button>
-                    <button class="default btn" @click="changeStatusUp(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 0">上架</button>
-                    <button class="default btn" @click="showPopup(i.PackageInfo.ID, typeIndex, index)">操作</button>
-                  </div>
+            <div class="mission_package_items_container" v-for="(i, index) in packageList[typeIndex]" :key="index">
+              <i class="iconfont icon-fuwubaoguanli mission_package_items_icon"></i>
+              <p class="mission_package_name">{{i.PackageInfo.Name | xxTextSubFilter}}</p>
+              <p class="mission_package_num">库存：{{i.PackageInfo.Count}}</p>
+              <p class="mission_package_price">总价：{{i.PackageInfo.Price === 0 ? '0' : (i.PackageInfo.Price / 100).toFixed(2)}}</p>
+              <!-- <div v-if="i.">
+                <p>
+                  {{}}
+                </p>
+              </div> -->
+            </div>
+
+
+            <div v-for="(i, index) in packageList[typeIndex]" class="weui-cell" :key="index">
+              <div class="weui-cell-top">
+                <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
+                <div class="mid">
+                  <div class="name">{{i.PackageInfo.Name}}</div>
+                  <div class="price"><span>￥</span>{{i.PackageInfo.Price === 0 ? '0' : (i.PackageInfo.Price / 100).toFixed(2)}}</div>
+                </div>
+                <div class="btns">
+                  <button class="gray btn">库存:{{i.PackageInfo.Count}}</button>
+                  <button class="danger btn" @click="changeStatusDown(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 1">下架</button>
+                  <button class="default btn" @click="changeStatusUp(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 0">上架</button>
+                  <button class="default btn" @click="showPopup(i.PackageInfo.ID, typeIndex, index)">操作</button>
                 </div>
               </div>
-            </template>
+            </div>
           </div>
         </div>
       </template>
@@ -336,5 +347,46 @@ export default {
 {
   display: block;
   height: 40px;
+}
+.mission_package_items_container
+{
+  position: relative;
+  padding: 10px 10px 10px 60px;
+  min-height: 80px;
+  .mission_package_items_icon
+  {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    display: block;
+    height: 40px;
+    width: 40px;
+    text-align: center;
+    line-height: 40px;
+    font-size: 40px;
+    color: #3AC7F5
+  }
+  .mission_package_name
+  {
+    font-size: 16px;
+    color: #666;
+    height: 20px;
+    line-height: 20px;
+  }
+  .mission_package_num
+  {
+    font-size: 12px;
+    color: #999;
+    line-height: 20px;
+  }
+  .mission_package_price
+  {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 14px;
+    line-height: 40px;
+    color:#3AC7F5
+  }
 }
 </style>
