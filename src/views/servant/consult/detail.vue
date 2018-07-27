@@ -2,7 +2,7 @@
  <div @click="closeEmojiBox" style="padding-top:100px;overflow:hidden">
     <!-- 图片预览 -->
     <div v-transfer-dom>
-      <previewer ref="chatImagePreviewer" @on-close="chatImagePreviewerClose" :list="chatMsgImgs" :options="options"></previewer>
+      <previewer ref="chatImagePreviewer" @on-close="chatImagePreviewerClose" :list="chatMsgImgs"></previewer>
     </div>
     <div style="position:fixed;top:0;left:0;right:0;z-index:1000">
       <xx-step-bar :step="detail.State | stepFilter">
@@ -149,16 +149,6 @@ export default {
     ]),
     ID () {
       return this.$route.params.id || ''
-    },
-    options () {
-      return {
-        getThumbBoundsFn (index) {
-          let thumbnail = document.querySelector(`.chat_imgs_thumb_${index}`)
-          let pageYScroll = window.pageYOffset || document.documentElement.scrollTop
-          let rect = thumbnail.getBoundingClientRect()
-          return {x: rect.left, y: rect.top + pageYScroll, w: rect.width}
-        }
-      }
     }
   },
   created () {
@@ -290,14 +280,14 @@ export default {
       this.$vux.loading.hide()
       // 消息轮询
       if (this.detail.State === 0 || this.detail.State === 3) {
-        const rotation = setInterval(() => {
+        let rotation = null
+        clearInterval(rotation)
+        rotation = setInterval(() => {
           this.getGraphicConsultationChat().then(result => {
             if (result.Code === 100000) {
               if (result.Data && result.Data.length > 0) {
-                this.messageList = [
-                  ...this.messageList,
-                  ...result.Data
-                ]
+                this.messageList.push(...result.Data)
+                this.changeMessageList()
                 if ((document.documentElement.clientHeight + (document.body.scrollTop || document.documentElement.scrollTop)) >= document.querySelector('body').scrollHeight - 20) {
                   this.scrollToBottom()
                 } else {
