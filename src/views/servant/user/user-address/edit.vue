@@ -23,7 +23,7 @@
         <label class="label" for="" style="width:95px">标签：</label>
         <input v-model="Remark" name="tag" type="text" class="input_control" placeholder="请输入标签">
         <checker v-model="Remark" :radio-required="true" default-item-class="tags-item" selected-item-class="tags-item-selected">
-          <checker-item value="家">家</checker-item>
+          <checker-item value="机构">机构</checker-item>
           <checker-item value="医院">医院</checker-item>
           <checker-item value="其他">其他</checker-item>
         </checker>
@@ -86,16 +86,10 @@ export default {
     citys: {
       cache: false,
       get: function () {
-        return (this.modelAddress.Province && this.modelAddress.City && this.modelAddress.Area) ? [
-          this.modelAddress.Province || null,
-          this.modelAddress.City || null,
-          this.modelAddress.Area || null
-        ] : []
+        return this.modelAddress.cityTemp
       },
       set: function (val) {
-        this.modelAddress.Province = val[0]
-        this.modelAddress.City = val[1]
-        this.modelAddress.Area = val[2]
+        this.modelAddress.cityTemp = val
       }
     },
     SpecificAddress: {
@@ -125,6 +119,9 @@ export default {
         this.modelAddress.IsDefault = val
       }
     }
+  },
+  mounted () {
+    this.modelAddress.cityTemp = (this.modelAddress.Province ? [this.modelAddress.Province, this.modelAddress.City, this.modelAddress.Area] : [])
   },
   data () {
     const that = this
