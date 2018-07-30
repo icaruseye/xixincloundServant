@@ -14,7 +14,7 @@
           @onUpdate="onUpdate5"
         ></xx-uploader>
         <i class="iconfont icon-jiantouyou"></i>
-    </div>
+      </div>
     </div>
     <div class="weui-cell">
       <div class="weui-cell-top">
@@ -156,6 +156,10 @@ export default {
     },
     async validateBeforeSubmit () {
       const that = this
+      if (that.reqParam.nickname.length > 9) {
+        that.$vux.toast.text('昵称最多9个字')
+        return false
+      }
       const isValidate = util.validateForm(this.reqParam, this.authText)
       if (isValidate) {
         this.submitBtn = true

@@ -3,7 +3,7 @@
     <div class="user_top_container">
       <img class="user_avatar" :src="userAccount.Avatar | transformImgUrl" alt="">
       <div class="user_nickName">
-        {{userInfo.RealName}}
+        {{userAccount.NickName}}
       </div>
       <!-- <p class="user_desc">
         儿科

@@ -45,41 +45,30 @@
     <!-- 服务套餐 -->
     <div v-if="modelServiceListTabIndex === 1">
       <template v-if="packageList.length > 0">
-        <div v-for="(item, typeIndex) in packageList" :key="typeIndex" v-if="packageList.length > 0">
+        <div class="packageList_container" v-for="(item, typeIndex) in packageList" :key="typeIndex" v-if="packageList.length > 0">
           <div class="weui-list-title">{{BundleType[typeIndex].Name}}</div>
-          <div class="weui-list-panel weui-panel">
+          <div>
             <div class="mission_package_items_container" v-for="(i, index) in packageList[typeIndex]" :key="index">
               <i class="iconfont icon-fuwubaoguanli mission_package_items_icon"></i>
               <p class="mission_package_name">{{i.PackageInfo.Name | xxTextSubFilter}}</p>
               <p class="mission_package_num">库存：{{i.PackageInfo.Count}}</p>
-              <p class="mission_package_price">总价：{{i.PackageInfo.Price === 0 ? '0' : (i.PackageInfo.Price / 100).toFixed(2)}}</p>
-              <!-- <div v-if="i.">
-                <p>
-                  {{}}
+              <p class="mission_package_price">总价：{{i.PackageInfo.Price === 0 ? '免费' : '￥' + (i.PackageInfo.Price / 100).toFixed(2)}}</p>
+              <div class="mission_items_container" v-if="i.ItemsInfo.length > 0">
+                <p class="mission_items_box" v-for="(missionItem, missionIndex) in i.ItemsInfo" :key="missionIndex">
+                  {{missionItem.Name}} × {{missionItem.ItemNumber}}
+                  <span class="mission_items_price">{{missionItem.Price === 0 ? '免费' : '￥' + (missionItem.Price / 100).toFixed(2)}}</span>
                 </p>
-              </div> -->
-            </div>
-
-
-            <div v-for="(i, index) in packageList[typeIndex]" class="weui-cell" :key="index">
-              <div class="weui-cell-top">
-                <div class="icon"><img src="@/assets/images/icon_tcmr.png" alt=""></div>
-                <div class="mid">
-                  <div class="name">{{i.PackageInfo.Name}}</div>
-                  <div class="price"><span>￥</span>{{i.PackageInfo.Price === 0 ? '0' : (i.PackageInfo.Price / 100).toFixed(2)}}</div>
-                </div>
-                <div class="btns">
-                  <button class="gray btn">库存:{{i.PackageInfo.Count}}</button>
-                  <button class="danger btn" @click="changeStatusDown(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 1">下架</button>
-                  <button class="default btn" @click="changeStatusUp(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 0">上架</button>
-                  <button class="default btn" @click="showPopup(i.PackageInfo.ID, typeIndex, index)">操作</button>
-                </div>
+              </div>
+              <div class="mission_oper_container">
+                <button class="default btn" @click="showPopup(i.PackageInfo.ID, typeIndex, index)">操作</button>
+                <button class="danger btn" @click="changeStatusDown(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 1">下架</button>
+                <button class="default btn" @click="changeStatusUp(i.PackageInfo.ID)" v-if="i.PackageInfo.State === 0">上架</button>
               </div>
             </div>
           </div>
         </div>
       </template>
-      <div  v-else style="position: relative; height:200px">
+      <div v-else style="position: relative; height:200px">
         <xx-occupied-box>
           没有可用的套餐包
         </xx-occupied-box>
@@ -348,11 +337,32 @@ export default {
   display: block;
   height: 40px;
 }
+.packageList_container
+{
+  margin-bottom: 10px;
+}
 .mission_package_items_container
 {
   position: relative;
   padding: 10px 10px 10px 60px;
   min-height: 80px;
+  background-color: #fff;
+  &::after
+  {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    content: '';
+    height: 1px;
+    transform: scaleY(.5);
+    background-color: rgba(0,0,0,.1)
+  }
+  &:last-child:after
+  {
+    display: none;
+  }
   .mission_package_items_icon
   {
     position: absolute;
@@ -387,6 +397,63 @@ export default {
     font-size: 14px;
     line-height: 40px;
     color:#3AC7F5
+  }
+  .mission_items_container
+  {
+    position: relative;
+    padding: 5px 0;
+    margin-top: 5px;
+    &::before
+    {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: block;
+      content: '';
+      height: 1px;
+      transform: scaleY(.5);
+      background-color: rgba(0,0,0,.1)
+    }
+    .mission_items_box
+    {
+      position: relative;
+      font-size: 12px;
+      color: #999;
+      .mission_items_price
+      {
+        position: absolute;
+        right: 0;
+        top: 0;
+      }
+    }
+  }
+  .mission_oper_container
+  {
+    margin-top: 10px;
+    text-align: right;
+    .btn
+    {
+      outline: none;
+      padding: 0 8px;
+      min-width: 50px;
+      height: 25px;
+      line-height: 25px;
+      font-size: 13px;
+      border-radius: 2px;
+      margin-left: 8px;
+      border: 0;
+      background-color: #fff;
+    }
+    .btn.default{
+      color: #3AC7F5;
+      border: 1px solid #3AC7F5;
+      background: transparent;
+    }
+    .btn.danger {
+      border: 1px solid #ff9800;
+      color: #ff9800;
+    }
   }
 }
 </style>
