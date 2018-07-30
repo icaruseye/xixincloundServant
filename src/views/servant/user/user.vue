@@ -214,11 +214,11 @@ export default {
   height: 140px;
   background-color: #3AC7F5;
   box-sizing: border-box;
-  padding: 20px 100px 0;
+  padding: 20px 90px 0;
   .user_avatar
   {
     position: absolute;
-    left: 20px;
+    left: 10px;
     top: 15px;
     height: 60px;
     width: 60px;
@@ -238,10 +238,10 @@ export default {
   .user_qr_code_box
   {
     position: absolute;
-    right: 20px;
+    right: 10px;
     top: 20px;
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border: 1px solid rgba(255,255,255,.5);
     padding: 5px;
     box-sizing: border-box
