@@ -53,7 +53,7 @@ export default {
       await this.getUserInfo()
       const path = sessionStorage.getItem('to_path') || '/'
       sessionStorage.removeItem('to_path')
-      this.$router.push(path)
+      this.$router.replace(path)
     },
     async getToken () {
       const res = await this.$http.get('/Login', {

@@ -200,7 +200,7 @@ export default {
           text: '绑定成功',
           onHide () {
             that.updateUserAccountAndUserInfo().then(() => {
-              that.$router.push('/user/authstep2')
+              that.$router.replace('/user/authstep2')
             })
           }
         })
