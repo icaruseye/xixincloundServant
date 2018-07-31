@@ -3,8 +3,8 @@
     <a class="finished_service_btn" @click="showFinishServicePopup" href="javascript:void(0)">完成服务</a>
     <div class="oper_container">
       <label class="select_img_btn">
-        <label class="icon-tupian iconfont"  for="uploadImgBtn"></label>
-        <input id="uploadImgBtn" type="file" @change="uploadImgChange">
+        <label class="icon-tupian iconfont" for="uploadImgBtn"></label>
+        <input id="uploadImgBtn" type="file" accept="image/*" @change="uploadImgChange">
       </label>
       <div class="input_control_box">
         <textarea

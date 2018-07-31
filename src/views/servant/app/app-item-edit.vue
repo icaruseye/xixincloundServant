@@ -74,11 +74,20 @@
         <radio title='有效期单位：' :options="expiryUnitList" v-model="EffectiveType" @on-change="expiryUnitVisable = false"></radio>
       </group>
     </popup>
+    
+    <div v-transfer-dom>
+      <popup v-model="showAddress" height="100%">
+        <div v-if="showAddress">
+          <AddressEdit @cancel="cancelAddress" :UserAddress="UserAddress" @success="successAddress" :defaultOnly="true"></AddressEdit>
+        </div>
+      </popup>
+    </div>
   </div>
 </template>
 
 <script>
 import { TransferDom, XTextarea, XInput, Group, Radio, Popup, PopupHeader, Confirm, Cell } from 'vux'
+import AddressEdit from '@/views/servant/user/user-address/edit'
 export default {
   directives: {
     TransferDom
@@ -91,7 +100,8 @@ export default {
     PopupHeader,
     XTextarea,
     Radio,
-    Cell
+    Cell,
+    AddressEdit
   },
   filters: {
     expiryUnitFilter (val) {
@@ -107,6 +117,10 @@ export default {
   },
   data () {
     return {
+      showAddress: false,
+      UserAddress: {
+        IsDefault: 1
+      },
       expiryUnitVisable: false,
       EffectiveType: 1,
       submitBtnText: '',
@@ -158,6 +172,15 @@ export default {
     sessionStorage.removeItem('packageServiceDetail')
   },
   methods: {
+    cancelAddress () {
+      this.showAddress = false
+    },
+    successAddress () {
+      this.showAddress = false
+      this.$nextTick(() => {
+        this.submit()
+      })
+    },
     priceBlur () {
       let parsePrice = parseFloat(this.templateDetail.Price)
       this.templateDetail.Price = (isNaN(parsePrice) ? 0 : parsePrice)
@@ -256,7 +279,7 @@ export default {
             content: res.data.Msg,
             confirmText: '添加地址',
             onConfirm () {
-              that.$router.push('/user/address')
+              that.showAddress = true
             }
           })
         } else {

@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import routerList from './routerList'
 import apiRequest from '@/api'
-// import wxShare from '@/plugins/wxShare'
+import wxShare from '@/plugins/wxShare'
+import util from '@/plugins/util'
 
 Vue.use(Router)
 
@@ -81,12 +82,17 @@ router.beforeEach((to, from, next) => {
   }
 })
 router.afterEach((to) => {
-  // wxShare({
-  //   title: to.meta.title,
-  //   desc: 'to.meta.shareDesc',
-  //   link: 'http://www.baidu.com',
-  //   logo: 'to.meta.shareLogo'
-  // })
+  const userAccount = sessionStorage.getItem('userAccount')
+  const userInfo = sessionStorage.getItem('userInfo')
+  if (userAccount) {
+    const userAccountObject = JSON.parse(userAccount) || {}
+    const userInfoObject = JSON.parse(userInfo) || {}
+    wxShare({
+      title: userInfoObject.RealName ? `我是${userInfoObject.RealName}` : '',
+      desc: userAccountObject.Description || `我在${sessionStorage.getItem('shopName')}等你哦！`,
+      logo: util.transformImgUrl(userAccountObject.Avatar)
+    }, to.fullPath, userAccountObject.ViewID || '')
+  }
   if (to.meta.title !== null && to.meta.title !== '') {
     document.title = to.meta.title
   } else {
