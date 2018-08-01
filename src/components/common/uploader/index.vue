@@ -26,7 +26,7 @@
                 </li>
               </template>
               <div class="weui-uploader__input-box" v-show="count !== limit">
-                  <input class="weui-uploader__input" type="file" @change="change">
+                  <input class="weui-uploader__input" type="file" accept="image/*" @change="change">
               </div>
             </ul>
         </div>

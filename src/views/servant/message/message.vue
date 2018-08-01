@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom:100px">
     <sticky>
       <router-link class="system_message_entrance_container" to="/systemMail">
         <div class="avatar_container"><img :src="userAccount.Avatar | transformImgUrl" alt=""></div>
@@ -17,11 +17,14 @@
     </sticky>
 
     <div v-if="list.length > 0" class="tabbox-list vux-1px-b vux-1px-t mt10px">
-      <div v-for="(item, index) in list" class="item vux-1px-b" @click="goChat(item.FriendViewID, index)" :key="index">
-        <div><img class="avatar" :src="item.FriendAvatar | transformImgUrl" ></div>
+      <div v-for="(item, index) in list" class="item vux-1px-b" @click="goChat(item.UserViewID, index)" :key="index">
+        <div class="UnreadCount_box">
+          <i class="UnreadCount_icon" v-if="item.UnreadCount > 0">{{item.UnreadCount}}</i>
+          <img class="avatar" :src="item.UserAvatar | transformImgUrl" >
+        </div>
         <div class="mid">
-          <div class="name">{{item.FriendName}}</div>
-          <p class="text fof">{{item.AddMessage}}</p>
+          <div class="name">{{item.UserName}}</div>
+          <p class="text fof">{{item.NewestContent | xxTextTruncateFilter(18)}}</p>
         </div>
         <i class="iconfont icon-jiantouyou"></i>
       </div>
@@ -35,7 +38,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import { Sticky } from 'vux'
 export default {
   components: {
@@ -48,17 +51,28 @@ export default {
       occupiedText: ''
     }
   },
+  watch: {
+    updateChatList () {
+      this.getData()
+    }
+  },
   computed: {
     ...mapGetters([
       'userAccount',
-      'userInfo'
+      'userInfo',
+      'hasNewChat',
+      'updateChatList'
     ])
   },
-  mounted () {
+  created () {
     this.getData()
+    this.getChatHasNews()
     this.getSiteNoticeNum()
   },
   methods: {
+    ...mapActions([
+      'getChatHasNews'
+    ]),
     goChat (id, index) {
       sessionStorage.setItem('friendInfo', JSON.stringify(this.list[index]))
       this.$router.push(`/message/chat/${id}`)
@@ -153,7 +167,7 @@ export default {
 
 
 .tabbox-list {
-  padding: 15px 15px 100px;
+  padding: 15px 15px 15px;
   background: #fff;
   border-color: #E5E5E5;
   margin-bottom: 15px;
@@ -189,5 +203,26 @@ export default {
   margin-right: 10px;
   width: 40px;
   height: 40px;
+}
+.UnreadCount_box
+{
+  position: relative;
+}
+.UnreadCount_icon
+{
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 12px;
+  background-color: #f74c31;
+  color: #fff;
+  display: block;
+  padding: 0 5px;
+  height: 15px;
+  line-height: 15px;
+  border-radius: 15px;
+  font-style: normal;
+  text-align: center;
+  transform: translate(-50%,-50%)
 }
 </style>

@@ -18,8 +18,8 @@ export default function wxShare ({title, desc, timelineTitle, link, logo} = {}, 
       signature: result.data.Data.signature,
       jsApiList: ['onMenuShareAppMessage', 'onMenuShareTimeline']
     })
-    // link = `${window.location.protocol}//${result.data.Data.userHost}/servant/service/${ViewID}`
-    link = `${window.location.protocol}//${window.location.host}`
+    link = `${window.location.protocol}//${result.data.Data.userHost}/servant/service/${ViewID}`
+    // link = `${window.location.protocol}//${window.location.host}`
     Vue.wechat.ready(() => {
       Vue.wechat.onMenuShareAppMessage({
         title: title, // 分享标题

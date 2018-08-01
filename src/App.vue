@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import {InlineLoading} from 'vux'
 export default {
   name: 'app',
@@ -27,6 +27,24 @@ export default {
     ...mapGetters([
       'routerLoading',
       'apiError'
+    ])
+  },
+  data () {
+    return {
+      chatRecordHasNewTimer: null
+    }
+  },
+  created () {
+    const token = sessionStorage.getItem('servant_token')
+    if (token) {
+      this.getChatHasNews()
+      this.chatHasNews()
+    }
+  },
+  methods: {
+    ...mapActions([
+      'getChatHasNews',
+      'chatHasNews'
     ])
   }
 }

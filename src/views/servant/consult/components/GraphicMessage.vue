@@ -28,8 +28,8 @@
         <div v-if="Content.ServiceImgs != null && Content.ServiceImgs != ''" class="msg_imsg_container">
           <image-preview-item :list="Content.ServiceImgs" @onloaded="onloaded"></image-preview-item>
         </div>
-        <div class="msg_text_container">
-          {{Content.Discription ? Content.Discription : '没有填写备注'}}
+        <div v-if="Content.Discription" class="remark_container">
+          备注： {{Content.Discription}}
         </div>
         <div v-if="MsgType === 6" class="msg_link_btn" @click="showCommentPanel">
           去查看评价
@@ -211,7 +211,15 @@ export default {
     border-color: transparent transparent #eee #eee
   }
 }
-
+.remark_container
+{
+  padding: 5px 10px;
+  margin: 0 15px 15px;
+  font-size:12px;
+  color: #999;
+  border-radius: 5px; 
+  background-color: #f6f6f6
+}
 
 </style>
 

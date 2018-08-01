@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div class="wrap" v-if="detail != null">
     <xx-step-bar step="1">
       <xx-step-items slot="items">
         待确认
@@ -107,7 +107,7 @@ export default {
     return {
       submitLocked: false,
       cancelMissionPopupVisible: false,
-      detail: {},
+      detail: null,
       arrivalTime: null,
       remark: '',
       carryTags: []
@@ -135,7 +135,7 @@ export default {
           position: 'middle',
           text: '任务取消成功'
         })
-        this.$router.push('/mission')
+        this.$router.replace('/mission')
       } else {
         this.$vux.toast.show({
           width: '60%',
@@ -184,7 +184,7 @@ export default {
             that.$vux.loading.hide()
             that.submitLocked = false
             if (value.Code === 100000) {
-              that.$router.push('/mission/waitreceive/' + value.Data)
+              that.$router.replace('/mission/waitreceive/' + value.Data)
               that.$vux.toast.show({
                 position: 'middle',
                 text: '成功生成任务单'
@@ -215,14 +215,15 @@ export default {
      */
     async initDetail () {
       await this.getData().then(value => {
-        this.detail = value
+        if (value.State !== 0) {
+          this.$router.replace(`/mission/waitreceive/${value.ServiceID}?method=byServiceID`)
+        } else {
+          this.detail = value
+        }
       })
       await this.getCarryTags().then(value => {
         this.carryTags = value
       })
-      if (this.detail.State !== 0) {
-        this.$router.push('/mission')
-      }
     },
     async getData () {
       const res = await this.$http.get('/UserReserveService/' + this.MissionID)
