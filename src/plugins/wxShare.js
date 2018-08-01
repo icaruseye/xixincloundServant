@@ -6,7 +6,6 @@ Vue.use(WechatPlugin)
 
 export default function wxShare ({title, desc, timelineTitle, link, logo} = {}, fullPath = '', ViewID) {
   let url = window.encodeURIComponent(location.href.split('#')[0])
-  console.log(url)
   http.get(`/GetWechatConfig?url=${url}`).then(result => {
     if (result.status !== 200) {
       return false

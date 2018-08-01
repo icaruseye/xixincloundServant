@@ -89,7 +89,7 @@ router.afterEach((to) => {
     const userInfoObject = JSON.parse(userInfo) || {}
     wxShare({
       title: userInfoObject.RealName ? `我是${userInfoObject.RealName}` : '',
-      desc: userAccountObject.Description || `我在${sessionStorage.getItem('shopName')}等你哦！`,
+      desc: userAccountObject.Description || `${sessionStorage.getItem('shopName')}`,
       logo: util.transformImgUrl(userAccountObject.Avatar)
     }, to.fullPath, userAccountObject.ViewID || '')
   }

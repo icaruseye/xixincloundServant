@@ -153,7 +153,7 @@ export default {
 
 
 .tabbox-list {
-  padding: 15px;
+  padding: 15px 15px 100px;
   background: #fff;
   border-color: #E5E5E5;
   margin-bottom: 15px;

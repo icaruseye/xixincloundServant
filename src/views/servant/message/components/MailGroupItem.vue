@@ -1,24 +1,62 @@
 <template>
-  <div class="main_item_container">
+  <div class="main_item_container" @click="redirectToList">
     <div class="left">
-      <img class="icon_img" src="@/assets/images/app-yhgl.png" alt="">
+      <svg class="icon" aria-hidden="true">
+        <use :xlink:href="msgType|xxSiteNoticeIconFilter"></use>
+      </svg>
     </div>
     <div class="right">  
       <h3 class="title text-overflow-1">
-        系统消息
+        {{msgType|xxSiteNoticeTypeTitleFilter}}
       </h3>
       <p class="desc text-overflow-1">
-        荣获《财资》杂志 “2016年最佳企业金奖”
+        <template v-if="UnreadCount > 0">
+          {{Title}}
+        </template>
+        <template v-else>
+          没有未读的{{msgType|xxSiteNoticeTypeTitleFilter}}
+        </template>
       </p>
-      <span class="time">2018/06/08 15:20</span>
-      <i class="mail_num_icon" v-if="count > 0">{{count}}</i>
+      <span class="time">
+        <template v-if="UnreadCount > 0">
+          {{CreateTime | xxTimeFormatFilter}}
+        </template>
+      </span>
+      <i class="mail_num_icon" v-if="UnreadCount > 0">{{UnreadCount}}</i>
     </div>
   </div>
 </template>
 <script>
 export default {
   props: {
-    count: 0
+    msgType: {
+      type: Number,
+      default: 1
+    }
+  },
+  filters: {
+  },
+  data () {
+    return {
+      UnreadCount: 0,
+      Title: '',
+      CreateTime: ''
+    }
+  },
+  created () {
+    this.getLatestNews()
+  },
+  methods: {
+    redirectToList () {
+      this.$router.push(`/systemMail/${this.msgType}/list`)
+    },
+    getLatestNews () {
+      this.$http.get(`/SiteNotice/Count?type=${this.msgType}`).then(result => {
+        this.Title = result.data.Data.Title
+        this.UnreadCount = result.data.Data.UnreadCount
+        this.CreateTime = result.data.Data.CreateTime
+      })
+    }
   }
 }
 </script>
@@ -36,7 +74,7 @@ export default {
     justify-content: center;
     align-items: center;
     flex: 0 0 58px;
-    .icon_img
+    .icon
     {
       height: 30px;
       width: 30px;
