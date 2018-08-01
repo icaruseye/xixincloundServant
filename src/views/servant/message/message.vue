@@ -53,7 +53,7 @@ export default {
   },
   watch: {
     updateChatList () {
-      this.getData()
+      this.restData()
     }
   },
   computed: {
@@ -80,10 +80,15 @@ export default {
     async getData () {
       this.$vux.loading.show('加载中')
       this.occupiedText = '正在请求数据…'
-      const res = await this.$http.get('/ContactList', { Page: 1, Size: 10 })
+      const res = await this.$http.get('/ContactList', { Page: 1, Size: 100 })
       this.list = res.data.Data
       this.$vux.loading.hide()
       this.occupiedText = '没有联系人'
+    },
+    restData () {
+      this.$http.get('/ContactList', { Page: 1, Size: 100 }).then(result => {
+        this.list = result.data.Data
+      })
     },
     async getSiteNoticeNum () {
       const res = await this.$http.get('/SiteNotice/Count/Unread')
@@ -102,7 +107,7 @@ export default {
   flex-flow: nowrap;
   background-color: #fff;
   box-shadow: 0 1px 6px rgba(153, 153, 153, 0.5);
-  padding-left: 5px; 
+  padding-left: 5px;
   box-sizing: border-box;
   .avatar_container
   {
