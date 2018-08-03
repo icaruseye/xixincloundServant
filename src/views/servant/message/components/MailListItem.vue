@@ -1,50 +1,39 @@
 <template>
-  <div class="main_item_container" @click="showMessageDialog = true">
+  <div class="main_item_container" @click="redirectToDetail(id)">
     <div class="left">
-      <img class="icon_img" src="@/assets/images/app-yhgl.png" alt="">
+      <svg class="icon" aria-hidden="true">
+        <use :xlink:href="msgType|xxSiteNoticeIconFilter"></use>
+      </svg>
     </div>
-    <div class="right">  
+    <div class="right">
       <h3 class="title text-overflow-1">
-        {{title}}
+        {{title | xxTextTruncateFilter}}
       </h3>
       <p class="desc text-overflow-1"><slot></slot></p>
-      <span class="time">{{time}}</span>
+      <span class="time">{{createTime | xxTimeFormatFilter}}</span>
       <i class="mail_num_icon" v-if="count != null">{{count}}</i>
-    </div>
-    <div v-transfer-dom>
-      <x-dialog v-model="showMessageDialog" :hide-on-blur="true">
-        <div style="padding: 20px;">
-          <h2 style="font-size: 16px;font-weight: normal;text-align:left">{{title}}</h2>
-          <p style="text-align: justify;font-size:14px;color:#999;margin-top:10px">
-            <slot></slot>
-          </p>
-        </div>
-      </x-dialog>
     </div>
   </div>
 </template>
 <script>
-import { XDialog, TransferDom } from 'vux'
 export default {
-  directives: {
-    TransferDom
-  },
-  components: {
-    XDialog
-  },
   props: {
+    id: null,
     title: '',
     count: null,
-    time: ''
+    createTime: '',
+    msgType: {
+      type: Number,
+      default: 1
+    }
   },
   data () {
     return {
-      showMessageDialog: false
     }
   },
   methods: {
-    showMessage () {
-
+    redirectToDetail () {
+      this.$router.push(`/mail/${this.id}/detail`)
     }
   }
 }
@@ -57,13 +46,29 @@ export default {
   flex-flow: nowrap;
   height: 70px;
   background-color: #fff;
+  &::after
+  {
+    position: absolute;
+    content: '';
+    display: block;
+    height: 1px;
+    bottom: 0;
+    left: 58px;
+    right: 0;
+    background-color: RGBA(0, 180, 171, .2);
+    transform: scaleY(.5)
+  }
+  &:last-child:after
+  {
+    display: none;
+  }
   .left
   {
     display: flex;
     justify-content: center;
     align-items: center;
     flex: 0 0 58px;
-    .icon_img
+    .icon
     {
       height: 30px;
       width: 30px;
@@ -77,7 +82,6 @@ export default {
     flex: 1;
     flex-flow: column;
     justify-content: center;
-    padding-right: 110px;
     .title
     {
       color: #333;
@@ -120,22 +124,6 @@ export default {
       top: 40px;
     }
   }
-}
-.main_item_container::after
-{
-  position: absolute;
-  content: '';
-  display: block;
-  height: 1px;
-  bottom: 0;
-  left: 12px;
-  right: 12px;
-  background-color: RGBA(0, 180, 171, .2);
-  transform: scaleY(.5)
-}
-.main_item_container:last-child:after
-{
-  display: none;
 }
 </style>
 

@@ -1,27 +1,20 @@
 <template>
-  <div>
-    <sticky>
-      <router-link class="system_message_entrance_container" to="/systemMail">
-        <div class="avatar_container"><img :src="userAccount.Avatar | transformImgUrl" alt=""></div>
-        <div class="content">
-          {{userInfo.RealName}}
-          <!-- <span class="professional_title">护士</span> -->
-        </div>
-        <div class="icon_box">
-          <div class="sysetem_message_img_icon">
-            <img src="@/assets/images/ic_message.png" alt="">
-            <i v-if="siteNoticeNum > 0" class="new_sysetem_message_icon"></i>
-          </div>
-        </div>
-      </router-link>
-    </sticky>
+  <div style="padding-bottom:100px">
+    <div>
+      <mail-group-item :msgType="1"></mail-group-item>
+      <mail-group-item :msgType="2"></mail-group-item>
+      <mail-group-item :msgType="4"></mail-group-item>
+    </div>
 
     <div v-if="list.length > 0" class="tabbox-list vux-1px-b vux-1px-t mt10px">
-      <div v-for="(item, index) in list" class="item vux-1px-b" @click="goChat(item.FriendViewID, index)" :key="index">
-        <div><img class="avatar" :src="item.FriendAvatar | transformImgUrl" ></div>
+      <div v-for="(item, index) in list" class="item vux-1px-b" @click="goChat(item.UserViewID, index)" :key="index">
+        <div class="UnreadCount_box">
+          <i class="UnreadCount_icon" v-if="item.UnreadCount > 0">{{item.UnreadCount}}</i>
+          <img class="avatar" :src="item.UserAvatar | transformImgUrl" >
+        </div>
         <div class="mid">
-          <div class="name">{{item.FriendName}}</div>
-          <p class="text fof">{{item.AddMessage}}</p>
+          <div class="name">{{item.UserName}}</div>
+          <p class="text fof">{{item.NewestContent | xxTextTruncateFilter(18)}}</p>
         </div>
         <i class="iconfont icon-jiantouyou"></i>
       </div>
@@ -35,11 +28,11 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
-import { Sticky } from 'vux'
+import MailGroupItem from './components/MailGroupItem'
+import {mapGetters, mapActions} from 'vuex'
 export default {
   components: {
-    Sticky
+    MailGroupItem
   },
   data () {
     return {
@@ -48,17 +41,28 @@ export default {
       occupiedText: ''
     }
   },
+  watch: {
+    updateChatList () {
+      this.restData()
+    }
+  },
   computed: {
     ...mapGetters([
       'userAccount',
-      'userInfo'
+      'userInfo',
+      'hasNewChat',
+      'updateChatList'
     ])
   },
-  mounted () {
+  created () {
     this.getData()
+    this.getChatHasNews()
     this.getSiteNoticeNum()
   },
   methods: {
+    ...mapActions([
+      'getChatHasNews'
+    ]),
     goChat (id, index) {
       sessionStorage.setItem('friendInfo', JSON.stringify(this.list[index]))
       this.$router.push(`/message/chat/${id}`)
@@ -66,10 +70,15 @@ export default {
     async getData () {
       this.$vux.loading.show('加载中')
       this.occupiedText = '正在请求数据…'
-      const res = await this.$http.get('/ContactList', { Page: 1, Size: 10 })
+      const res = await this.$http.get('/ContactList', { Page: 1, Size: 100 })
       this.list = res.data.Data
       this.$vux.loading.hide()
       this.occupiedText = '没有联系人'
+    },
+    restData () {
+      this.$http.get('/ContactList', { Page: 1, Size: 100 }).then(result => {
+        this.list = result.data.Data
+      })
     },
     async getSiteNoticeNum () {
       const res = await this.$http.get('/SiteNotice/Count/Unread')
@@ -88,7 +97,7 @@ export default {
   flex-flow: nowrap;
   background-color: #fff;
   box-shadow: 0 1px 6px rgba(153, 153, 153, 0.5);
-  padding-left: 5px; 
+  padding-left: 5px;
   box-sizing: border-box;
   .avatar_container
   {
@@ -153,7 +162,7 @@ export default {
 
 
 .tabbox-list {
-  padding: 15px;
+  padding: 15px 15px 15px;
   background: #fff;
   border-color: #E5E5E5;
   margin-bottom: 15px;
@@ -189,5 +198,26 @@ export default {
   margin-right: 10px;
   width: 40px;
   height: 40px;
+}
+.UnreadCount_box
+{
+  position: relative;
+}
+.UnreadCount_icon
+{
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 12px;
+  background-color: #f74c31;
+  color: #fff;
+  display: block;
+  padding: 0 5px;
+  height: 15px;
+  line-height: 15px;
+  border-radius: 15px;
+  font-style: normal;
+  text-align: center;
+  transform: translate(-50%,-50%)
 }
 </style>

@@ -228,6 +228,9 @@ export default {
   computed: {
     MissionID () {
       return this.$route.params.id
+    },
+    byServiceID () {
+      return this.$route.query.method === 'byServiceID'
     }
   },
   filters: {
@@ -362,7 +365,7 @@ export default {
       })
     },
     async completeMission () {
-      const res = await this.$http.post('/Mission?missionID=' + this.MissionID, {
+      const res = await this.$http.post('/Mission?missionID=' + this.detail.ID, {
         Action: this.actionListValue,
         Attribute: this.attributeListValue,
         ViewResult: this.serviceResult,
@@ -395,7 +398,7 @@ export default {
       })
     },
     async startMission () {
-      const res = await this.$http.put(`/Mission/Start?MissionID=${this.MissionID}`)
+      const res = await this.$http.put(`/Mission/Start?MissionID=${this.detail.ID}`)
       return res.data
     },
     /**
@@ -407,7 +410,7 @@ export default {
         return false
       }
       that.submitLocked = true
-      const res = await this.$http.put(`/Mission?missionID=${this.MissionID}`, option)
+      const res = await this.$http.put(`/Mission?missionID=${this.detail.ID}`, option)
       that.submitLocked = false
       if (res.data.Code === 100000) {
         that.$vux.toast.show({
@@ -425,7 +428,7 @@ export default {
       }
     },
     async cancelMission () {
-      const res = await this.$http.put(`/Mission?missionID=${this.MissionID}`)
+      const res = await this.$http.put(`/Mission?missionID=${this.detail.ID}`)
       return res.data
     },
     /**
@@ -464,28 +467,29 @@ export default {
       document.documentElement.scrollTop = 0
     },
     async getData () {
-      const res = await this.$http.get('/Mission/' + this.MissionID)
+      const url = this.byServiceID ? `/Mission/Find/${this.MissionID}` : `/Mission/${this.MissionID}`
+      const res = await this.$http.get(url)
       return res.data
     },
     /**
      * 获取任务动作列表
      */
     async getActionList () {
-      const res = await this.$http.get('/ItemActionList?missionID=' + this.MissionID)
+      const res = await this.$http.get('/ItemActionList?missionID=' + this.detail.ID)
       return res.data
     },
     /**
      * 获取任务采集信息列表
      */
     async getAttributeList () {
-      const res = await this.$http.get('/ItemAttributeList?missionID=' + this.MissionID)
+      const res = await this.$http.get('/ItemAttributeList?missionID=' + this.detail.ID)
       return res.data
     },
     /**
      * 获取评价内容
      */
     async getReviewDetail () {
-      const res = await this.$http.get('/ServantReviewDetails?missionID=' + this.MissionID)
+      const res = await this.$http.get('/ServantReviewDetails?missionID=' + this.detail.ID)
       return res.data
     },
     /**

@@ -28,6 +28,11 @@ export default {
       'routerLoading',
       'apiError'
     ])
+  },
+  data () {
+    return {
+      chatRecordHasNewTimer: null
+    }
   }
 }
 </script>

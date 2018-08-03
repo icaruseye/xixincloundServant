@@ -3,6 +3,7 @@
     <tabbar class="">
       <tabbar-item
         link="/message"
+        :show-dot="hasNewChat"
         :selected="'message' == this.$route.path.split('/')[1] || '' == this.$route.path.split('/')[1]"
         class="weui-tabbar__icon_1">
         <div slot="icon"></div>
@@ -35,10 +36,33 @@
 
 <script>
 import { Tabbar, TabbarItem } from 'vux'
+import {mapGetters, mapActions} from 'vuex'
 export default {
   components: {
     Tabbar,
     TabbarItem
+  },
+  computed: {
+    ...mapGetters([
+      'hasNewChat'
+    ])
+  },
+  beforeDestroy () {
+    this.clearChatHasNewsTimer()
+  },
+  mounted () {
+    const token = sessionStorage.getItem('servant_token')
+    if (token) {
+      this.getChatHasNews()
+      this.chatHasNews()
+    }
+  },
+  methods: {
+    ...mapActions([
+      'getChatHasNews',
+      'chatHasNews',
+      'clearChatHasNewsTimer'
+    ])
   }
 }
 </script>

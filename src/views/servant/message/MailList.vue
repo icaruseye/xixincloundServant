@@ -1,52 +1,48 @@
 <template>
   <div>
-    <!-- <div>  
-      <mail-group-item :count="1"></mail-group-item>
-    </div> -->
-    <div v-if="list.length > 0" class="mt10px">
-      <mail-list-item v-for="(item, index) in list" 
-        :key="index" 
-        :count="item.State === 0 ? '未读': null"
-        :title="item.Title"
-      >
-        {{item.Message}}
-      </mail-list-item>
-    </div>
-    <xx-occupied-box v-else>
-      {{occupiedText}}
-    </xx-occupied-box>
+      <template v-if="list.length > 0">
+        <mail-list-item v-for="(item, index) in list"
+          :id="item.ID"
+          :key="index"
+          :msgType="item.Type"
+          :createTime="item.CreateTime"
+          :count="item.State === 0 ? '未读': null"
+          :title="item.Title"
+        >
+          {{item.Message | xxTextTruncateFilter(15)}}
+        </mail-list-item>
+      </template>
+      <xx-occupied-box v-else>
+        {{type|xxSiteNoticeTypeTitleFilter}}列表为空
+      </xx-occupied-box>
   </div>
 </template>
 <script>
 import MailListItem from './components/MailListItem'
-import MailGroupItem from './components/MailGroupItem'
 export default {
   components: {
-    MailListItem,
-    MailGroupItem
+    MailListItem
+  },
+  computed: {
+    type () {
+      return this.$route.params.type
+    }
   },
   data () {
     return {
-      list: [],
-      occupiedText: ''
+      list: []
     }
   },
   created () {
-    this.init()
+    this.getData()
   },
   methods: {
-    async init () {
+    getData () {
       this.$vux.loading.show('加载中')
-      this.occupiedText = '正在请求数据…'
-      await this.getData().then(value => {
-        this.list = value.Data
+      this.$http.get(`/SiteNoticeList/Unread?type=${this.type}`).then(result => {
+        this.$vux.loading.hide()
+        this.list = result.data.Data
       })
-      this.$vux.loading.hide()
-      this.occupiedText = '站内信列表为空'
-    },
-    async getData () {
-      const res = await this.$http.get('/SiteNoticeList')
-      return res.data
     }
   }
 }

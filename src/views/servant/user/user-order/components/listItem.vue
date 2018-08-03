@@ -14,7 +14,7 @@
         创建时间：{{UserOrder.CreateTime | xxTimeFormatFilter}}
       </p>
       <p class="small_desc_text" v-if="UserOrder.State == 2">
-        付款时间：{{UserOrder.PayTime | xxTimeFormatFilter}}
+        付款时间：{{UserOrder.ConfirmTime | xxTimeFormatFilter}}
       </p>
     </div>
     <div class="price_container">

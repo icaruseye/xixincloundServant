@@ -56,11 +56,17 @@ export default {
       this.$router.replace(path)
     },
     async getToken () {
-      const res = await this.$http.get('/Login', {
-        code: this.code,
-        shopID: this.shopID
-      })
-      return res.data
+      if (this.code && this.shopID) {
+        const res = await this.$http.get('/Login', {
+          code: this.code,
+          shopID: this.shopID
+        })
+        return res.data
+      } else {
+        const path = sessionStorage.getItem('to_path') || '/'
+        sessionStorage.removeItem('to_path')
+        this.$router.replace(path)
+      }
     }
   },
   created () {

@@ -12,7 +12,6 @@ import { DatetimePlugin, ToastPlugin, ConfirmPlugin, LoadingPlugin, AlertPlugin,
 import xxComponents from './components/common'
 import http from '@/api'
 import util from '@/plugins/util'
-import VueLazyload from 'vue-lazyload'
 
 Vue.use(xxComponents)
 Vue.use(registryPopup)
@@ -23,13 +22,6 @@ Vue.use(registryPopup)
 Vue.use(LoadingPlugin)
 Vue.use(AlertPlugin)
 Vue.use(BusPlugin)
-
-Vue.use(VueLazyload, {
-  preLoad: 1.3,
-  error: '/src/assets/images/loading_img.gif',
-  loading: '/src/assets/images/loading_img.gif',
-  attempt: 1
-})
 
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 FastClick.attach(document.body)
@@ -56,7 +48,12 @@ Vue.filter('transformImgUrl', function (val) {
 Vue.filter('xxTimeFormatFilter', (value = '') => {
   return util.timeFormatFilter(value)
 })
-
+/**
+ * 文字加省略号
+ */
+Vue.filter('xxTextTruncateFilter', (value = '', len = 10) => {
+  return value.length > len ? value.substring(0, len) + '…' : value
+})
 /**
  * 银行卡logo过滤器
  */
@@ -77,7 +74,32 @@ Vue.filter('xxMissionTypeIconFilter', (useType = 1) => {
       return require('@/assets/images/icon_tcmr.png')
   }
 })
-
+/**
+ * 站内信分类图标
+ */
+Vue.filter('xxSiteNoticeIconFilter', (type = 1) => {
+  switch (type) {
+    case 2:
+      return '#icon-dingdan1'
+    case 4:
+      return '#icon-icon_xitonggonggao'
+    default:
+      return '#icon-xiaoxi-xitongxiaoxi'
+  }
+})
+/**
+ * 站内信分类标题
+ */
+Vue.filter('xxSiteNoticeTypeTitleFilter', (type = 1) => {
+  switch (type) {
+    case 2:
+      return '订单消息'
+    case 4:
+      return '系统公告'
+    default:
+      return '系统消息'
+  }
+})
 new Vue({
   router,
   store,

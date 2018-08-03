@@ -4,7 +4,6 @@
       <div class="thumbs_container">
         <img v-for="(item, index) in prewimgList" 
           :src="item.src"
-          v-lazy="item.src"
           :key="index"
           @click="previewImage(index)"
           class="previewer-img"
