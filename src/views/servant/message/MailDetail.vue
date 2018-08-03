@@ -4,7 +4,8 @@
       <div class="detail_top_container">
         {{detail.Type | xxSiteNoticeTypeTitleFilter}}
       </div>
-      <div class="detail_content_bg">
+      <div class="detail_content_bg"></div>
+      <div class="detail_content_container">
         <div class="detail_Title_contianer">
           <h1 class="detaile_title">
             {{detail.Title}}
@@ -57,23 +58,41 @@ export default {
 <style lang="less" scoped>
   .detail_top_container
   {
-    height: 60px;
-    padding: 0 10px;
+    height: 50px;
+    padding: 20px 10px 0;
     color: #fff;
-    line-height: 60px;
+    line-height: 50px;
     font-size: 18px;
-    background-color: #3ac7f5
+    background-color: rgba(58, 199, 245, .7)
   }
   .detail_content_bg
   {
+    height: 80px;
+    background: linear-gradient(rgba(58, 199, 245, .7), rgba(0,0,0,0));
+  }
+  .detail_content_container
+  {
+    margin-top: -80px;
     padding-bottom: 40px;
-    background: linear-gradient(#3ac7f5, rgba(0,0,0,0));
   }
   .detail_Title_contianer
   {
+    position: relative;
     background-color: #fff;
-    padding: 10px 20px;
+    padding: 30px 20px 10px;
     margin: 0 10px;
+    &::after
+    {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      display: block;
+      content: '';
+      height: 1px;
+      background-color: rgba(0,0,0,.1);
+      transform: scaleY(.5)
+    }
     .detaile_title
     {
       font-size: 16px;
@@ -89,9 +108,9 @@ export default {
   }
   .detail_message_container
   {
-    margin: 10px;
+    margin: 0 10px;
     background-color: #fff;
-    padding: 20px;
+    padding: 20px 20px;
     text-align: justify;
     font-size: 14px;
     color: #666

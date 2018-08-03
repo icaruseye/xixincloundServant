@@ -46,6 +46,22 @@ export default {
   flex-flow: nowrap;
   height: 70px;
   background-color: #fff;
+  &::after
+  {
+    position: absolute;
+    content: '';
+    display: block;
+    height: 1px;
+    bottom: 0;
+    left: 58px;
+    right: 0;
+    background-color: RGBA(0, 180, 171, .2);
+    transform: scaleY(.5)
+  }
+  &:last-child:after
+  {
+    display: none;
+  }
   .left
   {
     display: flex;
@@ -108,22 +124,6 @@ export default {
       top: 40px;
     }
   }
-}
-.main_item_container::after
-{
-  position: absolute;
-  content: '';
-  display: block;
-  height: 1px;
-  bottom: 0;
-  left: 12px;
-  right: 12px;
-  background-color: RGBA(0, 180, 171, .2);
-  transform: scaleY(.5)
-}
-.main_item_container:last-child:after
-{
-  display: none;
 }
 </style>
 

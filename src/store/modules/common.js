@@ -8,7 +8,6 @@ const SET_WITHDRAW_TAB_INDEX = 'SET_WITHDRAW_TAB_INDEX'
 const SET_SERVICE_LIST_TAB_INDEX = 'SET_SERVICE_LIST_TAB_INDEX'
 const SET_API_ERROT = 'SET_API_ERROT'
 const SET_HAS_NEW_CHAT = 'SET_HAS_NEW_CHAT'
-let chatHasNewsTimer = null
 
 const state = {
   missionTabIndex: 0, // 任务列表第一级tab
@@ -20,7 +19,8 @@ const state = {
   routerLoading: false,
   apiError: false, // 接口请求是否异常
   hasNewChat: false, // 是否有新消息
-  updateChatList: 0
+  updateChatList: 0,
+  chatHasNewsTimer: null
 }
 
 const mutations = {
@@ -54,8 +54,8 @@ const mutations = {
 }
 const actions = {
   chatHasNews: ({commit}) => {
-    clearInterval(chatHasNewsTimer)
-    chatHasNewsTimer = setInterval(() => {
+    actions.clearChatHasNewsTimer()
+    state.chatHasNewsTimer = setInterval(() => {
       api.get(`/ChatRecord/HasNew`).then(result => {
         state.updateChatList = result.data.Data ? (state.updateChatList + 1) : state.updateChatList
         commit(SET_HAS_NEW_CHAT, result.data.Data)
@@ -66,6 +66,9 @@ const actions = {
     api.get(`/ChatRecord/HasNew`).then(result => {
       commit(SET_HAS_NEW_CHAT, result.data.Data)
     })
+  },
+  clearChatHasNewsTimer: () => {
+    clearInterval(state.chatHasNewsTimer)
   }
 }
 

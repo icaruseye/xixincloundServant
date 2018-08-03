@@ -36,7 +36,7 @@
 
 <script>
 import { Tabbar, TabbarItem } from 'vux'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 export default {
   components: {
     Tabbar,
@@ -45,6 +45,23 @@ export default {
   computed: {
     ...mapGetters([
       'hasNewChat'
+    ])
+  },
+  beforeDestroy () {
+    this.clearChatHasNewsTimer()
+  },
+  mounted () {
+    const token = sessionStorage.getItem('servant_token')
+    if (token) {
+      this.getChatHasNews()
+      this.chatHasNews()
+    }
+  },
+  methods: {
+    ...mapActions([
+      'getChatHasNews',
+      'chatHasNews',
+      'clearChatHasNewsTimer'
     ])
   }
 }

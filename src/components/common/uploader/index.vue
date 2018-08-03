@@ -15,11 +15,15 @@
                   class="weui-uploader__file weui-uploader__file_status">
                   <div class="weui-uploader__file-content">
                     <div class="progress-bar">
-                      <div class="progress-bar_in" :style="{'width': img.progress + '%'}">
+                      <div class="progress-bar_text">
                         <template v-if="img.progress >= 100">
                           上传成功
                         </template>
+                        <template v-else>
+                          {{img.progress}}%
+                        </template>
                       </div>
+                      <div class="progress-bar_in" :style="{'width': img.progress + '%'}"></div>
                     </div>
                     <i v-if="img.status === 1" class="iconfont iconfont-remove icon-guanbi" v-on:click="removeImg(index)"></i>
                   </div>
@@ -97,9 +101,11 @@ export default {
   mounted () {
     const that = this
     that.reader.onload = function (e) {
+      that.imgPackage.progress = 15
       that.uploadImage.src = e.target.result
     }
     that.uploadImage.onload = function (e) {
+      that.imgPackage.progress = 20
       util.compressImage({
         Img: this,
         maxWidth: that.maxWidth,
@@ -116,6 +122,8 @@ export default {
         } else {
           that.list.push(that.imgPackage)
         }
+        that.imgPackage.progress = 25
+        that.$vux.loading.hide()
         that.upload(that.imgPackage)
       })
     }
@@ -123,6 +131,7 @@ export default {
   methods: {
     change (e) {
       const that = this
+      this.$vux.loading.show('图片压缩中')
       that.imgPackage = {
         url: '',
         status: 0,
@@ -132,7 +141,9 @@ export default {
       }
       that.file = e.target.files[0]
       if (!that.verifyFileType(that.file, e)) return false
+      that.imgPackage.progress = 5
       if (!that.checkCount(e)) return false
+      that.imgPackage.progress = 10
       EXIF.getData(that.file, function () {
         that.orientation = EXIF.getTag(this, 'Orientation')
       })
@@ -149,8 +160,8 @@ export default {
         data: fd,
         timeout: 50000,
         onUploadProgress: function (progressEvent) {
-          var complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
-          _img.progress = complete
+          let complete = (progressEvent.loaded / progressEvent.total * 100 | 0)
+          _img.progress = Math.floor((25 + complete * 0.75))
         }
       }
       try {
@@ -345,12 +356,22 @@ export default {
   width: 79px;
   height: 16px;
 }
+.progress-bar_text
+{
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 16px;
+  font-size: 12px;
+  line-height: 16px;
+  color: #fff;
+  text-align: center;
+}
 
 .progress-bar_in {
   width: 0;
   height: 100%;
-  font-size: 12px;
-  line-height: 16px;
   text-align: center;
   background: rgba(65, 184,131,.2);
   transition: .3s;

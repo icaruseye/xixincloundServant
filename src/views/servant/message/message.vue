@@ -1,20 +1,10 @@
 <template>
   <div style="padding-bottom:100px">
-    <sticky>
-      <router-link class="system_message_entrance_container" to="/systemMail">
-        <div class="avatar_container"><img :src="userAccount.Avatar | transformImgUrl" alt=""></div>
-        <div class="content">
-          {{userInfo.RealName}}
-          <!-- <span class="professional_title">护士</span> -->
-        </div>
-        <div class="icon_box">
-          <div class="sysetem_message_img_icon">
-            <img src="@/assets/images/ic_message.png" alt="">
-            <i v-if="siteNoticeNum > 0" class="new_sysetem_message_icon"></i>
-          </div>
-        </div>
-      </router-link>
-    </sticky>
+    <div>
+      <mail-group-item :msgType="1"></mail-group-item>
+      <mail-group-item :msgType="2"></mail-group-item>
+      <mail-group-item :msgType="4"></mail-group-item>
+    </div>
 
     <div v-if="list.length > 0" class="tabbox-list vux-1px-b vux-1px-t mt10px">
       <div v-for="(item, index) in list" class="item vux-1px-b" @click="goChat(item.UserViewID, index)" :key="index">
@@ -38,11 +28,11 @@
 </template>
 
 <script>
+import MailGroupItem from './components/MailGroupItem'
 import {mapGetters, mapActions} from 'vuex'
-import { Sticky } from 'vux'
 export default {
   components: {
-    Sticky
+    MailGroupItem
   },
   data () {
     return {

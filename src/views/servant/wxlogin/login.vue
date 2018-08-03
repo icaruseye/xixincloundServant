@@ -29,9 +29,7 @@ export default {
   methods: {
     ...mapActions([
       'getUserAccount',
-      'getUserInfo',
-      'chatHasNews',
-      'getChatHasNews'
+      'getUserInfo'
     ]),
     ...mapMutations([
       'SET_TOKEN'
@@ -43,8 +41,6 @@ export default {
           sessionStorage.setItem('servant_token', tokenResult.Data)
           this.SET_TOKEN(tokenResult.Data)
           this.getUserAccountAndInfo()
-          this.getChatHasNews()
-          this.chatHasNews()
         } else {
           this.occupiedText = '验证身份失败，请联系客服'
         }
