@@ -15,6 +15,27 @@ export default [
     }
   },
   {
+    path: '/user/account',
+    component: _import('/servant/user/user-account'),
+    meta: {
+      title: '我的账户'
+    }
+  },
+  {
+    path: '/user/withdraw',
+    component: _import('/servant/user/user-withdraw/index'),
+    meta: {
+      title: '提现'
+    }
+  },
+  {
+    path: '/user/withdraw/list',
+    component: _import('/servant/user/user-withdraw/list'),
+    meta: {
+      title: '提现单列表'
+    }
+  },
+  {
     path: '/user/info',
     component: _import('/servant/user/user-info'),
     meta: {
@@ -33,13 +54,6 @@ export default [
     component: _import('/servant/user/user-address/list'),
     meta: {
       title: '服务地址管理'
-    }
-  },
-  {
-    path: '/user/withdraw',
-    component: _import('/servant/user/user-withdraw/list'),
-    meta: {
-      title: '提现单列表'
     }
   },
   {

@@ -42,13 +42,17 @@
         <i class="user_links_items_icon iconfont icon-dingdan"></i>
         订单
       </router-link>
+      <router-link class="user_links_items" to="/user/account">
+        <i class="user_links_items_icon iconfont icon-iconfontzhizuobiaozhun0252"></i>
+        我的账户
+      </router-link>
       <router-link class="user_links_items" to="/user/info">
         <i class="user_links_items_icon iconfont icon-iconfontzhizuobiaozhun0252"></i>
         个人资料
       </router-link>
     </div>
     <div class="uset_links_container">
-      <router-link class="user_links_items" to="/user/withdraw">
+      <router-link class="user_links_items" to="/user/withdraw/list">
         <i class="user_links_items_icon iconfont icon-drawa"></i>
         提现
       </router-link>

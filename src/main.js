@@ -12,7 +12,10 @@ import { DatetimePlugin, ToastPlugin, ConfirmPlugin, LoadingPlugin, AlertPlugin,
 import xxComponents from './components/common'
 import http from '@/api'
 import util from '@/plugins/util'
+import Vant from 'vant'
+import 'vant/lib/vant-css/index.css'
 
+Vue.use(Vant)
 Vue.use(xxComponents)
 Vue.use(registryPopup)
 Vue.use(DatetimePlugin)
