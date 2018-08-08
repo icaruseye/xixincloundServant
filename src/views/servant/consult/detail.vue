@@ -49,6 +49,14 @@
           </graphic-message>
         </div>
       </template>
+      <div v-if="detail.State === -1" style="margin-top:40px">
+        <system-msg-item msgType="time">
+          任务已被取消
+        </system-msg-item>
+        <system-msg-item class="mt10px">
+          取消原因： {{detail.CancelDescription}}
+        </system-msg-item>
+      </div>
     </div>
     <div v-if="detail.State === 0" class="btn_bar">
       <button v-if="detail.CanCancel" style="background: #ffc349" @click="cancelMissionPopupVisible = true">取消</button>
