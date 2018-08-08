@@ -38,12 +38,8 @@
       </div>
     </div>
     <div class="uset_links_container">
-      <router-link class="user_links_items" to="/user/order">
-        <i class="user_links_items_icon iconfont icon-dingdan"></i>
-        订单
-      </router-link>
       <router-link class="user_links_items" to="/user/account">
-        <i class="user_links_items_icon iconfont icon-iconfontzhizuobiaozhun0252"></i>
+        <i class="user_links_items_icon iconfont icon-zhanghu"></i>
         我的账户
       </router-link>
       <router-link class="user_links_items" to="/user/info">
@@ -52,13 +48,27 @@
       </router-link>
     </div>
     <div class="uset_links_container">
-      <router-link class="user_links_items" to="/user/withdraw/list">
-        <i class="user_links_items_icon iconfont icon-drawa"></i>
-        提现
+      <router-link class="user_links_items" to="/user/order">
+        <i class="user_links_items_icon iconfont icon-dingdan"></i>
+        订单列表
       </router-link>
+      <router-link class="user_links_items" to="/user/orderClearing/list">
+        <i class="user_links_items_icon iconfont icon-drawa"></i>
+        结算列表
+      </router-link>
+      <router-link class="user_links_items" to="/user/withdraw/list">
+        <i class="user_links_items_icon iconfont icon-tixianmingxi"></i>
+        提现明细
+      </router-link>
+    </div>
+    <div class="uset_links_container">
       <router-link class="user_links_items" to="/user/bankCard">
         <i class="user_links_items_icon iconfont icon-yinhangqia"></i>
         我的银行卡
+      </router-link>
+      <router-link class="user_links_items" to="/user/authstep3">
+        <i class="user_links_items_icon iconfont icon-zhengjian"></i>
+        我的执业证
       </router-link>
       <router-link class="user_links_items" to="/user/address">
         <i class="user_links_items_icon iconfont icon-dizhi"></i>
@@ -66,10 +76,6 @@
       </router-link>
     </div>
     <div class="uset_links_container">
-      <router-link class="user_links_items" to="/user/authstep3">
-        <i class="user_links_items_icon iconfont icon-zhengjian"></i>
-        我的执业证
-      </router-link>
       <router-link class="user_links_items" to="/user/complaint">
         <i class="user_links_items_icon iconfont icon-tousu"></i>
         投诉

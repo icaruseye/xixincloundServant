@@ -32,7 +32,28 @@ export default [
     path: '/user/withdraw/list',
     component: _import('/servant/user/user-withdraw/list'),
     meta: {
-      title: '提现单列表'
+      title: '提现明细'
+    }
+  },
+  {
+    path: '/user/withdraw/:id/detail',
+    component: _import('/servant/user/user-withdraw/detail'),
+    meta: {
+      title: '提现详情'
+    }
+  },
+  {
+    path: '/user/orderClearing/list',
+    component: _import('/servant/user/user-orderClearing/list'),
+    meta: {
+      title: '结算单列表'
+    }
+  },
+  {
+    path: '/user/orderClearing/:id/detail',
+    component: _import('/servant/user/user-orderClearing/detail'),
+    meta: {
+      title: '申请结算'
     }
   },
   {
@@ -54,13 +75,6 @@ export default [
     component: _import('/servant/user/user-address/list'),
     meta: {
       title: '服务地址管理'
-    }
-  },
-  {
-    path: '/user/withdraw/:id/detail',
-    component: _import('/servant/user/user-withdraw/detail'),
-    meta: {
-      title: '提现单详情'
     }
   },
   {

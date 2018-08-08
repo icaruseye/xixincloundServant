@@ -1,9 +1,5 @@
 <template>
  <div @click="closeEmojiBox" style="padding-top:100px;overflow:hidden">
-    <!-- 图片预览 -->
-    <div v-transfer-dom>
-      <previewer ref="chatImagePreviewer" @on-close="chatImagePreviewerClose" :list="chatMsgImgs"></previewer>
-    </div>
     <div style="position:fixed;top:0;left:0;right:0;z-index:1000">
       <xx-step-bar :step="detail.State | stepFilter">
         <xx-step-items slot="items">
@@ -80,7 +76,7 @@
  </div>
 </template>
 <script>
-import { Sticky, Toast, Previewer, TransferDom } from 'vux'
+import { Sticky, Toast } from 'vux'
 import { mapGetters } from 'vuex'
 import CancelMissionPopup from '@/components/cancelMissionPopup'
 import SystemMsgItem from './components/systemMsgItem'
@@ -89,11 +85,9 @@ import GraphicMessage from './components/GraphicMessage'
 import SendMsgBar from './components/sendMsgBar'
 import { setInterval, clearInterval } from 'timers'
 import comments from './components/comments'
+import { ImagePreview } from 'vant'
 import util from '@/plugins/util'
 export default {
-  directives: {
-    TransferDom
-  },
   components: {
     Sticky,
     SystemMsgItem,
@@ -102,8 +96,7 @@ export default {
     GraphicMessage,
     CancelMissionPopup,
     Toast,
-    comments,
-    Previewer
+    comments
   },
   filters: {
     stepFilter (val = 0) {
@@ -155,6 +148,9 @@ export default {
     this.init()
   },
   methods: {
+    /**
+     * 获取聊天图片
+     */
     changeMessageList () {
       const that = this
       let imgs = []
@@ -162,28 +158,14 @@ export default {
       for (let i = 0; i < that.messageList.length; i++) {
         if (that.messageList[i].MsgType === 2) {
           that.messageList[i].imgIndex = index
-          imgs.push({
-            src: util.transformImgUrl(that.messageList[i].Content)
-          })
+          imgs.push(util.transformImgUrl(that.messageList[i].Content))
           index++
         }
       }
       this.chatMsgImgs = imgs
     },
-    chatImagePreviewerClose () {
-      this.chatImagePreviewerVisible = false
-    },
     previewImage (index) {
-      if (!this.chatImagePreviewerVisible) {
-        this.$vux.loading.show('图片加载中')
-        this.chatImagePreviewerVisible = true
-        this.previewImageImage.onload = () => {}
-        this.previewImageImage.src = this.chatMsgImgs[index].src
-        this.previewImageImage.onload = () => {
-          this.$vux.loading.hide()
-          this.$refs.chatImagePreviewer.show(index)
-        }
-      }
+      ImagePreview(this.chatMsgImgs, index)
     },
     // 获取温馨提示
     getWarmPrompt () {

@@ -59,7 +59,9 @@ export default {
       if (this.code && this.shopID) {
         const res = await this.$http.get('/Login', {
           code: this.code,
-          shopID: this.shopID
+          shopID: this.shopID,
+          RefereeViewID: '000',
+          RefereeType: 0
         })
         return res.data
       } else {

@@ -46,6 +46,9 @@ export default {
     }
   },
   computed: {
+    layzLoadImage () {
+      return require('@/assets/images/loading_img.gif')
+    },
     modelImage: {
       cache: false,
       get () {

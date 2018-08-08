@@ -27,9 +27,9 @@
     <div class="bottom_container">
       {{(OrderInfo.State === 0 || OrderInfo.State === -1)? '可提现' : '提现金额'}}：
       <b class="price_account">￥{{OrderInfo.LiftPrice | amountFilter}}</b>
-      <router-link class="btn" :class="[OrderInfo.State === 0?'blue_btn':'']" :to="`/user/withdraw/${OrderInfo.ID}/detail`">
+      <router-link class="btn" :class="[OrderInfo.State === 0?'blue_btn':'']" :to="`/user/orderClearing/${OrderInfo.ID}/detail`">
         <template v-if="OrderInfo.State === 0">
-          去提现
+          去结算
         </template>
         <template v-if="OrderInfo.State === -1">
           再次申请

@@ -1,18 +1,14 @@
 <template>
   <div>
-    <template  v-if="prewimgList != null">
+    <template v-if="prewimgList != null">
       <div class="thumbs_container">
         <img v-for="(item, index) in prewimgList" 
-          :src="item.src"
+          :src="item"
           :key="index"
           @click="previewImage(index)"
           class="previewer-img"
-          :class="groupClass"
           @load="onloaded"
         >
-      </div>
-      <div v-transfer-dom>
-        <previewer ref="previewer" :list="prewimgList"></previewer>
       </div>
     </template>
     <template v-else>
@@ -21,33 +17,23 @@
   </div>
 </template>
 <script>
-import { Previewer, TransferDom } from 'vux'
+import { ImagePreview } from 'vant'
+import util from '@/plugins/util'
 export default {
-  directives: {
-    TransferDom
-  },
   props: {
     list: ''
   },
-  components: {
-    Previewer
-  },
   computed: {
-    groupClass () {
-      return `preview_image_${Math.floor(Math.random() * 9999 + 1000)}`
-    },
     prewimgList () {
       if (this.list != null && this.list !== '') {
         const list = this.list.split(',')
         let newList = []
-        list.map((item) => {
-          newList.push({
-            src: this.transformImgUrl(item)
-          })
+        list.map(item => {
+          newList.push(util.transformImgUrl(item))
         })
         return newList
       } else {
-        return null
+        return []
       }
     }
   },
@@ -56,21 +42,7 @@ export default {
       this.$emit('onloaded')
     },
     previewImage (index) {
-      this.$refs.previewer.show(index)
-    },
-    transformImgUrl (imageName) {
-      if (!imageName) return
-      if (imageName.indexOf('http') === -1) {
-        if (imageName.indexOf('Upload') === -1) {
-          // 值为id
-          return `${process.env.IMAGE_HOST}/File/GetImage/` + imageName
-        } else {
-          // 第三种情况
-          return imageName
-        }
-      }
-      // 值为完整url
-      return imageName
+      ImagePreview(this.prewimgList, index)
     }
   }
 }
