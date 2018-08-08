@@ -45,7 +45,7 @@
     </div>
 
     <div class="apply_withdraw_btn_box">
-      <button :class="['apply_withdraw_btn', canWithDraw ? '': 'disabled']">预计T+1个工作日到账，确认提现</button>
+      <button @click="submitWithdrawApply" :class="['apply_withdraw_btn', canWithDraw ? '': 'disabled']">预计T+1个工作日到账，确认提现</button>
       <p @click="widthDrawDescAlertShow" style="margin-top:10px;font-size:12px;color: #3ac7f5;text-align:center">什么是T+1个工作日？</p>
     </div>
 
@@ -91,6 +91,19 @@ export default {
     }
   },
   methods: {
+    submitWithdrawApply () {
+      if (this.canWithDraw) {
+        const that = this
+        that.$vux.confirm.show({
+          content: `确定要提现到（*${this.currentWithdrawType.code}）吗？？`,
+          confirmText: '确定',
+          cancelText: '放弃提现',
+          onConfirm () {
+            that.$router.replace(`/user/withdraw/1/detail`)
+          }
+        })
+      }
+    },
     widthDrawDescAlertShow () {
       this.$vux.alert.show({
         content: 'T+1个工作日指发起提现后的第一个工作日'

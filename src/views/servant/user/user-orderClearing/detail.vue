@@ -145,23 +145,21 @@
 
     <template  v-if="detail.State == 0 || detail.State == -1">
       <!-- 提现方式选择 -->
-      <div class="choose_withdraw_type_btn" @click="withdrawTypeVisible= !withdrawTypeVisible">
+      <div class="choose_withdraw_type_btn">
         <div class="cell_items">
             <label class="cell_items_title">
               提现方式
             </label>
-            <span class="cell_items_right" style="line-height: 40px;color:#9F9F9F">
-              {{currentWithdrawType?currentWithdrawType.name:'选择提现方式'}}
-              {{currentWithdrawType&&(currentWithdrawType.code != null)?`（${currentWithdrawType.code}）`:''}}
-              <i class="iconfont icon-jiantouyou pull-right"></i>
+            <span class="cell_items_right" style="line-height: 40px;color:#9F9F9F;padding:0 15px">
+              钱包
             </span>
         </div>
         <router-link style="display:block;font-size:12px;color:#3AC7F5;text-align:center;margin-top: 10px" to="/agreement/17">点击查看《提现规则》</router-link>
       </div>
       <!-- 申请提现按钮 -->
       <div class="btn_bar">
-        <button @click="withdrawApplyEvent()">
-          申请提现
+        <button @click="withdrawApplyConfirm()">
+          申请结算
         </button>
       </div>
     </template>
@@ -169,61 +167,10 @@
     <div v-if="detail.State == 1" style="padding: 15px 10px" class="clearfix">
       <a href="javascript:void(0)" class="cancle_apply_btn pull-right" @click="cancelWithdrawApply">取消申请</a>
     </div>
-
-
-    <div v-transfer-dom>
-      <popup v-model="withdrawTypeVisible" position="bottom" max-height="50%">
-        <div class="withdrawTypeVisible_container">
-          <sticky
-            ref="sticky"
-            :offset="0"
-            :check-sticky-support="true">
-                <popup-header
-                  left-text="取消"
-                  @on-click-left="withdrawTypeVisible = false"
-                  title="选择提现方式"
-                  :show-bottom-border="false"
-                >
-                </popup-header>
-          </sticky>
-          <ul class="withdrawType_list">
-            <template v-if="withdrawTypeList.length > 0">
-              <li v-for="(item, index) in withdrawTypeList"
-                :key="index"
-                @click="currentWithdrawType = item;withdrawTypeVisible = false"
-                :class="['withdrawType_item', (currentWithdrawType && currentWithdrawType.id === item.id)?'selected':'']"
-              >
-                <i class="icon_box">
-                  <svg class="icon" aria-hidden="true">
-                    <use :xlink:href="item.icon | xxGetBankCardLogoFilter"></use>
-                  </svg>
-                </i>
-                {{item.name}}
-                <span v-if="item.code" class="code_box">（{{item.code}}）</span>
-                <i v-if="currentWithdrawType &&currentWithdrawType.id === item.id" class="select_gougou_box iconfont icon-xuanzhong"></i>
-              </li>
-            </template>
-            <router-link class="withdrawType_item" to="/user/bankCard/add">
-              添加银行卡
-            </router-link>
-          </ul>
-        </div>
-      </popup>
-    </div>
   </div>
 </template>
 <script>
-import { TransferDom, Sticky, Popup, PopupHeader, InlineLoading } from 'vux'
 export default {
-  directives: {
-    TransferDom
-  },
-  components: {
-    Popup,
-    Sticky,
-    PopupHeader,
-    InlineLoading
-  },
   computed: {
     ID () {
       return this.$route.params.id
@@ -231,25 +178,15 @@ export default {
   },
   data () {
     return {
-      currentWithdrawType: null,
-      withdrawTypeList: [],
-      withdrawTypeVisible: false,
       detail: {
         ServicePrice: 0,
         PlatformPrice: 0,
         TotalPrice: 0,
         LiftPrice: 0
-      },
-      withdrawTypeChangeEvent: () => {}
+      }
     }
   },
   watch: {
-    currentWithdrawType (val) {
-      (val != null) && this.withdrawTypeChangeEvent()
-    },
-    withdrawTypeVisible (val) {
-      (val === false) && (this.withdrawTypeChangeEvent = () => {})
-    },
     step () {
       this.withdrawTypeChangeEvent = () => {}
     }
@@ -262,10 +199,6 @@ export default {
       await this.getData().then(result => {
         if (result.Code === 100000) {
           this.detail = result.Data
-          if (result.Data.State === 0 || result.Data.State === -1) {
-            // 初始化我的银行卡
-            this.getMyBankCardList()
-          }
         } else {
           this.$vux.toast.show(result.Msg)
         }
@@ -275,29 +208,19 @@ export default {
       const res = await this.$http.get(`/ServantWithDrawRecord/${this.ID}`)
       return res.data
     },
-    withdrawApplyEvent () {
-      if (!this.currentWithdrawType) {
-        this.withdrawTypeChangeEvent = () => {
-          this.withdrawApplyConfirm()
-        }
-        this.withdrawTypeVisible = true
-      } else {
-        this.withdrawApplyConfirm()
-      }
-    },
     withdrawApplyConfirm () {
       const that = this
       that.$vux.confirm.show({
-        content: `提现到${that.currentWithdrawType.name}${that.currentWithdrawType.code ? '(' + that.currentWithdrawType.code + ')' : ''}吗？`,
+        content: `确定要结算到钱包吗？`,
         confirmText: '确定',
-        cancelText: '放弃提现',
+        cancelText: '放弃结算',
         onConfirm () {
           that.submitWithdrawApply()
         }
       })
     },
     async submitWithdrawApply () {
-      const res = await this.$http.put(`/ServantWithDrawRecordApply/${this.ID}?bankInfoID=${this.currentWithdrawType.id}`)
+      const res = await this.$http.put(`/ServantWithDrawRecordApply/${this.ID}?bankInfoID=1`)
       if (res.data.Code === 100000) {
         this.init()
       } else {
@@ -310,7 +233,7 @@ export default {
     cancelWithdrawApply () {
       const that = this
       that.$vux.confirm.show({
-        content: '确定取消提现申请？',
+        content: '确定取消结算申请？',
         confirmText: '确定',
         cancelText: '不',
         async onConfirm () {
@@ -327,27 +250,6 @@ export default {
           }
         }
       })
-    },
-    // 获取并组装我的银行卡
-    async getMyBankCardList () {
-      const res = await this.$http.get('/ServantBankInfoList')
-      if (res.data.Code === 100000) {
-        this.withdrawTypeList = []
-        res.data.Data.map((item, index) => {
-          this.withdrawTypeList.push({
-            id: item.ID,
-            name: item.BankName,
-            code: this.getBankCardEndNum(item.BankCard),
-            icon: item.BankAbbreviation
-          })
-        })
-      }
-    },
-    /**
-     * 获取银行卡尾号
-     */
-    getBankCardEndNum (bankCardNum) {
-      return bankCardNum.substring(bankCardNum.lastIndexOf('*'), bankCardNum.length)
     }
   },
   filters: {

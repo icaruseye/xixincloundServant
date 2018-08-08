@@ -48,7 +48,7 @@ export default {
       border-bottom: 1px solid #f6f6f6;
       .title
       {
-        font-size: 16px;
+        font-size: 14px;
         color: #666;
       }
       .create_time
@@ -62,7 +62,7 @@ export default {
         position: absolute;
         right: 0;
         top: 0;
-        color: #3AC7F5
+        color: #333
       }
     }
     &:last-child {
