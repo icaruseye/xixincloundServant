@@ -25,6 +25,7 @@ router.beforeEach((to, from, next) => {
     const token = sessionStorage.getItem('servant_token')
     const userAccount = sessionStorage.getItem('userAccount')
     if (!token || !userAccount) { // 未登录的状态去微信登录
+      sessionStorage.setItem('inviteParams', JSON.stringify(to.query))
       const websiteHost = window.location.host
       apiRequest.get(`/ShopInfo?host=${websiteHost}`).then(result => {
         if (result.status === 200 && result.data.Code === 100000) {
