@@ -14,6 +14,7 @@
         :key="index"
         :UseType="item.UseType"
         :State="item.State"
+        :UserName="item.UserName"
         :CreateTime="item.CreateTime"
         :MissionName="item.MissionName"
         :Reason="item.UserComplaintTitle"

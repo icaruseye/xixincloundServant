@@ -6,6 +6,9 @@
     <h1 class="mission_name">
       {{MissionName}}
     </h1>
+    <p v-if="UserName" class="create_time">
+      投诉人：{{UserName}}
+    </p>
     <p class="create_time">
       投诉时间：{{CreateTime | xxTimeFormatFilter}}
     </p>
@@ -92,6 +95,10 @@ export default {
     }
   },
   props: {
+    UserName: {
+      type: String,
+      default: null
+    },
     State: {
       type: Number,
       default: 0
