@@ -156,5 +156,12 @@ export default [
     meta: {
       title: '我的订单'
     }
+  },
+  {
+    path: '/user/recommend',
+    component: _import('/servant/user/user-recommend'),
+    meta: {
+      title: '推荐'
+    }
   }
 ]

@@ -56,12 +56,13 @@ export default {
       this.$router.replace(path)
     },
     async getToken () {
+      const inviteParams = JSON.parse(sessionStorage.getItem('inviteParams')) || {}
       if (this.code && this.shopID) {
         const res = await this.$http.get('/Login', {
           code: this.code,
           shopID: this.shopID,
-          RefereeViewID: '000',
-          RefereeType: 0
+          RefereeType: inviteParams.refereeType || 0,
+          RefereeViewID: inviteParams.refereeViewID || ''
         })
         return res.data
       } else {
