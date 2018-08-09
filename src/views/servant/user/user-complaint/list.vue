@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding-bottom: 40px">
     <sticky
       ref="sticky"
       :offset="0"
@@ -9,20 +9,16 @@
         <xx-tab-item>已完成</xx-tab-item>
       </xx-tab>
     </sticky>
-    <div v-if="list.length > 0" class="weui-panel">
-      <div v-for="(item, index) in list" :key="index" class="weui-cell" @click = "redirectDetail(item.ID)">
-        <div class="left">
-          <img class="img_icon" :src="item.UseType | xxMissionTypeIconFilter" alt="任务">
-        </div>
-        <div class="right">
-          <div class="title">
-            {{item.MissionName | textFilter(6)}}
-            <span class="username" v-if="item.UserName">用户：{{item.UserName}}</span>
-          </div>
-          <div class="desc">投诉原因:{{item.UserComplaintTitle | textFilter}}</div>
-          <div class="time">投诉时间:{{item.CreateTime | xxTimeFormatFilter}}</div>
-        </div>
-      </div>
+    <div v-if="list.length > 0" style="padding: 20px 0 0;border-bottom: 1px solid #eee">
+      <list-items v-for="(item, index) in list" 
+        :key="index"
+        :UseType="item.UseType"
+        :State="item.State"
+        :CreateTime="item.CreateTime"
+        :MissionName="item.MissionName"
+        :Reason="item.UserComplaintTitle"
+        @click.native = "redirectDetail(item.ID)"
+      ></list-items>
     </div>
     <xx-occupied-box v-else>
       {{occupiedText}}
@@ -34,10 +30,12 @@
 <script>
 import { Sticky, Alert } from 'vux'
 import { mapGetters, mapMutations } from 'vuex'
+import listItems from './components/listItems'
 export default {
   components: {
     Sticky,
-    Alert
+    Alert,
+    listItems
   },
   data () {
     return {

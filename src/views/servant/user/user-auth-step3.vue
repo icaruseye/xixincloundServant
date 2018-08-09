@@ -153,6 +153,7 @@ export default {
       height: 30px;
       background-color: #fff;
       padding: 0 20px;
+      line-height: 30px;
       border: 1px solid #3BC8F6;
       border-radius: 20px;
       color: #3BC8F6;
