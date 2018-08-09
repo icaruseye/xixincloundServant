@@ -135,11 +135,11 @@
           <span class="title">服务地址管理</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
-        <!-- <router-link to="/user/recommend" class="setting-panel_item">
+        <router-link to="/user/recommend" class="setting-panel_item">
           <img src="@/assets/images/ic_myInfo_account.png" >
           <span class="title">推荐有奖</span>
           <i class="iconfont icon-jiantouyou"></i>
-        </router-link> -->
+        </router-link>
       </div>
 
 
