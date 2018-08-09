@@ -46,6 +46,10 @@
         <i class="user_links_items_icon iconfont icon-iconfontzhizuobiaozhun0252"></i>
         个人资料
       </router-link>
+      <router-link class="user_links_items" to="/user/recommend">
+        <i class="user_links_items_icon iconfont icon-tuijian1" style="color:#3AC7F5"></i>
+        推荐有奖
+      </router-link>
     </div>
     <div class="uset_links_container">
       <router-link class="user_links_items" to="/user/order">
