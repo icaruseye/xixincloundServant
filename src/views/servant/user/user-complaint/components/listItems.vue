@@ -23,7 +23,8 @@ export default {
         case -1:
           return this.createSvgIcon({
             color: '#f6f6f6',
-            innerText: '已取消',
+            size: '60',
+            innerText: '取消投诉',
             textColor: '#999'
           })
         case 0:
@@ -33,22 +34,20 @@ export default {
           })
         case 1:
           return this.createSvgIcon({
-            color: '#f7931e',
+            color: '#faad14',
             innerText: '仲裁中'
           })
         case 2:
           return this.createSvgIcon({
-            color: '#ddd',
+            color: '#ffa39e',
             size: '60',
-            innerText: '申诉失败',
-            textColor: '#999'
+            innerText: '申诉失败'
           })
         case 3:
           return this.createSvgIcon({
-            color: '#ddd',
+            color: '#95de64',
             size: '60',
-            innerText: '申诉成功',
-            textColor: '#999'
+            innerText: '申诉成功'
           })
         default:
           return ''
@@ -77,7 +76,6 @@ export default {
       let text = document.createElement('text')
       text.setAttribute('font-size', `12`)
       text.setAttribute('text-anchor', `middle`)
-      // text.setAttribute('dominant-baseline', `middle`)
       text.setAttribute('fill', `${textColor}`)
       let textPath = document.createElement('textPath')
       textPath.setAttribute('xlink:href', `#${pathID}`)
@@ -85,7 +83,6 @@ export default {
       let tspan = document.createElement('tspan')
       tspan.innerText = innerText
       tspan.setAttribute('dy', 5)
-      console.log(tspan.getBoundingClientRect())
       textPath.appendChild(tspan)
       text.appendChild(textPath)
       svg.appendChild(polygon)

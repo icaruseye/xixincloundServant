@@ -85,7 +85,9 @@ export default {
       this.$vux.loading.show('加载中')
       this.occupiedText = '正在请求数据…'
       await this.getComplaintList().then(value => {
-        this.list = value.Data
+        this.list = value.Data.sort((a, b) => {
+          return a.State > b.State
+        })
       })
       this.$vux.loading.hide()
     },
