@@ -23,7 +23,7 @@
       </template>
       <template  v-if="MsgType === 6">
         <div class="msg_text_container">
-          {{Content.Result ? Content.Result : '没有提交服务结果'}}
+          {{Content.Result ? Content.Result : '服务已完成'}}
         </div>
         <div v-if="Content.ServiceImgs != null && Content.ServiceImgs != ''" class="msg_imsg_container">
           <image-preview-item :list="Content.ServiceImgs" @onloaded="onloaded"></image-preview-item>
