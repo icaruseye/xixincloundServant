@@ -17,6 +17,7 @@
     "build:beta": "cross-env NODE_ENV=beta env_config=beta node build/build.js"
   },
   "dependencies": {
+    "animate.css": "^3.7.0",
     "axios": "^0.18.0",
     "cross-env": "^5.2.0",
     "exif-js": "^2.3.0",

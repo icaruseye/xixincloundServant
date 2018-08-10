@@ -14,6 +14,7 @@ import http from '@/api'
 import util from '@/plugins/util'
 import Vant from 'vant'
 import 'vant/lib/vant-css/index.css'
+import 'animate.css/animate.min.css'
 
 Vue.use(Vant)
 Vue.use(xxComponents)
