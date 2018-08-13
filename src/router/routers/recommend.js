@@ -5,6 +5,13 @@ import _import from '../_import'
 
 export default [
   {
+    path: '/recommend',
+    component: _import('/servant/recommend/index'),
+    meta: {
+      title: '推荐'
+    }
+  },
+  {
     path: '/recommend/inviteUser',
     component: _import('/servant/recommend/inviteUser'),
     meta: {

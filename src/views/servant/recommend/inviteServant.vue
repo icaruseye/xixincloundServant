@@ -2,25 +2,21 @@
   <div class="warp_container">
     <div class="user_background_container"></div>
     <div class="user_info_container">
-      <img class="avatar_img" :src="userAccount.Avatar | transformImgUrl" alt="">
+      <transition enter-active-class="animated fadeInBottom" leave-active-class="animated fadeOutTop">  
+        <div class="avatar_img_box">
+          <img class="avatar_img" :src="userAccount.Avatar | transformImgUrl" alt="">
+        </div>
+      </transition>
       <p class="introducer_box">
         我创建了我的个人工作室， 老铁，你要不要也弄一个？
       </p>
       <div class="chat_container">
-        <div class="chat_items clearfix">
-          <img :src="userAccount.Avatar | transformImgUrl" class="avatar" alt="">
-          <div class="from_textChat_msg">
-            <div class="msg_text_container">
-              hello，我是{{userInfo.RealName}}。我正在使用悉心云平台。台的主要业务是上门服务，他们的核心模式是熟人医患模式，不是抢单/派单模式，不会存在抢不到单或者即便抢到也是偏僻区域单子的情况。
-            </div>
-          </div>
-        </div>
-        <transition v-for="(item, index) in showChatList" :key="index" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutLeft">
-          <div class="chat_items clearfix">
+        <transition v-for="(item, index) in chatList" :key="index" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutLeft">
+          <div class="chat_items clearfix" v-show="scrollTop >= (index + 1)">
             <img :src="userAccount.Avatar | transformImgUrl" class="avatar" alt="">
             <div class="from_textChat_msg">
               <div class="msg_text_container">
-                {{item}}
+                {{item.text}}
               </div>
             </div>
           </div>
@@ -29,18 +25,22 @@
 
       <img class="invate_user_info_bg" src="@/assets/images/invate_servant_info_bg.png" alt="">
     </div>
+    <transition enter-active-class="animated fadeInBottom" leave-active-class="animated fadeOutTop">
+      <div v-show="scrollTop >= chatList.length">
+        <h2 class="title_box">
+          {{userInfo.RealName}}邀请您加入悉心云平台
+        </h2>
+        <div class="qr_code_box">
+          <img :src="API_PATH+'/QRCode/'+userAccount.ID" alt="">
+        </div>
+        <p class="scan_qr_text">长按以上二维码，关注悉心云服务注册即可</p>
 
-    <h2 class="title_box">
-      {{userInfo.RealName}}邀请您加入悉心云平台
-    </h2>
-    <div class="qr_code_box">
-      <img :src="API_PATH+'/QRCode/'+userAccount.ID" alt="">
-    </div>
-    <p class="scan_qr_text">长按以上二维码，关注悉心云服务注册即可</p>
-
-    <div class="invate_user_page_bg_box">
-      <img class="invate_user_page_bg" src="@/assets/images/invate_servant_page_bg.png" alt="">
-    </div>
+        <div class="invate_user_page_bg_box">
+          <img class="invate_user_page_bg" src="@/assets/images/invate_servant_page_bg.png" alt="">
+        </div>
+      </div>
+    </transition>
+    
   </div>
 </template>
 <script>
@@ -48,34 +48,16 @@ import {mapGetters} from 'vuex'
 export default {
   data () {
     return {
-      chatList: [
-        '你需要自己发展患者，但平台保证：你自己发展的患者只有自己看到，不会向其他医护推荐您的患者，公平无竞争！',
-        '基于熟人医患模式的上门服务相对安全，你可以自己选择你服务的对象，不选择素质较差的患者即可。',
-        '除了上门服务，平台还提供院内陪诊、图文问诊服务供你自由选择。所有项目你都可以自由定价，平台无权干涉。',
-        '平台还有个强大的患者管理功能，分组、分标签、分组推送科普知识等。各类消息均有模板，包括科普知识类文章。提前设置，定时发送即可。患者会以为你无比的关心他。',
-        '若你觉得还不错，一定扫我的码哦~待你完成了金额大于100元的首单，我们双方都有鼓励金。再给你看看我的介绍页和服务项页面，我觉得特别高大上。'
-      ],
-      showChatList: []
+      scrollTop: 0
     }
   },
   mounted () {
-    this.$nextTick(() => {
-      this.addChat()
-    })
-  },
-  methods: {
-    addChat () {
-      let timer = null
-      let index = 0
-      timer = setInterval(() => {
-        if (index < this.chatList.length) {
-          this.showChatList.push(this.chatList[index])
-          index++
-        } else {
-          clearInterval(timer)
-        }
-      }, 1000)
-    }
+    const timer = setInterval(() => {
+      this.scrollTop += 1
+      if (this.scrollTop > this.chatList.length) {
+        clearInterval(timer)
+      }
+    }, 200)
   },
   computed: {
     ...mapGetters([
@@ -87,6 +69,28 @@ export default {
     },
     API_PATH () {
       return process.env.API_PATH
+    },
+    chatList () {
+      return [
+        {
+          text: `hello，我是${this.userInfo.RealName}。我正在使用悉心云平台。台的主要业务是上门服务，他们的核心模式是熟人医患模式，不是抢单/派单模式，不会存在抢不到单或者即便抢到也是偏僻区域单子的情况。`
+        },
+        {
+          text: '你需要自己发展患者，但平台保证：你自己发展的患者只有自己看到，不会向其他医护推荐您的患者，公平无竞争！'
+        },
+        {
+          text: '基于熟人医患模式的上门服务相对安全，你可以自己选择你服务的对象，不选择素质较差的患者即可。'
+        },
+        {
+          text: '除了上门服务，平台还提供院内陪诊、图文问诊服务供你自由选择。所有项目你都可以自由定价，平台无权干涉。'
+        },
+        {
+          text: '平台还有个强大的患者管理功能，分组、分标签、分组推送科普知识等。各类消息均有模板，包括科普知识类文章。提前设置，定时发送即可。患者会以为你无比的关心他。'
+        },
+        {
+          text: '若你觉得还不错，一定扫我的码哦~待你完成了金额大于100元的首单，我们双方都有鼓励金。再给你看看我的介绍页和服务项页面，我觉得特别高大上。'
+        }
+      ]
     }
   }
 }
@@ -103,92 +107,96 @@ export default {
     min-height: 50px;
     padding: 0 0 0 50px;
     margin-bottom: 40px;
-  .avatar
-  {
-    position: absolute;
-    top: -15px;
-    left: 0;
-    border-radius: 50%;
-    width: 35px;
-    height: 35px;
-  }
-  .to_container
-  {
     .avatar
-    {
-      right: 0;
-    }
-  }
-  .from_container
-  {
-    .avatar
-    {
-      left: 0;
-    }
-  }
-  .to_textChat_msg,
-  .from_textChat_msg
-  {
-    position: relative;
-    padding-top: 10px;
-    border-radius: 3px;
-    min-height: 40px;
-    box-sizing: border-box;
-    background-color: #F6F6F6;
-    border: 1px solid #DFDFDF;
-    max-width: 100%;
-    color: #666666;
-    &::after
     {
       position: absolute;
+      top: -15px;
+      left: 0;
+      border-radius: 50%;
+      width: 35px;
+      height: 35px;
+    }
+    .to_container
+    {
+      .avatar
+      {
+        right: 0;
+      }
+    }
+    .from_container
+    {
+      .avatar
+      {
+        left: 0;
+      }
+    }
+    .to_textChat_msg,
+    .from_textChat_msg
+    {
+      position: relative;
+      padding-top: 10px;
+      border-radius: 3px;
+      min-height: 40px;
+      box-sizing: border-box;
       background-color: #F6F6F6;
-      content: '';
-      top: 10px;
-      width: 10px;
-      height: 10px;
-      transform: rotate(45deg);
-      border-style: solid;
-      border-width: 1px;
+      border: 1px solid #DFDFDF;
+      max-width: 100%;
+      color: #666666;
+      &::after
+      {
+        position: absolute;
+        background-color: #F6F6F6;
+        content: '';
+        top: 10px;
+        width: 10px;
+        height: 10px;
+        transform: rotate(45deg);
+        border-style: solid;
+        border-width: 1px;
+      }
+      .msg_text_container
+      {
+        margin-bottom: 10px;
+        padding: 0 15px;
+        font-size: 14px;
+        text-align: justify;
+        color: #666;
+        word-break: break-word;
+      }
     }
-    .msg_text_container
+    .to_textChat_msg
     {
-      margin-bottom: 10px;
-      padding: 0 15px;
-      font-size: 14px;
-      text-align: justify;
-      color: #666;
-      word-break: break-word;
+      float: right;
+      &::after
+      {
+        right: -6px;
+        border-color: #DFDFDF #DFDFDF transparent transparent
+      }
     }
-  }
-  .to_textChat_msg
-  {
-    float: right;
-    &::after
-    {
-      right: -6px;
-      border-color: #DFDFDF #DFDFDF transparent transparent
-    }
-  }
-  .yellow_textChat
-  {
-    background-color: #FFEDD1;
-    border: 1px solid #FFD797;
-    &::after
+    .yellow_textChat
     {
       background-color: #FFEDD1;
-      border-color: #FFD797 #FFD797 transparent transparent
+      border: 1px solid #FFD797;
+      &::after
+      {
+        background-color: #FFEDD1;
+        border-color: #FFD797 #FFD797 transparent transparent
+      }
     }
-  }
-  .from_textChat_msg
-  {
-    float: left;
-    &::after
+    .from_textChat_msg
     {
-      left: -6px;
-      border-color: transparent transparent #DFDFDF #DFDFDF
+      float: left;
+      &::after
+      {
+        left: -6px;
+        border-color: transparent transparent #DFDFDF #DFDFDF
+      }
     }
   }
-  }
+}
+.hide_chat_items
+{
+  display: none;
 }
 // 聊天结束
 .warp_container
@@ -233,16 +241,23 @@ export default {
     bottom: 0;
     right: 0;
   }
-  .avatar_img
+  .avatar_img_box
   {
     position:absolute;
     top: -25px;
     left: 50%;
     margin-left: -30px;
-    display: block;
     border-radius: 50%;
     width: 60px;
     height: 60px;
+    border: 4px solid #fff;
+    box-sizing: border-box;
+    .avatar_img
+    {
+      display: block;
+      border-radius: 50%;
+      
+    }
   }
   .introducer_box
   {
