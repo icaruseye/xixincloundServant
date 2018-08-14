@@ -318,7 +318,7 @@ export default {
           break
         case 0:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          this.SET_SMALL_MISSION_TAB_INDEX(1)
           break
         case 1:
           this.SET_MISSION_TAB_INDEX(0)

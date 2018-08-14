@@ -154,7 +154,11 @@ export default [
     path: '/user/order',
     component: _import('/servant/user/user-order/list'),
     meta: {
-      title: '我的订单'
+      title: '我的订单',
+      goBackParam: {
+        url: '/user',
+        title: '我的'
+      }
     }
   },
   {
