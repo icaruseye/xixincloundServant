@@ -24,7 +24,11 @@ export default [
     path: '/message/chat/:id',
     component: _import('/servant/message/chat'),
     meta: {
-      title: '聊天'
+      title: '聊天',
+      goBackParam: {
+        url: '/message',
+        title: '聊天列表'
+      }
     }
   },
   {

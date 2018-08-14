@@ -60,7 +60,11 @@ export default [
     path: '/user/info',
     component: _import('/servant/user/user-info'),
     meta: {
-      title: '个人资料'
+      title: '个人资料',
+      goBackParam: {
+        url: '/user',
+        title: '我的'
+      }
     }
   },
   {
@@ -74,21 +78,33 @@ export default [
     path: '/user/address',
     component: _import('/servant/user/user-address/list'),
     meta: {
-      title: '服务地址管理'
+      title: '服务地址管理',
+      goBackParam: {
+        url: '/user',
+        title: '我的'
+      }
     }
   },
   {
     path: '/user/complaint',
     component: _import('/servant/user/user-complaint/list'),
     meta: {
-      title: '投诉列表'
+      title: '投诉列表',
+      goBackParam: {
+        url: '/user',
+        title: '我的'
+      }
     }
   },
   {
     path: '/user/complaint/:id/detail',
     component: _import('/servant/user/user-complaint/detail'),
     meta: {
-      title: '投诉详情'
+      title: '投诉详情',
+      goBackParam: {
+        url: '/user/complaint',
+        title: '投诉列表'
+      }
     }
   },
   {
@@ -123,7 +139,11 @@ export default [
     path: '/user/authstep3-1',
     component: _import('/servant/user/user-auth-step3-1'),
     meta: {
-      title: ''
+      title: '',
+      goBackParam: {
+        url: '/user/authstep3',
+        title: '执业认证'
+      }
     }
   },
   {
@@ -138,7 +158,11 @@ export default [
     path: '/user/bankCard',
     component: _import('/servant/user/user-bankCard/list'),
     meta: {
-      title: '我的银行卡'
+      title: '我的银行卡',
+      goBackParam: {
+        url: '/user',
+        title: '我的'
+      }
     }
   },
   {
@@ -146,7 +170,11 @@ export default [
     path: '/user/bankCard/add',
     component: _import('/servant/user/user-bankCard/addBankCard'),
     meta: {
-      title: '添加银行卡'
+      title: '添加银行卡',
+      goBackParam: {
+        url: '/user/bankCard',
+        title: '银行卡列表'
+      }
     }
   },
   { // 我的订单

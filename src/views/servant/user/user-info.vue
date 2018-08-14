@@ -1,5 +1,6 @@
 <template>
   <div class="weui-form">
+    <xx-go-back></xx-go-back>
     <div class="weui-cell-form-title">编辑个人信息</div>
     <div class="weui-cell nobor">
       <div class="weui-cell-top" style="align-items:center">

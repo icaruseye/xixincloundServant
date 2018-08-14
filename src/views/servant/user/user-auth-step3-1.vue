@@ -1,5 +1,6 @@
 <template>
   <div style="min-height:100vh;position:relative;padding-bottom:100px">
+    <xx-go-back></xx-go-back>
     <div style="padding:20px;background-color: #fff">
       <h1 style="font-size: 18px;font-weight: normal;border-bottom: 1px solid #ddd;line-height:40px;margin-bottom: 20px">
         {{Name}}认证

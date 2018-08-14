@@ -1,5 +1,6 @@
 <template>
   <div class="xixin-filtrate">
+    <xx-go-back></xx-go-back>
     <div class="xixin-filtrate-active" @click="showList">{{list[currentIndex]}}<i class="iconfont icon-sanjiao"></i></div>
     <div class="xixin-filtrate-list" :class="active ? 'fadein' : ''" v-show="isShowList">
       <ul>
@@ -76,7 +77,7 @@ export default {
   position: absolute;
   width: 100%;
   background: #fff;
-  top: 0;
+  top: 45px;
   height: 49px;
   margin-bottom: 5px;
   box-shadow: 0 1px 6px RGBA(153, 153, 153, 0.5);
@@ -95,7 +96,7 @@ export default {
 .xixin-filtrate-list {
   z-index: 10;
   position: absolute;
-  top: 49px;
+  top: 94px;
   background: #fff;
   width: 100%;
   transform: translateY(-100%);
@@ -138,7 +139,7 @@ export default {
 .mask {
   z-index: 5;
   position: fixed;
-  top: 0;
+  top: 45px;
   left: 0;
   right: 0;
   bottom: 0;

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <xx-go-back></xx-go-back>
     <div class="form-panel">
       <div v-if="addressList.length > 0" >
         <div v-for="(item, index) in addressList" class="weui-form-cell" @click="toEdit(item.ID, index)" :key="index">

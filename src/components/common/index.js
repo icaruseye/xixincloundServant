@@ -15,6 +15,7 @@ import xxHint from './hintComponent'
 import xxInputGroupBox from './inputGroup/box'
 import xxInputGroupItems from './inputGroup/items'
 import xxOccupiedBox from './OccupiedBox'
+import xxGoBack from './GoBack'
 
 const components = {
   install: function (Vue) {
@@ -35,6 +36,7 @@ const components = {
     Vue.component('xxInputGroupBox', xxInputGroupBox)
     Vue.component('xxInputGroupItems', xxInputGroupItems)
     Vue.component('xxOccupiedBox', xxOccupiedBox)
+    Vue.component('xxGoBack', xxGoBack)
   }
 }
 

@@ -1,5 +1,6 @@
 <template>
   <div class="wrap">
+    <xx-go-back></xx-go-back>
     <xx-step-bar v-if="detail.State != -1" :step="detail.State | stepFileter">
       <xx-step-items slot="items">
         已确认
@@ -199,6 +200,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import CancelMissionPopup from '@/components/cancelMissionPopup'
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 import { Rater } from 'vux'
@@ -251,6 +253,7 @@ export default {
     this.initDetail()
   },
   methods: {
+    ...mapMutations(['SET_MISSION_TAB_INDEX', 'SET_SMALL_MISSION_TAB_INDEX']),
     colorToRgb (color, clarity) {
       return util.colorToRgb(color, clarity)
     },
@@ -462,6 +465,44 @@ export default {
         await that.getReviewDetail().then(value => {
           that.reviewDetail = value.Data
         })
+      }
+      // 设置返回目录
+      switch (that.detail.State) {
+        case -1:
+          that.SET_MISSION_TAB_INDEX(0)
+          break
+        case 0:
+          that.SET_MISSION_TAB_INDEX(0)
+          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          break
+        case 1:
+          that.SET_MISSION_TAB_INDEX(0)
+          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          break
+        case 2:
+          that.SET_MISSION_TAB_INDEX(0)
+          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          break
+        case 3:
+          that.SET_MISSION_TAB_INDEX(0)
+          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          break
+        case 4:
+          that.SET_MISSION_TAB_INDEX(0)
+          that.SET_SMALL_MISSION_TAB_INDEX(3)
+          break
+        case 5:
+          that.SET_MISSION_TAB_INDEX(1)
+          break
+        case 6:
+          that.SET_MISSION_TAB_INDEX(1)
+          break
+        case 7:
+          that.SET_MISSION_TAB_INDEX(1)
+          break
+        default:
+          that.SET_MISSION_TAB_INDEX(1)
+          break
       }
       that.$vux.loading.hide()
       document.documentElement.scrollTop = 0
