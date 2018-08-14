@@ -59,7 +59,7 @@
           任务已被取消
         </system-msg-item>
         <system-msg-item class="mt10px">
-          取消原因： {{detail.CancelDescription}}
+          取消原因： {{detail.CancelDescription || '服务者4小时未做出响应'}}
         </system-msg-item>
       </div>
     </div>

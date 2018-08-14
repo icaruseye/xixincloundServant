@@ -4,8 +4,21 @@
       <xx-go-back></xx-go-back>
     </div>
     <div class="chat-list" id="chatList" :style="{paddingBottom : faceHeight + 'px'}">
-      <div class="service_explain">服务说明：此聊天窗口只解答服务包售前疑惑，不解答图文咨询的内容</div>
-      <template v-for="(item, index) in chatList">
+      <div class="service_explain" @click="serviceExplainDialogVisible = true">
+        服务说明：此聊天窗口只解答服务包售前疑惑，不解答图文咨询的内容
+        <i class="iconfont icon-jiantouyou"></i>
+      </div>
+      <text-chat-item
+        v-for="(item, index) in chatList"
+        :key="index"
+        :IsServantReceive="item.IsServantReceive"
+        :class="['mt10px', 'message_item_'+item.ID]"
+        :avatar="(item.IsServantReceive === 0)?mineAccount.Avatar:userAccount.Avatar"
+        :Content="item.Content"
+        :MsgType="1"
+      >
+      </text-chat-item>
+      <!-- <template v-for="(item, index) in chatList">
         <div class="chat-item" :key="index">
           <div class="chat-item-time" v-if="item.SendTime"><span>{{item.SendTime | xxTimeFormatFilter}}</span></div>
           <div :class="[item.IsServantReceive ? 'chat-item-left' : 'chat-item-right']">
@@ -21,7 +34,7 @@
             <inline-loading v-show="item.loading"></inline-loading>
           </div>
       </div>
-      </template>
+      </template> -->
     </div>
     <div class="mask" v-show="isFaceShow" @click="hideFace"></div>
     <div class="chat-send-bar" :style="{ transform: 'translateY('+ translateFace +'px)' }">
@@ -33,7 +46,7 @@
         @keyup.enter="sendMsg">
         <!-- <i class="iconfont icon-biaoqing1" @click="showFace"></i> -->
         <div style="height: 100%;width:10px"></div>
-        <button type="button" class="send-msg" @click="sendMsg">发送</button>
+        <button type="button" class="send-msg" @click="sendMsg">导购咨询</button>
       </div>
       <!-- <div v-if="showFace" class="chat-face-box" id="chatFaceBox">
         <div class="" style="font-size:22px;text-align:justify">
@@ -41,18 +54,38 @@
         </div>
       </div> -->
     </div>
+      <x-dialog 
+        v-model="serviceExplainDialogVisible"
+        class="dialog"
+        width="90%"
+        :hide-on-blur="true">
+        <div class="content">
+          <div class="title">服务说明</div>
+          <ul>
+            <li>• 此聊天窗口只解答服务包售前疑惑，</li>
+            <li>• 不解答图文咨询的内容，</li>
+            <li>• 若需要咨询请购买服务者图文咨询服务包，</li>
+            <li>• 对此给您带来的不便，敬请谅解。</li>
+          </ul>
+          <button class="close" @click="serviceExplainDialogVisible = false">知道了</button>
+        </div>
+      </x-dialog>
   </div>
 </template>
 
 <script>
 import http from '@/api/index'
-import { InlineLoading } from 'vux'
+import TextChatItem from '@/views/servant/consult/components/textChatItem'
+import { InlineLoading, XDialog } from 'vux'
 export default {
   components: {
-    InlineLoading
+    InlineLoading,
+    XDialog,
+    TextChatItem
   },
   data () {
     return {
+      serviceExplainDialogVisible: false,
       isFaceShow: false,
       faceHeight: 100,
       translateFace: 0,
@@ -166,7 +199,7 @@ export default {
 }
 
 .chat-list {
-  padding: 50px 0 100px;
+  padding: 50px 15px 100px;
 }
 
 .chat-item {
@@ -213,8 +246,8 @@ export default {
   flex-direction: row-reverse;
   .chat-item-content {
     margin: 0 15px 0 10px;
-    background: #90d936;
-    border: 1px solid #87d02d;
+    background: #fff;
+    border: 1px solid #fff;
     word-break: break-all;
     &::after {
       content: "";
@@ -224,7 +257,7 @@ export default {
       width: 0;
       height: 0;
       border-top: 8px solid transparent;
-      border-left: 10px solid #90d936;
+      border-left: 10px solid #fff;
       border-bottom: 8px solid transparent;
     }
   }
@@ -257,16 +290,17 @@ export default {
   left: 0;
   right: 0;
   padding: 10px;
+  box-sizing: border-box;
   background: #fff;
   .top {
     display: flex;
     align-items: center;
     .input {
       flex: 1;
-      background: #fff;
-      border: #eee 1px solid;
+      background: #F6F6F6;
+      border: #F6F6F6 1px solid;
       border-radius: 5px;
-      padding: 5px;
+      padding: 0 15px;
       line-height: 20px;
       box-sizing: border-box;
       font-size: 16px;
@@ -278,10 +312,10 @@ export default {
       border: 0;
       color: #fff;
       font-size: 14px;
-      background: #5CB700;
-      height: 34px;
-      line-height: 34px;
-      padding: 0px 20px;
+      background: #3AC7F5;
+      height: 35px;
+      line-height: 35px;
+      padding: 0px 6px;
       border-radius: 5px;
       display: inline-block;
       user-select: none;
@@ -310,6 +344,7 @@ export default {
 }
 .service_explain
 {
+  position: relative;
   margin: 15px 12px 0;
   border: 1px solid #FFDCA1;
   border-radius: 4px;
@@ -318,5 +353,52 @@ export default {
   padding: 5px 15px;
   line-height: 15px;
   color: #666666;
+  .iconfont
+  {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #666666;
+  }
+}
+
+.dialog {
+  .content {
+    text-align: left;
+    line-height: 2;
+    color: #666;
+    .title {
+      font-size: 15px;
+      color: #333;
+      margin-bottom: 20px;
+      text-align: center;
+      padding: 30px 30px 0;
+    }
+    ul
+    {
+      padding: 0 30px;
+    }
+    li {
+      margin-bottom: 10px;
+      font-size: 14px;
+      color: #999;
+      text-align: justify;
+    }
+    .close {
+      display: block;
+      margin: 0 auto;
+      width: 100%;
+      height: 50px;
+      line-height: 50px;
+      outline: none;
+      border: 0;
+      border-radius: 2px;
+      background: #fff;
+      color: #999;
+      border-top: 1px solid #E7E7E7
+    }
+  }
 }
 </style>
