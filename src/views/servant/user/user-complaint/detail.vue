@@ -1,5 +1,6 @@
 <template>
   <div class="warp_container" v-if="detail">
+    <xx-go-back></xx-go-back>
     <xx-step-bar :step="detail.State | stepFileter">
       <xx-step-items slot="items">
         用户资料

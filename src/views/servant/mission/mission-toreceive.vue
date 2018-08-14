@@ -1,5 +1,6 @@
 <template>
   <div class="wrap" v-if="detail != null">
+    <xx-go-back></xx-go-back>
     <xx-step-bar step="1">
       <xx-step-items slot="items">
         待确认
@@ -91,6 +92,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import { Group, Datetime } from 'vux'
 import ImagePreviewItem from '@/components/ImagePreViewItem'
 import CancelMissionPopup from '@/components/cancelMissionPopup'
@@ -122,6 +124,7 @@ export default {
     this.initDetail()
   },
   methods: {
+    ...mapMutations(['SET_MISSION_TAB_INDEX', 'SET_SMALL_MISSION_TAB_INDEX']),
     colorToRgb (color, clarity) {
       return util.colorToRgb(color, clarity)
     },
@@ -224,6 +227,8 @@ export default {
       await this.getCarryTags().then(value => {
         this.carryTags = value
       })
+      this.SET_MISSION_TAB_INDEX(0)
+      this.SET_SMALL_MISSION_TAB_INDEX(1)
     },
     async getData () {
       const res = await this.$http.get('/UserReserveService/' + this.MissionID)

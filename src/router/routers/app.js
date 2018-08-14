@@ -18,7 +18,11 @@ export default [
     path: '/app/service',
     component: _import('/servant/app/app-service'),
     meta: {
-      title: '服务设置'
+      title: '服务设置',
+      goBackParam: {
+        url: '/',
+        title: '首页'
+      }
     }
   },
   {
@@ -39,14 +43,21 @@ export default [
     path: '/app/packageEdit/:id',
     component: _import('/servant/app/app-package-edit'),
     meta: {
-      title: '编辑服务套餐'
+      title: '编辑服务套餐',
+      goBackParam: {
+        title: '服务设置'
+      }
     }
   },
   {
     path: '/app/itemEdit/:id',
     component: _import('/servant/app/app-item-edit'),
     meta: {
-      title: ''
+      title: '',
+      goBackParam: {
+        url: '/app/itemApply',
+        title: '申请服务项'
+      }
     }
   },
   {
@@ -60,7 +71,11 @@ export default [
     path: '/app/itemApply',
     component: _import('/servant/app/app-item-apply'),
     meta: {
-      title: '申请服务项'
+      title: '申请服务项',
+      goBackParam: {
+        url: '/app/service',
+        title: '服务设置'
+      }
     }
   }
 ]

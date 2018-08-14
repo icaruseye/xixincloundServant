@@ -4,6 +4,7 @@
       ref="sticky"
       :offset="0"
       :check-sticky-support="true">
+      <xx-go-back></xx-go-back>
       <xx-tab v-model="modelComplaintTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
         <xx-tab-item>投诉中</xx-tab-item>
         <xx-tab-item>已完成</xx-tab-item>

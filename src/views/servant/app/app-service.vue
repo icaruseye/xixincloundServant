@@ -4,6 +4,7 @@
       ref="sticky"
       :offset="0"
       :check-sticky-support="true">
+      <xx-go-back></xx-go-back>
       <xx-tab v-model="modelServiceListTabIndex" custom-bar-width="25px">
         <xx-tabItem @on-item-click="changeTab">服务项</xx-tabItem>
         <xx-tabItem @on-item-click="changeTab">服务套餐</xx-tabItem>

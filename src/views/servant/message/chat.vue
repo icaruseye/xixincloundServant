@@ -1,8 +1,11 @@
 <template>
   <div>
-    <div class="user-info">
-      <img class="avatar" :src="userAccount.Avatar | transformImgUrl" >
-      <span class="name">{{userAccount.NickName}}</span>
+    <div style="z-index: 10;position: fixed;top: 0;right:0;left:0">
+      <xx-go-back></xx-go-back>
+      <div class="user-info">
+        <img class="avatar" :src="userAccount.Avatar | transformImgUrl" >
+        <span class="name">{{userAccount.NickName}}</span>
+      </div>
     </div>
     <div class="chat-list" id="chatList" :style="{paddingBottom : faceHeight + 'px'}">
       <template v-for="(item, index) in chatList">
@@ -160,16 +163,13 @@ export default {
 
 <style lang="less" scoped>
 .user-info {
-  z-index: 10;
-  position: fixed;
-  top: 0;
   .avatar {
     border-radius: 0;
   }
 }
 
 .chat-list {
-  padding: 110px 0 100px;
+  padding: 160px 0 100px;
 }
 
 .chat-item {

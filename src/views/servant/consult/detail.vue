@@ -1,10 +1,11 @@
 <template>
- <div @click="closeEmojiBox" style="padding-top:100px;overflow:hidden">
+ <div @click="closeEmojiBox" style="padding-top:150px;overflow:hidden">
     <!-- 图片预览 -->
     <div v-transfer-dom>
       <previewer ref="chatImagePreviewer" @on-close="chatImagePreviewerClose" :list="chatMsgImgs"></previewer>
     </div>
     <div style="position:fixed;top:0;left:0;right:0;z-index:1000">
+      <xx-go-back></xx-go-back>
       <xx-step-bar :step="detail.State | stepFilter">
         <xx-step-items slot="items">
           已确认
@@ -89,7 +90,7 @@
 </template>
 <script>
 import { Sticky, Toast, Previewer, TransferDom } from 'vux'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex'
 import CancelMissionPopup from '@/components/cancelMissionPopup'
 import SystemMsgItem from './components/systemMsgItem'
 import TextChatItem from './components/textChatItem'
@@ -163,6 +164,7 @@ export default {
     this.init()
   },
   methods: {
+    ...mapMutations(['SET_MISSION_TAB_INDEX', 'SET_SMALL_MISSION_TAB_INDEX']),
     changeMessageList () {
       const that = this
       let imgs = []
@@ -308,6 +310,44 @@ export default {
         this.$once('hook:beforeDestroy', () => {
           clearInterval(rotation)
         })
+      }
+      // 设置返回目录
+      switch (this.detail.State) {
+        case -1:
+          this.SET_MISSION_TAB_INDEX(0)
+          break
+        case 0:
+          this.SET_MISSION_TAB_INDEX(0)
+          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          break
+        case 1:
+          this.SET_MISSION_TAB_INDEX(0)
+          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          break
+        case 2:
+          this.SET_MISSION_TAB_INDEX(0)
+          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          break
+        case 3:
+          this.SET_MISSION_TAB_INDEX(0)
+          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          break
+        case 4:
+          this.SET_MISSION_TAB_INDEX(0)
+          this.SET_SMALL_MISSION_TAB_INDEX(3)
+          break
+        case 5:
+          this.SET_MISSION_TAB_INDEX(1)
+          break
+        case 6:
+          this.SET_MISSION_TAB_INDEX(1)
+          break
+        case 7:
+          this.SET_MISSION_TAB_INDEX(1)
+          break
+        default:
+          this.SET_MISSION_TAB_INDEX(1)
+          break
       }
     },
     // 获取任务详情

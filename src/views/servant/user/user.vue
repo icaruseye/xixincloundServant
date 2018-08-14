@@ -3,7 +3,7 @@
     <div class="has-tabbar">
       <div class="user-info">
         <img class="avatar" :src="userAccount.Avatar | transformImgUrl" >
-        <p class="name">{{userAccount.NickName}}</p>
+        <p class="name">{{userInfo.RealName || userInfo.NickName}}</p>
         <img class="qrcode" src="@/assets/images/code-1.png"  @click="maskShow = true">
       </div>
       <!-- <div v-if="userInfoCompleteProgress<100" class="user-info_percent">

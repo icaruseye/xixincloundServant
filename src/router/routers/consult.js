@@ -8,7 +8,11 @@ export default [
     path: '/consult/:id/detail',
     component: _import('/servant/consult/detail'),
     meta: {
-      title: '服务中'
+      title: '服务中',
+      goBackParam: {
+        url: '/mission',
+        title: '任务'
+      }
     }
   },
   {

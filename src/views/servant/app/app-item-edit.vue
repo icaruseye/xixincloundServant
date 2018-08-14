@@ -1,5 +1,6 @@
 <template>
   <div class="weui-form">
+    <xx-go-back></xx-go-back>
     <div class="weui-cell-form-title">填写服务项目的信息</div>
     <xx-cell>
       <xx-cell-items label="服务包名称：" class="noraml_cell_right" labelClass="the-cells-items_label">
