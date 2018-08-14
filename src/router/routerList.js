@@ -8,6 +8,7 @@ import user from './routers/user'
 import mission from './routers/mission'
 import consult from './routers/consult'
 import recommend from './routers/recommend'
+import customer from './routers/customer'
 
 const routerList = [
   ...common,
@@ -16,7 +17,8 @@ const routerList = [
   ...app,
   ...user,
   ...consult,
-  ...recommend
+  ...recommend,
+  ...customer
 ]
 
 export default routerList
