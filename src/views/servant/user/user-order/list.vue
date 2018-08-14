@@ -4,6 +4,7 @@
       ref="sticky"
       :offset="0"
       :check-sticky-support="true">
+      <xx-go-back></xx-go-back>
       <xx-tab v-model="modelOrderTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
         <xx-tab-item @on-item-click="onItemClick">全部</xx-tab-item>
         <xx-tab-item @on-item-click="onItemClick">待付款</xx-tab-item>

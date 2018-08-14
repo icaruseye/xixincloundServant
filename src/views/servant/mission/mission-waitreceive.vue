@@ -110,10 +110,10 @@
             </div>
           </li>
           <li class="desc_list_items">
-            <p class="normal_title_p">服务相关图片</p>
             <div class="thumbs_container" style="margin-top: 14px">
               <xx-uploader
               :limit="9"
+              title="服务相关图片"
               @onUpdate="onUpdate"
               ></xx-uploader>
             </div>
@@ -473,23 +473,23 @@ export default {
           break
         case 0:
           that.SET_MISSION_TAB_INDEX(0)
-          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          that.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 1:
           that.SET_MISSION_TAB_INDEX(0)
-          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          that.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 2:
           that.SET_MISSION_TAB_INDEX(0)
-          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          that.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 3:
           that.SET_MISSION_TAB_INDEX(0)
-          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          that.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 4:
           that.SET_MISSION_TAB_INDEX(0)
-          that.SET_SMALL_MISSION_TAB_INDEX(3)
+          that.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 5:
           that.SET_MISSION_TAB_INDEX(1)

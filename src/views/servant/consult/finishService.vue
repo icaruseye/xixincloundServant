@@ -17,11 +17,11 @@
         </div>
       </div>
       <div class="item_box">
-        <h4 class="item_title">服务相关图片</h4>
         <div class="mt10px">  
           <xx-uploader
             class="upload"
             :limit="4"
+            title="服务相关图片"
             @onUpdate="onUpdate"
           ></xx-uploader>
         </div>

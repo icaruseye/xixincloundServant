@@ -55,7 +55,7 @@
           任务已被取消
         </system-msg-item>
         <system-msg-item class="mt10px">
-          取消原因： {{detail.CancelDescription}}
+          取消原因： {{detail.CancelDescription || '服务者4小时未做出响应'}}
         </system-msg-item>
       </div>
     </div>
@@ -297,23 +297,23 @@ export default {
           break
         case 0:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          this.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 1:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          this.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 2:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          this.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 3:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          this.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 4:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(3)
+          this.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 5:
           this.SET_MISSION_TAB_INDEX(1)

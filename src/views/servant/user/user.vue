@@ -119,14 +119,14 @@
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
         
-        <router-link to="/user/withdraw" class="setting-panel_item">
+        <!-- <router-link to="/user/withdraw" class="setting-panel_item">
           <img src="@/assets/images/ic_withdraw_account.png" >
           <span class="title">提现</span>
           <i class="iconfont icon-jiantouyou"></i>
-        </router-link>
+        </router-link> -->
 
         <router-link to="/user/bankCard" class="setting-panel_item">
-          <img src="@/assets/images/ic_withdraw_account.png" >
+          <img src="@/assets/images/ic_user_bankcard.png" >
           <span class="title">我的银行卡</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
@@ -145,7 +145,7 @@
 
       <div class="setting-panel mt10px">
         <router-link to="/user/authstep3" class="setting-panel_item">
-          <img src="@/assets/images/ic_myInfo_account.png" >
+          <img src="@/assets/images/ic-lawyer_license.png" >
           <span class="title">我的执业证</span>
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
