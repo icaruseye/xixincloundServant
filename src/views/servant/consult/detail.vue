@@ -318,23 +318,23 @@ export default {
           break
         case 0:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(1)
+          this.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 1:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          this.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 2:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          this.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 3:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(2)
+          this.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 4:
           this.SET_MISSION_TAB_INDEX(0)
-          this.SET_SMALL_MISSION_TAB_INDEX(3)
+          this.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 5:
           this.SET_MISSION_TAB_INDEX(1)

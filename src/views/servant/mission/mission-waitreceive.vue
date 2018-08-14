@@ -473,23 +473,23 @@ export default {
           break
         case 0:
           that.SET_MISSION_TAB_INDEX(0)
-          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          that.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 1:
           that.SET_MISSION_TAB_INDEX(0)
-          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          that.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 2:
           that.SET_MISSION_TAB_INDEX(0)
-          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          that.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 3:
           that.SET_MISSION_TAB_INDEX(0)
-          that.SET_SMALL_MISSION_TAB_INDEX(2)
+          that.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 4:
           that.SET_MISSION_TAB_INDEX(0)
-          that.SET_SMALL_MISSION_TAB_INDEX(3)
+          that.SET_SMALL_MISSION_TAB_INDEX(0)
           break
         case 5:
           that.SET_MISSION_TAB_INDEX(1)

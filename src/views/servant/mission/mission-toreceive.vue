@@ -228,7 +228,7 @@ export default {
         this.carryTags = value
       })
       this.SET_MISSION_TAB_INDEX(0)
-      this.SET_SMALL_MISSION_TAB_INDEX(1)
+      this.SET_SMALL_MISSION_TAB_INDEX(0)
     },
     async getData () {
       const res = await this.$http.get('/UserReserveService/' + this.MissionID)
