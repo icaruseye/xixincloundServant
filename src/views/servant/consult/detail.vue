@@ -1,13 +1,5 @@
 <template>
-<<<<<<< HEAD
  <div @click="closeEmojiBox" style="padding-top:100px;overflow:hidden">
-=======
- <div @click="closeEmojiBox" style="padding-top:150px;overflow:hidden">
-    <!-- 图片预览 -->
-    <div v-transfer-dom>
-      <previewer ref="chatImagePreviewer" @on-close="chatImagePreviewerClose" :list="chatMsgImgs"></previewer>
-    </div>
->>>>>>> master
     <div style="position:fixed;top:0;left:0;right:0;z-index:1000">
       <xx-go-back></xx-go-back>
       <xx-step-bar :step="detail.State | stepFilter">
@@ -93,13 +85,8 @@
  </div>
 </template>
 <script>
-<<<<<<< HEAD
 import { Sticky, Toast } from 'vux'
-import { mapGetters } from 'vuex'
-=======
-import { Sticky, Toast, Previewer, TransferDom } from 'vux'
 import { mapGetters, mapMutations } from 'vuex'
->>>>>>> master
 import CancelMissionPopup from '@/components/cancelMissionPopup'
 import SystemMsgItem from './components/systemMsgItem'
 import TextChatItem from './components/textChatItem'
@@ -170,13 +157,7 @@ export default {
     this.init()
   },
   methods: {
-<<<<<<< HEAD
-    /**
-     * 获取聊天图片
-     */
-=======
     ...mapMutations(['SET_MISSION_TAB_INDEX', 'SET_SMALL_MISSION_TAB_INDEX']),
->>>>>>> master
     changeMessageList () {
       const that = this
       let imgs = []
