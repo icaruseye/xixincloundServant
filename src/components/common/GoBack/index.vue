@@ -2,7 +2,7 @@
   <div v-if="goBackParam" class="goback_container">
     <div class="goback_btn" @click="redirectTo">
       <i class="iconfont icon-jiantouzuo"></i>
-      返回“{{goBackParam.title}}”
+      返回
     </div>
     <router-link class="user_link_btn" to="/user">
       <img class="avatar" :src="userAccount.Avatar | transformImgUrl" alt="">

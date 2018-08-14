@@ -110,10 +110,10 @@
             </div>
           </li>
           <li class="desc_list_items">
-            <p class="normal_title_p">服务相关图片</p>
             <div class="thumbs_container" style="margin-top: 14px">
               <xx-uploader
               :limit="9"
+              title="服务相关图片"
               @onUpdate="onUpdate"
               ></xx-uploader>
             </div>

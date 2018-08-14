@@ -36,19 +36,16 @@
       * 服务者需保证提供的资料真实、准确、完整且合法有效。因提供的资料不合法、不真实、不准确、不完整的平台有权拒绝为服务者提供服务并删除该账号，且服务者需承担因此引起的相应责任及后果
     </p>
     <div style="padding: 40px 20px; background-color:#fff">
-      <div class="weui-form-title">
-        *上传身份证正面照片
-      </div>
       <xx-uploader
       :limit="1"
+      title="*上传身份证正面照片"
       :imgList="imgList1"
       @onUpdate="onUpdate1"
     ></xx-uploader>
-    <div class="weui-form-title">
-      *上传身份证反面照片
-    </div>
     <xx-uploader
       :limit="1"
+      style="margin-top:20px"
+      title="*上传身份证反面照片"
       :imgList="imgList2"
       @onUpdate="onUpdate2"
     ></xx-uploader>

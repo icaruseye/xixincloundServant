@@ -2,12 +2,9 @@
   <div>
     <div style="z-index: 10;position: fixed;top: 0;right:0;left:0">
       <xx-go-back></xx-go-back>
-      <div class="user-info">
-        <img class="avatar" :src="userAccount.Avatar | transformImgUrl" >
-        <span class="name">{{userAccount.NickName}}</span>
-      </div>
     </div>
     <div class="chat-list" id="chatList" :style="{paddingBottom : faceHeight + 'px'}">
+      <div class="service_explain">服务说明：此聊天窗口只解答服务包售前疑惑，不解答图文咨询的内容</div>
       <template v-for="(item, index) in chatList">
         <div class="chat-item" :key="index">
           <div class="chat-item-time" v-if="item.SendTime"><span>{{item.SendTime | xxTimeFormatFilter}}</span></div>
@@ -169,7 +166,7 @@ export default {
 }
 
 .chat-list {
-  padding: 160px 0 100px;
+  padding: 50px 0 100px;
 }
 
 .chat-item {
@@ -311,5 +308,15 @@ export default {
   top: 0;
   background: transparent;
 }
-
+.service_explain
+{
+  margin: 15px 12px 0;
+  border: 1px solid #FFDCA1;
+  border-radius: 4px;
+  background-color: #FFFBF2;
+  font-size: 10px;
+  padding: 5px 15px;
+  line-height: 15px;
+  color: #666666;
+}
 </style>

@@ -30,11 +30,11 @@
           <i class="iconfont icon-jiantouyou"></i>
         </router-link>
         
-        <router-link to="/user/withdraw" class="setting-panel_item">
+        <!-- <router-link to="/user/withdraw" class="setting-panel_item">
           <img src="@/assets/images/ic_withdraw_account.png" >
           <span class="title">提现</span>
           <i class="iconfont icon-jiantouyou"></i>
-        </router-link>
+        </router-link> -->
 
         <router-link to="/user/bankCard" class="setting-panel_item">
           <img src="@/assets/images/ic_withdraw_account.png" >

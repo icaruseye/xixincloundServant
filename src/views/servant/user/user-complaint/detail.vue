@@ -102,8 +102,8 @@
           <span class="service_remark_textarea_nums_count">{{remark.length}} / 200</span>
         </div>
       </xx-cell-items>
-      <xx-cell-items label="相关图片上传" direction="vertical">
-        <xx-uploader :limit="9" @onUpdate="onUpdate"></xx-uploader>
+      <xx-cell-items label="" direction="vertical">
+        <xx-uploader :limit="9" title="相关图片上传" @onUpdate="onUpdate"></xx-uploader>
       </xx-cell-items>
     </xx-cell>
     <div v-if="detail.State === 0" class="btn_bar">
