@@ -1,13 +1,13 @@
 <template>
   <div class="tags_container">
     <h4 class="title">用户标签</h4>
-    <div class="tag_select_contianer_outer" :style="{height: unfoldTagsContainer?'auto':'80px'}">
+    <div class="tag_select_contianer_outer" :style="{maxHeight: unfoldTagsContainer?'auto':'80px'}">
       <div class="tag_select_contianer" ref="tagSelectContianerRef">
         <div class="tags_checkbox_flex" v-for="(item, index) in tags" :key="index">
           <label class="tags_checkbox_box">
-            <input type="checkbox" :value="item.value" class="tags_checkbox_control" @change="change">
+            <input type="checkbox" :value="item.LableName" class="tags_checkbox_control" @change="change">
             <span class="tags_checkbox_label">
-              {{item.name}}
+              {{item.LableName}}
             </span>
           </label>
         </div>
@@ -29,61 +29,23 @@ export default {
   methods: {
     change () {
       const checkboxItems = document.querySelectorAll('.tags_checkbox_control:checked')
+      let list = ''
       for (let i = 0; i < checkboxItems.length; i++) {
-        console.log(checkboxItems[i].value)
+        list += checkboxItems[i].value + ','
       }
+      this.$emit('change', list.substring(0, list.lastIndexOf(',')))
+    }
+  },
+  props: {
+    tags: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
     return {
       unfoldTagsContainer: false,
-      tagSelectContianerHeight: 0,
-      tags: [
-        {
-          name: '高血压',
-          value: '高血压'
-        },
-        {
-          name: '糖尿病',
-          value: '糖尿病'
-        },
-        {
-          name: '冠心脑病',
-          value: '冠心脑病'
-        },
-        {
-          name: '血糖',
-          value: '血糖'
-        },
-        {
-          name: '脉搏',
-          value: '脉搏'
-        },
-        {
-          name: '心率',
-          value: '心率'
-        },
-        {
-          name: '血氧饱和度',
-          value: '血氧饱和度'
-        },
-        {
-          name: '身高',
-          value: '身高'
-        },
-        {
-          name: '体重',
-          value: '体重'
-        },
-        {
-          name: '发烧',
-          value: '发烧'
-        },
-        {
-          name: '感冒',
-          value: '感冒'
-        }
-      ]
+      tagSelectContianerHeight: 0
     }
   }
 }
