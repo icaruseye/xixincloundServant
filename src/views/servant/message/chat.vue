@@ -46,7 +46,7 @@
         @keyup.enter="sendMsg">
         <!-- <i class="iconfont icon-biaoqing1" @click="showFace"></i> -->
         <div style="height: 100%;width:10px"></div>
-        <button type="button" class="send-msg" @click="sendMsg">导购咨询</button>
+        <button type="button" class="send-msg" @click="sendMsg">发送</button>
       </div>
       <!-- <div v-if="showFace" class="chat-face-box" id="chatFaceBox">
         <div class="" style="font-size:22px;text-align:justify">
@@ -62,10 +62,8 @@
         <div class="content">
           <div class="title">服务说明</div>
           <ul>
-            <li>• 此聊天窗口只解答服务包售前疑惑，</li>
-            <li>• 不解答图文咨询的内容，</li>
-            <li>• 若需要咨询请购买服务者图文咨询服务包，</li>
-            <li>• 对此给您带来的不便，敬请谅解。</li>
+            <li>• 售前咨询仅解答用户对于服务包的售前疑惑，请勿直接回复图文咨询服务内容。</li>
+            <li>• 若用户在售前咨询板块询问图文咨询内容，请推送图文咨询服务包引导其购买后发起咨询</li>
           </ul>
           <button class="close" @click="serviceExplainDialogVisible = false">知道了</button>
         </div>
@@ -301,7 +299,8 @@ export default {
       border: #F6F6F6 1px solid;
       border-radius: 5px;
       padding: 0 15px;
-      line-height: 20px;
+      line-height: 40px;
+      height: 40px;
       box-sizing: border-box;
       font-size: 16px;
       overflow: auto;
@@ -313,9 +312,9 @@ export default {
       color: #fff;
       font-size: 14px;
       background: #3AC7F5;
-      height: 35px;
-      line-height: 35px;
-      padding: 0px 6px;
+      height: 40px;
+      line-height: 40px;
+      padding: 0px 20px;
       border-radius: 5px;
       display: inline-block;
       user-select: none;
