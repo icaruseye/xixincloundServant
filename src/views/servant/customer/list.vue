@@ -1,7 +1,7 @@
 <template>
   <div>
     <xx-go-back></xx-go-back>
-    <xx-search placeholder="搜索用户" v-model="searchValue"></xx-search>
+    <xx-search placeholder="搜索用户" v-model="searchValue" @confirm="init" @cancel="init"></xx-search>
     <div class="tabs_container">
       <router-link :class="['tabs_items', (currentTabIndex === '0')?'active': '']" to="?currentTabIndex=0">最新添加</router-link>
       <router-link :class="['tabs_items', (currentTabIndex === '1')?'active': '']" to="?currentTabIndex=1">最新购买</router-link>
@@ -9,15 +9,21 @@
     </div>
     <tags-container v-if="(currentTabIndex === '0') && (tagsList != null)" :tags="tagsList" @change="tagChange" style="margin-top:5px"></tags-container>
     <div v-if="userList" style="margin-top:10px">
-      <list-items v-for="(item, index) in userList"
-       :key="index"
-       :Avatar="item.FriendAvatar"
-       :UserName="item.UserName"
-       :Attrs="item.Attrs"
-       :ShowTime="item.AddTime"
-       @click.native="redirectUrl"
-      >
-      </list-items>
+      <template v-if="userList.length > 0">
+        <list-items v-for="(item, index) in userList"
+        :key="index"
+        :Avatar="item.FriendAvatar"
+        :UserName="item.UserName"
+        :Attrs="item.Attrs"
+        :ShowTime="item.AddTime"
+        @click.native="redirectUrl(item.UserId)"
+        >
+        </list-items>
+      </template>
+      <div v-else style="font-size: 120px;text-align:center;margin-top:60px">
+        <img style="display:block;margin: 0 auto; width:100px" src="@/assets/images/empty_icon.png" alt="">
+        <p style="font-size:12px;color:#999;text-align:center;margin-top:20px">没有找到对应的用户，请修改筛选条件后重试！</p>
+      </div>
     </div>
   </div>
 </template>
@@ -41,7 +47,8 @@ export default {
   },
   watch: {
     currentTabIndex (val) {
-      this._init()
+      this.searchValue = ''
+      this.init()
     }
   },
   computed: {
@@ -50,19 +57,21 @@ export default {
     }
   },
   created () {
-    this._init()
+    this.init()
   },
   methods: {
-    redirectUrl () {
-      this.$router.push(`/customer/1/detail`)
+    redirectUrl (id) {
+      this.$router.push(`/customer/${id}/detail`)
     },
     tagChange (val) {
       this.Attrs = val
       this.getUserList()
     },
-    async _init () {
+    async init () {
       if (this.currentTabIndex === '0') {
         await this.getTagsList()
+      } else {
+        this.Attrs = ''
       }
       await this.getUserList()
     },
@@ -73,7 +82,8 @@ export default {
       const res = await this.$http.get(`/Attribute/Friends/UserList`, {
         Index: 0,
         Size: 1000,
-        Attrs: this.Attrs,
+        attrs: this.Attrs,
+        search: this.searchValue,
         filterType: this.currentTabIndex
       })
       if (res.data.Code === 100000) {

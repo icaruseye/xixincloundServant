@@ -101,6 +101,7 @@ export default {
 {
   margin-top: 40px;
   padding: 40px 10px;
+  transition: all .2s linear;
   .chat_items
   {
     position: relative;
@@ -234,6 +235,7 @@ export default {
   padding: 50px 0 46px;
   box-sizing: border-box;
   box-shadow: 0 5px 15px rgba(0,0,0,.1);
+  transition: all .2s linear;
   .invate_user_info_bg
   {
     position: absolute;

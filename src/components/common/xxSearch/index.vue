@@ -5,8 +5,8 @@
       <input v-model="modelValue" type="text" :placeholder="placeholder">
       <i v-if="modelValue.length > 0" class="clear_input_btn iconfont icon-shanchuguanbicha2" @click.stop="clearInput"></i>
     </div>
-    <div class="action_container">
-      取消
+    <div class="action_container" @click="confirm">
+      确定
     </div>
   </div>
 </template>
@@ -35,6 +35,12 @@ export default {
   methods: {
     clearInput () {
       this.modelValue = ''
+      this.$nextTick(() => {
+        this.$emit('cancel')
+      })
+    },
+    confirm () {
+      this.$emit('confirm')
     }
   }
 }
