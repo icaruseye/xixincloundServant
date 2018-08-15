@@ -222,6 +222,20 @@ export default {
       context.clearRect(0, 0, targetWidth, targetHeight)
       context.drawImage(Img, 0, 0, targetWidth, targetHeight)
     }
+    // HTMLCanvasElement.toBlob() Polyfill
+    if (!HTMLCanvasElement.prototype.toBlob) {
+      Object.defineProperty(HTMLCanvasElement.prototype, 'toBlob', {
+        value: function (callback, type, quality) {
+          var binStr = atob(this.toDataURL(type, quality).split(',')[1])
+          var len = binStr.length
+          var arr = new Uint8Array(len)
+          for (var i = 0; i < len; i++) {
+            arr[i] = binStr.charCodeAt(i)
+          }
+          callback(new Blob([arr], {type: type || 'image/png'}))
+        }
+      })
+    }
     // canvas转为blob并上传
     canvas.toBlob(function (blob) {
       let base64Url = canvas.toDataURL(fileType || 'image/jpeg', 1)
