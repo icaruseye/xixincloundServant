@@ -1,10 +1,10 @@
 <template>
   <div class="listItem_contianer">
     <div  v-if="Avatar" class="avatar_img_box">
-      <img class="avatar_img" :src="Avatar" :alt="UserName.substring(0, 1)">
+      <img class="avatar_img" :src="Avatar | transformImgUrl" :alt="RealName.substring(0, 1)">
     </div>
-    <div class="userName">
-      {{UserName}}
+    <div class="RealName">
+      {{RealName}}
       <span v-if="ShowTime" class="ShowTime">{{ShowTime | xxTimeFormatFilter}}</span>
     </div>
     <div v-if="Attrs" class="Attrs_container">
@@ -18,7 +18,7 @@
 export default {
   props: {
     Avatar: null,
-    UserName: '',
+    RealName: '',
     Attrs: {
       type: Array,
       default: null
@@ -74,7 +74,7 @@ export default {
       border-radius: 50%;
     }
   }
-  .userName
+  .RealName
   {
     font-size: 18px;
     color: #333;

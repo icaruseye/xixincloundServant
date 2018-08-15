@@ -13,7 +13,7 @@
         <list-items v-for="(item, index) in userList"
         :key="index"
         :Avatar="item.FriendAvatar"
-        :UserName="item.UserName"
+        :RealName="item.RealName"
         :Attrs="item.Attrs"
         :ShowTime="item.AddTime"
         @click.native="redirectUrl(item.UserId)"
