@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { ToastPlugin } from 'vux'
+import { ToastPlugin, dateFormat } from 'vux'
 import http from '@/api'
 import ChinaAddressV4Data from './datas/ChinaAddressV4Data.json'
 Vue.use(ToastPlugin)
@@ -153,14 +153,15 @@ export default {
   /**
    * 时间格式化
    */
-  timeFormatFilter: function (value) {
-    let lastIndexOf = value.lastIndexOf('.')
-    if (lastIndexOf > 0) {
-      value = value.replace('T', ' ').substring(0, lastIndexOf)
-    } else {
-      value = value.replace('T', ' ')
-    }
-    return value
+  timeFormatFilter: function (value, format = 'YYYY-MM-DD HH:mm:ss') {
+    return dateFormat(new Date(value), format)
+    // let lastIndexOf = value.lastIndexOf('.')
+    // if (lastIndexOf > 0) {
+    //   value = value.replace('T', ' ').substring(0, lastIndexOf)
+    // } else {
+    //   value = value.replace('T', ' ')
+    // }
+    // return value
   },
   // 支持的银行卡
   getSupportBankList: () => supportBankList,
