@@ -261,7 +261,12 @@ export default {
         maxHour: 20,
         format: dataFormatRule,
         onConfirm (val) {
-          that.arrivalTime = val
+          if (new Date(val).getTime() < new Date().getTime()) {
+            that.$vux.toast.text('不能小于当前时间')
+            that.arrivalTime = util.timeFormatFilter(new Date(), 'YYYY-MM-DD HH:mm')
+          } else {
+            that.arrivalTime = val
+          }
         }
       })
     }
