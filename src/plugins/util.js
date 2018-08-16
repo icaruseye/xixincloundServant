@@ -155,13 +155,6 @@ export default {
    */
   timeFormatFilter: function (value, format = 'YYYY-MM-DD HH:mm:ss') {
     return dateFormat(new Date(value), format)
-    // let lastIndexOf = value.lastIndexOf('.')
-    // if (lastIndexOf > 0) {
-    //   value = value.replace('T', ' ').substring(0, lastIndexOf)
-    // } else {
-    //   value = value.replace('T', ' ')
-    // }
-    // return value
   },
   // 支持的银行卡
   getSupportBankList: () => supportBankList,
