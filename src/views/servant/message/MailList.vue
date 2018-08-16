@@ -1,5 +1,6 @@
 <template>
   <div>
+    <xx-go-back></xx-go-back>
       <template v-if="list.length > 0">
         <mail-list-item v-for="(item, index) in list"
           :id="item.ID"

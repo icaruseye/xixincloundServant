@@ -1,7 +1,7 @@
 <template>
   <div v-if="visable" class="container">
     <div class="icon_box">
-      <img class="icon" src="@/assets/images/icon_tcmr.png" alt="">
+      <img class="icon" :src="useType | xxMissionTypeIconFilter" alt="">
     </div>
     <div class="info">
       <h3 class="title">{{title | titleFilter}}</h3>
@@ -43,6 +43,7 @@ export default {
     }
   },
   props: {
+    useType: 0,
     id: null,
     title: '',
     price: {

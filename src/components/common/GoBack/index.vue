@@ -16,7 +16,7 @@ export default {
   props: {
     url: {
       type: String,
-      default: null
+      default: ''
     }
   },
   computed: {
