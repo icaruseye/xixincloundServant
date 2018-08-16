@@ -42,14 +42,22 @@ export default [
     path: '/systemMail/:type/list',
     component: _import('/servant/message/MailList'),
     meta: {
-      title: '站内信列表'
+      title: '站内信列表',
+      goBackParam: {
+        url: '/message',
+        title: '聊天列表'
+      }
     }
   },
   {
     path: '/mail/:id/detail',
     component: _import('/servant/message/MailDetail'),
     meta: {
-      title: '站内信详情'
+      title: '站内信详情',
+      goBackParam: {
+        url: '/message',
+        title: '聊天列表'
+      }
     }
   }
 ]

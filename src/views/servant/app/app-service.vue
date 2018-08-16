@@ -28,6 +28,7 @@
               :effectiveMonth ="service.EffectiveMonth"
               :effectiveYear ="service.EffectiveYear"
               :description ="service.Description"
+              :useType="service.PackageType"
               @changeState = "service.State = service.State === 0 ? 1 : 0"
               ></service-item>
             </template>

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <xx-go-back v-if="detail" :url="`/systemMail/${detail.Type}/list`"></xx-go-back>
     <div v-if="detail">
       <div class="detail_top_container">
         {{detail.Type | xxSiteNoticeTypeTitleFilter}}
@@ -16,9 +17,9 @@
         </div>
         <div class="detail_message_container">
           {{detail.Message}}
-          <div class="btn_container">
+          <!-- <div class="btn_container">
             <button @click="goback" class="go_back_btn">返回</button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -50,7 +51,7 @@ export default {
       })
     },
     goback () {
-      this.$router.back()
+      this.$router.push(`/systemMail/${this.detail.Type}/list`)
     }
   }
 }
@@ -109,7 +110,7 @@ export default {
   .detail_message_container
   {
     margin: 0 10px;
-    background-color: #fff;
+    background: linear-gradient(#fff, #f6f6f6);
     padding: 20px 20px;
     text-align: justify;
     font-size: 14px;
