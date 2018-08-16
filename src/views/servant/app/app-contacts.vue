@@ -18,11 +18,11 @@
         </div>
         <div class="tabbox-list vux-1px-b vux-1px-t">
           <template v-for="(item, index) in list">
-            <div class="item vux-1px-b" @click="goChat(item.FriendViewID, index)" :key="index">
-              <div><img class="avatar" :src="item.FriendAvatar" ></div>
+            <div class="item vux-1px-b" @click="goChat(item.UserViewID, index)" :key="index">
+              <div><img class="avatar" :src="item.UserAvatar | transformImgUrl" ></div>
               <div class="mid">
-                <div class="name">{{item.FriendName}}</div>
-                <p class="text fof">{{item.AddMessage}}</p>
+                <div class="name">{{item.UserName}}</div>
+                <p class="text fof">{{item.NewestContent}}</p>
               </div>
               <i class="iconfont icon-jiantouyou"></i>
             </div>

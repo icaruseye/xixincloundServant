@@ -61,11 +61,13 @@ export default {
       })
     },
     async putConsult () {
+      this.$vux.loading.show('提交中')
       const res = await this.$http.put(`/Consult?id=${this.ID}`, {
         ServiceResult: this.result,
         Remark: this.remark,
         Img: this.imgs
       })
+      this.$vux.loading.hide()
       return res.data
     },
     // 验证服务结果
