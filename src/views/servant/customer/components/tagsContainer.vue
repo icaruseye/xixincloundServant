@@ -5,9 +5,9 @@
       <div class="tag_select_contianer" ref="tagSelectContianerRef">
         <div class="tags_checkbox_flex" v-for="(item, index) in tags" :key="index">
           <label class="tags_checkbox_box">
-            <input type="checkbox" :value="item.LableName" class="tags_checkbox_control" @change="change">
+            <input type="checkbox" :value="item" class="tags_checkbox_control" @change="change">
             <span class="tags_checkbox_label">
-              {{item.LableName}}
+              {{item}}
             </span>
           </label>
         </div>

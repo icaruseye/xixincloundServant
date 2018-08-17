@@ -1,11 +1,11 @@
 <template>
   <div class="listItem_contianer">
     <div  v-if="Avatar" class="avatar_img_box">
-      <img class="avatar_img" :src="Avatar | transformImgUrl" :alt="RealName.substring(0, 1)">
+      <img class="avatar_img" :src="Avatar | transformImgUrl" :alt="UserName.substring(0, 1)">
     </div>
-    <div class="RealName">
-      {{RealName}}
-      <span v-if="ShowTime" class="ShowTime">{{ShowTime | xxTimeFormatFilter}}</span>
+    <div class="UserName">
+      {{UserName}}
+      <span v-if="ShowTime" class="ShowTime">{{ShowTime | xxTimeFormatFilter('YYYY/MM/DD')}}</span>
     </div>
     <div v-if="Attrs" class="Attrs_container">
       <span v-for="(item, index) in Attrs" :key="index" class="tags_span">
@@ -18,7 +18,7 @@
 export default {
   props: {
     Avatar: null,
-    RealName: '',
+    UserName: '',
     Attrs: {
       type: Array,
       default: null
@@ -32,10 +32,9 @@ export default {
 .listItem_contianer
 {
   position: relative;
-  height: 80px;
   background-color: #fff;
-  padding: 20px 12px 0 90px;
-  box-sizing: border-box;
+  padding: 20px 12px 20px 90px;
+  min-height: 50px;
   &::after
   {
     position: absolute;
@@ -74,7 +73,7 @@ export default {
       border-radius: 50%;
     }
   }
-  .RealName
+  .UserName
   {
     font-size: 18px;
     color: #333;

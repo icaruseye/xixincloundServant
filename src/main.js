@@ -49,8 +49,8 @@ Vue.filter('transformImgUrl', function (val) {
 /**
  * 时间格式化过滤器
  */
-Vue.filter('xxTimeFormatFilter', (value = '') => {
-  return util.timeFormatFilter(value)
+Vue.filter('xxTimeFormatFilter', (value = '', format) => {
+  return util.timeFormatFilter(value, format)
 })
 /**
  * 文字加省略号

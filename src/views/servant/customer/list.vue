@@ -7,13 +7,13 @@
       <router-link :class="['tabs_items', (currentTabIndex === '1')?'active': '']" to="?currentTabIndex=1">最新购买</router-link>
       <router-link :class="['tabs_items', (currentTabIndex === '2')?'active': '']" to="?currentTabIndex=2">最后活动</router-link>
     </div>
-    <tags-container v-if="(currentTabIndex === '0') && (tagsList != null)" :tags="tagsList" @change="tagChange" style="margin-top:5px"></tags-container>
+    <tags-container v-if="(currentTabIndex === '0') && (tagsList != null) && tagsList.length > 0" :tags="tagsList" @change="tagChange" style="margin-top:5px"></tags-container>
     <div v-if="userList" style="margin-top:10px">
       <template v-if="userList.length > 0">
         <list-items v-for="(item, index) in userList"
         :key="index"
         :Avatar="item.FriendAvatar"
-        :RealName="item.RealName"
+        :UserName="item.UserName"
         :Attrs="item.Attrs"
         :ShowTime="item.AddTime"
         @click.native="redirectUrl(item.UserId)"
@@ -92,7 +92,7 @@ export default {
     },
     // 获取标签列表
     async getTagsList () {
-      const res = await this.$http.get(`/Attribute/SysAttribute/List`)
+      const res = await this.$http.get(`/Attribute/UserAttribute/GetAttribute`)
       if (res.data.Code === 100000) {
         this.tagsList = res.data.Data
       }

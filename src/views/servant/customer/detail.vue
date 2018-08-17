@@ -3,12 +3,12 @@
     <div class="user_bg_container">
       <div class="user_info_container">
         <div class="avatar_box">
-          <img :src="userInfo.FriendAvatar | transformImgUrl" :alt="userInfo.RealName.substring(0, 1)">
+          <img :src="userInfo.FriendAvatar | transformImgUrl" :alt="userInfo.UserName.substring(0, 1)">
         </div>
-        <h4 class="realName">{{userInfo.RealName}}</h4>
-        <p class="user_desc_p">
+        <h4 class="realName">{{userInfo.UserName}}</h4>
+        <!-- <p class="user_desc_p">
           {{userInfo.Mobile}}
-        </p>
+        </p> -->
       </div>
       <div class="user_tags_container clearfix">
         <template v-if="userTags">
@@ -19,6 +19,7 @@
             还没有为该用户添加标签！
           </div>
         </template>
+        <i class="add_tag_btn iconfont icon-jiahao" @click="selectTagsDialog = true"></i>
       </div>
     </div>
 
@@ -51,7 +52,10 @@
       <div v-if="remarkList" class="remark_list_container">
         <template v-if="remarkList.length > 0">
           <div v-for="(item, index) in remarkList" :key="index" class="remark_list_items">
-            <p class="time">{{item.CreateTime | tiemFormat}}</p>
+            <p class="time">
+              {{item.CreateTime | xxTimeFormatFilter}}
+              <span style="padding-left:20px">{{item.CreateTime | xxTimeFormatFilter('星期E')}}</span>
+            </p>
             <p class="text">
               <i class="left_point_container"></i>
               {{item.FollowContent}}
@@ -71,6 +75,42 @@
       <button class="btn" @click="addRemarkDialogVisible = true">+ 追踪记录</button>
     </div>
 
+    <!-- 选择用户标签 -->
+    <x-dialog v-model="selectTagsDialog">
+      <div class="addRemarkDialog_container">
+        <div class="tag_select_contianer">
+          <template v-if="userTags">
+            <div class="tags_checkbox_flex" v-for="(item, index) in userTags" :key="index">
+              <label class="tags_checkbox_box">
+                <input type="checkbox" class="tags_checkbox_control" checked @change="deleteTagChange(index, item.ID)">
+                <span class="tags_checkbox_label">
+                  {{item.AttrName}}
+                </span>
+              </label>
+            </div>
+          </template>
+          <template v-if="allTags">
+            <div class="tags_checkbox_flex" v-for="(item, index) in allTags" :key="index">
+              <label class="tags_checkbox_box">
+                <input type="checkbox" class="tags_checkbox_control" @change="addTagChange(item)">
+                <span class="tags_checkbox_label">
+                  {{item}}
+                </span>
+              </label>
+            </div>
+          </template>
+        </div>
+        <div class="customTag_input_container">
+          <input class="add_customTag_control" v-model="customTagValue" type="text" placeholder="自定义标签">
+          <span class="add_customTag_btn" @click="addCustomTagAction">添加</span>
+        </div>
+        <div class="addRemarkDialog_btn_box">
+          <div class="btn_box">
+            <button class="btn"  @click="selectTagsDialog = false">关闭</button>
+          </div>
+        </div>
+      </div>
+    </x-dialog>
     <!-- 添加追踪记录弹窗 -->
     <x-dialog
       v-model="addRemarkDialogVisible"
@@ -93,29 +133,26 @@
   </div>
 </template>
 <script>
-import {XDialog, dateFormat} from 'vux'
+import {XDialog} from 'vux'
 export default {
   components: {
     XDialog
   },
   data () {
     return {
+      customTagValue: '',
+      selectTagsDialog: false,
       addRemarkDialogVisible: false,
       userInfo: null,
       userTags: null,
       remarkList: null,
+      allTags: null,
       remarkValue: ''
     }
   },
   computed: {
     ID () {
       return this.$route.params.id
-    }
-  },
-  filters: {
-    tiemFormat (val) {
-      console.log(new Date(val))
-      return dateFormat(new Date(val), 'YYYY-MM-DD HH:mm:ss 星期E')
     }
   },
   created () {
@@ -150,6 +187,7 @@ export default {
       this.getUserInfo()
       this.getTags()
       this.getRemarkList()
+      this.getTagsList()
     },
     async getUserInfo () {
       const res = await this.$http.get(`/Attribute/Friends/Detail?userId=${this.ID}`)
@@ -168,6 +206,51 @@ export default {
       if (res.data.Code === 100000) {
         this.remarkList = res.data.Data
       }
+    },
+    // 获取系统默认标签
+    async getTagsList () {
+      const res = await this.$http.get(`/Attribute/SysAttribute/List?userId=${this.ID}`)
+      if (res.data.Code === 100000) {
+        this.allTags = res.data.Data
+      }
+    },
+    // 添加用户标签
+    async addUserTag (tagName) {
+      const res = await this.$http.post(`/Attribute/UserAttribute/Add`, {
+        UserId: this.ID,
+        Arrs: [tagName]
+      })
+      return res.data
+    },
+    // 删除标签
+    async deleteTagByTagID (tagID) {
+      const res = await this.$http.delete(`/Attribute/UserAttribute/Delete?id=${tagID}`)
+      return res.data
+    },
+    addTagChange (value) {
+      this.addUserTag(value).then(result => {
+        if (result.Code === 100000) {
+          this.getTags()
+          this.getTagsList()
+        }
+      })
+    },
+    deleteTagChange (index, id) {
+      this.deleteTagByTagID(id).then(result => {
+        if (result.Code === 100000) {
+          this.allTags.push(this.userTags[index].AttrName)
+          this.userTags.splice(index, 1)
+        }
+      })
+    },
+    addCustomTagAction () {
+      this.addUserTag(this.customTagValue).then(result => {
+        if (result.Code === 100000) {
+          this.customTagValue = ''
+          this.getTags()
+          this.getTagsList()
+        }
+      })
     }
   }
 }
@@ -180,8 +263,8 @@ export default {
   .user_info_container
   {
     position: relative;
-    height: 105px;
-    padding: 20px 20px 20px 74px;
+    height: 75px;
+    padding: 20px 20px 20px 59px;
     box-sizing: border-box;
     border-bottom: 1px solid rgba(255,255,255,.2);
     .avatar_box
@@ -189,30 +272,30 @@ export default {
       position: absolute;
       left: 12px;
       top: 50%;
-      margin-top: -25px;
-      width: 50px;
-      height: 50px;
+      width: 32px;
+      height: 32px;
       background-color: #fff;
       border-radius: 50%;
       font-size: 16px;
       font-weight: 600;
       color: #ccc;
-      line-height: 50px;
-      width: 50px;
-      height: 50px;
+      line-height: 32px;
       text-align: center;
+      transform: translateY(-50%);
       img
       {
         display: block;
         border-radius: 50%;
-        width: 50px;
-        height: 50px;
+        width: 32px;
+        height: 32px;
       }
     }
     .realName
     {
       color: #fff;
       font-size: 18px;
+      height: 35px;
+      line-height: 35px;
       font-weight: 500;
     }
     .user_desc_p
@@ -225,9 +308,19 @@ export default {
   }
   .user_tags_container
   {
+    position: relative;
     padding-right: 40px;
     box-sizing: border-box;
     padding-bottom: 9px;
+    .add_tag_btn
+    {
+      position: absolute;
+      right: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 15px;
+      color: #fff;
+    }
     .no_tags
     {
       font-size: 14px;
@@ -482,4 +575,78 @@ export default {
     font-size: 14px;
   }
 }
+  .tag_select_contianer
+  {
+    margin-top: 10px;
+    display: flex;
+    align-content: space-around;
+    flex-flow: wrap;
+    .tags_checkbox_flex
+    {
+      display: flex;
+      align-content: center;
+      align-items: center;
+      padding: 0 5px;
+      height: 35px;
+      .tags_checkbox_box
+      {
+        position: relative;
+        .tags_checkbox_control
+        {
+          position: absolute;
+          visibility: hidden;
+          &:checked + .tags_checkbox_label
+          {
+            background-color: rgba(59, 199, 245, .2);
+            color: #3AC7F5
+          }
+        }
+        .tags_checkbox_label
+        {
+          display: block;
+          height: 25px;
+          line-height: 25px;
+          font-size: 12px;
+          color: #999;
+          background-color: #F6F6F6;
+          border-radius: 13px;
+          padding: 0 13px;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+  .customTag_input_container
+  {
+    position: relative;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+    padding-right: 100px;
+    .add_customTag_control
+    {
+      background-color: #f6f6f6;
+      width: 100%;
+      height: 40px;
+      padding: 0 10px;
+      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+    .add_customTag_btn
+    {
+      position: absolute;
+      right: 0;
+      top: 10px;
+      height: 40px;
+      line-height: 40px;
+      width: 80px;
+      text-align: center;
+      background-color: #3AC7F5;
+      color: #fff;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+  }
 </style>
