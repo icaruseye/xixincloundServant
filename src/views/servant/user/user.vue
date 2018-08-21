@@ -230,7 +230,7 @@ export default {
 .user_top_container
 {
   position: relative;
-  height: 140px;
+  height: 143px;
   background-color: #3AC7F5;
   box-sizing: border-box;
   padding: 20px 90px 0;
@@ -269,30 +269,10 @@ export default {
 .user_content_container
 {
   position: relative;
-  margin: -20px 20px 0px;
+  margin: -43px 7px 0px;
   background-color: #fff;
-  &::after
-  {
-    position: absolute;
-    top: 0;
-    left: 100%;
-    display: block;
-    content: '';
-    border-style: solid;
-    border-width: 10px 5px 10px 5px;
-    border-color: transparent transparent rgba(0,0,0,.2) rgba(0,0,0,.2)
-  }
-  &::before
-  {
-    position: absolute;
-    top: 0;
-    right: 100%;
-    display: block;
-    content: '';
-    border-style: solid;
-    border-width: 10px 5px 10px 5px;
-    border-color: transparent rgba(0,0,0,.2) rgba(0,0,0,.2) transparent 
-  }
+  border-radius: 8px;
+  box-shadow: 0 0 15px #D3D3D3;
   .user_wallet_info_container
   {
     position: relative;
