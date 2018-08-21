@@ -1,52 +1,57 @@
 <template>
   <div>
-    <div class="select_bank_card_container" @click="withdrawTypeVisible = true">
-      <template v-if="currentWithdrawType">
-        <i class="bank_logo">
-          <svg class="icon" aria-hidden="true">
-            <use :xlink:href="currentWithdrawType.icon | xxGetBankCardLogoFilter"></use>
-          </svg>
-        </i>
-        <h3 class="bank_name">
-          {{currentWithdrawType.name}}
-        </h3>
-        <p class="bankCard_desc">尾号{{currentWithdrawType.code}}的储蓄卡</p>
-      </template>
-      <template v-else>
-        <i class="bank_logo iconfont icon-yinhangqia" style="color:#3ac7f5"></i>
-        <h3 class="bank_name">
-          请先选择提现方式
-        </h3>
-        <p class="bankCard_desc">选择提现方式后才可以提现</p>
-      </template>
-      <i class="iconfont icon-jiantouyou"></i>
-    </div>
-
-    <div class="input_container">
-      <h4 class="input_container_title">提现金额</h4>
-      <div class="amount_input_control clearfix" @click="numberKeyboardVisible = true">
-         <span class="amount_input_prefix">￥</span>
-         <span :class="['amount_text_container', numberKeyboardVisible ? 'amount_text_focus_container' : '']">
-           {{withdrawAmount}}
-         </span>
-         <i v-if="withdrawAmount.length > 0" class="clear_amout_btn iconfont icon-shanchuguanbicha2" @click.stop="clearAmount"></i>
+    <div class="step_container"></div>
+    <div class="box_warp_container">
+      <div class="select_bank_card_container">
+        <div class="select_bank_card_title">
+          到账银行卡
+        </div>
+        <div class="select_bank_card_box" @click="withdrawTypeVisible = true">
+          <template v-if="currentWithdrawType">
+            <div class="bank_info_box clearfix">
+              <i class="bank_logo">
+                <svg class="icon" aria-hidden="true">
+                  <use :xlink:href="currentWithdrawType.icon | xxGetBankCardLogoFilter"></use>
+                </svg>
+              </i>
+              <h3 class="bank_name">
+                {{currentWithdrawType.name}}({{currentWithdrawType.code}})
+              </h3>
+            </div>
+            <p class="bankCard_desc">2小时到账</p>
+          </template>
+          <template v-else>
+            <i class="bank_logo iconfont icon-yinhangqia" style="color:#3ac7f5"></i>
+            <h3 class="bank_name">
+              请先选择提现方式
+            </h3>
+            <p class="bankCard_desc">选择提现方式后才可以提现</p>
+          </template>
+        </div>
       </div>
-      <p class="amount_input_balance">
-        <template v-if="amountIsOverflow">
-          <span style="color: rgb(255, 95, 95)">提现金额超出可提现余额</span>
-        </template>
-        <template v-else>
-          <span>
-            可提现金额{{canWithdrawAmount.toFixed(2)}}元
-            <span class="allin_amount" @click="withdrawAmount = (canWithdrawAmount + '')">全部提现</span>
-          </span>
-        </template>
-      </p>
-    </div>
 
-    <div class="apply_withdraw_btn_box">
-      <button @click="submitWithdrawApply" :class="['apply_withdraw_btn', canWithDraw ? '': 'disabled']">预计T+1个工作日到账，确认提现</button>
-      <p @click="widthDrawDescAlertShow" style="margin-top:10px;font-size:12px;color: #3ac7f5;text-align:center">什么是T+1个工作日？</p>
+      <div class="input_container">
+        <h4 class="input_container_title">提现金额</h4>
+        <div class="amount_input_control clearfix" @click="numberKeyboardVisible = true">
+          <span class="amount_input_prefix">￥</span>
+          <span :class="['amount_text_container', numberKeyboardVisible ? 'amount_text_focus_container' : '']">
+            {{withdrawAmount}}
+          </span>
+          <span class="placeholder" v-if="withdrawAmount.length == 0">
+              可提现{{canWithdrawAmount.toFixed(2)}}元
+            </span>
+          <span class="allin_amount" @click.stop="withdrawAmount = (canWithdrawAmount + '')">全部提现</span>
+        </div>
+        <p class="amount_input_balance">
+          <span>
+            额外扣除¥0.25服务费（费率0.1%）税费¥5.0（费率0.1%）
+          </span>
+        </p>
+      </div>
+
+      <div class="apply_withdraw_btn_box">
+        <button @click="submitWithdrawApply" :class="['apply_withdraw_btn', canWithDraw ? '': 'disabled']">提现</button>
+      </div>
     </div>
 
     <van-number-keyboard
@@ -144,56 +149,74 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+  .step_container
+  {
+    height: 90px;
+    background-color: #fff;
+  }
+  .box_warp_container
+  {
+    margin: 10px 6px 100px;
+    background-color: #fff;
+    border-radius: 4px;
+    padding-bottom: 18px;
+  }
   .select_bank_card_container
   {
     position: relative;
-    padding: 10px 0 0 80px;
-    box-sizing: border-box;
-    height: 60px;
-    background-color: #fff;
-    margin-top: 40px;
-    border-style: solid;
-    border-width: 1px 0 1px 0;
-    border-color: #ddd;
-    .bank_logo
+    height: 72px;
+    background-color: #F8FCFC;
+    border-radius: 4px 4px 0 0;
+    text-align: center;
+    .select_bank_card_title
     {
-      position: absolute;
-      left: 0;
-      top: 0;
-      display: block;
-      height: 60px;
-      width: 80px;
-      text-align: center;
-      line-height: 60px;
-      font-size: 40px;
+      float: left;
+      width: 143px;
+      text-align: right;
+      font-size: 15px;
+      color: #333;
+      padding-top: 22px;
+      height: 22px;
+      line-height: 22px;
+
     }
-    .bank_name
+    .select_bank_card_box
     {
-      height: 20px;
-      font-size: 16px;
-      line-height: 20px;
-      font-weight: normal;
-    }
-    .bankCard_desc
-    {
-      height: 20px;
-      color: #999;
-      font-size: 14px;
-    }
-    .icon-jiantouyou
-    {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #999
+      position: relative;
+      float: left;
+      margin-left: 19px;
+      padding-top: 22px;
+      .bank_info_box
+      {
+        .bank_logo
+        {
+          float: left;
+          font-size: 14px;
+          height: 22px;
+          line-height: 22px;
+        }
+        .bank_name
+        {
+          float: left;
+          font-size: 12px;
+          height: 22px;
+          line-height: 22px;
+          font-weight: normal;
+          color: #3AC7F5;
+          margin-left: 10px;
+        }
+      }
+      .bankCard_desc
+      {
+        height: 20px;
+        color: #CCCCCC;
+        font-size: 12px;
+        text-align: left;
+      }
     }
   }
   .input_container
   {
-    border-style: solid;
-    border-width: 1px 0 1px 0;
-    border-color: #ddd;
     margin-top: 20px;
     background-color: #fff;
     .input_container_title
@@ -202,16 +225,34 @@ export default {
       line-height: 40px;
       font-size: 16px;
       font-weight: normal;
-      padding: 0 20px
+      padding: 0 31px;
+      color: #333;
     }
     .amount_input_control
     {
       position: relative;
-      margin: 0 20px;
+      margin: 0 31px;
       border-bottom: 1px solid #D8F4F2;
       font-size: 24px;
       color: #333;
       padding: 5px 0 2px;
+      .placeholder
+      {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 15px;
+        color: #ccc;
+      }
+      .allin_amount
+      {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        font-size: 12px;
+        transform: translateY(-50%);
+        color: rgba(58, 199, 245, 1)
+      }
       .amount_input_prefix
       {
         display: block;
@@ -258,13 +299,8 @@ export default {
       height: 30px;
       line-height: 30px;
       font-size: 12px;
-      padding: 0 20px;
+      padding: 0 31px;
       color: #999;
-      .allin_amount
-      {
-        float: right;
-        color: rgba(58, 199, 245, 1)
-      }
     }
   }
   @keyframes blinkAnimation {
@@ -280,11 +316,11 @@ export default {
   }
   .apply_withdraw_btn_box
   {
-    margin: 40px 20px 0;
+    margin: 40px 31px 0;
     .apply_withdraw_btn
     {
       display: block;
-      height: 45px;
+      height: 50px;
       background-color: rgba(58, 199, 245, 1);
       color: #fff;
       width: 100%;
