@@ -19,7 +19,11 @@ export default [
     path: '/customer/:id/detail',
     component: _import('/servant/customer/detail'),
     meta: {
-      title: '用户管理'
+      title: '用户管理',
+      goBackParam: {
+        url: '/customer',
+        title: '用户管理'
+      }
     }
   }
 ]

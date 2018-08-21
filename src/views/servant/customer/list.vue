@@ -21,8 +21,12 @@
         </list-items>
       </template>
       <div v-else style="font-size: 120px;text-align:center;margin-top:60px">
-        <img style="display:block;margin: 0 auto; width:100px" src="@/assets/images/empty_icon.png" alt="">
-        <p style="font-size:12px;color:#999;text-align:center;margin-top:20px">没有找到对应的用户，请修改筛选条件后重试！</p>
+        <i style="font-size:66px;display:block">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-kong1"></use>
+          </svg>
+        </i>
+        <p style="font-size:12px;color:#999;text-align:center;">没有找到对应的用户，请修改筛选条件后重试！</p>
       </div>
     </div>
   </div>

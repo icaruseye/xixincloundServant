@@ -31,9 +31,9 @@ export default {
   methods: {
     redirectTo () {
       if (this.url) {
-        this.$router.push(this.url)
+        this.$router.replace(this.url)
       } else if (this.goBackParam.url) {
-        this.$router.push(this.goBackParam.url)
+        this.$router.replace(this.goBackParam.url)
       } else {
         this.$router.back()
       }

@@ -1,5 +1,6 @@
 <template>
   <div v-if="userInfo" style="padding-bottom:60px">
+    <xx-go-back></xx-go-back>
     <div class="user_bg_container">
       <div class="user_info_container">
         <div class="avatar_box">
@@ -24,43 +25,56 @@
     </div>
 
     <div class="tabs_container">
-      <router-link class="tabs_items" to="/">健康档案</router-link>
-      <router-link class="tabs_items" to="/">消息</router-link>
+      <router-link class="tabs_items" to="/">
+        <img class="tabs_items_icon" src="@/assets/images/ic_ userDetail_tab_1.png" alt="">
+        健康档案
+      </router-link>
+      <router-link class="tabs_items" to="/">
+        <img class="tabs_items_icon" src="@/assets/images/ic_ userDetail_tab_2.png" alt="">
+        消息
+      </router-link>
     </div>
 
     <ul style="margin-top: 10px">
       <li class="list_link_items" @click="listLinkRedirect('/')">
+        <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_1.png" alt="">
         服务套餐
         <i class="iconfont icon-jiantouyou"></i>
       </li>
       <li class="list_link_items" @click="listLinkRedirect('/')">
-        服务计划
+        <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_2.png" alt="">
+        服务记录
         <i class="iconfont icon-jiantouyou"></i>
       </li>
       <li class="list_link_items" @click="listLinkRedirect('/')">
-        日程
+        <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_3.png" alt="">
+        健康计划
         <i class="iconfont icon-jiantouyou"></i>
       </li>
     </ul>
 
     <div style="margin-top: 10px">
-      <div>
-        <div class="list_link_items" to="/">
+      <div style="background-color:#fff">
+        <div class="list_link_items list_link_items_hasLeftLine" to="/">
+          <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_4.png" alt="">
           跟踪记录
         </div>
       </div>
       <div v-if="remarkList" class="remark_list_container">
+        <img class="ic_userDetail_timeLine_top" src="@/assets/images/ic_userDetail_timeLine_top.png" alt="">
         <template v-if="remarkList.length > 0">
-          <div v-for="(item, index) in remarkList" :key="index" class="remark_list_items">
-            <p class="time">
-              {{item.CreateTime | xxTimeFormatFilter}}
-              <span style="padding-left:20px">{{item.CreateTime | xxTimeFormatFilter('星期E')}}</span>
-            </p>
-            <p class="text">
-              <i class="left_point_container"></i>
-              {{item.FollowContent}}
-            </p>
-          </div>
+          <transition v-for="(item, index) in remarkList" :key="index" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutLeft">
+            <div class="remark_list_items">
+              <p class="time">
+                {{item.CreateTime | xxTimeFormatFilter}}
+                <span style="padding-left:20px">{{item.CreateTime | xxTimeFormatFilter('星期E')}}</span>
+              </p>
+              <p class="text">
+                <i class="left_point_container"></i>
+                {{item.FollowContent}}
+              </p>
+            </div>
+          </transition>
         </template>
         <template v-else>
           <div class="empty_container">
@@ -79,17 +93,17 @@
     <x-dialog v-model="selectTagsDialog">
       <div class="addRemarkDialog_container">
         <div class="tag_select_contianer">
-          <template v-if="userTags">
-            <div class="tags_checkbox_flex" v-for="(item, index) in userTags" :key="index">
+          <template v-if="allTags">
+            <div class="tags_checkbox_flex" v-for="(item, index) in allTags" :key="index">
               <label class="tags_checkbox_box">
-                <input type="checkbox" class="tags_checkbox_control" checked @change="deleteTagChange(index, item.ID)">
+                <input type="checkbox" class="tags_checkbox_control" :checked="item.status === 1" @change="clickTagChange(item)">
                 <span class="tags_checkbox_label">
                   {{item.AttrName}}
                 </span>
               </label>
             </div>
           </template>
-          <template v-if="allTags">
+          <!-- <template v-if="allTags">
             <div class="tags_checkbox_flex" v-for="(item, index) in allTags" :key="index">
               <label class="tags_checkbox_box">
                 <input type="checkbox" class="tags_checkbox_control" @change="addTagChange(item)">
@@ -98,7 +112,7 @@
                 </span>
               </label>
             </div>
-          </template>
+          </template> -->
         </div>
         <div class="customTag_input_container">
           <input class="add_customTag_control" v-model="customTagValue" type="text" placeholder="自定义标签">
@@ -146,13 +160,34 @@ export default {
       userInfo: null,
       userTags: null,
       remarkList: null,
-      allTags: null,
+      systemTags: null,
       remarkValue: ''
     }
   },
   computed: {
     ID () {
       return this.$route.params.id
+    },
+    allTags () {
+      let allList = []
+      if (this.userTags) {
+        this.userTags.map(item => {
+          allList.push({
+            ID: item.ID,
+            AttrName: item.AttrName,
+            status: 1
+          })
+        })
+      }
+      if (this.systemTags) {
+        this.systemTags.map(item => {
+          allList.push({
+            AttrName: item,
+            status: 0
+          })
+        })
+      }
+      return allList
     }
   },
   created () {
@@ -174,14 +209,28 @@ export default {
       this.$vux.loading.show('添加中')
       this.$http.post(`/Attribute/FollowRecord/Add?userId=${this.ID}&followContent=${this.remarkValue}`).then(result => {
         this.$vux.loading.hide()
-        this.$vux.toast.text('添加成功')
-        this.remarkList.unshift({
-          CreateTime: new Date(),
-          FollowContent: this.remarkValue
-        })
-        this.addRemarkDialogVisible = false
-        this.remarkValue = ''
+        if (result.data.Code === 100000) {
+          this.$vux.toast.text('添加成功')
+          this.remarkList.unshift({
+            CreateTime: new Date(),
+            FollowContent: this.remarkValue
+          })
+          this.addRemarkDialogVisible = false
+          this.remarkValue = ''
+          this.$nextTick(() => {
+            this.addRemarkScroll()
+          })
+        } else {
+          this.$vux.toast.text('添加失败')
+        }
       })
+    },
+    addRemarkScroll () {
+      const scrollTop = document.body.scrollTop || document.documentElement.scrollTop
+      const offsetTop = document.querySelector('.remark_list_container').offsetTop
+      if (scrollTop > offsetTop) {
+        document.body.scrollTop = document.documentElement.scrollTop = offsetTop
+      }
     },
     init () {
       this.getUserInfo()
@@ -211,7 +260,7 @@ export default {
     async getTagsList () {
       const res = await this.$http.get(`/Attribute/SysAttribute/List?userId=${this.ID}`)
       if (res.data.Code === 100000) {
-        this.allTags = res.data.Data
+        this.systemTags = res.data.Data
       }
     },
     // 添加用户标签
@@ -227,21 +276,22 @@ export default {
       const res = await this.$http.delete(`/Attribute/UserAttribute/Delete?id=${tagID}`)
       return res.data
     },
-    addTagChange (value) {
-      this.addUserTag(value).then(result => {
-        if (result.Code === 100000) {
-          this.getTags()
-          this.getTagsList()
-        }
-      })
-    },
-    deleteTagChange (index, id) {
-      this.deleteTagByTagID(id).then(result => {
-        if (result.Code === 100000) {
-          this.allTags.push(this.userTags[index].AttrName)
-          this.userTags.splice(index, 1)
-        }
-      })
+    clickTagChange (tag) {
+      if (tag.status === 1) {
+        this.deleteTagByTagID(tag.ID).then(result => {
+          if (result.Code === 100000) {
+            this.getTags()
+            this.getTagsList()
+          }
+        })
+      } else {
+        this.addUserTag(tag.AttrName).then(result => {
+          if (result.Code === 100000) {
+            this.getTags()
+            this.getTagsList()
+          }
+        })
+      }
     },
     addCustomTagAction () {
       this.addUserTag(this.customTagValue).then(result => {
@@ -364,6 +414,12 @@ export default {
     justify-content: center;
     font-size: 16px;
     color: #333;
+    .tabs_items_icon
+    {
+      height: 19px;
+      width: auto;
+      margin-right: 14px;
+    }
     &::after
     {
       position: absolute;
@@ -386,13 +442,23 @@ export default {
 {
   position: relative;
   display: block;
-  height: 44px;
-  line-height: 44px;
+  height: 45px;
+  line-height: 45px;
   background-color: #fff;
   border-bottom: 1px solid #D8F4F2;
   color: #333333;
   padding-left: 48px;
   font-size: 16px;
+  box-sizing: border-box;
+  .list_link_items_icons
+  {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: block;
+    width: 19px;
+  }
   &:last-child
   {
     border-bottom: none;
@@ -405,6 +471,23 @@ export default {
     transform: translateY(-50%);
     color: #ddd;
     font-size: 16px;
+  }
+}
+.list_link_items_hasLeftLine
+{
+  margin-left: 12px;
+  &::before
+  {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    display: block;
+    content: '';
+    width: 4px;
+    height: 15px;
+    border-radius: 4px;
+    background-color: #3AC7F5
   }
 }
 
@@ -430,7 +513,17 @@ export default {
 
 .remark_list_container
 {
+  position: relative;
   padding: 30px 0;
+  .ic_userDetail_timeLine_top
+  {
+    position: absolute;
+    display: block;
+    width: 15px;
+    height: 15px;
+    top: 8px;
+    left: 14px;
+  }
   .remark_list_items
   {
     position: relative;
@@ -445,12 +538,12 @@ export default {
     {
       position: relative;
       background-color: #fff;
-      padding: 15px 12px;
+      padding: 10px 12px;
       border-radius: 4px;
       margin-top: 4px;
       font-size: 12px;
       text-align: justify;
-      line-height: 14px;
+      line-height: 20px;
       color: #999;
       .left_point_container
       {

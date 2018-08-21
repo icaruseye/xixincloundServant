@@ -20,8 +20,8 @@ export default [
     meta: {
       title: '服务设置',
       goBackParam: {
-        url: '/',
-        title: '首页'
+        url: '/app',
+        title: '应用'
       }
     }
   },

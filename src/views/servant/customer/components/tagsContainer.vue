@@ -1,7 +1,7 @@
 <template>
   <div class="tags_container">
     <h4 class="title">用户标签</h4>
-    <div class="tag_select_contianer_outer" :style="{maxHeight: unfoldTagsContainer?'auto':'80px'}">
+    <div class="tag_select_contianer_outer" :style="unfoldTagsContainer ? '':'maxHeight:80px'">
       <div class="tag_select_contianer" ref="tagSelectContianerRef">
         <div class="tags_checkbox_flex" v-for="(item, index) in tags" :key="index">
           <label class="tags_checkbox_box">

@@ -63,8 +63,8 @@
     </div> -->
     <!-- 列表 -->
     <div class="weui-panel weui-list-panel">
-      <div class="weui-cell">
-        <div class="weui-cell-top" @click="$router.push(`/customer`)">
+      <div class="weui-cell" @click="$router.push(`/customer`)">
+        <div class="weui-cell-top">
           <div class="icon"><img src="@/assets/images/app-txl.png"></div>
           <div class="title">用户管理</div>
           <i class="iconfont icon-jiantouyou"></i>
