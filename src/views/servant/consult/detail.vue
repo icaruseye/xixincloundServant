@@ -117,15 +117,12 @@ export default {
   filters: {
     stepFilter (val = 0) {
       switch (val) {
-        case 0: {
+        case 0:
           return '1'
-        }
-        case 3: {
+        case 3:
           return '2'
-        }
-        case 4: {
+        default:
           return '3'
-        }
       }
     }
   },
