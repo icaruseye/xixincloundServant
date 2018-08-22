@@ -10,6 +10,7 @@
         <!-- <p class="user_desc_p">
           {{userInfo.Mobile}}
         </p> -->
+        <router-link class="send_message_btn" :to="`/message/chat/${userInfo.ViewId}`">发消息</router-link>
       </div>
       <div class="user_tags_container clearfix">
         <template v-if="userTags">
@@ -24,7 +25,7 @@
       </div>
     </div>
 
-    <div class="tabs_container">
+    <!-- <div class="tabs_container">
       <router-link class="tabs_items" to="/">
         <img class="tabs_items_icon" src="@/assets/images/ic_ userDetail_tab_1.png" alt="">
         健康档案
@@ -33,7 +34,7 @@
         <img class="tabs_items_icon" src="@/assets/images/ic_ userDetail_tab_2.png" alt="">
         消息
       </router-link>
-    </div>
+    </div> -->
 
     <ul style="margin-top: 10px">
       <li class="list_link_items" @click="listLinkRedirect(`/customer/${ID}/serviceList`)">
@@ -741,5 +742,20 @@ export default {
       border-radius: 5px;
       font-size: 14px;
     }
+  }
+  .send_message_btn
+  {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 1px solid #ddd;
+    padding: 0 13px;
+    color: #fff;
+    font-size: 14px;
+    height: 25px;
+    border-radius: 13px;
+    line-height: 25px;
+    display: block;
   }
 </style>

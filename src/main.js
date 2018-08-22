@@ -34,7 +34,7 @@ Vue.config.productionTip = false
 Vue.prototype.$http = http
 
 /**
- * 图片地址格式化过滤器
+ * 文字裁剪
  */
 Vue.filter('xxTextSubFilter', function (value = '', len = 10) {
   return value.length > len ? value.substring(0, len) + '…' : value

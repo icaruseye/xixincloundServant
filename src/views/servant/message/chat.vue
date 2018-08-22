@@ -2,6 +2,11 @@
   <div>
     <div style="z-index: 10;position: fixed;top: 0;right:0;left:0">
       <xx-go-back></xx-go-back>
+      <div class="firend_info_container">
+        <img class="avatar_img" :src="userAccount.Avatar | transformImgUrl" alt="">
+        {{userAccount.NickName}}
+        <router-link class="viewDetail_btn" :to="`/customer/${userAccount.ID}/detail`">查看详情</router-link>
+      </div>
     </div>
     <div class="chat-list" id="chatList" :style="{paddingBottom : faceHeight + 'px'}">
       <div class="service_explain" @click="serviceExplainDialogVisible = true">
@@ -197,7 +202,7 @@ export default {
 }
 
 .chat-list {
-  padding: 50px 15px 100px;
+  padding: 146px 15px 100px;
 }
 
 .chat-item {
@@ -398,6 +403,39 @@ export default {
       color: #999;
       border-top: 1px solid #E7E7E7
     }
+  }
+}
+.firend_info_container
+{
+  position: relative;
+  height: 80px;
+  padding: 20px 40px 20px 60px;
+  background-color: #fff;
+  box-sizing: border-box;
+  line-height: 40px;
+  .avatar_img
+  {
+    position: absolute;
+    width: 40px;
+    left: 10px;
+    top: 50%;
+    border-radius: 50%;
+    transform: translateY(-50%);
+  }
+  .viewDetail_btn
+  {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: block;
+    height: 26px;
+    font-size: 14px;
+    line-height: 26px;
+    border: 1px solid #3AC7F5;
+    color: #3AC7F5;
+    padding: 0 13px;
+    border-radius: 13px;
   }
 }
 </style>
