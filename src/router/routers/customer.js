@@ -25,5 +25,27 @@ export default [
         title: '用户管理'
       }
     }
+  },
+  {
+    path: '/customer/:id/serviceList',
+    component: _import('/servant/customer/serviceList'),
+    meta: {
+      title: '服务套餐',
+      goBackParam: {
+        url: '/customer',
+        title: '用户管理'
+      }
+    }
+  },
+  {
+    path: '/customer/:id/serviceRecord',
+    component: _import('/servant/customer/serviceRecord'),
+    meta: {
+      title: '服务记录',
+      goBackParam: {
+        url: '/customer',
+        title: '用户管理'
+      }
+    }
   }
 ]

@@ -11,13 +11,13 @@
         <router-link class="invite_btn" style="background-color:#3ECCCC" to="/recommend/inviteUser">推荐用户</router-link>
       </div>
     </div>
-    <div class="rule_container">
+    <!-- <div class="rule_container">
       <h5 class="title">推荐规则：</h5>
       <p class="item">1、在 Vue 中即使是过渡也是数据驱动的！动态过渡最基本的例子是通过 name 特性来绑定动态值。</p>
       <p class="item">2、在 Vue 中即使是过渡也是数据驱动的！动态过渡最基本的例子是通过 name 特性来绑定动态值。</p>
       <p class="item">3、在 Vue 中即使是过渡也是数据驱动的！动态过渡最基本的例子是通过 name 特性来绑定动态值。</p>
       <p class="item">4、在 Vue 中即使是过渡也是数据驱动的！动态过渡最基本的例子是通过 name 特性来绑定动态值。</p>
-    </div>
+    </div> -->
   </div>
 </template>
 

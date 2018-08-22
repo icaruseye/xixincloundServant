@@ -27,7 +27,7 @@
       </div>
     </div> -->
     <!-- 面板信息 -->
-    <!-- <div class="income-panel-wrap">
+    <div class="income-panel-wrap">
       <div class="income-panel">
         <div class="item">
           <div class="row-1">
@@ -60,7 +60,7 @@
           </div>
         </div>
       </div>
-    </div> -->
+    </div>
     <!-- 列表 -->
     <div class="weui-panel weui-list-panel">
       <div class="weui-cell" @click="$router.push(`/customer`)">

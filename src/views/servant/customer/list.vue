@@ -84,7 +84,7 @@ export default {
      */
     async getUserList () {
       const res = await this.$http.get(`/Attribute/Friends/UserList`, {
-        Index: 0,
+        Index: 1,
         Size: 1000,
         attrs: this.Attrs,
         search: this.searchValue,

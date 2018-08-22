@@ -36,21 +36,21 @@
     </div>
 
     <ul style="margin-top: 10px">
-      <li class="list_link_items" @click="listLinkRedirect('/')">
+      <li class="list_link_items" @click="listLinkRedirect(`/customer/${ID}/serviceList`)">
         <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_1.png" alt="">
         服务套餐
         <i class="iconfont icon-jiantouyou"></i>
       </li>
-      <li class="list_link_items" @click="listLinkRedirect('/')">
+      <li class="list_link_items" @click="listLinkRedirect(`/customer/${ID}/serviceRecord`)">
         <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_2.png" alt="">
         服务记录
         <i class="iconfont icon-jiantouyou"></i>
       </li>
-      <li class="list_link_items" @click="listLinkRedirect('/')">
+      <!-- <li class="list_link_items" @click="listLinkRedirect('/')">
         <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_3.png" alt="">
         健康计划
         <i class="iconfont icon-jiantouyou"></i>
-      </li>
+      </li> -->
     </ul>
 
     <div style="margin-top: 10px">
@@ -61,8 +61,8 @@
         </div>
       </div>
       <div v-if="remarkList" class="remark_list_container">
-        <img class="ic_userDetail_timeLine_top" src="@/assets/images/ic_userDetail_timeLine_top.png" alt="">
         <template v-if="remarkList.length > 0">
+          <img class="ic_userDetail_timeLine_top" src="@/assets/images/ic_userDetail_timeLine_top.png" alt="">
           <transition v-for="(item, index) in remarkList" :key="index" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutLeft">
             <div class="remark_list_items">
               <p class="time">
@@ -194,8 +194,8 @@ export default {
     this.init()
   },
   methods: {
-    listLinkRedirect () {
-      this.$vux.toast.text('开发中…')
+    listLinkRedirect (url) {
+      this.$router.push(url)
     },
     addRemarkSubmit () {
       if (this.remarkValue.length <= 0) {

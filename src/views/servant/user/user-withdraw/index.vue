@@ -1,6 +1,15 @@
 <template>
   <div>
-    <div class="step_container"></div>
+    <div class="step_container">
+      <xx-step-bar step="1">
+        <xx-step-items slot="items">
+          发起提现
+        </xx-step-items>
+        <xx-step-items slot="items">
+          到账成功
+        </xx-step-items>
+      </xx-step-bar>
+    </div>
     <div class="box_warp_container">
       <div class="select_bank_card_container">
         <div class="select_bank_card_title">
@@ -18,7 +27,7 @@
                 {{currentWithdrawType.name}}({{currentWithdrawType.code}})
               </h3>
             </div>
-            <p class="bankCard_desc">2小时到账</p>
+            <p class="bankCard_desc">2小时内到账</p>
           </template>
           <template v-else>
             <i class="bank_logo iconfont icon-yinhangqia" style="color:#3ac7f5"></i>
@@ -316,7 +325,7 @@ export default {
   }
   .apply_withdraw_btn_box
   {
-    margin: 40px 31px 0;
+    margin: 9px 31px 0;
     .apply_withdraw_btn
     {
       display: block;

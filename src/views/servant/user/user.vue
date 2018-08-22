@@ -16,30 +16,7 @@
         <img class="qrcode" src="@/assets/images/code-1.png"  @click="maskShow = true">
       </div>
     </div>
-    <div class="user_content_container">
-      <div class="user_wallet_bottom_container" style="position:relative">
-        <p>
-          <span style="font-size:16px;color:#666666;font-weight: 600">可提现金额</span><span style="font-size:12px;color:#FF5F5F">￥</span><span style="color:#FF5F5F;font-size:18px;">169</span><span style="font-size:12px;color:#FF5F5F">元</span>
-        </p>
-        <p style="font-size:12px;color:#999;margin-top:5px">每月10号可结算上月冻结收入</p>
-        <router-link class="show_freeze_btn" to="/user/account">查看冻结</router-link>
-      </div>
-      <div class="user_wallet_info_container">
-        <dl>
-          <dd><span class="rmb_symbol">￥</span>1921.50</dd>
-          <dt>可结算</dt>
-        </dl>
-        <dl>
-          <dd><span class="rmb_symbol">￥</span>1269.50</dd>
-          <dt>可提现</dt>
-        </dl>
-        <dl>
-          <dd><span class="rmb_symbol">￥</span>1369.50</dd>
-          <dt>已提现</dt>
-        </dl>
-      </div>
-    </div>
-    <div class="uset_links_container">
+    <div class="uset_links_container" style="margin-top:-20px">
       <router-link class="user_links_items" to="/user/order">
         <img class="user_links_items_icon" src="@/assets/images/ic_user_index_order.png" alt="订单">
         订单
@@ -172,8 +149,7 @@ export default {
 }
 .user_top_container
 {
-  position: relative;
-  height: 143px;
+  height: 117px;
   background-color: #3AC7F5;
   box-sizing: border-box;
   padding: 20px 90px 0;
