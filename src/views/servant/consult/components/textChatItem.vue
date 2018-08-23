@@ -14,15 +14,20 @@
     </div>
     <!-- 文本 -->
     <div v-if="MsgType === 1" :class="[originator+'_textChat_msg', (IsServantReceive === 0) ?'yellow_textChat':'']">
-      <div v-if="Content" class="msg_text_container">
-        {{Content}}
-      </div>
+      <div v-if="Content" class="msg_text_container" v-html="emojiFilter(Content)"></div>
     </div>
   </div>
 </template>
 <script>
+import faceList from '@/plugins/datas/faceList.js'
 import util from '@/plugins/util'
 export default {
+  data () {
+    return {
+      faceList: faceList,
+      emojiImage: require('@/assets/images/15BPafa.png')
+    }
+  },
   props: {
     avatar: {
       type: String,
@@ -65,6 +70,23 @@ export default {
     },
     onloaded () {
       this.$emit('onloaded')
+    },
+    emojiFilter (val) {
+      const emojiReg = /\[[\u4e00-\u9fa5]{1,}\]/g
+      let list = val.match(emojiReg)
+      if (list && list.length > 0) {
+        list.map(item => {
+          if (this.faceList.indexOf(item) >= 0) {
+            val = val.replace(item, `<i class="text_emoji_items" style="${this.emojiPositionFilter(item)}"></i>`)
+          }
+        })
+        return val
+      }
+      return val
+    },
+    emojiPositionFilter (val) {
+      let index = this.faceList.indexOf(val)
+      return `background-image: url(${this.emojiImage});background-position: -${index * 28}px 0`
     }
   }
 }

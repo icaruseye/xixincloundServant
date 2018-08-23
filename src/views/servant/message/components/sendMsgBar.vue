@@ -18,12 +18,14 @@
       </div>
     </div>
     <div v-if="emojiContainerShow" class="emoji_container">
-      <a :style="{backgroundImage: `url(${emojiImage})`}" href="javascript:;" class="emoji_items" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)"></a>
+      <a :style="emojiPositionFilter(item)" href="javascript:;" class="emoji_items" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">
+      </a>
       <i class="iconfont icon-delete" @click="backspaceInputValue"></i>
     </div>
   </div>
 </template>
 <script>
+import faceList from '@/plugins/datas/faceList.js'
 export default {
   data () {
     return {
@@ -31,8 +33,8 @@ export default {
       snedMsgObject: {
         IsServantReceive: 0
       },
+      faceList: faceList,
       emojiContainerShow: false,
-      faceList: ['[微笑]'],
       imgUploadProgress: 0,
       emojiImage: require('@/assets/images/15BPafa.png')
     }
@@ -43,6 +45,13 @@ export default {
     }
   },
   methods: {
+    emojiPositionFilter (val) {
+      let index = this.faceList.indexOf(val)
+      return {
+        backgroundImage: `url(${this.emojiImage})`,
+        backgroundPosition: `-${index * 28}px 0`
+      }
+    },
     backspaceInputValue () {
       const emojiReg = /\[[\u4e00-\u9fa5]{1,}\]$/
       let lastEmojiStartIndex = this.msg.search(emojiReg)
@@ -223,9 +232,8 @@ export default {
   .emoji_items
   {
     display: block;
-    flex: 0 0 10%;
-    height: 35px;
-    line-height: 35px;
+    width: 28px;
+    height: 28px;
     text-align: center;
   }
   .iconfont
