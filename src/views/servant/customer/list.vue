@@ -10,15 +10,24 @@
     <tags-container v-if="(currentTabIndex === '0') && (tagsList != null) && tagsList.length > 0" :tags="tagsList" @change="tagChange" style="margin-top:5px"></tags-container>
     <div v-if="userList" style="margin-top:10px">
       <template v-if="userList.length > 0">
-        <list-items v-for="(item, index) in userList"
-        :key="index"
-        :Avatar="item.FriendAvatar"
-        :UserName="item.UserName"
-        :Attrs="item.Attrs"
-        :ShowTime="item.AddTime"
-        @click.native="redirectUrl(item.UserId)"
+        <div>
+          <list-items v-for="(item, index) in userList"
+          :key="index"
+          :Avatar="item.FriendAvatar"
+          :UserName="item.UserName"
+          :Attrs="item.Attrs"
+          :ShowTime="item.AddTime"
+          @click.native="redirectUrl(item.UserId)"
+          >
+          </list-items>
+        </div>
+        <xxPageSorter
+          :pageSize="pageSize"
+          :total="totalNumber"
+          :pageNumber="pageNumber"
+          @nextPage="loadNextPage"
         >
-        </list-items>
+        </xxPageSorter>
       </template>
       <div v-else style="font-size: 120px;text-align:center;margin-top:60px">
         <i style="font-size:66px;display:block">
@@ -46,7 +55,10 @@ export default {
       searchValue: '',
       tagsList: null,
       userList: null,
-      Attrs: ''
+      Attrs: '',
+      pageNumber: 1,
+      pageSize: 10,
+      totalNumber: 0
     }
   },
   watch: {
@@ -69,30 +81,49 @@ export default {
     },
     tagChange (val) {
       this.Attrs = val
-      this.getUserList()
+      this.initUserList()
     },
-    async init () {
+    init () {
       if (this.currentTabIndex === '0') {
-        await this.getTagsList()
+        this.getTagsList()
       } else {
         this.Attrs = ''
       }
-      await this.getUserList()
+      this.initUserList()
+    },
+    loadNextPage () {
+      this.pageNumber += 1
+      this.getUserList().then(result => {
+        if (result.Code === 100000) {
+          this.totalNumber = result.Data.Total
+          this.userList = [
+            ...this.userList,
+            ...result.Data.UserList
+          ]
+        }
+      })
+    },
+    initUserList () {
+      this.pageNumber = 1
+      this.getUserList().then(result => {
+        if (result.Code === 100000) {
+          this.totalNumber = result.Data.Total
+          this.userList = result.Data.UserList
+        }
+      })
     },
     /**
      * 获取用户列表
      */
     async getUserList () {
       const res = await this.$http.get(`/Attribute/Friends/UserList`, {
-        Index: 1,
-        Size: 1000,
+        Index: this.pageNumber,
+        Size: this.pageSize,
         attrs: this.Attrs,
         search: this.searchValue,
         filterType: this.currentTabIndex
       })
-      if (res.data.Code === 100000) {
-        this.userList = res.data.Data.UserList
-      }
+      return res.data
     },
     // 获取标签列表
     async getTagsList () {

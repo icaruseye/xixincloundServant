@@ -4,7 +4,6 @@
       <div class="userinfo-pannel">
         <img :src="userAccount.Avatar | transformImgUrl" alt="">
         <div class="name">{{userAccount.NickName}}</div>
-        <div class="tag">推荐有奖</div>
       </div>
       <div class="invite_btn_box">
         <router-link class="invite_btn" to="/recommend/inviteServant">推荐服务者</router-link>

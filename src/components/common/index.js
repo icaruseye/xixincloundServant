@@ -16,6 +16,7 @@ import xxInputGroupBox from './inputGroup/box'
 import xxInputGroupItems from './inputGroup/items'
 import xxOccupiedBox from './OccupiedBox'
 import xxGoBack from './GoBack'
+import xxPageSorter from './PageSorter'
 
 const components = {
   install: function (Vue) {
@@ -37,6 +38,7 @@ const components = {
     Vue.component('xxInputGroupItems', xxInputGroupItems)
     Vue.component('xxOccupiedBox', xxOccupiedBox)
     Vue.component('xxGoBack', xxGoBack)
+    Vue.component('xxPageSorter', xxPageSorter)
   }
 }
 

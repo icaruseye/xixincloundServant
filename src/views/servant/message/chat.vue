@@ -8,7 +8,7 @@
         <router-link class="viewDetail_btn" :to="`/customer/${userAccount.ID}/detail`">查看详情</router-link>
       </div>
     </div>
-    <div class="chat-list" id="chatList" :style="{paddingBottom : faceHeight + 'px'}">
+    <div class="chat-list" id="chatList"  :style="'padding-bottom:'+ boxPaddingBottom+'px'">
       <div class="service_explain" @click="serviceExplainDialogVisible = true">
         服务说明：此聊天窗口只解答服务包售前疑惑，不解答图文咨询的内容
         <i class="iconfont icon-jiantouyou"></i>
@@ -23,42 +23,17 @@
         :MsgType="1"
       >
       </text-chat-item>
-      <!-- <template v-for="(item, index) in chatList">
-        <div class="chat-item" :key="index">
-          <div class="chat-item-time" v-if="item.SendTime"><span>{{item.SendTime | xxTimeFormatFilter}}</span></div>
-          <div :class="[item.IsServantReceive ? 'chat-item-left' : 'chat-item-right']">
-            <div class="chat-item-avatar" v-if="item.IsServantReceive">
-              <img :src="userAccount.Avatar | transformImgUrl">
-            </div>
-            <div class="chat-item-avatar" v-if="!item.IsServantReceive">
-              <img :src="mineAccount.Avatar | transformImgUrl">
-            </div>
-            <div class="chat-item-content">
-              {{item.Content}}
-            </div>
-            <inline-loading v-show="item.loading"></inline-loading>
-          </div>
-      </div>
-      </template> -->
     </div>
-    <div class="mask" v-show="isFaceShow" @click="hideFace"></div>
-    <div class="chat-send-bar" :style="{ transform: 'translateY('+ translateFace +'px)' }">
-      <div class="top">
-        <input class="input" type="text" id="chatInput"
-        v-model="chatMsg"
-        @click="isFaceShow = false"
-        @focus="inputFocus"
-        @keyup.enter="sendMsg">
-        <!-- <i class="iconfont icon-biaoqing1" @click="showFace"></i> -->
-        <div style="height: 100%;width:10px"></div>
-        <button type="button" class="send-msg" @click="sendMsg">发送</button>
-      </div>
-      <!-- <div v-if="showFace" class="chat-face-box" id="chatFaceBox">
-        <div class="" style="font-size:22px;text-align:justify">
-          <a href="javascript:;" style="margin:0 3px;" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">{{item}}</a>
-        </div>
-      </div> -->
-    </div>
+    
+    <!-- 新消息提醒toast -->
+    <toast @click.native="scrollToBottom" v-model="showNewMessageRemind" type="text" position= "bottom" width="12em">
+      您有新消息了
+      <i class="iconfont icon-arrow-down1"></i>
+    </toast>
+
+    <!-- 发送消息组件 -->
+    <send-msg-bar @click.native.stop="sendMessageBarClick" ref="SendMsgBarRef" @changeHeight="changePaddingBottom" @sendMsg="sendMsg"></send-msg-bar>
+
       <x-dialog 
         v-model="serviceExplainDialogVisible"
         class="dialog"
@@ -79,15 +54,20 @@
 <script>
 import http from '@/api/index'
 import TextChatItem from '@/views/servant/consult/components/textChatItem'
-import { InlineLoading, XDialog } from 'vux'
+import SendMsgBar from './components/sendMsgBar'
+import { InlineLoading, XDialog, Toast } from 'vux'
 export default {
   components: {
     InlineLoading,
     XDialog,
-    TextChatItem
+    TextChatItem,
+    SendMsgBar,
+    Toast
   },
   data () {
     return {
+      boxPaddingBottom: 82,
+      showNewMessageRemind: false,
       serviceExplainDialogVisible: false,
       isFaceShow: false,
       faceHeight: 100,
@@ -101,94 +81,87 @@ export default {
     }
   },
   async created () {
-    const that = this
-    const res = await http.get('/ChatRecord', { UserViewID: this.$route.params.id, pageIndex: 1 })
-    this.userAccount = res.data.Data.UserAccount
-    this.chatList = res.data.Data.ChatHisList
-    setTimeout(function () {
-      that.goDown()
-    }, 0)
-    window.servantTimer = setInterval(async function () {
-      await that.chatRecordTimePoll()
-    }, 5000)
+    this.init()
   },
-  mounted () {
-    this.goDown()
-    this.faceboxHeight = document.getElementById('chatFaceBox').offsetHeight // 获取表情高度
-    this.translateFace = this.faceboxHeight + 5 // 表情上弹高度
-  },
-  beforeRouteLeave (to, from, next) {
-    clearInterval(window.servantTimer)
-    next()
+  computed: {
+    UserViewID () {
+      return this.$route.params.id
+    }
   },
   methods: {
-    // 页面逻辑函数
-    chooseFace (face) {
-      this.chatMsg = this.chatMsg + face
-    },
-    showFace () {
-      const that = this
-      this.isFaceShow = true
-      this.translateFace = 0
-      this.faceHeight = this.faceboxHeight + 100 // padding-bottom高度加上表情高度
-      setTimeout(function () {
-        that.goDown()
-      }, 500)
-    },
-    hideFace () {
-      this.isFaceShow = false
-      this.translateFace = this.faceboxHeight + 5
-      this.faceHeight = 100 // 还原padding-bottom初始高度
-    },
-    inputFocus () {
-      const that = this
-      this.hideFace()
-      setTimeout(function () {
-        that.goDown()
-      }, 500)
-    },
-    goDown () {
-      document.scrollingElement.scrollTop = document.scrollingElement.scrollHeight
-    },
-    // 功能逻辑函数
-    async chatRecordTimePoll () {
-      const res = await http.get('/ChatRecord', { UserViewID: this.userAccount.ViewID })
-      const that = this
-      if (res.data.Data.ChatHisList.length > 0) {
-        res.data.Data.ChatHisList.map((item) => {
-          this.chatList.push(item)
-          setTimeout(function () {
-            that.goDown()
-          }, 1)
+    // 初始化方法
+    init () {
+      this.loadChatRecord().then(result => {
+        this.userAccount = result.Data.UserAccount
+        this.chatList = result.Data.ChatHisList
+        this.$nextTick(() => {
+          this.scrollToBottom()
         })
-      }
+        this.chatRecordTimePoll()
+      })
     },
-    async sendMsg () {
-      const that = this
-      if (!this.isFaceShow) {
-        document.getElementById('chatInput').focus()
-      } else {
-        this.showFace()
-      }
-      if (!this.chatMsg) return false
-      let msg = {
-        userAvatar: this.mineAccount.Avatar,
-        userName: this.mineAccount.NickName,
-        IsServantReceive: 0,
-        Content: this.chatMsg,
-        time: new Date()
-      }
+    // 拉取聊天记录
+    async loadChatRecord () {
+      const res = await http.get('/ChatRecord', {
+        UserViewID: this.UserViewID,
+        pageIndex: 1
+      })
+      return res.data
+    },
+    // 获取一次心跳内所有该任务用户发送的的新消息
+    async getGraphicConsultationChat () {
+      const res = await this.$http.get(`/ChatRecord`, {
+        UserViewID: this.userAccount.ViewID
+      })
+      return res.data
+    },
+    // 点击聊天框出发的方法
+    sendMessageBarClick (e) {
+      return false
+    },
+    // 更新聊天内容内边框
+    changePaddingBottom (height) {
+      this.boxPaddingBottom = (height + 30)
+      this.scrollToBottom()
+    },
+    // 滚动到底部
+    scrollToBottom () {
+      this.$nextTick(() => {
+        document.body.scrollTop = document.documentElement.scrollTop = document.querySelector('body').scrollHeight
+      })
+    },
+    // 轮询消息
+    async chatRecordTimePoll () {
+      let rotation = null
+      clearInterval(rotation)
+      rotation = setInterval(() => {
+        this.getGraphicConsultationChat().then(result => {
+          if (result.Code === 100000) {
+            if (result.Data.ChatHisList && result.Data.ChatHisList.length > 0) {
+              this.chatList.push(...result.Data.ChatHisList)
+              if ((document.documentElement.clientHeight + (document.body.scrollTop || document.documentElement.scrollTop)) >= document.querySelector('body').scrollHeight - 20) {
+                this.scrollToBottom()
+              } else {
+                this.showNewMessageRemind = true
+              }
+            }
+          }
+        })
+      }, 5000)
+      this.$once('hook:beforeDestroy', () => {
+        clearInterval(rotation)
+      })
+    },
+    // 向服务器推送消息
+    async sendMsg (msg) {
+      this.lockToBottom = false
+      this.chatList.push(msg)
+      this.scrollToBottom()
       await http.post('/ChatRecord', {
         UserViewID: this.userAccount.ViewID,
-        MsgType: 1,
-        Content: this.chatMsg
+        MsgType: msg.MsgType,
+        Content: msg.Content
       })
-      let _msg = Object.assign({}, msg)
-      this.chatList.push(_msg)
-      this.chatMsg = ''
-      setTimeout(function () {
-        that.goDown()
-      }, 0)
     }
   }
 }
@@ -349,12 +322,12 @@ export default {
 .service_explain
 {
   position: relative;
-  margin: 15px 12px 0;
+  margin: 15px 12px 40px;
   border: 1px solid #FFDCA1;
   border-radius: 4px;
   background-color: #FFFBF2;
   font-size: 10px;
-  padding: 5px 15px;
+  padding: 5px 20px;
   line-height: 15px;
   color: #666666;
   .iconfont

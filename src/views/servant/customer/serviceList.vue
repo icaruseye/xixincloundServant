@@ -21,14 +21,13 @@
           </div>
         </div>
       </section>
-      <div style="padding:20px 0;text-align:center;height:25px">
-        <a v-if="totalPage > pageNumber" href="javascript:void(0)" style="color:#3AC7F5;line-height:25px" @click="loadNextPage">
-          点击加载更多
-        </a>
-        <span v-else style="color:#999;font-szie:12px;line-height:25px">
-          没有更多了
-        </span>
-      </div>
+      <xxPageSorter
+        :pageSize="pageSize"
+        :total="totalNumber"
+        :pageNumber="pageNumber"
+        @nextPage="loadNextPage"
+      >
+      </xxPageSorter>
     </div>
     <xx-occupied-box v-else>
       该用户没有可用的服务套餐
@@ -41,7 +40,7 @@ export default {
     return {
       orderList: null,
       pageNumber: 1,
-      pageSize: 6,
+      pageSize: 10,
       totalNumber: 0
     }
   },

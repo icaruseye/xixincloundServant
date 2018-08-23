@@ -8,9 +8,12 @@
       <span v-if="ShowTime" class="ShowTime">{{ShowTime | xxTimeFormatFilter('YYYY/MM/DD')}}</span>
     </div>
     <div v-if="Attrs" class="Attrs_container">
-      <span v-for="(item, index) in Attrs" :key="index" class="tags_span">
-        {{item}}
-      </span>
+      <template v-if="Attrs.length > 0">
+        <span v-for="(item, index) in Attrs" :key="index" class="tags_span">
+          {{item}}
+        </span>
+      </template>
+      <span v-else class="no_tag_show_text">还没有为该用户添加标签！</span>
     </div>
   </div>
 </template>
@@ -100,6 +103,11 @@ export default {
       padding: 0 10px;
       white-space: nowrap;
       margin-right: 8px;
+    }
+    .no_tag_show_text
+    {
+      font-size: 12px;
+      color: #999;
     }
   }
 }

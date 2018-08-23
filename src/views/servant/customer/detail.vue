@@ -1,7 +1,7 @@
 <template>
-  <div v-if="userInfo" style="padding-bottom:60px">
+  <div v-if="userInfo" style="padding-bottom:60px;">
     <xx-go-back></xx-go-back>
-    <div class="user_bg_container">
+    <div class="user_bg_container" style="margin-top:10px">
       <div class="user_info_container">
         <div class="avatar_box">
           <img :src="userInfo.FriendAvatar | transformImgUrl" :alt="userInfo.UserName.substring(0, 1)">
@@ -93,28 +93,30 @@
     <!-- 选择用户标签 -->
     <x-dialog v-model="selectTagsDialog">
       <div class="addRemarkDialog_container">
-        <div class="tag_select_contianer">
-          <template v-if="allTags">
-            <div class="tags_checkbox_flex" v-for="(item, index) in allTags" :key="index">
-              <label class="tags_checkbox_box">
-                <input type="checkbox" class="tags_checkbox_control" :checked="item.status === 1" @change="clickTagChange(item)">
-                <span class="tags_checkbox_label">
-                  {{item.AttrName}}
-                </span>
-              </label>
+          <div v-if="userTags && userTags.length > 0">
+            <h5 class="select_tag_title">已选标签</h5>
+            <div class="tag_select_contianer">
+              <div class="tags_checkbox_flex" v-for="(userTag, userTagIndex) in userTags" :key="userTagIndex">
+                <label class="tags_checkbox_box">
+                  <span class="tags_checkbox_label active" @click="clickAndRemoveTags(userTag.ID)">
+                    {{userTag.AttrName}}
+                  </span>
+                </label>
+              </div>
             </div>
-          </template>
-          <!-- <template v-if="allTags">
-            <div class="tags_checkbox_flex" v-for="(item, index) in allTags" :key="index">
-              <label class="tags_checkbox_box">
-                <input type="checkbox" class="tags_checkbox_control" @change="addTagChange(item)">
-                <span class="tags_checkbox_label">
-                  {{item}}
-                </span>
-              </label>
+          </div>
+          <div class="mt10px" v-if="systemTags && systemTags.length > 0">
+            <h5 class="select_tag_title">可选标签</h5>
+            <div class="tag_select_contianer">
+              <div class="tags_checkbox_flex" v-for="(systemTag, systemTagIndex) in systemTags" :key="systemTagIndex">
+                <label class="tags_checkbox_box">
+                  <span class="tags_checkbox_label" @click="clickAndAddTags(systemTag)">
+                    {{systemTag}}
+                  </span>
+                </label>
+              </div>
             </div>
-          </template> -->
-        </div>
+          </div>
         <div class="customTag_input_container">
           <input class="add_customTag_control" v-model="customTagValue" type="text" placeholder="自定义标签">
           <span class="add_customTag_btn" @click="addCustomTagAction">添加</span>
@@ -168,27 +170,6 @@ export default {
   computed: {
     ID () {
       return this.$route.params.id
-    },
-    allTags () {
-      let allList = []
-      if (this.userTags) {
-        this.userTags.map(item => {
-          allList.push({
-            ID: item.ID,
-            AttrName: item.AttrName,
-            status: 1
-          })
-        })
-      }
-      if (this.systemTags) {
-        this.systemTags.map(item => {
-          allList.push({
-            AttrName: item,
-            status: 0
-          })
-        })
-      }
-      return allList
     }
   },
   created () {
@@ -264,7 +245,7 @@ export default {
         this.systemTags = res.data.Data
       }
     },
-    // 添加用户标签
+    // 异步请求添加用户标签
     async addUserTag (tagName) {
       const res = await this.$http.post(`/Attribute/UserAttribute/Add`, {
         UserId: this.ID,
@@ -272,29 +253,39 @@ export default {
       })
       return res.data
     },
-    // 删除标签
+    // 异步请求删除用户标签
     async deleteTagByTagID (tagID) {
       const res = await this.$http.delete(`/Attribute/UserAttribute/Delete?id=${tagID}`)
       return res.data
     },
-    clickTagChange (tag) {
-      if (tag.status === 1) {
-        this.deleteTagByTagID(tag.ID).then(result => {
-          if (result.Code === 100000) {
-            this.getTags()
-            this.getTagsList()
-          }
-        })
-      } else {
-        this.addUserTag(tag.AttrName).then(result => {
-          if (result.Code === 100000) {
-            this.getTags()
-            this.getTagsList()
-          }
-        })
-      }
+    // 点击已选标签移除
+    clickAndRemoveTags (tagID) {
+      this.deleteTagByTagID(tagID).then(result => {
+        if (result.Code === 100000) {
+          this.getTags()
+          this.getTagsList()
+        }
+      })
     },
+    // 点击未选标签添加
+    clickAndAddTags (tagName) {
+      this.addUserTag(tagName).then(result => {
+        if (result.Code === 100000) {
+          this.getTags()
+          this.getTagsList()
+        }
+      })
+    },
+    // 添加自定义标签
     addCustomTagAction () {
+      if (this.customTagValue.length <= 0) {
+        this.$vux.toast.text('请输入标签内容')
+        return false
+      }
+      if (this.customTagValue.length > 8) {
+        this.$vux.toast.text('标签不可以大于8个字')
+        return false
+      }
       this.addUserTag(this.customTagValue).then(result => {
         if (result.Code === 100000) {
           this.customTagValue = ''
@@ -669,6 +660,13 @@ export default {
     font-size: 14px;
   }
 }
+.select_tag_title
+{
+  font-size: 12px;
+  color: #999;
+  font-weight: normal;
+
+}
   .tag_select_contianer
   {
     margin-top: 10px;
@@ -685,16 +683,6 @@ export default {
       .tags_checkbox_box
       {
         position: relative;
-        .tags_checkbox_control
-        {
-          position: absolute;
-          visibility: hidden;
-          &:checked + .tags_checkbox_label
-          {
-            background-color: rgba(59, 199, 245, .2);
-            color: #3AC7F5
-          }
-        }
         .tags_checkbox_label
         {
           display: block;
@@ -706,6 +694,11 @@ export default {
           border-radius: 13px;
           padding: 0 13px;
           white-space: nowrap;
+          &.active
+          {
+            background-color: rgba(59, 199, 245, .2);
+            color: #3AC7F5
+          }
         }
       }
     }
