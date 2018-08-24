@@ -19,7 +19,7 @@
     </div>
     <div v-if="emojiContainerShow" class="emoji_container">
       <div class="emoji_list_container">
-        <a :style="emojiPositionFilter(item)" href="javascript:;" class="emoji_items" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">
+        <a :style="computeEmojiStyle(item)" href="javascript:;" class="emoji_items" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">
         </a>
       </div>
       <div class="emoji_oper_box">
@@ -30,6 +30,7 @@
 </template>
 <script>
 import faceList from '@/plugins/datas/faceList.js'
+import { computeEmojiStyle, backspaceTextLastEmoji } from '@/plugins/emojiUtil'
 export default {
   data () {
     return {
@@ -39,8 +40,7 @@ export default {
       },
       faceList: faceList,
       emojiContainerShow: false,
-      imgUploadProgress: 0,
-      emojiImage: require('@/assets/images/15BPafa.png')
+      imgUploadProgress: 0
     }
   },
   watch: {
@@ -49,24 +49,9 @@ export default {
     }
   },
   methods: {
-    emojiPositionFilter (val) {
-      let index = this.faceList.indexOf(val)
-      let floor = Math.floor(index / 15)
-      return {
-        backgroundImage: `url(${this.emojiImage})`,
-        backgroundPosition: `-${index * 29 - floor * 435}px -${floor * 29}px`
-      }
-    },
+    computeEmojiStyle,
     backspaceInputValue () {
-      const emojiReg = /\[[\u4e00-\u9fa5]{1,}\]$/
-      let lastEmojiStartIndex = this.msg.search(emojiReg)
-      if (lastEmojiStartIndex >= 0) {
-        let lastEmojiName = this.msg.substring(lastEmojiStartIndex, this.msg.length)
-        if (this.faceList.indexOf(lastEmojiName) >= 0) {
-          this.msg = this.msg.substring(0, lastEmojiStartIndex + 1)
-        }
-      }
-      this.msg = this.msg.substring(0, this.msg.length - 1)
+      this.msg = backspaceTextLastEmoji(this.msg)
     },
     showFinishServicePopup () {
       this.$router.push(`/consult/finishService/${this.missionID}`)
