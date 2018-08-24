@@ -17,10 +17,10 @@
         v-for="(item, index) in chatList"
         :key="index"
         :IsServantReceive="item.IsServantReceive"
-        :class="['mt10px', 'message_item_'+item.ID]"
+        :class="['message_item_'+item.ID]"
         :avatar="(item.IsServantReceive === 0)?mineAccount.Avatar:userAccount.Avatar"
         :Content="item.Content"
-        :MsgType="1"
+        :MsgType="item.MsgType"
       >
       </text-chat-item>
     </div>
