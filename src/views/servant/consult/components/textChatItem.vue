@@ -96,7 +96,8 @@ export default {
     },
     emojiPositionFilter (val) {
       let index = this.faceList.indexOf(val)
-      return `background-image: url(${this.emojiImage});background-position: -${index * 28}px 0`
+      let floor = Math.floor(index / 15)
+      return `background-image: url(${this.emojiImage});background-position: -${index * 29 - floor * 435}px -${floor * 29}px`
     }
   }
 }

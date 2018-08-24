@@ -18,9 +18,13 @@
       </div>
     </div>
     <div v-if="emojiContainerShow" class="emoji_container">
-      <a :style="emojiPositionFilter(item)" href="javascript:;" class="emoji_items" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">
-      </a>
-      <i class="iconfont icon-delete" @click="backspaceInputValue"></i>
+      <div class="emoji_list_container">
+        <a :style="emojiPositionFilter(item)" href="javascript:;" class="emoji_items" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">
+        </a>
+      </div>
+      <div class="emoji_oper_box">
+        <i class="iconfont icon-delete" @click="backspaceInputValue"></i>
+      </div>
     </div>
   </div>
 </template>
@@ -47,9 +51,10 @@ export default {
   methods: {
     emojiPositionFilter (val) {
       let index = this.faceList.indexOf(val)
+      let floor = Math.floor(index / 15)
       return {
         backgroundImage: `url(${this.emojiImage})`,
-        backgroundPosition: `-${index * 28}px 0`
+        backgroundPosition: `-${index * 29 - floor * 435}px -${floor * 29}px`
       }
     },
     backspaceInputValue () {
@@ -110,6 +115,7 @@ export default {
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 11;
   background-color: #fff;
 }
 .finished_service_btn
@@ -198,12 +204,14 @@ export default {
   .send_msg_container
   {
     flex: 0 0 80px;
-    padding: 8px 10px;
+    padding: 0 10px;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
     button
     {
       width: 100%;
-      height: 100%;
+      height: 30px;
       border: none;
       font-size: 14px;
       color: #fff;
@@ -217,29 +225,38 @@ export default {
 .emoji_container
 {
   position: relative;
-  display: flex;
-  padding: 15px;
+  padding: 15px 10px 0;
   width: 100%;
   box-sizing: border-box;
-  flex-flow: wrap;
-  .emoji_items
+  .emoji_list_container
   {
-    display: block;
-    width: 28px;
-    height: 28px;
-    text-align: center;
+    display: flex;
+    flex-flow: wrap;
+    justify-content: flex-start;
+    .emoji_items
+    {
+      display: inline-block;
+      width: 28px;
+      height: 28px;
+      text-align: center;
+    }
   }
-  .iconfont
+  .emoji_oper_box
   {
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-    display: block;
-    width: 10%;
     height: 35px;
-    line-height: 35px;
-    text-align: center;
-    font-size: 26px;
+    width: 100%;
+    margin-top: 10px;
+    border-top: 1px solid rgba(0,0,0,.1);
+    .iconfont
+    {
+      display: block;
+      float: right;
+      width: 10%;
+      height: 35px;
+      line-height: 35px;
+      text-align: center;
+      font-size: 26px;
+    }
   }
 }
 </style>

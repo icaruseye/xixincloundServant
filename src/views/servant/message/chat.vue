@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="closeEmojiBox">
     <div style="z-index: 10;position: fixed;top: 0;right:0;left:0">
       <xx-go-back></xx-go-back>
       <div class="firend_info_container">
@@ -129,6 +129,12 @@ export default {
       this.$nextTick(() => {
         document.body.scrollTop = document.documentElement.scrollTop = document.querySelector('body').scrollHeight
       })
+    },
+    // 关闭emoji表情框
+    closeEmojiBox (e) {
+      if (this.$refs.SendMsgBarRef) {
+        this.$refs.SendMsgBarRef.emojiContainerShow = false
+      }
     },
     // 轮询消息
     async chatRecordTimePoll () {
@@ -390,6 +396,7 @@ export default {
   {
     position: absolute;
     width: 40px;
+    height: 40px;
     left: 10px;
     top: 50%;
     border-radius: 50%;
