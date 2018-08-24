@@ -82,20 +82,13 @@ export default {
       this.snedMsgObject = {
         IsServantReceive: 0
       }
-      if (this.msg.length <= 0) {
-        this.$vux.toast.show({
-          text: '消息不可为空',
-          position: 'bottom',
-          type: 'text'
-        })
+      if (this.msg.trim() === '') {
+        this.msg = this.msg.trim()
+        this.$vux.toast.text('不能发送空白消息')
         return false
       }
       if (this.msg.length > 200) {
-        this.$vux.toast.show({
-          text: '消息不可超过200字符',
-          position: 'bottom',
-          type: 'text'
-        })
+        this.$vux.toast.text('消息不可超过200字符')
         return false
       }
       this.snedMsgObject.MsgType = 1
