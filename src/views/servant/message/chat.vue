@@ -12,10 +12,10 @@
         v-for="(item, index) in chatList"
         :key="index"
         :IsServantReceive="item.IsServantReceive"
-        :class="['mt10px', 'message_item_'+item.ID]"
+        :class="['message_item_'+item.ID]"
         :avatar="(item.IsServantReceive === 0)?mineAccount.Avatar:userAccount.Avatar"
         :Content="item.Content"
-        :MsgType="1"
+        :MsgType="item.MsgType"
       >
       </text-chat-item>
       <!-- <template v-for="(item, index) in chatList">
@@ -171,11 +171,12 @@ export default {
         userName: this.mineAccount.NickName,
         IsServantReceive: 0,
         Content: this.chatMsg,
+        MsgType: 1,
         time: new Date()
       }
       await http.post('/ChatRecord', {
         UserViewID: this.userAccount.ViewID,
-        MsgType: 1,
+        MsgType: msg.MsgType,
         Content: this.chatMsg
       })
       let _msg = Object.assign({}, msg)
