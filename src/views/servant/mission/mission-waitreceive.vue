@@ -447,7 +447,8 @@ export default {
           that.detail = value.Data
         } else {
           that.$vux.loading.hide()
-          that.$vux.toast.show(value.Msg)
+          that.$vux.toast.text(value.Msg)
+          this.$router.replace('/mission')
         }
       })
       await this.getCarryTags().then(value => {

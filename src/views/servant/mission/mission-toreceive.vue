@@ -1,7 +1,7 @@
 <template>
   <div class="wrap" v-if="detail != null">
     <xx-go-back></xx-go-back>
-    <xx-step-bar step="1">
+    <xx-step-bar v-if="detail.State === 0" step="1">
       <xx-step-items slot="items">
         待确认
       </xx-step-items>
@@ -47,47 +47,54 @@
         <image-preview-item :list="detail.Imgs"></image-preview-item>
       </xx-cell-items>
     </xx-cell>
-    <h2 class="cells_title">
-      确认服务时间
-    </h2>
-    <xx-cell>
-      <xx-cell-items label="用户申请服务时间段" direction="vertical">
-        <div class="select-time_container">
-          <div class="select-time_items" style="text-align: left">
-            {{detail.StartTime | xxTimeFormatFilter}}
+    <template v-if="detail.State === 0">
+      <h2 class="cells_title">
+        确认服务时间
+      </h2>
+      <xx-cell>
+        <xx-cell-items label="用户申请服务时间段" direction="vertical">
+          <div class="select-time_container">
+            <div class="select-time_items" style="text-align: left">
+              {{detail.StartTime | xxTimeFormatFilter}}
+            </div>
+            <span class="select-time_interval">至</span>
+            <div class="select-time_items" style="text-align: right">
+              {{detail.EndTime | xxTimeFormatFilter}}
+            </div>
           </div>
-          <span class="select-time_interval">至</span>
-          <div class="select-time_items" style="text-align: right">
-            {{detail.EndTime | xxTimeFormatFilter}}
+        </xx-cell-items>
+        <xx-cell-items :required="true" label="与用户沟通到达时间" class="noraml_cell_right" style="color: #3AC7F5" @click.native="selectArrivalTime">
+          <template v-if="arrivalTime">
+            {{arrivalTime}}
+          </template>
+          <div v-else>
+            请选择
+            <i class="iconfont icon-jiantouyou" style="color:#CCCCCC;"></i>
           </div>
-        </div>
-      </xx-cell-items>
-      <xx-cell-items :required="true" label="与用户沟通到达时间" class="noraml_cell_right" style="color: #3AC7F5" @click.native="selectArrivalTime">
-        <template v-if="arrivalTime">
-          {{arrivalTime}}
-        </template>
-        <div v-else>
-          请选择
-          <i class="iconfont icon-jiantouyou" style="color:#CCCCCC;"></i>
-        </div>
-      </xx-cell-items>
-      <xx-hint>
-        请服务者根据用户申请服务时间段确定到达时间点
-      </xx-hint>
-    </xx-cell>
-    <xx-cell>
-      <xx-cell-items label="服务备注（该内容用户不可见）" direction="vertical">
-        <div class="service_remark_textarea_container">
-          <textarea v-model="remark" class="service_remark_textarea" placeholder="请输入备注"></textarea>
-          <span class="service_remark_textarea_nums_count">{{remark.length}} / 200</span>
-        </div>
-      </xx-cell-items>
-    </xx-cell>
+        </xx-cell-items>
+        <xx-hint>
+          请服务者根据用户申请服务时间段确定到达时间点
+        </xx-hint>
+      </xx-cell>
+      <xx-cell>
+        <xx-cell-items label="服务备注（该内容用户不可见）" direction="vertical">
+          <div class="service_remark_textarea_container">
+            <textarea v-model="remark" class="service_remark_textarea" placeholder="请输入备注"></textarea>
+            <span class="service_remark_textarea_nums_count">{{remark.length}} / 200</span>
+          </div>
+        </xx-cell-items>
+      </xx-cell>
+    </template>
     <div class="btn-bar">
-      <button type="button" class="weui-btn weui-btn_primary" @click="cancelMissionPopupVisible = true">取消任务</button>
-      <button type="button" class="weui-btn weui-btn_primary" @click="createMissionEvent">生成任务</button>
+      <template v-if="detail.State === 0">
+        <button type="button" class="weui-btn weui-btn_primary" @click="cancelMissionPopupVisible = true">取消任务</button>
+        <button type="button" class="weui-btn weui-btn_primary" @click="createMissionEvent">生成任务</button>
+      </template>
+      <template v-else>
+        <router-link type="button" to="/mission" class="weui-btn weui-btn_primary" >预约单已被取消，返回任务列表</router-link>
+      </template>
     </div>
-    <cancel-mission-popup v-model="cancelMissionPopupVisible" @confirmCancel="confirmCancelEvent"></cancel-mission-popup>
+    <cancel-mission-popup v-if="detail.State === 0" v-model="cancelMissionPopupVisible" @confirmCancel="confirmCancelEvent"></cancel-mission-popup>
   </div>
 </template>
 
@@ -218,7 +225,7 @@ export default {
      */
     async initDetail () {
       await this.getData().then(value => {
-        if (value.State !== 0) {
+        if (value.State === 1) {
           this.$router.replace(`/mission/waitreceive/${value.ServiceID}?method=byServiceID`)
         } else {
           this.detail = value
