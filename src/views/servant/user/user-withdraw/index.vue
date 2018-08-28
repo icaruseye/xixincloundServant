@@ -305,10 +305,10 @@ export default {
     }
     .amount_input_balance
     {
-      height: 30px;
-      line-height: 30px;
+      line-height: 20px;
       font-size: 12px;
-      padding: 0 31px;
+      padding: 10px 31px;
+      text-align: justify;
       color: #999;
     }
   }

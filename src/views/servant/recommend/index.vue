@@ -1,6 +1,21 @@
 <template>
   <div class="wrap">
-    <div class="container">
+    <div class="income_container">
+      <router-link class="right_top_btn" to="/">帮助说明</router-link>
+      <div class="amount_box">
+        <span class="icon">￥</span>299.25
+      </div>
+      <p class="amount_desc_text">邀请收入总金额</p>
+    </div>
+    <div class="invite_btn_box">
+      <router-link class="invite_btn left" to="/recommend/inviteServant">
+        <span class="title">邀请服务者</span>
+      </router-link>
+      <router-link class="invite_btn right" to="/recommend/inviteUser">
+        <span class="title">推荐用户</span>
+      </router-link>
+    </div>
+    <!-- <div class="container">
       <div class="userinfo-pannel">
         <img :src="userAccount.Avatar | transformImgUrl" alt="">
         <div class="name">{{userAccount.NickName}}</div>
@@ -9,13 +24,6 @@
         <router-link class="invite_btn" to="/recommend/inviteServant">推荐服务者</router-link>
         <router-link class="invite_btn" style="background-color:#3ECCCC" to="/recommend/inviteUser">推荐用户</router-link>
       </div>
-    </div>
-    <!-- <div class="rule_container">
-      <h5 class="title">推荐规则：</h5>
-      <p class="item">1、在 Vue 中即使是过渡也是数据驱动的！动态过渡最基本的例子是通过 name 特性来绑定动态值。</p>
-      <p class="item">2、在 Vue 中即使是过渡也是数据驱动的！动态过渡最基本的例子是通过 name 特性来绑定动态值。</p>
-      <p class="item">3、在 Vue 中即使是过渡也是数据驱动的！动态过渡最基本的例子是通过 name 特性来绑定动态值。</p>
-      <p class="item">4、在 Vue 中即使是过渡也是数据驱动的！动态过渡最基本的例子是通过 name 特性来绑定动态值。</p>
     </div> -->
   </div>
 </template>
@@ -45,83 +53,81 @@ export default {
 </script>
 
 <style scoped lang="less">
-.wrap {
-  min-height: 100vh;
-  padding-top: 70px;
+.income_container
+{
+  position: relative;
+  height: 140px;
+  padding-top: 19px;
   box-sizing: border-box;
-  background: @theme-color;
-  .container {
-    position: relative;
-    padding-top: 120px;
-    margin: 0 20px;
-    background: #fff;
-    border-radius: 2px;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
-  }
-}
-.userinfo-pannel {
-  position: absolute;
-  width: 100%;
-  top: -50px;
-  text-align: center;
-  img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 4px solid #fff;
-  }
-  .name {
-    margin-bottom: 10px;
-    font-size: 16px;
-    color: #333;
-  }
-  .tag {
-    width: 85px;
-    height: 22px;
-    line-height: 22px;
-    margin: 0 auto;
-    border-radius: 4px;
+  background: linear-gradient(to right, #9EC2FB,#3CC7F5);
+  .right_top_btn
+  {
+    position: absolute;
+    right: 12px;
+    top: 14px;
+    height: 20px;
     font-size: 12px;
+    line-height: 20px;
+    box-sizing: border-box;
     color: #fff;
-    background: linear-gradient(to right, @theme-color, @theme-color-lucency);
+    border:1px solid #fff;
+    padding: 0 12px;
+    border-radius: 13px;
+  }
+  .amount_box
+  {
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 30px;
+    line-height: 42px;
+    .icon
+    {
+      vertical-align: middle;
+      font-size: 25px;
+    }
+  }
+  .amount_desc_text
+  {
+    text-align: center;
+    color: #fff;
+    font-size: 14px;
+    left: 18px;
   }
 }
 .invite_btn_box
 {
-  display: flex;
-  flex-flow: nowrap;
-  align-content: space-around;
-  justify-content: space-around;
-  margin-top: 20px;
-  text-align:center;
-  padding-bottom:40px
-}
-.invite_btn
-{
-  height: 40px;
-  width: 140px;
-  text-align: center;
-  line-height: 40px;
-  background-color: #3ac7f5;
-  color: #fff;
-}
-.rule_container
-{
-  margin: 20px 30px;
-  .title
+  position: relative;
+  height: 56px;
+  .invite_btn
   {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    width: 100px;
+    height: 76px;
+    border-radius: 4px;
+    font-size: 16px;
+    text-align: center;
     color: #fff;
-    font-size: 14px;
-    font-weight: normal;
-    margin-bottom: 10px;
+    .title
+    {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+      bottom: 10px;
+      white-space: nowrap;
+    }
   }
-  .item
+  .left
   {
-    font-size: 12px;
-    color: #fff;
-    margin-bottom: 10px;
-    text-align: justify;
+    margin-left: -120px;
+    background: linear-gradient(to right bottom,#BEF3CA, #43CDCB);
+  }
+  .right
+  {
+    margin-left: 20px;
+    background: linear-gradient(to right bottom,#6BA6F9, #687CFF);
   }
 }
 </style>

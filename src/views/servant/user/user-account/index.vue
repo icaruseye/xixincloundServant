@@ -1,8 +1,8 @@
 <template>
   <div style="padding-bottom:50px">
     <div class="account_head_container">
-      <router-link class="suspend_btn" style="top:13px;left:12px" to="/">我的邀请</router-link>
-      <router-link class="suspend_btn" style="top:13px;right:12px" to="/">提现明细</router-link>
+      <router-link class="suspend_btn" style="top:13px;left:12px" to="/recommend">我的邀请</router-link>
+      <router-link class="suspend_btn" style="top:13px;right:12px" to="/user/withdraw/list">我的账单</router-link>
       <p class="can_withdraw_amount_container">￥299.25</p>
       <p class="can_withdraw_amount_title"> 可提现金额</p>
       <div class="to_withdraw_btn_container">
@@ -10,7 +10,7 @@
       </div>
       <p class="all_earnings_text">累计结算总收益：￥1299.25</p>
     </div>
-    <div class="flex_row_container mt20px">
+    <!-- <div class="flex_row_container mt20px">
       <dl>
         <dt>
           可结算
@@ -32,11 +32,11 @@
         </dt>
         <dd>￥169.50</dd>
       </dl>
-    </div>
+    </div> -->
 
     <div class="card_head_container mt20px">
       <i class="first_icon iconfont icon-suo"></i>
-      冻结收益
+      待审核收益
       <router-link class="right_arrow_btn" to="/">
         查看
         <i class="iconfont icon-jiantouyou"></i>
@@ -45,14 +45,14 @@
     <div class="flex_row_container">
       <dl>
         <dt>
-          冻结中
+          待结算单数
           <i class="iconfont icon-wenhao"></i>
         </dt>
         <dd>￥169.50</dd>
       </dl>
       <dl>
         <dt>
-          已解冻
+          月结算
           <i class="iconfont icon-wenhao"></i>
         </dt>
         <dd>￥169.50</dd>
@@ -61,7 +61,7 @@
 
     <div class="card_head_container mt20px">
       <i class="first_icon iconfont icon-yue"></i>
-      月收益
+      月统计
       <router-link class="right_arrow_btn" to="/">
         查看
         <i class="iconfont icon-jiantouyou"></i>
@@ -70,21 +70,21 @@
     <div class="flex_row_container">
       <dl>
         <dt>
-          可结算
+          服务单数
+          <i @click="showHint('这是服务单数')" class="iconfont icon-wenhao"></i>
+        </dt>
+        <dd>￥169.50</dd>
+      </dl>
+      <dl>
+        <dt>
+          服务收益
           <i class="iconfont icon-wenhao"></i>
         </dt>
         <dd>￥169.50</dd>
       </dl>
       <dl>
         <dt>
-          可提现
-          <i class="iconfont icon-wenhao"></i>
-        </dt>
-        <dd>￥169.50</dd>
-      </dl>
-      <dl>
-        <dt>
-          已提现
+          分享赚
           <i class="iconfont icon-wenhao"></i>
         </dt>
         <dd>￥169.50</dd>
@@ -96,6 +96,13 @@
 export default {
   data () {
     return {
+    }
+  },
+  methods: {
+    showHint (txt) {
+      this.$vux.alert.show({
+        content: txt
+      })
     }
   }
 }

@@ -22,6 +22,11 @@
         订单
         <i class="iconfont icon-jiantouyou"></i>
       </router-link>
+      <router-link class="user_links_items" to="/user/account">
+        <img class="user_links_items_icon" src="@/assets/images/ic_user_index_order.png" alt="我的账户">
+        我的账户
+        <i class="iconfont icon-jiantouyou"></i>
+      </router-link>
       <router-link class="user_links_items" to="/recommend">
         <img class="user_links_items_icon" src="@/assets/images/ic_user_index_invate.png" alt="我的邀请">
         我的邀请
