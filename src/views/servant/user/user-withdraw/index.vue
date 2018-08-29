@@ -11,11 +11,11 @@
       </xx-step-bar>
     </div>
     <div class="box_warp_container">
-      <div class="select_bank_card_container">
+      <div class="select_bank_card_container" @click="withdrawTypeVisible = true">
         <div class="select_bank_card_title">
           到账银行卡
         </div>
-        <div class="select_bank_card_box" @click="withdrawTypeVisible = true">
+        <div class="select_bank_card_box">
           <template v-if="currentWithdrawType">
             <div class="bank_info_box clearfix">
               <i class="bank_logo">
@@ -24,10 +24,10 @@
                 </svg>
               </i>
               <h3 class="bank_name">
-                {{currentWithdrawType.name}}({{currentWithdrawType.code}})
+                {{currentWithdrawType.name}}
               </h3>
             </div>
-            <p class="bankCard_desc">2小时内到账</p>
+            <p class="bankCard_desc">尾号为{{currentWithdrawType.code}}的储蓄卡</p>
           </template>
           <template v-else>
             <i class="bank_logo iconfont icon-yinhangqia" style="color:#3ac7f5"></i>
@@ -47,19 +47,34 @@
             {{withdrawAmount}}
           </span>
           <span class="placeholder" v-if="withdrawAmount.length == 0">
-              可提现{{canWithdrawAmount.toFixed(2)}}元
+              余额：{{canWithdrawAmount}}元
             </span>
           <span class="allin_amount" @click.stop="withdrawAmount = (canWithdrawAmount + '')">全部提现</span>
         </div>
-        <p class="amount_input_balance">
-          <span>
-            额外扣除¥0.25服务费（费率0.1%）税费¥5.0（费率0.1%）
+        <div class="amount_input_balance">
+          <span v-if="withdrawAmount < minWithAmount" style="color:#ff0000">
+            每次提现最少{{minWithAmount}}元
           </span>
-        </p>
+          <span v-if="withdrawAmount > maxWithAmount" style="color:#ff0000">
+            每次提现最多{{maxWithAmount}}元
+          </span>
+          <template v-if="withdrawAmount >= minWithAmount && withdrawAmount <= maxWithAmount">
+            扣除¥{{amountCompute(HandlingFee)}}手续费，实际到账
+            <span style="color:#3ac7f5">¥{{realityWithdrawAccount}}</span>
+          </template>
+          <p>{{HandingFeeDiscription}}</p>
+        </div>
       </div>
 
       <div class="apply_withdraw_btn_box">
-        <button @click="submitWithdrawApply" :class="['apply_withdraw_btn', canWithDraw ? '': 'disabled']">提现</button>
+        <button @click="submitWithdrawApply" :class="['apply_withdraw_btn', canWithDraw ? '': 'disabled']">
+          <template v-if="amountIsOverflow">
+            余额不足
+          </template>
+          <template v-else>
+            提现
+          </template>
+        </button>
       </div>
     </div>
 
@@ -89,22 +104,46 @@ export default {
   },
   data () {
     return {
+      minWithAmount: 10, // 最低提现金额
+      maxWithAmount: 50 * 1000, // 最大提现金额
       currentWithdrawType: null,
       withdrawTypeVisible: false,
       numberKeyboardVisible: false,
-      withdrawAmount: '',
-      canWithdrawAmount: 1.11
+      withdrawAmount: '', // 提现金额
+      blance: 0, // 余额
+      HandlingFee: 0, // 提现手续费
+      HandingFeeDiscription: '' // 提现手续费描述
     }
   },
   computed: {
-    amountIsOverflow () {
-      return parseFloat(this.withdrawAmount) > this.canWithdrawAmount
+    canWithdrawAmount () { // 可提现金额
+      return this.amountCompute(this.blance)
     },
-    canWithDraw () {
-      return !this.amountIsOverflow && (this.currentWithdrawType !== null) && parseFloat(this.withdrawAmount) > 0
+    realityWithdrawAccount () { // 实际到账金额
+      return this.amountCompute(this.withdrawAmount * 100 - this.HandlingFee)
+    },
+    amountIsOverflow () { // 提现金额是否溢出
+      return parseFloat(this.withdrawAmount) > (this.canWithdrawAmount + this.HandlingFee)
+    },
+    canWithDraw () { // 是否能提现（金额无溢出，提现方式不为空，提现金额大于等于最低提现金额并且小于等于最大提现金额
+      const withdrawAmount = parseFloat(this.withdrawAmount)
+      return !this.amountIsOverflow && (this.currentWithdrawType !== null) && withdrawAmount >= this.minWithAmount &&
+      withdrawAmount <= this.maxWithAmount
     }
   },
+  watch: {
+    withdrawAmount () {
+      this.getWithdrawFee()
+    }
+  },
+  created () {
+    this.getWithdrawInfo()
+    this.getWithdrawFee()
+  },
   methods: {
+    amountCompute (amount = null) {
+      return amount === null ? 0 : (parseFloat(amount) / 100).toFixed(2)
+    },
     submitWithdrawApply () {
       if (this.canWithDraw) {
         const that = this
@@ -113,7 +152,7 @@ export default {
           confirmText: '确定',
           cancelText: '放弃提现',
           onConfirm () {
-            that.$router.replace(`/user/withdraw/1/detail`)
+            that.applyWithdraw()
           }
         })
       }
@@ -122,6 +161,44 @@ export default {
       this.$vux.alert.show({
         content: 'T+1个工作日指发起提现后的第一个工作日'
       })
+    },
+    /**
+     * 申请提现
+     */
+    applyWithdraw () {
+      const withdrawAmount = parseFloat(this.withdrawAmount) * 100
+      this.$http.post('/Withdraw', {
+        Amount: withdrawAmount,
+        bankInfoID: this.currentWithdrawType.id
+      }).then(result => {
+        if (result.data.Code === 100000) {
+          this.$router.replace(`/user/bills/1/detail`)
+        }
+      })
+    },
+    /**
+     * 获取提现信息
+     */
+    getWithdrawInfo () {
+      this.$http.get('/Withdraw').then(result => {
+        if (result.data.Code === 100000) {
+          this.blance = result.data.Data.Amount
+          this.HandingFeeDiscription = result.data.Data.HandingFeeDiscription
+        }
+      })
+    },
+    /**
+     * 计算手续费
+     */
+    getWithdrawFee () {
+      let withdrawAmount = parseFloat(this.withdrawAmount || 0).toFixed(0)
+      if (withdrawAmount > 0) {
+        this.$http.get(`/HandlingFee?amount=${withdrawAmount * 100}`).then(result => {
+          this.HandlingFee = result.data.Data
+        })
+      } else {
+        this.HandlingFee = 0
+      }
     },
     /**
      * 当银行卡发生改变
@@ -144,10 +221,10 @@ export default {
       if (amount.length <= 0) {
         this.withdrawAmount = ''
         return false
-      } else if (amount.indexOf('.') === -1) {
-        this.withdrawAmount = (parseInt(amount) + '')
-        return false
       } else if (!reg.test(amount)) {
+        return false
+      } else if (parseFloat(amount) > this.canWithdrawAmount) {
+        this.withdrawAmount = this.canWithdrawAmount
         return false
       } else {
         this.withdrawAmount = amount
@@ -203,6 +280,7 @@ export default {
           font-size: 14px;
           height: 22px;
           line-height: 22px;
+          vertical-align: middle;
         }
         .bank_name
         {

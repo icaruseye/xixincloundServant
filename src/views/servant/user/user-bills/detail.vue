@@ -57,6 +57,24 @@
     </xx-timeLine>
   </div>
 </template>
+<script>
+export default {
+  computed: {
+    ID () {
+      return this.$route.params.id
+    }
+  },
+  created () {
+    this.getData()
+  },
+  methods: {
+    getData () {
+      this.$http.get(`/WalletLog?id=${this.ID}`)
+    }
+  }
+}
+</script>
+
 <style lang="less" scoped>
   .widthdraw_status_container
   {

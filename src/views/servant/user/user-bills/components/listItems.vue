@@ -1,22 +1,31 @@
 <template>
-  <div class="container" @click="redirectToDetail">
-    <i class="icon_box">
-      <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-mingshengyinhang"></use>
-      </svg>
-    </i>
+  <div class="container">
     <div class="content_container">
-      <p class="title">提现到尾号1125的储蓄卡</p>
-      <p class="create_time">2018-08-08 14:18:44</p>
-      <span class="amount">￥56454.99</span>
+      <p class="title">{{Type}}</p>
+      <p class="create_time">{{CreateTime | xxTimeFormatFilter}}</p>
+      <span class="amount">￥{{Amount | amountCompute}}</span>
     </div>
   </div>
 </template>
 <script>
 export default {
-  methods: {
-    redirectToDetail () {
-      this.$router.push(`/user/withdraw/1/detail`)
+  props: {
+    Amount: {
+      type: Number,
+      default: 0
+    },
+    Type: {
+      type: Number,
+      default: 0
+    },
+    CreateTime: {
+      type: String,
+      default: ''
+    }
+  },
+  filters: {
+    amountCompute (amount = null) {
+      return amount === null ? 0 : (amount / 100).toFixed(2)
     }
   }
 }
@@ -28,7 +37,7 @@ export default {
     position: relative;
     background-color: #fff;
     min-height: 80px;
-    padding: 15px 15px 0 64px;
+    padding: 15px 15px 0 15px;
     box-sizing: border-box;
     .icon_box
     {

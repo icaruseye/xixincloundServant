@@ -1,14 +1,14 @@
 <template>
-  <div style="padding-bottom:50px">
+  <div v-if="detail" style="padding-bottom:50px">
     <div class="account_head_container">
       <router-link class="suspend_btn" style="top:13px;left:12px" to="/recommend">我的邀请</router-link>
-      <router-link class="suspend_btn" style="top:13px;right:12px" to="/user/withdraw/list">我的账单</router-link>
-      <p class="can_withdraw_amount_container">￥299.25</p>
+      <router-link class="suspend_btn" style="top:13px;right:12px" to="/user/bills">我的账单</router-link>
+      <p class="can_withdraw_amount_container">￥{{detail.Balance | amountCompute}}</p>
       <p class="can_withdraw_amount_title"> 可提现金额</p>
       <div class="to_withdraw_btn_container">
         <router-link class="to_withdraw_btn" to="/user/withdraw"> 立即提现</router-link>
       </div>
-      <p class="all_earnings_text">累计结算总收益：￥1299.25</p>
+      <p class="all_earnings_text">累计提现总金额：￥{{detail.TotalWithdraw | amountCompute}}</p>
     </div>
     <!-- <div class="flex_row_container mt20px">
       <dl>
@@ -48,14 +48,14 @@
           待结算单数
           <i class="iconfont icon-wenhao"></i>
         </dt>
-        <dd>￥169.50</dd>
+        <dd>{{detail.NotSettlementMissionCount}}</dd>
       </dl>
       <dl>
         <dt>
-          月结算
+          月结算<span style="font-size:12px">(冻结)</span>
           <i class="iconfont icon-wenhao"></i>
         </dt>
-        <dd>￥169.50</dd>
+        <dd>￥{{detail.FreezeBalance | amountCompute}}</dd>
       </dl>
     </div>
 
@@ -73,21 +73,21 @@
           服务单数
           <i @click="showHint('这是服务单数')" class="iconfont icon-wenhao"></i>
         </dt>
-        <dd>￥169.50</dd>
+        <dd>{{detail.MonthMissionCount}}</dd>
       </dl>
       <dl>
         <dt>
           服务收益
           <i class="iconfont icon-wenhao"></i>
         </dt>
-        <dd>￥169.50</dd>
+        <dd>￥{{detail.MonthServiceIncome | amountCompute}}</dd>
       </dl>
       <dl>
         <dt>
           分享赚
           <i class="iconfont icon-wenhao"></i>
         </dt>
-        <dd>￥169.50</dd>
+        <dd>￥{{detail.MonthRecommendIncome | amountCompute}}</dd>
       </dl>
     </div>
   </div>
@@ -96,13 +96,35 @@
 export default {
   data () {
     return {
+      detail: null
     }
+  },
+  filters: {
+    amountCompute (amount = null) {
+      return amount === null ? 0 : (amount / 100).toFixed(2)
+    }
+  },
+  created () {
+    this.init()
   },
   methods: {
     showHint (txt) {
       this.$vux.alert.show({
         content: txt
       })
+    },
+    init () {
+      this.getData().then(result => {
+        if (result.Code === 100000) {
+          this.detail = result.Data
+        } else {
+          this.detail = null
+        }
+      })
+    },
+    async getData () {
+      const res = await this.$http.get(`/Wallet`)
+      return res.data
     }
   }
 }
@@ -265,8 +287,3 @@ export default {
     }
   }
 </style>
-
-.can_withdraw_amount_title
-{
-
-}

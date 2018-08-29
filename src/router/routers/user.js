@@ -22,24 +22,24 @@ export default [
     }
   },
   {
+    path: '/user/bills',
+    component: _import('/servant/user/user-bills/list'),
+    meta: {
+      title: '我的账单'
+    }
+  },
+  {
+    path: '/user/bills/:id/detail',
+    component: _import('/servant/user/user-bills/detail'),
+    meta: {
+      title: '账单详情'
+    }
+  },
+  {
     path: '/user/withdraw',
     component: _import('/servant/user/user-withdraw/index'),
     meta: {
       title: '提现'
-    }
-  },
-  {
-    path: '/user/withdraw/list',
-    component: _import('/servant/user/user-withdraw/list'),
-    meta: {
-      title: '提现明细'
-    }
-  },
-  {
-    path: '/user/withdraw/:id/detail',
-    component: _import('/servant/user/user-withdraw/detail'),
-    meta: {
-      title: '提现详情'
     }
   },
   {
