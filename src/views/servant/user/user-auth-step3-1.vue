@@ -20,8 +20,8 @@
     <div class="weui-form step-form">
       <div class="weui-cell nobor">
         <div class="weui-cell-top">
-          <label for="CertificateNum">执业证编号</label>
-          <input id="CertificateNum" v-model="reqParam.CertificateNum" type="text" :placeholder="`输入${Name}编号`">
+          <label for="CertificateNum">执业机构</label>
+          <input id="CertificateNum" v-model="reqParam.CertificateNum" type="text" :placeholder="`输入执业机构名称`">
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
