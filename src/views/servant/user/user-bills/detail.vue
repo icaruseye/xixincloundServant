@@ -1,67 +1,117 @@
 <template>
-  <div style="padding-bottom: 50px">
-    <div class="widthdraw_status_container">
-      <p class="widthdraw_bank_name">
-        <i class="widthdraw_bank_icon">
+  <div v-if="detail" style="padding-bottom: 50px">
+    <div class="bill_status_container">
+      <p class="bill_type_title">
+        <i class="bill_type_icon">
           <svg class="icon" aria-hidden="true">
-            <use xlink:href="#icon-mingshengyinhang"></use>
+            <use :xlink:href="billsTypeIcon"></use>
           </svg>
         </i>
-        中国民生银行
+        {{billsTypeTitle}}
       </p>
-      <p class="widthdraw_amount">
-        ￥6,000.00
+      <p class="bill_amount_box">
+        {{detail.Expenditure | currencyFilter}}
       </p>
-      <p class="widthdraw_amount_text">
+      <p class="bill_status_desc_text">
         转账中
       </p>
     </div>
-    <xx-timeLine step="3" class="mt10px">
-      <xx-timeLine-items
-        slot="items"
-        title="发起提现"
-      >
-        <ul>
-          <li class="desc_list_items">
-            <p class="normal_desc_p">服务单号：201808081211440001</p>
-            <p class="normal_desc_p">提现金额：￥10,000.00</p>
-            <p class="normal_desc_p">提现到：中国民生银行（1125）李汶津</p>
-            <p class="normal_desc_p">发起时间：2018-08-08 12:11:44</p>
-          </li>
-        </ul>
-      </xx-timeLine-items>
-      <xx-timeLine-items
-        slot="items"
-        title="审核"
-      >
-        <ul>
-          <li class="desc_list_items">
-            <p class="normal_desc_p">审核意见：同意</p>
-            <p class="normal_desc_p">处理时间：2018-08-08 16:08:04</p>
-          </li>
-        </ul>
-      </xx-timeLine-items>
-      <xx-timeLine-items
-        slot="items"
-        title="转账"
-      >
-        <p class="working_box">
-          正在转账，请稍候…
-        </p>
-      </xx-timeLine-items>
-      <xx-timeLine-items
-        slot="items"
-        title="提现成功"
-      >
-      </xx-timeLine-items>
-    </xx-timeLine>
+    <!-- 服务收入模块 -->
+    <serviveIncome
+      v-if="detail.LogType === 1"
+      :Income="detail.Income"
+      :TecSupportFee="detail.TecSupportFee"
+      :ShopFee="detail.ShopFee"
+      :RecommendFee="detail.RecommendFee"
+      :Tax="detail.Tax"
+      :FreezeAmount="detail.FreezeAmount"
+      :ServiceTotal="detail.ServiceTotal"
+    ></serviveIncome>
+    <!-- 推荐收入模块 -->
+    <recommendIncome
+      v-if="detail.LogType === 2"
+      :Income="detail.Income"
+      :RecommendName="detail.RecommendName"
+      :ItemPrice="detail.ItemPrice"
+      :Scale="detail.Scale"
+    ></recommendIncome>
+    <!-- 提现模块 -->
+    <withdrawComponent
+      v-if="detail.LogType === 4"
+      :Expenditure="detail.Expenditure"
+      :FactIncome="detail.FactIncome"
+      :HandlingFee="detail.HandlingFee"
+      :BankName="detail.BankName"
+      :CardID="detail.CardID"
+      :WithdrawState="detail.WithdrawState"
+    ></withdrawComponent>
   </div>
 </template>
 <script>
+import { numberComma } from 'vux'
+import util from '@/plugins/util'
+import withdrawComponent from './components/withdraw'
+import serviveIncome from './components/serviceIncome'
+import recommendIncome from './components/recommendIncome'
 export default {
+  components: {
+    withdrawComponent,
+    serviveIncome,
+    recommendIncome
+  },
+  filters: {
+    billTypeSymbolFilter (val = 1) {
+      if (val === 1 || val === 2 || val === 5) {
+        return '+'
+      } else {
+        return '-'
+      }
+    },
+    currencyFilter (val = 0) {
+      if (val === 0) {
+        return '0.00'
+      } else {
+        return numberComma((val / 100).toFixed(2))
+      }
+    }
+  },
   computed: {
+    billsTypeIcon () { // 账单标题icon
+      const type = this.detail.LogType
+      if (type === 1) {
+        return '#icon-shouru'
+      } else if (type === 2) {
+        return '#icon-shouru'
+      } else if (type === 3) {
+        return '#icon-zhichu'
+      } else if (type === 4) {
+        const bankList = util.getSupportBankList()
+        return bankList[this.detail.BankAbbreviation].icon
+      } else if (type === 5) {
+        return '#icon-yijiedong'
+      }
+    },
+    billsTypeTitle () { // 账单标题
+      const type = this.detail.LogType
+      if (type === 1) {
+        return '服务收入'
+      } else if (type === 2) {
+        return '推荐收入'
+      } else if (type === 3) {
+        return '支出'
+      } else if (type === 4) {
+        return this.detail.BankName || '提现'
+      } else if (type === 5) {
+        return '金额解冻'
+      }
+    },
     ID () {
       return this.$route.params.id
+    }
+  },
+  data () {
+    return {
+      detail: null
     }
   },
   created () {
@@ -69,88 +119,47 @@ export default {
   },
   methods: {
     getData () {
-      this.$http.get(`/WalletLog?id=${this.ID}`)
+      this.$http.get(`/WalletLog?id=${this.ID}`).then(result => {
+        if (result.data.Code === 100000) {
+          this.detail = result.data.Data
+        }
+      })
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-  .widthdraw_status_container
+  .bill_status_container
   {
     background-color: #fff;
     padding: 10px 0;
-    .widthdraw_bank_name
+    .bill_type_title
     {
-      .widthdraw_bank_icon
-      {
-        font-size: 26px;
-      }
+      height: 35px;
+      line-height: 35px;
       text-align: center;
-      font-size: 18px;
+      font-size: 16px;
+      .bill_type_icon
+      {
+        display: inline-block;
+        height: 35px;
+        left: 35px;
+        font-size: 22px;
+        margin-right: 5px;
+        vertical-align: middle;
+      }
     }
-    .widthdraw_amount
+    .bill_amount_box
     {
       font-size: 26px;
       text-align: center;
     }
-    .widthdraw_amount_text
+    .bill_status_desc_text
     {
       text-align: center;
       color: #3ac7f5;
       font-size: 14px;
     }
-  }
-  
-  .normal_title_p
-  {
-    font-size: 14px;
-    color: #666;
-    text-align: left;
-    line-height: 25px;
-  }
-  .normal_desc_p
-  {
-    font-size: 12px;
-    color: #999999;
-    text-align: justify;
-    line-height: 25px;
-    &.redColor
-    {
-      color: #FF3939
-    }
-  }
-  .desc_list_items
-  {
-    position: relative;
-    padding-bottom: 11px;
-    margin-bottom: 11px;
-  }
-  .desc_list_items::after
-  {
-    position: absolute;
-    content: '';
-    display: block;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    transform: scaleY(.5);
-    background-color: #D8F4FD;
-  }
-  .desc_list_items_title
-  {
-    font-size: 15px;
-    color: #333333;
-    font-weight: normal;
-    height: 21px;
-    line-height: 21px;
-    margin-bottom: 7px;
-  }
-  .working_box
-  {
-    color: #f7931e;
-    height: 30px;
-    line-height: 30px;
-  }
+  } 
 </style>

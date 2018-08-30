@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <div class="content_container">
-      <p class="title">{{Type}}</p>
+      <p class="title">{{Type | typeNameFilter}}</p>
       <p class="create_time">{{CreateTime | xxTimeFormatFilter}}</p>
-      <span class="amount">￥{{Amount | amountCompute}}</span>
+      <span class="amount">{{Amount | amountCompute}}元</span>
     </div>
   </div>
 </template>
@@ -24,6 +24,29 @@ export default {
     }
   },
   filters: {
+    billTypeSymbolFilter (val = 1) {
+      if (val === 1 || val === 2 || val === 5) {
+        return '+'
+      } else {
+        return ''
+      }
+    },
+    typeNameFilter (val = 1) {
+      switch (val) {
+        case 1:
+          return '服务收入'
+        case 2:
+          return '推荐收入'
+        case 3:
+          return '支出'
+        case 4:
+          return '提现'
+        case 5:
+          return '解冻'
+        default:
+          return ''
+      }
+    },
     amountCompute (amount = null) {
       return amount === null ? 0 : (amount / 100).toFixed(2)
     }

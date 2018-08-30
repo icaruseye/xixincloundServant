@@ -172,7 +172,7 @@ export default {
         bankInfoID: this.currentWithdrawType.id
       }).then(result => {
         if (result.data.Code === 100000) {
-          this.$router.replace(`/user/bills/1/detail`)
+          this.$router.replace(`/user/bills/${result.data.Data}/detail`)
         }
       })
     },
