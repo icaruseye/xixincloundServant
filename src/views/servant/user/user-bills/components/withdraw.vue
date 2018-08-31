@@ -1,6 +1,6 @@
 <template>
   <div>
-    <xx-timeLine step="3" class="mt10px">
+    <xx-timeLine :step="withDrawStep" class="mt10px">
       <xx-timeLine-items
         slot="items"
         title="发起提现"
@@ -11,31 +11,42 @@
             <p class="normal_desc_p">实际到账：￥{{FactIncome | currencyFilter}}</p>
             <p class="normal_desc_p">提现手续费：￥{{HandlingFee | currencyFilter}}</p>
             <p class="normal_desc_p">提现到：{{BankName}}（{{CardID}}）</p>
-            <p class="normal_desc_p">流水号：201808081211440001</p>
+            <p class="normal_desc_p">发起时间：{{WithdrawCreateTime | xxTimeFormatFilter}}</p>
+            <!-- <p class="normal_desc_p">流水号：{{WithdrawCreateTime | xxTimeFormatFilter('YYYYMMDDHHmmss')}}</p> -->
           </li>
         </ul>
       </xx-timeLine-items>
       <xx-timeLine-items
         slot="items"
-        title="审核"
+        :title="WithdrawState === 0 ? '审核中' : '审核'"
       >
-        <ul>
+        <div v-if="WithdrawState === 0" style="font-size:12px;color:#999">
+          提现申请审核中，请耐心等待工作人员处理。
+        </div>
+        <ul v-else>
           <li class="desc_list_items">
-            <p class="normal_desc_p">审核意见：同意</p>
-            <p class="normal_desc_p">处理时间：2018-08-08 16:08:04</p>
+            <p class="normal_desc_p">审核意见：{{WithdrawState === -1 ? '拒绝' : '同意'}}</p>
+            <p class="normal_desc_p">处理时间：{{WithdrawReviewTime | xxTimeFormatFilter}}</p>
           </li>
         </ul>
       </xx-timeLine-items>
       <xx-timeLine-items
         slot="items"
         title="转账"
+        v-if="WithdrawState != -1"
       >
         <p class="working_box">
-          正在转账，请稍候…
+          <template v-if="WithdrawState === 2">
+            转账成功，请注意查收
+          </template>
+          <template v-if="WithdrawState === 1">
+            正在转账，请稍候…
+          </template>
         </p>
       </xx-timeLine-items>
       <xx-timeLine-items
         slot="items"
+        v-if="WithdrawState != -1"
         title="提现成功"
       >
       </xx-timeLine-items>
@@ -55,6 +66,16 @@ export default {
     }
   },
   computed: {
+    withDrawStep () {
+      const WithdrawState = this.WithdrawState
+      if (WithdrawState === 0 || WithdrawState === -1) { // 待审核
+        return 2
+      } else if (WithdrawState === 1) {
+        return 3
+      } else if (WithdrawState === 2) {
+        return 4
+      }
+    }
   },
   props: {
     Expenditure: { // 提现金额
@@ -79,6 +100,14 @@ export default {
     },
     WithdrawState: { // 提现进度
       type: Number,
+      default: 1
+    },
+    WithdrawCreateTime: { // 提现发起时间
+      type: String,
+      default: 1
+    },
+    WithdrawReviewTime: { // 提现审核通过时间
+      type: String,
       default: 1
     }
   }

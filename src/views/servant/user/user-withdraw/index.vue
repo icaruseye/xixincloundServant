@@ -30,10 +30,16 @@
             <p class="bankCard_desc">尾号为{{currentWithdrawType.code}}的储蓄卡</p>
           </template>
           <template v-else>
-            <i class="bank_logo iconfont icon-yinhangqia" style="color:#3ac7f5"></i>
-            <h3 class="bank_name">
-              请先选择提现方式
-            </h3>
+            <div class="bank_info_box clearfix">
+              <i class="bank_logo">
+                <svg class="icon" aria-hidden="true">
+                  <use xlink:href="#icon-yinhangqia"></use>
+                </svg>
+              </i>
+              <h3 class="bank_name">
+                请先选择提现方式
+              </h3>
+            </div>
             <p class="bankCard_desc">选择提现方式后才可以提现</p>
           </template>
         </div>

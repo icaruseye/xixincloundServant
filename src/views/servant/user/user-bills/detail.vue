@@ -10,10 +10,28 @@
         {{billsTypeTitle}}
       </p>
       <p class="bill_amount_box">
-        {{detail.Expenditure | currencyFilter}}
+        <template
+          v-if="detail.LogType === 1 || detail.LogType === 2 || detail.LogType === 5">
+          -{{detail.Income | currencyFilter}}
+        </template>
+        <template
+          v-if="detail.LogType === 4">
+          -{{detail.Expenditure | currencyFilter}}
+        </template>
       </p>
-      <p class="bill_status_desc_text">
-        转账中
+      <p v-if="detail.LogType === 4" class="bill_status_desc_text">
+        <span v-if="detail.WithdrawState === -1" style="color:#ff0000">
+          提现失败
+        </span>
+        <template v-if="detail.WithdrawState === 0">
+          提现审核中
+        </template>
+        <template v-if="detail.WithdrawState === 1">
+          审核通过，转账中
+        </template>
+        <template v-if="detail.WithdrawState === 2">
+          提现完成
+        </template>
       </p>
     </div>
     <!-- 服务收入模块 -->
@@ -44,6 +62,8 @@
       :BankName="detail.BankName"
       :CardID="detail.CardID"
       :WithdrawState="detail.WithdrawState"
+      :WithdrawCreateTime="detail.WithdrawCreateTime"
+      :WithdrawReviewTime="detail.WithdrawReviewTime"
     ></withdrawComponent>
   </div>
 </template>
