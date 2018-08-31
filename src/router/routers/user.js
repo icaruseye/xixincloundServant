@@ -18,28 +18,44 @@ export default [
     path: '/user/account',
     component: _import('/servant/user/user-account'),
     meta: {
-      title: '我的账户'
+      title: '我的账户',
+      goBackParam: {
+        url: '/user',
+        title: '我的'
+      }
     }
   },
   {
     path: '/user/bills',
     component: _import('/servant/user/user-bills/list'),
     meta: {
-      title: '我的账单'
+      title: '我的账单',
+      goBackParam: {
+        url: '/user/account',
+        title: '我的账户'
+      }
     }
   },
   {
     path: '/user/bills/:id/detail',
     component: _import('/servant/user/user-bills/detail'),
     meta: {
-      title: '账单详情'
+      title: '账单详情',
+      goBackParam: {
+        url: '/user/bills',
+        title: '我的账单'
+      }
     }
   },
   {
     path: '/user/withdraw',
     component: _import('/servant/user/user-withdraw/index'),
     meta: {
-      title: '提现'
+      title: '提现',
+      goBackParam: {
+        url: '/user/account',
+        title: '我的账户'
+      }
     }
   },
   {

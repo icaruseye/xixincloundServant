@@ -3,7 +3,12 @@
     <div class="content_container">
       <p class="title">{{Type | typeNameFilter}}</p>
       <p class="create_time">{{CreateTime | xxTimeFormatFilter}}</p>
-      <span class="amount">{{Amount | amountCompute}}元</span>
+      <span class="amount" v-if="billTypeIsAdd" style="color:#FF5F5F">
+        +{{Amount | amountCompute}}元
+      </span>
+      <span class="amount" style="color:#04be02" v-else>
+        {{Amount | amountCompute}}元
+      </span>
     </div>
   </div>
 </template>
@@ -23,14 +28,17 @@ export default {
       default: ''
     }
   },
-  filters: {
-    billTypeSymbolFilter (val = 1) {
-      if (val === 1 || val === 2 || val === 5) {
-        return '+'
+  computed: {
+    billTypeIsAdd () { // 账单类型是否为收入
+      const type = this.Type
+      if (type === 1 || type === 2 || type === 5 || type === 6) {
+        return true
       } else {
-        return ''
+        return false
       }
-    },
+    }
+  },
+  filters: {
     typeNameFilter (val = 1) {
       switch (val) {
         case 1:
@@ -43,6 +51,8 @@ export default {
           return '提现'
         case 5:
           return '解冻'
+        case 6:
+          return '退款-提现被驳回'
         default:
           return ''
       }

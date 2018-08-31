@@ -1,5 +1,6 @@
 <template>
   <div v-if="detail" style="padding-bottom:50px">
+    <xx-go-back></xx-go-back>
     <div class="account_head_container">
       <router-link class="suspend_btn" style="top:13px;left:12px" to="/recommend">我的邀请</router-link>
       <router-link class="suspend_btn" style="top:13px;right:12px" to="/user/bills">我的账单</router-link>
@@ -37,23 +38,23 @@
     <div class="card_head_container mt20px">
       <i class="first_icon iconfont icon-suo"></i>
       待审核收益
-      <router-link class="right_arrow_btn" to="/">
+      <!-- <router-link class="right_arrow_btn" to="/user/orderClearing/list">
         查看
         <i class="iconfont icon-jiantouyou"></i>
-      </router-link>
+      </router-link> -->
     </div>
     <div class="flex_row_container">
       <dl>
         <dt>
           待结算单数
-          <i class="iconfont icon-wenhao"></i>
+          <i class="iconfont icon-wenhao" @click="showHint('待结算单数是指服务完成，正在经过后台审核中的服务单数量，审核完成后收益会自动结算到钱包。')"></i>
         </dt>
         <dd>{{detail.NotSettlementMissionCount}}</dd>
       </dl>
       <dl>
         <dt>
           月结算<span style="font-size:12px">(冻结)</span>
-          <i class="iconfont icon-wenhao"></i>
+          <i class="iconfont icon-wenhao" @click="showHint('由于考虑到用户接受服务的安全周期，所以机构会设置对一部分结算资金建立安全冻结池，冻结周期为结算成功后30个自然日。')"></i>
         </dt>
         <dd>￥{{detail.FreezeBalance | amountCompute}}</dd>
       </dl>
@@ -62,30 +63,30 @@
     <div class="card_head_container mt20px">
       <i class="first_icon iconfont icon-yue"></i>
       月统计
-      <router-link class="right_arrow_btn" to="/">
+      <!-- <router-link class="right_arrow_btn" to="/">
         查看
         <i class="iconfont icon-jiantouyou"></i>
-      </router-link>
+      </router-link> -->
     </div>
     <div class="flex_row_container">
       <dl>
         <dt>
           服务单数
-          <i @click="showHint('这是服务单数')" class="iconfont icon-wenhao"></i>
+          <i @click="showHint('此处显示的是当月一共服务状态为服务完成的服务单数量。')" class="iconfont icon-wenhao"></i>
         </dt>
         <dd>{{detail.MonthMissionCount}}</dd>
       </dl>
       <dl>
         <dt>
           服务收益
-          <i class="iconfont icon-wenhao"></i>
+          <i @click="showHint('服务收益是指当月通过给用户服务所赚取的可提现的收益总金额。')" class="iconfont icon-wenhao"></i>
         </dt>
         <dd>￥{{detail.MonthServiceIncome | amountCompute}}</dd>
       </dl>
       <dl>
         <dt>
           分享赚
-          <i class="iconfont icon-wenhao"></i>
+          <i @click="showHint('分享赚是指当月邀请服务者、推荐用户所获得的奖励总金额。')" class="iconfont icon-wenhao"></i>
         </dt>
         <dd>￥{{detail.MonthRecommendIncome | amountCompute}}</dd>
       </dl>
@@ -110,6 +111,7 @@ export default {
   methods: {
     showHint (txt) {
       this.$vux.alert.show({
+        title: '名词解释',
         content: txt
       })
     },

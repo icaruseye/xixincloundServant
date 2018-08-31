@@ -1,16 +1,16 @@
 <template>
   <div class="container" :class="OrderInfo.State === 0? 'no_pay' : 'has_payed'">
     <div class="head_container">
-      <p class="order_no">提现单编号：{{OrderInfo.ID}}</p>
+      <p class="order_no">结算单编号：{{OrderInfo.ID}}</p>
       <span class="state_box">
         <template v-if="OrderInfo.State === 0">
-          可提现
+          可结算
         </template>
         <template v-if="OrderInfo.State === 1 || OrderInfo.State === 2">
-          提现中
+          结算中
         </template>
         <template v-if="OrderInfo.State === 3">
-          已提现
+          已结算
         </template>
         <template v-if="OrderInfo.State === -1">
           <span style="color:#FF5F5F">申请被拒</span>
@@ -25,7 +25,7 @@
       <p class="small_desc_text" style="margin-top: 10px">用户：{{OrderInfo.UserName}}</p>
     </div>
     <div class="bottom_container">
-      {{(OrderInfo.State === 0 || OrderInfo.State === -1)? '可提现' : '提现金额'}}：
+      {{(OrderInfo.State === 0 || OrderInfo.State === -1)? '可结算' : '结算金额'}}：
       <b class="price_account">￥{{OrderInfo.LiftPrice | amountFilter}}</b>
       <router-link class="btn" :class="[OrderInfo.State === 0?'blue_btn':'']" :to="`/user/orderClearing/${OrderInfo.ID}/detail`">
         <template v-if="OrderInfo.State === 0">

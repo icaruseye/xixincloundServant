@@ -8,7 +8,11 @@ export default [
     path: '/recommend',
     component: _import('/servant/recommend/index'),
     meta: {
-      title: '推荐'
+      title: '推荐',
+      goBackParam: {
+        url: '/user/account',
+        title: '我的账户'
+      }
     }
   },
   {

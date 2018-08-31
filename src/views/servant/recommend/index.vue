@@ -1,9 +1,10 @@
 <template>
   <div class="wrap">
+    <xx-go-back></xx-go-back>
     <div class="income_container" :style="{backgroundImage: `url(${imageReslove('recommend-3.png')})`}" >
-      <router-link class="right_top_btn" to="/">帮助说明</router-link>
+      <a class="right_top_btn" href="javascript:void(0)" @click="helpsDialogVisible = true">帮助说明</a>
       <div class="amount_box">
-        <span class="icon">￥</span>299.25
+        <span class="icon">￥</span>{{RecommendTotalAmount | currencyFilter}}
       </div>
       <p class="amount_desc_text">邀请收入总金额</p>
     </div>
@@ -18,9 +19,9 @@
       </router-link>
     </div>
     <div>
-      <h1 class="recommend_list_title">推荐明细奖励</h1>
-      <ul class="recommend_list_container">
-        <li class="recommend_list_items">
+      <h1 class="recommend_list_title">推荐奖励明细</h1>
+      <ul v-if="WalletLogList.length > 0" class="recommend_list_container">
+        <!-- <li v-for="(recommend, index) in recommendList" :key="index" class="recommend_list_items">
           <h4 class="recommend_list_items_title">院内陪诊</h4>
           <p class="recommend_list_items_intro">
             2018-07-25 15:00
@@ -29,19 +30,58 @@
           <span class="amount_span">
             <i class="amount_symbol">￥</i>10元
           </span>
-        </li>
+        </li> -->
+        <list-items
+          v-for="(WalletLog, index) in WalletLogList"
+          @click.native="redirectToDetail(`/user/bills/${WalletLog.ID}/detail`)"
+          :key="index"
+          :Amount="WalletLog.Amount"
+          :Type="WalletLog.OperatingType"
+          :CreateTime="WalletLog.CreateTime">
+        </list-items>
       </ul>
+      <div v-else style="font-size: 120px;text-align:center;margin-top:60px">
+        <i style="font-size:66px;display:block">
+          <svg class="icon" aria-hidden="true">
+            <use xlink:href="#icon-kong1"></use>
+          </svg>
+        </i>
+        <p style="font-size:12px;color:#999;text-align:center;">还没有获得邀请奖励哦！</p>
+      </div>
     </div>
+    <!-- 帮助说明 -->
+    <x-dialog
+      v-model="helpsDialogVisible"
+      :hide-on-blur="true"
+      class="dialog-demo">
+       <div style="background-color:#fff;padding:20px">
+         <p style="font-size:14px;color:#333;text-align:justify">推荐用户及推荐服务者加入平台，均有相应的返利，返利会在用户预约服务完成后发放到推荐者系统钱包。</p>
+         <p style="font-size:12px;margin-top:10px; color:#999;text-align:justify">①	推荐用户：通过平台生成的二维码，推荐给用户加入平台，在用户消费服务完成后会给到相应的推荐奖励。</p>
+         <p style="font-size:12px;margin-top:10px; color:#999;text-align:justify">②	邀请服务者：邀请您身边的医护好友加入平台，在服务者完成给用户的每一单服务后，会得到相应的推荐奖励。</p>
+       </div>
+      </x-dialog>
   </div>
 </template>
 
 <script>
+import ListItems from '@/views/servant/user/user-bills/components/listItems'
 import { mapGetters } from 'vuex'
-import { ButtonTab, ButtonTabItem } from 'vux'
+import { ButtonTab, ButtonTabItem, XDialog, numberComma } from 'vux'
 export default {
   components: {
     ButtonTab,
-    ButtonTabItem
+    ButtonTabItem,
+    XDialog,
+    ListItems
+  },
+  filters: {
+    currencyFilter (val = 0) {
+      if (val === 0) {
+        return '0.00'
+      } else {
+        return numberComma((val / 100).toFixed(2))
+      }
+    }
   },
   computed: {
     ...mapGetters([
@@ -53,12 +93,26 @@ export default {
   },
   data () {
     return {
-      index: 0
+      helpsDialogVisible: false,
+      pageNumber: 1,
+      RecommendTotalAmount: 0,
+      WalletLogList: []
     }
+  },
+  created () {
+    this.getData()
   },
   methods: {
     imageReslove (url) {
       return require(`@/assets/images/${url}`)
+    },
+    getData () {
+      this.$http.get(`/Recommend/Info?page=${this.pageNumber}`).then(result => {
+        if (result.data.Code === 100000) {
+          this.RecommendTotalAmount = result.data.Data.RecommendTotalAmount
+          this.WalletLogList = result.data.Data.RecommendLogList
+        }
+      })
     }
   }
 }

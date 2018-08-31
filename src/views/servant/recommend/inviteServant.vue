@@ -31,7 +31,7 @@
           {{userInfo.RealName}}邀请您加入悉心云平台
         </h2>
         <div class="qr_code_box">
-          <img :src="API_PATH+'/QRCode/'+userAccount.ID" alt="">
+          <img :src="`${API_PATH}/QrCodeToServant?servantID=${+userAccount.ID}`" alt="邀请服务者">
         </div>
         <p class="scan_qr_text">长按以上二维码，关注悉心云服务注册即可</p>
 

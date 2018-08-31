@@ -5,9 +5,9 @@
       :offset="0"
       :check-sticky-support="true">
       <xx-tab v-model="modelWithDrawTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
-        <xx-tab-item @on-item-click="onItemClick">可提现</xx-tab-item>
-        <xx-tab-item @on-item-click="onItemClick">提现中</xx-tab-item>
-        <xx-tab-item @on-item-click="onItemClick">已提现</xx-tab-item>
+        <xx-tab-item @on-item-click="onItemClick">可结算</xx-tab-item>
+        <xx-tab-item @on-item-click="onItemClick">结算中</xx-tab-item>
+        <xx-tab-item @on-item-click="onItemClick">已结算</xx-tab-item>
       </xx-tab>
     </sticky>
     <div  v-if="list.length > 0" class="mt10px">

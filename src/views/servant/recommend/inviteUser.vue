@@ -20,7 +20,7 @@
       <!-- <div class="qr_code_avatar_img_box">
         <img class="qr_code_avatar_img" :src="userAccount.Avatar | transformImgUrl" alt="">
       </div> -->
-      <img :src="API_PATH+'/QRCode/'+userAccount.ID" alt="">
+      <img :src="`${API_PATH}/QrCodeToUser/?servantID=${userAccount.ID}`" alt="">
     </div>
     <p class="scan_qr_text">长按识别二维码，绑定我</p>
 
@@ -33,14 +33,14 @@
         <p class="service_items_desc">有任何问题，可在平台向您的服务者发起咨询</p>
       </li>
       <li class="service_items_container">
-        <img class="service_items_icon" :src="0 | xxMissionTypeIconFilter">
-        <h4 class="service_items_title">1、图文咨询</h4>
-        <p class="service_items_desc">有任何问题，可在平台向您的服务者发起咨询</p>
+        <img class="service_items_icon" :src="1 | xxMissionTypeIconFilter">
+        <h4 class="service_items_title">2.上门服务</h4>
+        <p class="service_items_desc">您可以选择提供普通换药、PICC换药、尿管 护理、胃管护理等项目的上门服务</p>
       </li>
       <li class="service_items_container">
         <img class="service_items_icon" :src="3 | xxMissionTypeIconFilter">
-        <h4 class="service_items_title">1、图文咨询</h4>
-        <p class="service_items_desc">有任何问题，可在平台向您的服务者发起咨询</p>
+        <h4 class="service_items_title">3.院内陪诊</h4>
+        <p class="service_items_desc">您可设置您可以陪诊的医院，如：四川省华西医院、四川省人民医院等，用户如有您设置医院的陪诊需求，可直接下单。</p>
       </li>
     </ul>
 

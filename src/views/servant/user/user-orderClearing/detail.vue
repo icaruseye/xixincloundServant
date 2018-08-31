@@ -23,9 +23,9 @@
         </div>
       </div>
       <section class="order_idNo_container">
-        提现单号：
+        结算单号：
         {{detail.ForwardID}}
-        <p class="pull-right">{{detail.ApplyTime | xxTimeFormatFilter}}</p>
+        <p class="pull-right">{{detail.SettlementTime | xxTimeFormatFilter}}</p>
       </section>
       <section class="status_show_container">
         <p style="font-size: 14px;line-height:20px; color:#FABB51;width: 240px;text-align:center">
@@ -36,14 +36,14 @@
             客服已审核通过，请注意查收！
           </template>
           <template v-if="detail.State == 3">
-            提现已成功！<br/>
+            结算已成功！<br/>
             <!-- 2018/06/03 16:30 -->
           </template>
         </p>
-        <p style="font-size: 12px;margin-top:5px;color:#999">
-          申请提现方式：
+        <!-- <p style="font-size: 12px;margin-top:5px;color:#999">
+          申请结算方式：
           <span style="color:#3AC7F5">{{detail.BankName}}</span>
-        </p>
+        </p> -->
       </section>
     </template>
 
@@ -94,9 +94,9 @@
         <label class="cell_items_title">
           税收
         </label>
-        <p class="cell_items_centent">
+        <!-- <p class="cell_items_centent">
           {{detail.TexPrice | percentFilter(detail.TotalPrice)}}
-        </p>
+        </p> -->
         <span class="cell_items_right cell_items_right_amount">
           ￥{{detail.TexPrice | amountFilter}}
         </span>
@@ -107,25 +107,22 @@
         <label class="cell_items_title">
           平台技术维护费
         </label>
-        <p class="cell_items_centent">
+        <!-- <p class="cell_items_centent">
           {{detail.PlatformPrice | percentFilter(detail.TotalPrice) }}
-        </p>
+        </p> -->
         <span class="cell_items_right cell_items_right_amount">
           ￥{{detail.PlatformPrice | amountFilter}}
         </span>
       </div>
-
-
-
       <div class="cell_items division_line">
         <label class="cell_items_title">
           机构佣金
         </label>
-        <p class="cell_items_centent">
-          {{detail.ShopPrice | percentFilter(detail.TotalPrice)}}
-        </p>
+        <!-- <p class="cell_items_centent">
+          {{detail.OrganizationPrice | percentFilter(detail.TotalPrice)}}
+        </p> -->
         <span class="cell_items_right cell_items_right_amount">
-          ￥{{detail.ShopPrice | amountFilter}}
+          ￥{{detail.OrganizationPrice | amountFilter}}
         </span>
       </div>
       <div class="withdraw_order_count clearfix">
@@ -144,19 +141,19 @@
 
 
     <template  v-if="detail.State == 0 || detail.State == -1">
-      <!-- 提现方式选择 -->
+      <!-- 结算方式选择 -->
       <div class="choose_withdraw_type_btn">
         <div class="cell_items">
             <label class="cell_items_title">
-              提现方式
+              结算方式
             </label>
             <span class="cell_items_right" style="line-height: 40px;color:#9F9F9F;padding:0 15px">
               钱包
             </span>
         </div>
-        <router-link style="display:block;font-size:12px;color:#3AC7F5;text-align:center;margin-top: 10px" to="/agreement/17">点击查看《提现规则》</router-link>
+        <router-link style="display:block;font-size:12px;color:#3AC7F5;text-align:center;margin-top: 10px" to="/agreement/17">点击查看《结算规则》</router-link>
       </div>
-      <!-- 申请提现按钮 -->
+      <!-- 申请结算按钮 -->
       <div class="btn_bar">
         <button @click="withdrawApplyConfirm()">
           申请结算
@@ -164,9 +161,9 @@
       </div>
     </template>
     <!-- 取消申请按钮 -->
-    <div v-if="detail.State == 1" style="padding: 15px 10px" class="clearfix">
+    <!-- <div v-if="detail.State == 1" style="padding: 15px 10px" class="clearfix">
       <a href="javascript:void(0)" class="cancle_apply_btn pull-right" @click="cancelWithdrawApply">取消申请</a>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
@@ -228,7 +225,7 @@ export default {
       }
     },
     /**
-     * 取消提现申请
+     * 取消结算申请
      */
     cancelWithdrawApply () {
       const that = this

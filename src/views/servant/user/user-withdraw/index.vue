@@ -1,5 +1,6 @@
 <template>
   <div>
+    <xx-go-back></xx-go-back>
     <div class="step_container">
       <xx-step-bar step="1">
         <xx-step-items slot="items">

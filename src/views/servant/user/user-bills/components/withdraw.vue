@@ -32,6 +32,15 @@
       </xx-timeLine-items>
       <xx-timeLine-items
         slot="items"
+        title="退款"
+        v-if="WithdrawState === -1"
+      >
+        <p class="working_box">
+          提现金额已返还账户钱包，请注意查收！
+        </p>
+      </xx-timeLine-items>
+      <xx-timeLine-items
+        slot="items"
         title="转账"
         v-if="WithdrawState != -1"
       >
@@ -68,9 +77,9 @@ export default {
   computed: {
     withDrawStep () {
       const WithdrawState = this.WithdrawState
-      if (WithdrawState === 0 || WithdrawState === -1) { // 待审核
+      if (WithdrawState === 0) { // 待审核
         return 2
-      } else if (WithdrawState === 1) {
+      } else if (WithdrawState === 1 || WithdrawState === -1) {
         return 3
       } else if (WithdrawState === 2) {
         return 4
