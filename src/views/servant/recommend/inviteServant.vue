@@ -28,12 +28,12 @@
     <transition enter-active-class="animated fadeInBottom" leave-active-class="animated fadeOutTop">
       <div v-show="scrollTop >= chatList.length">
         <h2 class="title_box">
-          {{userInfo.RealName}}邀请您加入悉心云平台
+          {{userInfo.RealName}}邀请您加入{{shopName}}
         </h2>
         <div class="qr_code_box">
           <img :src="`${API_PATH}/QrCodeToServant?servantID=${+userAccount.ID}`" alt="邀请服务者">
         </div>
-        <p class="scan_qr_text">长按以上二维码，关注悉心云服务注册即可</p>
+        <p class="scan_qr_text">长按以上二维码，关注{{shopName}}注册即可</p>
 
         <div class="invate_user_page_bg_box">
           <img class="invate_user_page_bg" src="@/assets/images/invate_servant_page_bg.png" alt="">
@@ -73,7 +73,7 @@ export default {
     chatList () {
       return [
         {
-          text: `hello，我是${this.userInfo.RealName}。我正在使用悉心云平台。台的主要业务是上门服务，他们的核心模式是熟人医患模式，不是抢单/派单模式，不会存在抢不到单或者即便抢到也是偏僻区域单子的情况。`
+          text: `hello，我是${this.userInfo.RealName}。我正在使用${this.shopName}。台的主要业务是上门服务，他们的核心模式是熟人医患模式，不是抢单/派单模式，不会存在抢不到单或者即便抢到也是偏僻区域单子的情况。`
         },
         {
           text: '你需要自己发展患者，但平台保证：你自己发展的患者只有自己看到，不会向其他医护推荐您的患者，公平无竞争！'

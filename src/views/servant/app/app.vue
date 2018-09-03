@@ -27,36 +27,36 @@
       </div>
     </div> -->
     <!-- 面板信息 -->
-    <div class="income-panel-wrap">
+    <div v-if="workSpaceData" class="income-panel-wrap">
       <div class="income-panel">
         <div class="item">
           <div class="row-1">
-            <div class="title">本月预估收入</div>
-            <div class="count">198.89</div>
+            <div class="title">本月服务收入</div>
+            <div class="count">{{workSpaceData.ServiceIncome | moneyFilter}}</div>
           </div>
           <div class="row-2">
+            <div class="title">本月服务数量</div>
+            <div class="count">{{workSpaceData.MissionCount}}</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="row-1">
+            <div class="title">本月推荐收入</div>
+            <div class="count">{{workSpaceData.RecommendIncome | moneyFilter}}</div>
+          </div>
+          <div class="row-2">
+            <div class="title">总出售服务包</div>
+            <div class="count">{{workSpaceData.TotalSelledPackage}}</div>
+          </div>
+        </div>
+        <div class="item">
+          <div class="row-1">
             <div class="title">累计收入</div>
-            <div class="count">19万</div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="row-1">
-            <div class="title">今日服务</div>
-            <div class="count">2</div>
+            <div class="count">{{workSpaceData.TotalIncome | moneyFilter}}</div>
           </div>
           <div class="row-2">
-            <div class="title">累计服务</div>
-            <div class="count">3578</div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="row-1">
-            <div class="title">今日评价</div>
-            <div class="count">4</div>
-          </div>
-          <div class="row-2">
-            <div class="title">累计评价</div>
-            <div class="count">2798</div>
+            <div class="title">总服务数</div>
+            <div class="count">{{workSpaceData.TotalService}}</div>
           </div>
         </div>
       </div>
@@ -100,10 +100,46 @@
 </template>
 
 <script>
+import { numberComma } from 'vux'
 export default {
+  data () {
+    return {
+      workSpaceData: null
+    }
+  },
+  created () {
+    this.getWorkSpaceData()
+  },
+  filters: {
+    moneyFilter (val = 0) {
+      if (val === 0) {
+        return '0.00'
+      }
+      let amount = (val / 100).toFixed(2)
+      if (amount < 10000) {
+        return numberComma(amount)
+      }
+      if (amount < 100000000) {
+        amount = (amount / 10000).toFixed(2)
+        return numberComma(amount) + '万'
+      }
+      if (amount >= 100000000) {
+        amount = (amount / 100000000).toFixed(2)
+        return numberComma(amount) + '亿'
+      }
+      return '0.00'
+    }
+  },
   methods: {
     go (name) {
       this.$router.push(`/app/${name}`)
+    },
+    getWorkSpaceData () {
+      this.$http.get(`/WorkSpace`).then(result => {
+        if (result.data.Code === 100000) {
+          this.workSpaceData = result.data.Data
+        }
+      })
     }
   }
 }
