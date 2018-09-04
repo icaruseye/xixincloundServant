@@ -80,7 +80,7 @@
     </div>
     <div class="empty-bar"></div>
     <div class="weui-panel weui-list-panel">
-      <div class="weui-cell" @click="go('service')">
+      <div class="weui-cell" @click="go('/app/service')">
         <div class="weui-cell-top">
           <div class="icon"><img src="@/assets/images/app-ffsz.png"></div>
           <div class="title">服务设置</div>
@@ -94,6 +94,16 @@
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div> -->
+    </div>
+    <div class="empty-bar"></div>
+    <div class="weui-panel weui-list-panel">
+      <div class="weui-cell" @click="go('/article')">
+        <div class="weui-cell-top">
+          <div class="icon"><img src="@/assets/images/ic_app_wzsz.png"></div>
+          <div class="title">文章设置</div>
+          <i class="iconfont icon-jiantouyou"></i>
+        </div>
+      </div>
     </div>
     <xx-tabbar></xx-tabbar>
   </div>
@@ -131,8 +141,8 @@ export default {
     }
   },
   methods: {
-    go (name) {
-      this.$router.push(`/app/${name}`)
+    go (url) {
+      this.$router.push(`${url}`)
     },
     getWorkSpaceData () {
       this.$http.get(`/WorkSpace`).then(result => {
