@@ -1,48 +1,39 @@
 <template>
-  <div class="warp_container">
+  <div class="warp_container" v-if="detail">
     <div class="user_background_container"></div>
     <div class="user_info_container">
-      <img class="avatar_img" :src="userAccount.Avatar | transformImgUrl" alt="">
-      <h1 class="real_name_box">{{userInfo.RealName}}</h1>
+      <img class="avatar_img" :src="detail.Avatar | transformImgUrl" alt="">
+      <h1 class="real_name_box">{{detail.NickName}}</h1>
       <p class="shop_name_box">{{shopName}}</p>
       <p class="user_desc">
         <i class="iconfont pre_icon icon-yinyong"></i>
-        {{userAccount.Description || '好像还没有填写自我介绍啊！'}}
+        {{detail.Description || '好像还没有填写自我介绍啊！'}}
         <i class="iconfont next_icon icon-yinyong1"></i>
       </p>
       <img class="invate_user_info_bg" src="@/assets/images/invate_user_info_bg.png" alt="">
     </div>
 
     <h2 class="title_box">
-      {{userInfo.RealName}}愿竭尽所能为您服务
+      {{detail.NickName}}愿竭尽所能为您服务
     </h2>
     <div class="qr_code_box">
       <!-- <div class="qr_code_avatar_img_box">
         <img class="qr_code_avatar_img" :src="userAccount.Avatar | transformImgUrl" alt="">
       </div> -->
-      <img :src="`${API_PATH}/QrCodeToUser/?servantID=${userAccount.ID}`" alt="">
+      <img :src="`${API_PATH}/QrCodeToUser/?servantID=${detail.ID}`" alt="">
     </div>
     <p class="scan_qr_text">长按识别二维码，绑定我</p>
 
-    <img class="invate_user_service_title" src="@/assets/images/invate_user_service_title.png" alt="">
-
-    <ul class="service_list">
-      <li class="service_items_container">
-        <img class="service_items_icon" :src="2 | xxMissionTypeIconFilter">
-        <h4 class="service_items_title">1、图文咨询</h4>
-        <p class="service_items_desc">有任何问题，可在平台向您的服务者发起咨询</p>
-      </li>
-      <li class="service_items_container">
-        <img class="service_items_icon" :src="1 | xxMissionTypeIconFilter">
-        <h4 class="service_items_title">2.上门服务</h4>
-        <p class="service_items_desc">您可以选择提供普通换药、PICC换药、尿管 护理、胃管护理等项目的上门服务</p>
-      </li>
-      <li class="service_items_container">
-        <img class="service_items_icon" :src="3 | xxMissionTypeIconFilter">
-        <h4 class="service_items_title">3.院内陪诊</h4>
-        <p class="service_items_desc">您可设置您可以陪诊的医院，如：四川省华西医院、四川省人民医院等，用户如有您设置医院的陪诊需求，可直接下单。</p>
-      </li>
-    </ul>
+    <template v-if="recommendPackageList && recommendPackageList.length > 0">
+      <img class="invate_user_service_title" src="@/assets/images/invate_user_service_title.png" alt="">
+      <ul class="service_list">
+        <li class="service_items_container" v-for="(recommendPackage, index) in recommendPackageList" :key="index">
+          <img class="service_items_icon" :src="recommendPackage.PackageType | xxMissionTypeIconFilter">
+          <h4 class="service_items_title">{{index + 1}}、{{recommendPackage.Name}}</h4>
+          <p class="service_items_desc">{{recommendPackage.Description}}</p>
+        </li>
+      </ul>
+    </template>
 
     <div class="invate_user_page_bg_box">
       <p>长按或扫一扫可识别二维码，绑定我</p>
@@ -52,15 +43,50 @@
 </template>
 <script>
 import {mapGetters} from 'vuex'
+import wxShare from '@/plugins/wxShare'
+import util from '@/plugins/util'
 export default {
   data () {
-    return {}
+    return {
+      detail: null,
+      recommendPackageList: null
+    }
+  },
+  created () {
+    this.getInfo()
+    this.getRecommendPackageList()
+  },
+  methods: {
+    getInfo () {
+      this.$http.get(`/Recommendation?viewId=${this.viewID}`).then(result => {
+        if (result.data.Code === 100000) {
+          const info = result.data.Data
+          this.detail = info
+          wxShare({
+            title: '我愿竭尽所能为您服务',
+            desc: `我是${info.NickName}，邀请您使用${info.ShopName}！`,
+            logo: util.transformImgUrl(info.Avatar),
+            link: `/recommend/inviteUser?viewID=${this.viewID}`
+          })
+        }
+      })
+    },
+    getRecommendPackageList () {
+      this.$http.get(`/RecommendPackageList?servantViewID=${this.viewID}`).then(result => {
+        if (result.data.Code === 100000) {
+          this.recommendPackageList = result.data.Data
+        }
+      })
+    }
   },
   computed: {
     ...mapGetters([
       'userAccount',
       'userInfo'
     ]),
+    viewID () {
+      return this.$route.query.viewID
+    },
     shopName () {
       return sessionStorage.getItem('shopName')
     },

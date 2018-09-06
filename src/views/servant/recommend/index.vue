@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
     <xx-go-back></xx-go-back>
-    <div class="income_container" :style="{backgroundImage: `url(${imageReslove('recommend-3.png')})`}" >
+    <div class="income_container" :style="{backgroundImage: `url(${imageReslove('recommend-3.jpg')})`}" >
       <a class="right_top_btn" href="javascript:void(0)" @click="helpsDialogVisible = true">帮助说明</a>
       <div class="amount_box">
         <span class="icon">￥</span>{{RecommendTotalAmount | currencyFilter}}
@@ -9,11 +9,11 @@
       <p class="amount_desc_text">邀请收入总金额</p>
     </div>
     <div class="invite_btn_box">
-      <router-link class="invite_btn left" :style="{backgroundImage: `url(${imageReslove('recommend-1.png')})`}" to="/recommend/inviteServant">
+      <router-link class="invite_btn left" :style="{backgroundImage: `url(${imageReslove('recommend-1.png')})`}" :to="`/recommend/inviteServant?viewID=${userAccount.ViewID}`">
         <img class="recommend_invite_btn_icon" src="@/assets/images/recommend-4.png" alt="">
         <span class="title">邀请服务者</span>
       </router-link>
-      <router-link class="invite_btn right" :style="{backgroundImage: `url(${imageReslove('recommend-2.png')})`}" to="/recommend/inviteUser">
+      <router-link class="invite_btn right" :style="{backgroundImage: `url(${imageReslove('recommend-2.png')})`}" :to="`/recommend/inviteUser?viewID=${userAccount.ViewID}`">
         <img class="recommend_invite_btn_icon" src="@/assets/images/recommend-5.png" alt="">
         <span class="title">推荐用户</span>
       </router-link>

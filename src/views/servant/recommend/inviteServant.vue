@@ -1,19 +1,19 @@
 <template>
-  <div class="warp_container">
+  <div class="warp_container" v-if="detail">
     <div class="user_background_container"></div>
     <div class="user_info_container">
       <transition enter-active-class="animated fadeInBottom" leave-active-class="animated fadeOutTop">  
         <div class="avatar_img_box">
-          <img class="avatar_img" :src="userAccount.Avatar | transformImgUrl" alt="">
+          <img class="avatar_img" :src="detail.Avatar | transformImgUrl" alt="">
         </div>
       </transition>
       <p class="introducer_box">
-        我创建了我的个人工作室， 老铁，你要不要也弄一个？
+        我已加入{{detail.ShopName}}开展业务，我诚挚邀请您也加入
       </p>
       <div class="chat_container">
         <transition v-for="(item, index) in chatList" :key="index" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutLeft">
           <div class="chat_items clearfix" v-show="scrollTop >= (index + 1)">
-            <img :src="userAccount.Avatar | transformImgUrl" class="avatar" alt="">
+            <img :src="detail.Avatar | transformImgUrl" class="avatar" alt="">
             <div class="from_textChat_msg">
               <div class="msg_text_container">
                 {{item.text}}
@@ -28,12 +28,12 @@
     <transition enter-active-class="animated fadeInBottom" leave-active-class="animated fadeOutTop">
       <div v-show="scrollTop >= chatList.length">
         <h2 class="title_box">
-          {{userInfo.RealName}}邀请您加入{{shopName}}
+          {{detail.NickName}}邀请您加入{{detail.ShopName}}
         </h2>
         <div class="qr_code_box">
-          <img :src="`${API_PATH}/QrCodeToServant?servantID=${+userAccount.ID}`" alt="邀请服务者">
+          <img :src="`${API_PATH}/QrCodeToServant?servantID=${+detail.ID}`" alt="邀请服务者">
         </div>
-        <p class="scan_qr_text">长按以上二维码，关注{{shopName}}注册即可</p>
+        <p class="scan_qr_text">长按以上二维码，关注{{detail.ShopName}}注册即可</p>
 
         <div class="invate_user_page_bg_box">
           <img class="invate_user_page_bg" src="@/assets/images/invate_servant_page_bg.png" alt="">
@@ -44,11 +44,13 @@
   </div>
 </template>
 <script>
-import {mapGetters} from 'vuex'
+import wxShare from '@/plugins/wxShare'
+import util from '@/plugins/util'
 export default {
   data () {
     return {
-      scrollTop: 0
+      scrollTop: 0,
+      detail: null
     }
   },
   mounted () {
@@ -59,11 +61,29 @@ export default {
       }
     }, 200)
   },
+  created () {
+    this.getInfo()
+  },
+  methods: {
+    getInfo () {
+      this.$http.get(`/Recommendation?viewId=${this.viewID}`).then(result => {
+        if (result.data.Code === 100000) {
+          const info = result.data.Data
+          this.detail = info
+          wxShare({
+            title: '创立个人服务品牌，管理自己的用户群',
+            desc: `${info.NickName}邀请你加入${info.ShopName}！`,
+            logo: util.transformImgUrl(info.Avatar),
+            link: `/recommend/inviteServant?viewID=${this.viewID}`
+          })
+        }
+      })
+    }
+  },
   computed: {
-    ...mapGetters([
-      'userAccount',
-      'userInfo'
-    ]),
+    viewID () {
+      return this.$route.query.viewID
+    },
     shopName () {
       return sessionStorage.getItem('shopName')
     },
@@ -73,22 +93,16 @@ export default {
     chatList () {
       return [
         {
-          text: `hello，我是${this.userInfo.RealName}。我正在使用${this.shopName}。台的主要业务是上门服务，他们的核心模式是熟人医患模式，不是抢单/派单模式，不会存在抢不到单或者即便抢到也是偏僻区域单子的情况。`
+          text: this.detail.FirstSentence
         },
         {
-          text: '你需要自己发展患者，但平台保证：你自己发展的患者只有自己看到，不会向其他医护推荐您的患者，公平无竞争！'
+          text: this.detail.SecondSentence
         },
         {
-          text: '基于熟人医患模式的上门服务相对安全，你可以自己选择你服务的对象，不选择素质较差的患者即可。'
+          text: this.detail.ThirdSentence
         },
         {
-          text: '除了上门服务，平台还提供院内陪诊、图文问诊服务供你自由选择。所有项目你都可以自由定价，平台无权干涉。'
-        },
-        {
-          text: '平台还有个强大的患者管理功能，分组、分标签、分组推送科普知识等。各类消息均有模板，包括科普知识类文章。提前设置，定时发送即可。患者会以为你无比的关心他。'
-        },
-        {
-          text: '若你觉得还不错，一定扫我的码哦~待你完成了金额大于100元的首单，我们双方都有鼓励金。再给你看看我的介绍页和服务项页面，我觉得特别高大上。'
+          text: this.detail.FourthSentence
         }
       ]
     }
@@ -263,9 +277,9 @@ export default {
   }
   .introducer_box
   {
-    width: 216px;
+    width: 290px;
     margin: 0 auto;
-    text-align: justify;
+    text-align: center;
     font-size: 18px;
     background: linear-gradient(to right, #9AC3FA, #45C8F5);
     -webkit-background-clip: text;

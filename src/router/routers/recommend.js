@@ -19,16 +19,18 @@ export default [
     path: '/recommend/inviteUser',
     component: _import('/servant/recommend/inviteUser'),
     meta: {
-      title: '邀请新用户',
-      notNeedLogin: true
+      title: '我愿竭尽所能为您服务',
+      notNeedLogin: true,
+      share: true
     }
   },
   {
     path: '/recommend/inviteServant',
     component: _import('/servant/recommend/inviteServant'),
     meta: {
-      title: '邀请新服务者',
-      notNeedLogin: true
+      title: '创立个人服务品牌，管理自己的用户群',
+      notNeedLogin: true,
+      share: true
     }
   }
 ]

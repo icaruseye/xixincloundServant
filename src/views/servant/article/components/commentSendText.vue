@@ -1,13 +1,66 @@
 <template>
-  <div class="container">
+  <div class="container" v-show="modeValue && replyInfo">
+    <div class="username_box" v-if="replyInfo">
+      @{{replyInfo.username | xxTextSubFilter(3)}}
+    </div>
     <div class="input_box">
-      <input class="input_control" type="text">
+      <input v-model="content" class="input_control" type="text">
     </div>
     <div class="btn_box">
-      <button class="btn">发送</button>
+      <button class="btn" @click="sendReply">发送</button>
     </div>
   </div>
 </template>
+<script>
+export default {
+  props: {
+    value: {
+      type: Boolean,
+      default: false
+    },
+    replyInfo: {
+      type: Object,
+      default: () => null
+    }
+  },
+  data () {
+    return {
+      content: ''
+    }
+  },
+  computed: {
+    modeValue: {
+      get () {
+        return this.value
+      },
+      set (val) {
+        this.$emit('input', val)
+      }
+    }
+  },
+  methods: {
+    sendReply () {
+      if (this.content.length <= 0) {
+        this.$vux.toast.text('请输入回复内容')
+        return false
+      }
+      if (this.content.length > 50) {
+        this.$vux.toast.text('回复内容不可超过50字')
+        return false
+      }
+      this.$http.post(`/Reply?commentId=${this.replyInfo.commentId}&content=${this.content}`).then(result => {
+        if (result.data.Code === 100000) {
+          this.$vux.toast.text('回复成功')
+          this.modeValue = false
+        } else {
+          this.$vux.toast.text('发送失败')
+        }
+      })
+    }
+  }
+}
+</script>
+
 <style lang="less" scoped>
 .container
 {
@@ -19,6 +72,15 @@
   background-color: #fff;
   display: flex;
   flex-flow: nowrap;
+  .username_box
+  {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 5px;
+    color: #999;
+    font-size: 12px;
+  }
   .input_box
   {
     display: flex;

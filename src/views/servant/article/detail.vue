@@ -1,49 +1,50 @@
 <template>
-  <div style="padding-bottom:80px">
-    <h1 class="article_title">很多人对于材质并不陌生，但是每次使用后最终结果总是差强人意。</h1>
+  <div v-if="article" style="padding-bottom:80px">
+    <xx-go-back></xx-go-back>
+    <h1 class="article_title">{{article.Title}}</h1>
     <div class="article_count_box clearfix">
       <div class="pull-left">
         <span class="article_count_tags">
           糖尿病
         </span>
         <span class="article_count_tags">
-          13:30
+          {{article.CreateTime | xxTimeFormatFilter('HH:mm')}}
         </span>
       </div>
       <div class="pull-right">
         <span class="article_count_tags">
-          阅读180
+          阅读{{article.ViewCount}}
         </span>
         <span class="article_count_tags">
-          赞20
+          赞{{article.GiveCount}}
         </span>
       </div>
     </div>
     <div class="article_content_container">
-      <img src="@/assets/images/banner-4.jpg" alt="">
+      <img :src="article.Cover | transformImgUrl" alt="">
       <div class="article_content_text">
-        通过对比不难发现有无材质对于整体的影响，同样的构图，没有材质变化的画面给人一种很单薄、视觉形象不够鲜明的感觉，但是通过添加材质、肌理，画面整体的丰富度大大提升，背景画面的变化增强，通过材质的变化，也使得主体的视觉形象也更加鲜明；将材质作为背景的组成部分，一定要切记时刻围绕主体展开，主体的位置是不可撼动的！ 表现形式二：将材质、肌理作为画面视觉中相对较弱的表现形式，也就是做的不明显，缩小看几乎没有，正常看的情况下又有一定的变化，这种表现形式目的在于增加画面细节感，使得画面不会因为缺少变化而略显单调。
+        {{article.Content}}
       </div>
+      <img v-for="(img, index) in imgsList" :key="index" :src="img | transformImgUrl" alt="">
     </div>
     <div class="article_count_box clearfix">
       <div class="pull-right">
-        <span class="article_count_tags">
+        <!-- <span class="article_count_tags">
           <img class="article_count_tags_img_icon" src="@/assets/images/ic-comment.png" alt="评论数">
           180
-        </span>
+        </span> -->
         <span class="article_count_tags">
-          <img class="article_count_tags_img_icon" src="@/assets/images/ic-praise.png" alt="评论数">
-          20
+          <img class="article_count_tags_img_icon" src="@/assets/images/ic-praise.png" alt="点赞">
+          {{article.GiveCount}}
         </span>
       </div>
     </div>
     <!-- 留言列表 -->
-    <div class="comment_list_container">
+    <!-- <div class="comment_list_container">
       <div class="comment_list_title">精选留言</div>
-      <commentListItems></commentListItems>
-      <commentListItems></commentListItems>
+      <commentListItems @reply="commentReply"></commentListItems>
     </div>
-    <commentSendText></commentSendText>
+    <commentSendText v-model="commentSendTextVisible" :replyInfo="replyInfo"></commentSendText> -->
   </div>
 </template>
 <script>
@@ -53,6 +54,47 @@ export default {
   components: {
     commentListItems,
     commentSendText
+  },
+  data () {
+    return {
+      commentSendTextVisible: false,
+      article: null,
+      replyInfo: null
+    }
+  },
+  computed: {
+    articleID () {
+      return this.$route.params.id
+    },
+    imgsList () {
+      if (this.article.Imgs && this.article.Imgs !== '') {
+        return this.article.Imgs.split(',')
+      } else {
+        return []
+      }
+    }
+  },
+  created () {
+    this.init()
+  },
+  methods: {
+    commentReply (replyInfo) {
+      console.log(replyInfo)
+      this.replyInfo = replyInfo
+      this.commentSendTextVisible = true
+    },
+    async init () {
+      await this.getArticle()
+    },
+    async getArticle () {
+      const result = await this.$http.get(`/Article?articleId=${this.articleID}`)
+      if (result.data.Code === 100000) {
+        this.article = result.data.Data
+        return result.data
+      } else {
+        return false
+      }
+    }
   }
 }
 </script>
@@ -111,6 +153,7 @@ export default {
     color: #999;
     text-align: justify;
     line-height: 26px;
+    word-break: break-all;
   }
 }
 .comment_list_title

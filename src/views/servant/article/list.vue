@@ -1,12 +1,19 @@
 <template>
   <div style="padding-bottom:50px">
-    <ListEditItems></ListEditItems>
-    <ListEditItems></ListEditItems>
-    <ListEditItems></ListEditItems>
-    <ListEditItems></ListEditItems>
-    <ListEditItems></ListEditItems>
-    <ListEditItems></ListEditItems>
-    <ListEditItems></ListEditItems>
+    <xx-go-back></xx-go-back>
+    <template v-if="articleList.length > 0">
+      <ListEditItems v-for="(article, index) in articleList" 
+        :key="index"
+        :Title="article.Title"
+        :Cover="article.Cover"
+        :CreateTime="article.CreateTime"
+        :ViewCount="article.ViewCount"
+        :ArticleId="article.ArticleId"
+        ></ListEditItems>
+    </template>
+      <xx-occupied-box v-else>
+        文章列表为空
+      </xx-occupied-box>
     <router-link class="add_newArticle_btn" to="/article/edit"></router-link>
   </div>
 </template>
@@ -19,7 +26,8 @@ export default {
   data () {
     return {
       pageNumber: 1,
-      pageSize: 10
+      pageSize: 10,
+      articleList: []
     }
   },
   created () {
@@ -28,11 +36,11 @@ export default {
   methods: {
     getList () {
       this.$http.get('/ArticleList', {
-        ArticleType: 1,
-        Index: this.pageNumber,
-        Size: this.pageSize
+        Index: this.pageNumber
       }).then(result => {
-        console.log(result)
+        if (result.data.Code === 100000) {
+          this.articleList = result.data.Data.ArticleResponses
+        }
       })
     }
   }

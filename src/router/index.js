@@ -2,8 +2,6 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import routerList from './routerList'
 import apiRequest from '@/api'
-import wxShare from '@/plugins/wxShare'
-import util from '@/plugins/util'
 
 Vue.use(Router)
 
@@ -19,6 +17,13 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   router.app.$store.commit('SET_ROUTER_LOADING', true)
+  // 修复iOS版微信HTML5 History兼容性问题
+  const u = navigator.userAgent
+  const IOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+  if (IOS && to.path !== location.pathname && to.meta.share) {
+    location.assign(to.fullPath)
+    return false
+  }
   if (to.meta.notNeedLogin) {
     next()
   } else {
@@ -83,17 +88,6 @@ router.beforeEach((to, from, next) => {
   }
 })
 router.afterEach((to) => {
-  const userAccount = sessionStorage.getItem('userAccount')
-  const userInfo = sessionStorage.getItem('userInfo')
-  if (userAccount) {
-    const userAccountObject = JSON.parse(userAccount) || {}
-    const userInfoObject = JSON.parse(userInfo) || {}
-    wxShare({
-      title: userInfoObject.RealName ? `我是${userInfoObject.RealName}` : '',
-      desc: userAccountObject.Description || `${sessionStorage.getItem('shopName')}`,
-      logo: util.transformImgUrl(userAccountObject.Avatar)
-    }, to.fullPath, userAccountObject.ViewID || '')
-  }
   if (to.meta.title !== null && to.meta.title !== '') {
     document.title = to.meta.title
   } else {

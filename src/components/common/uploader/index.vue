@@ -3,7 +3,7 @@
     <div class="weui-cell_bd">
       <!-- 普通图片 -->
       <div v-if="!isAvatar" class="weui-uploader">
-        <div v-if="title" class="weui-uploader__hd">
+        <div v-if="title" class="weui-uploader__hd" :style="titleStyle">
           {{title}}
           <span class="iconfont icon-wenhao" @click="tipsIsShow = true"></span>
         </div>
@@ -30,7 +30,7 @@
                   </div>
                 </li>
               </template>
-              <div class="weui-uploader__input-box" v-show="count !== limit">
+              <div class="weui-uploader__input-box" v-show="list.length !== limit">
                   <input class="weui-uploader__input" type="file" accept="image/*" @change="change">
               </div>
             </ul>
@@ -76,6 +76,10 @@ export default {
   },
   props: {
     title: String,
+    titleStyle: {
+      type: Object,
+      default: () => {}
+    },
     limit: {
       type: Number,
       default: 1
@@ -91,7 +95,7 @@ export default {
       default: 750
     },
     imgList: {
-      type: Array,
+      type: String,
       default: null
     },
     onSuccess: Function,
@@ -114,13 +118,13 @@ export default {
       orientation: null
     }
   },
-  created () {
-    if (this.imgList) {
-      this.list = this.imgList
-      this.list.map((item, index) => {
-        item.url = util.transformImgUrl(item.url)
-      })
+  watch: {
+    imgList () {
+      this.initImgsList()
     }
+  },
+  created () {
+    this.initImgsList()
   },
   mounted () {
     const that = this
@@ -153,6 +157,23 @@ export default {
     }
   },
   methods: {
+    initImgsList () {
+      let imgs = []
+      let imgsStrList = []
+      if (this.imgList) {
+        let list = this.imgList.split(',')
+        list.map(item => {
+          imgsStrList.push(item)
+          imgs.push({
+            url: util.transformImgUrl(item),
+            progress: 100,
+            status: 1
+          })
+        })
+      }
+      this.guid = imgsStrList
+      this.list = imgs
+    },
     change (e) {
       const that = this
       this.$vux.loading.show('图片压缩中')

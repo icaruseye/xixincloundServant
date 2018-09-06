@@ -5,7 +5,7 @@
     </div>
     <div class="nickName">
       安然
-      <a href="javascript:void(0)" class="reply_btn">回复</a>
+      <a href="javascript:void(0)" class="reply_btn" @click="commentReply">回复</a>
     </div>
     <div class="comment_text">感谢医生，服务特别好，感觉很专业！</div>
     <div class="author_reply">
@@ -16,6 +16,19 @@
     </div>
   </div>
 </template>
+<script>
+export default {
+  methods: {
+    commentReply () {
+      this.$emit('reply', {
+        username: '安然',
+        commentId: 1
+      })
+    }
+  }
+}
+</script>
+
 <style lang="less" scoped>
 .container
 {

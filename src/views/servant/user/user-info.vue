@@ -116,9 +116,7 @@ export default {
       gender: '',
       birthday: '',
       age: '',
-      avatarUrl: [{
-        url: JSON.parse(sessionStorage.getItem('userAccount')).Avatar
-      }]
+      avatarUrl: JSON.parse(sessionStorage.getItem('userAccount')).Avatar
     }
   },
   computed: {

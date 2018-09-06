@@ -49,18 +49,18 @@
         投诉
         <i class="iconfont icon-jiantouyou"></i>
       </router-link>
-      <router-link class="user_links_items" to="/user/complaint">
+      <!-- <router-link class="user_links_items" to="/user/complaint">
         <img class="user_links_items_icon" src="@/assets/images/ic_userIndex_help.png" alt="帮助">
         帮助
         <i class="iconfont icon-jiantouyou"></i>
-      </router-link>
+      </router-link> -->
     </div>
     <div class="uset_links_container">
-      <router-link class="user_links_items" to="/user/info">
+      <!-- <router-link class="user_links_items" to="/user/info">
         <img class="user_links_items_icon" src="@/assets/images/ic_setting_account.png" alt="设置">
         设置
         <i class="iconfont icon-jiantouyou"></i>
-      </router-link>
+      </router-link> -->
       <router-link class="user_links_items" to="/user/address">
         <img class="user_links_items_icon" src="@/assets/images/icon-my-address.png" alt="地址">
         地址
@@ -71,11 +71,11 @@
         我的执业证
         <i class="iconfont icon-jiantouyou"></i>
       </router-link>
-      <router-link class="user_links_items" to="/user/info">
+      <!-- <router-link class="user_links_items" to="/user/info">
         <img class="user_links_items_icon" src="@/assets/images/ic_userIndex_sjrz.png" alt="手机认证">
         手机认证
         <i class="iconfont icon-jiantouyou"></i>
-      </router-link>
+      </router-link> -->
     </div>
     <xx-tabbar></xx-tabbar>
     <x-dialog v-model="maskShow" :hide-on-blur="true">
