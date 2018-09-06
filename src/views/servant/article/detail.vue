@@ -4,9 +4,9 @@
     <h1 class="article_title">{{article.Title}}</h1>
     <div class="article_count_box clearfix">
       <div class="pull-left">
-        <span class="article_count_tags">
+        <!-- <span class="article_count_tags">
           糖尿病
-        </span>
+        </span> -->
         <span class="article_count_tags">
           {{article.CreateTime | xxTimeFormatFilter('HH:mm')}}
         </span>

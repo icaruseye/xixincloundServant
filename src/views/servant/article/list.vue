@@ -10,6 +10,13 @@
         :ViewCount="article.ViewCount"
         :ArticleId="article.ArticleId"
         ></ListEditItems>
+        <xxPageSorter
+          ref="xxPageSorterRef"
+          :TotalPage="TotalPage"
+          :pageNumber="pageNumber"
+          @nextPage="loadNextPage"
+        >
+        </xxPageSorter>
     </template>
       <xx-occupied-box v-else>
         文章列表为空
@@ -26,22 +33,40 @@ export default {
   data () {
     return {
       pageNumber: 1,
-      pageSize: 10,
+      TotalPage: 0,
       articleList: []
     }
   },
   created () {
-    this.getList()
+    this.initList()
   },
   methods: {
-    getList () {
-      this.$http.get('/ArticleList', {
-        Index: this.pageNumber
-      }).then(result => {
-        if (result.data.Code === 100000) {
-          this.articleList = result.data.Data.ArticleResponses
+    loadNextPage () {
+      this.pageNumber += 1
+      this.getList().then(result => {
+        this.$refs.xxPageSorterRef.loading = false
+        if (result.Code === 100000) {
+          this.TotalPage = result.Data.TotalPage
+          this.articleList = [
+            ...this.articleList,
+            ...result.Data.ArticleResponses
+          ]
         }
       })
+    },
+    initList () {
+      this.getList().then(result => {
+        if (result.Code === 100000) {
+          this.TotalPage = result.Data.TotalPage
+          this.articleList = result.Data.ArticleResponses
+        }
+      })
+    },
+    async getList () {
+      const result = await this.$http.get('/ArticleList', {
+        Index: this.pageNumber
+      })
+      return result.data
     }
   }
 }

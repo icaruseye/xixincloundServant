@@ -22,6 +22,7 @@
         </div>
       </section>
       <xxPageSorter
+        ref="xxPageSorterRef"
         :pageSize="pageSize"
         :total="totalNumber"
         :pageNumber="pageNumber"
@@ -59,6 +60,7 @@ export default {
     loadNextPage () {
       this.pageNumber += 1
       this.getList().then(result => {
+        this.$refs.xxPageSorterRef.loading = false
         if (result.Code === 100000) {
           this.totalNumber = result.Data.Total
           this.orderList = [
