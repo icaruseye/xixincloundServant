@@ -78,11 +78,11 @@ export default {
     withDrawStep () {
       const WithdrawState = this.WithdrawState
       if (WithdrawState === 0) { // 待审核
-        return 2
+        return '2'
       } else if (WithdrawState === 1 || WithdrawState === -1) {
-        return 3
+        return '3'
       } else if (WithdrawState === 2) {
-        return 4
+        return '4'
       }
     }
   },

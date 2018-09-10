@@ -2,25 +2,25 @@
   <div>
     <xx-cell class="mt10px">
       <billsDetailItems label="实际收入">
-        {{Income | currencyFilter}}
+        ￥{{Income | currencyFilter}}
       </billsDetailItems>
       <billsDetailItems label="平台支持费用">
-        {{TecSupportFee | currencyFilter}}
+        ￥{{TecSupportFee | currencyFilter}}
       </billsDetailItems>
-      <billsDetailItems label="机构抽成费用">
-        {{ShopFee | currencyFilter}}
+      <billsDetailItems label="机构分成金额">
+        ￥{{(ShopFee + RecommendFee) | currencyFilter}}
       </billsDetailItems>
-      <billsDetailItems label="服务推荐费">
-        {{RecommendFee | currencyFilter}}
-      </billsDetailItems>
+      <!-- <billsDetailItems label="服务推荐费">
+        ￥{{RecommendFee | currencyFilter}}
+      </billsDetailItems> -->
       <billsDetailItems label="个人所得税">
-        {{Tax | currencyFilter}}
+        ￥{{Tax | currencyFilter}}
       </billsDetailItems>
       <billsDetailItems label="冻结费用" className="bottomLine">
-        {{FreezeAmount | currencyFilter}}
+        ￥{{FreezeAmount | currencyFilter}}
       </billsDetailItems>
       <billsDetailItems label="服务单总额">
-        {{ServiceTotal | currencyFilter}}
+        ￥{{ServiceTotal | currencyFilter}}
       </billsDetailItems>
     </xx-cell>
     

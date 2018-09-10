@@ -1,7 +1,7 @@
 <template>
   <div class="warp">
     <div class="user_top_container">
-      <img class="user_avatar" :src="userAccount.Avatar | transformImgUrl" alt="">
+      <div class="user_avatar" :style="{backgroundImage: `url(${transformImgUrl(userAccount.Avatar)})`}"></div>
       <div class="user_nickName">
         {{userAccount.NickName}}
       </div>
@@ -88,6 +88,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import { XDialog } from 'vux'
 import ShowQrcode from '@/components/ShowQrCode'
+import util from '@/plugins/util'
 export default {
   components: {
     XDialog,
@@ -103,6 +104,9 @@ export default {
       'getUserAccount',
       'getUserInfo'
     ]),
+    transformImgUrl (imgName) {
+      return util.transformImgUrl(imgName)
+    },
     async updateUserAccountAndUserInfo () {
       await this.getUserAccount()
       await this.getUserInfo()
@@ -165,7 +169,10 @@ export default {
     top: 15px;
     height: 60px;
     width: 60px;
-    border-radius: 50%
+    border-radius: 50%;
+    background-color: #f6f6f6;
+    background-position: center;
+    background-size: cover;
   }
   .user_nickName
   {

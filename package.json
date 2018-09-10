@@ -22,6 +22,7 @@
     "cross-env": "^5.2.0",
     "exif-js": "^2.3.0",
     "fastclick": "^1.0.6",
+    "fundebug-javascript": "^1.2.2",
     "lodash": "^4.17.10",
     "qs": "^6.5.1",
     "vant": "^1.1.15",

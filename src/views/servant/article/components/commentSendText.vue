@@ -1,10 +1,10 @@
 <template>
   <div class="container" v-show="modeValue && replyInfo">
-    <div class="username_box" v-if="replyInfo">
+    <!-- <div class="username_box" v-if="replyInfo">
       @{{replyInfo.username | xxTextSubFilter(3)}}
-    </div>
+    </div> -->
     <div class="input_box">
-      <input v-model="content" class="input_control" type="text">
+      <input v-model="content" class="input_control" :placeholder="`回复：${replyInfo ? replyInfo.CommentName : ''}`" type="text">
     </div>
     <div class="btn_box">
       <button class="btn" @click="sendReply">发送</button>
@@ -20,7 +20,11 @@ export default {
     },
     replyInfo: {
       type: Object,
-      default: () => null
+      default: () => {
+        return {
+          username: ''
+        }
+      }
     }
   },
   data () {
@@ -48,10 +52,12 @@ export default {
         this.$vux.toast.text('回复内容不可超过50字')
         return false
       }
-      this.$http.post(`/Reply?commentId=${this.replyInfo.commentId}&content=${this.content}`).then(result => {
+      this.$http.post(`/Reply?commentId=${this.replyInfo.ID}&content=${this.content}`).then(result => {
         if (result.data.Code === 100000) {
           this.$vux.toast.text('回复成功')
           this.modeValue = false
+          this.$emit('setReply', this.content)
+          this.content = ''
         } else {
           this.$vux.toast.text('发送失败')
         }
@@ -92,6 +98,7 @@ export default {
     {
       height: 35px;
       width: 100%;
+      font-size: 12px;
       padding: 0 12px;
       background-color: #f6f6f6;
       border-radius: 4px

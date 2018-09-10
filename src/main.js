@@ -15,6 +15,27 @@ import util from '@/plugins/util'
 import Vant from 'vant'
 import 'vant/lib/vant-css/index.css'
 import 'animate.css/animate.min.css'
+import fundebug from 'fundebug-javascript'
+fundebug.apikey = 'e3fbd8baddee7e450d5bf79ee7f2887afcaa86c25553662559b3a20d65515a4c'
+
+function formatComponentName (vm) {
+  if (vm.$root === vm) return 'root'
+
+  var name = vm._isVue ? (vm.$options && vm.$options.name) || (vm.$options && vm.$options._componentTag) : vm.name
+  return (name ? 'component <' + name + '>' : 'anonymous component') + (vm._isVue && vm.$options && vm.$options.__file ? ' at ' + (vm.$options && vm.$options.__file) : '')
+}
+Vue.config.errorHandler = function (err, vm, info) {
+  var componentName = formatComponentName(vm)
+  var propsData = vm.$options && vm.$options.propsData
+  fundebug.notifyError(err, {
+    metaData:
+    {
+      componentName: componentName,
+      propsData: propsData,
+      info: info
+    }
+  })
+}
 
 Vue.use(Vant)
 Vue.use(xxComponents)

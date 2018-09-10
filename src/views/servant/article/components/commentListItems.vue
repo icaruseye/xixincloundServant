@@ -1,28 +1,72 @@
 <template>
   <div class="container">
     <div class="avatar_box">
-      <img :src="'5b5eb574ce3fab1aecf213a3' | transformImgUrl" alt="">
+      <img :src="Avatar | transformImgUrl" alt="">
     </div>
     <div class="nickName">
-      安然
-      <a href="javascript:void(0)" class="reply_btn" @click="commentReply">回复</a>
+      {{CommentName}}
+      <a v-if="Status !== 2" href="javascript:void(0)" class="show_commentt_btn" @click="auditComment">显示留言</a>
     </div>
-    <div class="comment_text">感谢医生，服务特别好，感觉很专业！</div>
-    <div class="author_reply">
+    <div class="comment_text">
+      <slot></slot>
+    </div>
+    <div v-if="!Reply" class="clearfix">
+      <a href="javascript:void(0)" class="reply_btn" @click.stop="commentReply">回复</a>
+    </div>
+    <div v-if="Reply" class="author_reply">
       <div class="author_reply_title">作者回复</div>
       <div class="author_reply_content">
-        谢谢大家支持
+        {{Reply}}
       </div>
     </div>
   </div>
 </template>
 <script>
 export default {
+  props: {
+    Index: {
+      type: Number,
+      default: null
+    },
+    Reply: {
+      type: String,
+      default: null
+    },
+    commentId: {
+      type: Number,
+      default: null
+    },
+    CommentName: {
+      type: String,
+      default: ''
+    },
+    Avatar: {
+      type: String,
+      default: ''
+    },
+    Status: {
+      type: Number,
+      default: 2
+    }
+  },
   methods: {
     commentReply () {
-      this.$emit('reply', {
-        username: '安然',
-        commentId: 1
+      this.$emit('reply', this.Index)
+    },
+    auditComment () {
+      const that = this
+      that.$vux.confirm.show({
+        title: '是否要显示这条留言',
+        confirmText: '确定',
+        content: '确认显示将在文章留言可见！',
+        onConfirm () {
+          that.$http.put(`/Audit?id=${that.commentId}`).then(result => {
+            if (result.data.Code === 100000) {
+              that.$vux.toast.show('操作成功')
+              that.$emit('changeStatus', 2)
+            }
+          })
+        }
       })
     }
   }
@@ -94,11 +138,16 @@ export default {
   {
     font-size: 12px;
     color: #666;
-    .reply_btn
+    .show_commentt_btn
     {
       float: right;
       color: #3AC7F5;
     }
+  }
+  .reply_btn
+  {
+    color: #3AC7F5;
+    font-size: 12px;
   }
   .avatar_box
   {

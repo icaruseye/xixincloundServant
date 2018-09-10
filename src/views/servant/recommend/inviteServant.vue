@@ -4,7 +4,8 @@
     <div class="user_info_container">
       <transition enter-active-class="animated fadeInBottom" leave-active-class="animated fadeOutTop">  
         <div class="avatar_img_box">
-          <img class="avatar_img" :src="detail.Avatar | transformImgUrl" alt="">
+          <div class="avatar_img" :style="{backgroundImage: `url(${transformImgUrl(detail.Avatar)})`}"></div>
+          <!-- <img class="avatar_img" :src="detail.Avatar | transformImgUrl" alt=""> -->
         </div>
       </transition>
       <p class="introducer_box">
@@ -13,7 +14,7 @@
       <div class="chat_container">
         <transition v-for="(item, index) in chatList" :key="index" enter-active-class="animated fadeInRight" leave-active-class="animated fadeOutLeft">
           <div class="chat_items clearfix" v-show="scrollTop >= (index + 1)">
-            <img :src="detail.Avatar | transformImgUrl" class="avatar" alt="">
+            <div class="avatar" :style="{backgroundImage: `url(${transformImgUrl(detail.Avatar)})`}"></div>
             <div class="from_textChat_msg">
               <div class="msg_text_container">
                 {{item.text}}
@@ -65,6 +66,9 @@ export default {
     this.getInfo()
   },
   methods: {
+    transformImgUrl (imgName) {
+      return util.transformImgUrl(imgName)
+    },
     getInfo () {
       this.$http.get(`/Recommendation?viewId=${this.viewID}`).then(result => {
         if (result.data.Code === 100000) {
@@ -130,6 +134,9 @@ export default {
       border-radius: 50%;
       width: 35px;
       height: 35px;
+      background-position: center;
+      background-size: cover;
+      background-color: #f6f6f6
     }
     .to_container
     {
@@ -271,6 +278,11 @@ export default {
     .avatar_img
     {
       display: block;
+      height: 100%;
+      width: 100%;
+      background-color: #f6f6f6;
+      background-position: center;
+      background-size: cover;
       border-radius: 50%;
       
     }

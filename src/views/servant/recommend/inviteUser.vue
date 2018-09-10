@@ -2,7 +2,7 @@
   <div class="warp_container" v-if="detail">
     <div class="user_background_container"></div>
     <div class="user_info_container">
-      <img class="avatar_img" :src="detail.Avatar | transformImgUrl" alt="">
+      <div class="avatar_img" :style="{backgroundImage: `url(${transformImgUrl(detail.Avatar)})`}"></div>
       <h1 class="real_name_box">{{detail.NickName}}</h1>
       <p class="shop_name_box">{{shopName}}</p>
       <p class="user_desc">
@@ -57,6 +57,9 @@ export default {
     this.getRecommendPackageList()
   },
   methods: {
+    transformImgUrl (imgName) {
+      return util.transformImgUrl(imgName)
+    },
     getInfo () {
       this.$http.get(`/Recommendation?viewId=${this.viewID}`).then(result => {
         if (result.data.Code === 100000) {
@@ -147,6 +150,9 @@ export default {
     border-radius: 50%;
     width: 60px;
     height: 60px;
+    background-color: #f6f6f6;
+    background-position: center;
+    background-size: cover;
   }
   .real_name_box
   {
@@ -160,6 +166,8 @@ export default {
     font-size: 14px;
     color: #999;
     text-align: left;
+    height: 20px;
+    line-height: 20px;
     padding: 0 0 0 20px;
   }
   .user_desc

@@ -159,7 +159,7 @@ export default {
         that.$http.put('/Article', {
           ArticleID: this.articleId,
           title: this.params.title,
-          type: 0,
+          type: 1,
           Content: this.params.content,
           Attributes: this.getCheckedtags(),
           Cover: this.params.Cover,
@@ -177,7 +177,7 @@ export default {
       } else {
         that.$http.post('/Article', {
           title: this.params.title,
-          type: 0,
+          type: 1,
           Content: this.params.content,
           Attributes: '',
           Cover: this.params.Cover,

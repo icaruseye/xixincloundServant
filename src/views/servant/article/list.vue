@@ -9,6 +9,8 @@
         :CreateTime="article.CreateTime"
         :ViewCount="article.ViewCount"
         :ArticleId="article.ArticleId"
+        :Status="article.Status"
+        @statusChange="(status) => {article.Status = status}"
         ></ListEditItems>
         <xxPageSorter
           ref="xxPageSorterRef"

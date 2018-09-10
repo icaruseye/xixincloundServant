@@ -21,14 +21,22 @@
         <img class="link_btns_icon" src="@/assets/images/ic-edit.png" alt="编辑">
         编辑
       </router-link>
-      <a class="link_btns" @click="articleDispatch">
+      <a class="link_btns" @click="articleDispatch" v-if="Status === 1">
         <img class="link_btns_icon" src="@/assets/images/ic-fagao.png" alt="发稿">
         发稿
       </a>
-      <!-- <a class="link_btns" @click="articleDelete">
+      <a class="link_btns" v-if="Status === 2">
+        <img class="link_btns_icon" src="@/assets/images/ic-fagao.png" alt="审核中">
+        审核中
+      </a>
+      <a class="link_btns" v-if="Status === 3">
+        <img class="link_btns_icon" src="@/assets/images/ic-fagao.png" alt="正常">
+        正常
+      </a>
+      <a class="link_btns" @click="articleDelete">
         <img class="link_btns_icon" src="@/assets/images/ic-delete.png" alt="删除">
         删除
-      </a> -->
+      </a>
     </div>
   </div>
 </template>
@@ -54,6 +62,10 @@ export default {
     ViewCount: {
       type: Number,
       default: 0
+    },
+    Status: {
+      type: Number,
+      default: 0
     }
   },
   data () {
@@ -65,17 +77,31 @@ export default {
     articleDispatch () {
       this.$http.put(`/Draft?articleId=${this.ArticleId}`).then(result => {
         if (result.data.Code === 100000) {
+          this.$emit('statusChange', 2)
           this.$vux.toast.text('发稿成功')
         }
       })
     },
-    // articleDelete () { // 接口名称有问题
-    //   this.$http.delete(`/Delete?articleId=${this.ArticleId}`).then(result => {
-    //     if (result.data.Code === 100000) {
-    //       this.$vux.toast.text('发稿成功')
-    //     }
-    //   })
-    // },
+    articleDelete () {
+      const that = this
+      that.$vux.confirm.show({
+        title: '确认要删除这篇文章？',
+        confirmText: '任然删除',
+        content: '删除操作将不可逆！',
+        onConfirm () {
+          that.$vux.loading.show('正在删除')
+          that.$http.delete(`/DeleteArticle?articleId=${that.ArticleId}`).then(result => {
+            that.$vux.loading.hide()
+            if (result.data.Code === 100000) {
+              that.$vux.toast.show('删除成功')
+              that.visible = false
+            } else {
+              that.$vux.toast.text(`删除失败,错误码：${result.data.Code}`)
+            }
+          })
+        }
+      })
+    },
     redirectUrl (url) {
       this.$router.push(url)
     }

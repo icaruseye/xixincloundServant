@@ -5,13 +5,14 @@
       返回
     </div>
     <router-link class="user_link_btn" to="/user">
-      <img class="avatar" :src="userAccount.Avatar | transformImgUrl" alt="">
+      <div class="avatar" :style="{backgroundImage: `url(${transformImgUrl(userAccount.Avatar)})`}"></div>
       {{userInfo.RealName}}
     </router-link>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex'
+import util from '@/plugins/util'
 export default {
   props: {
     url: {
@@ -29,6 +30,9 @@ export default {
     }
   },
   methods: {
+    transformImgUrl (imgName) {
+      return util.transformImgUrl(imgName)
+    },
     redirectTo () {
       if (this.url) {
         this.$router.replace(this.url)
@@ -87,6 +91,9 @@ export default {
         width: 25px;
         height: 25px;
         border-radius: 50%;
+        background-color: #f6f6f6;
+        background-position: center;
+        background-size: cover;
       }
     }
   }
