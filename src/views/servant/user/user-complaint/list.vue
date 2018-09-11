@@ -1,15 +1,12 @@
 <template>
-  <div style="padding-bottom: 40px">
-    <sticky
-      ref="sticky"
-      :offset="0"
-      :check-sticky-support="true">
+  <div style="padding:100px 0 40px">
+    <div style="position:fixed;left:0;right:0;top:0;background-color: #fff;z-index: 10">
       <xx-go-back></xx-go-back>
       <xx-tab v-model="modelComplaintTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
         <xx-tab-item>投诉中</xx-tab-item>
         <xx-tab-item>已完成</xx-tab-item>
       </xx-tab>
-    </sticky>
+    </div>
     <div v-if="list.length > 0" style="padding: 20px 0 0;border-bottom: 1px solid #eee">
       <list-items v-for="(item, index) in list" 
         :key="index"

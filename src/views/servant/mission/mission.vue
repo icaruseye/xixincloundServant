@@ -1,14 +1,11 @@
 <template>
-  <div class="has-tabbar">
-    <sticky
-      ref="sticky"
-      :offset="0"
-      :check-sticky-support="true">
+  <div class="has-tabbar" style="padding-top:50px">
+    <div style="position:fixed;left:0;right:0;top:0;background-color: #fff;z-index: 10">
       <xx-tab v-model="modelMissionTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
         <xx-tab-item @on-item-click="onItemClick">服务中</xx-tab-item>
         <xx-tab-item @on-item-click="onItemClick">已完成</xx-tab-item>
       </xx-tab>
-    </sticky>
+    </div>
     <!-- 服务中 -->
     <div class="tabbox">
       <div class="checker-bar" v-show="modelMissionTabIndex === 0">
