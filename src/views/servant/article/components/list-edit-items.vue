@@ -2,7 +2,7 @@
   <div class="eidt_items_container" v-if="visible">
     <div class="content clearfix" @click="redirectUrl(`/article/${ArticleId}/detail`)">
       <div v-if="Cover && Cover != null" class="article_img_click">
-        <img class="article_cover_imgs" :src="Cover | transformImgUrl" alt="">
+        <xxCenterImage :src="Cover"></xxCenterImage>
       </div>
       <div class="article_title">
         {{Title | xxTextSubFilter(20)}}
@@ -121,6 +121,8 @@ export default {
     {
       float: left;
       margin-right: 10px;
+      width: 128px;
+      height: 80px;
       background-color: #f6f6f6;
       .article_cover_imgs
       {

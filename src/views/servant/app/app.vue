@@ -89,13 +89,13 @@
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
-      <!-- <div class="weui-cell">
+      <div class="weui-cell" @click="go('/schedule')">
         <div class="weui-cell-top">
           <div class="icon"><img src="@/assets/images/app-pbsz.png"></div>
           <div class="title">排班设置</div>
           <i class="iconfont icon-jiantouyou"></i>
         </div>
-      </div> -->
+      </div>
     </div>
     <div class="empty-bar"></div>
     <div class="weui-panel weui-list-panel">
