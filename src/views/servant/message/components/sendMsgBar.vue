@@ -9,15 +9,15 @@
          v-model="msg">
         </textarea>
       </div>
-      <div class="emoji_show_container" @click="emojiContainerShow = !emojiContainerShow">
+      <!-- <div class="emoji_show_container" @click="emojiContainerShow = !emojiContainerShow">
         <i v-if="!emojiContainerShow" class="iconfont icon-biaoqing-xue"></i>
         <i v-else class="iconfont icon-jianpan"></i>
-      </div>
+      </div> -->
       <div class="send_msg_container">
         <button @click="sendTextMsg">发送</button>
       </div>
     </div>
-    <div v-if="emojiContainerShow" class="emoji_container">
+    <!-- <div v-if="emojiContainerShow" class="emoji_container">
       <div class="emoji_list_container">
         <a :style="computeEmojiStyle(item)" href="javascript:;" class="emoji_items" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">
         </a>
@@ -25,7 +25,7 @@
       <div class="emoji_oper_box">
         <i class="iconfont icon-delete" @click="backspaceInputValue"></i>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 <script>

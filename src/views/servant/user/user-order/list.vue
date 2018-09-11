@@ -1,16 +1,13 @@
 <template>
-  <div>
-    <sticky
-      ref="sticky"
-      :offset="0"
-      :check-sticky-support="true">
+  <div style="padding-top:100px">
+    <div style="position:fixed;left:0;right:0;top:0;background-color: #fff;z-index: 10">
       <xx-go-back></xx-go-back>
       <xx-tab v-model="modelOrderTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
         <xx-tab-item @on-item-click="onItemClick">全部</xx-tab-item>
         <xx-tab-item @on-item-click="onItemClick">待付款</xx-tab-item>
         <xx-tab-item @on-item-click="onItemClick">已付款</xx-tab-item>
       </xx-tab>
-    </sticky>
+    </div>
     <div v-if="list.length > 0" class="mt10px">
         <list-item v-for="(item, index) in list" :key="index"
           :UserOrder="item.UserOrder"

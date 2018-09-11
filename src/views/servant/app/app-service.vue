@@ -1,15 +1,12 @@
 <template>
-  <div class="has-tabbar">
-    <sticky
-      ref="sticky"
-      :offset="0"
-      :check-sticky-support="true">
+  <div class="has-tabbar" style="padding-top: 100px">
+    <div style="position:fixed;left:0;right:0;top:0;background-color: #fff;z-index: 10">
       <xx-go-back></xx-go-back>
       <xx-tab v-model="modelServiceListTabIndex" custom-bar-width="25px">
         <xx-tabItem @on-item-click="changeTab">服务项</xx-tabItem>
         <xx-tabItem @on-item-click="changeTab">服务套餐</xx-tabItem>
       </xx-tab>
-    </sticky>
+    </div>
     <!-- 服务项 -->
     <div v-if="modelServiceListTabIndex === 0">
       <div v-if="itemList.length > 0">
