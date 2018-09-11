@@ -239,7 +239,7 @@ export default {
       if (this.isAvatar) {
         return true
       }
-      if (this.count === this.limit) {
+      if (this.list.length >= this.limit) {
         AlertModule.show({
           title: '提示',
           content: '上传图片张数已达上限'
