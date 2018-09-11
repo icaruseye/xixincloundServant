@@ -5,7 +5,9 @@
       返回
     </div>
     <router-link class="user_link_btn" to="/user">
-      <div class="avatar" :style="{backgroundImage: `url(${transformImgUrl(userAccount.Avatar)})`}"></div>
+      <div class="avatar">
+        <xxCenterImage :src="userAccount.Avatar" radius="50%"></xxCenterImage>
+      </div>
       {{userInfo.RealName}}
     </router-link>
   </div>
@@ -91,9 +93,6 @@ export default {
         width: 25px;
         height: 25px;
         border-radius: 50%;
-        background-color: #f6f6f6;
-        background-position: center;
-        background-size: cover;
       }
     }
   }

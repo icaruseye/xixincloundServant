@@ -1,6 +1,8 @@
 <template>
   <div :class="['container', 'clearfix', originator+'_container']">
-    <img :src="avatar | transformImgUrl" class="avatar" alt="">
+    <div class="avatar">
+      <xxCenterImage :src="avatar" radius="50%"></xxCenterImage>
+    </div>
     <div :class="[originator+'_textChat_msg', 'content_container']">
       <h4 class="msg_title">
         <template v-if="MsgType === 5">
@@ -91,14 +93,14 @@ export default {
 {
   position: relative;
   min-height: 50px;
-  padding: 0 70px;
+  padding: 0 55px;
   .avatar
   {
     position: absolute;
     top: 0;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
   }
 }
 .to_container

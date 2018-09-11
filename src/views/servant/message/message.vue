@@ -10,7 +10,9 @@
       <div v-for="(item, index) in list" class="item vux-1px-b" @click="goChat(item.UserViewID, index)" :key="index">
         <div class="UnreadCount_box">
           <i class="UnreadCount_icon" v-if="item.UnreadCount > 0">{{item.UnreadCount}}</i>
-          <img class="avatar" :src="item.UserAvatar | transformImgUrl" >
+          <div class="avatar">
+            <xxCenterImage :src="item.UserAvatar"></xxCenterImage>
+          </div>
         </div>
         <div class="mid">
           <div class="name">{{item.UserName}}</div>

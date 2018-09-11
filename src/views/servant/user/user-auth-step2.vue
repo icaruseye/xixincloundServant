@@ -39,14 +39,12 @@
       <xx-uploader
       :limit="1"
       title="*上传身份证正面照片"
-      :imgList="imgList1"
       @onUpdate="onUpdate1"
     ></xx-uploader>
     <xx-uploader
       :limit="1"
       style="margin-top:20px"
       title="*上传身份证反面照片"
-      :imgList="imgList2"
       @onUpdate="onUpdate2"
     ></xx-uploader>
     </div>
@@ -67,8 +65,6 @@ export default {
   data () {
     return {
       count: 3,
-      imgList1: [],
-      imgList2: [],
       submitLocked: false,
       reqParam: {
         RealName: '',

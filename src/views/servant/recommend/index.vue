@@ -40,14 +40,9 @@
           :CreateTime="WalletLog.CreateTime">
         </list-items>
       </ul>
-      <div v-else style="font-size: 120px;text-align:center;margin-top:60px">
-        <i style="font-size:66px;display:block">
-          <svg class="icon" aria-hidden="true">
-            <use xlink:href="#icon-kong1"></use>
-          </svg>
-        </i>
-        <p style="font-size:12px;color:#999;text-align:center;">还没有获得邀请奖励哦！</p>
-      </div>
+      <xx-occupied-box v-else>
+        还没有获得邀请奖励哦！
+      </xx-occupied-box>
     </div>
     <!-- 帮助说明 -->
     <x-dialog

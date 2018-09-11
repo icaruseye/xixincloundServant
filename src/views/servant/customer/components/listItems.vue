@@ -1,7 +1,7 @@
 <template>
   <div class="listItem_contianer">
     <div  v-if="Avatar" class="avatar_img_box">
-      <img class="avatar_img" :src="Avatar | transformImgUrl" :alt="UserName.substring(0, 1)">
+      <xxCenterImage :src="Avatar" radius="50%"></xxCenterImage>
     </div>
     <div class="UserName">
       {{UserName}}

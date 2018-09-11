@@ -1,8 +1,10 @@
 <template>
   <div :class="['container','clearfix', originator+'_container']">
     <div class="avatar_contianer">
-      <img v-if="MsgType === 8" src="@/assets/images/kefu.png"  class="avatar" alt="助理">
-      <img v-else :src="avatar | transformImgUrl" class="avatar" alt="">
+      <img v-if="MsgType === 8" src="@/assets/images/kefu.png" class="avatar" alt="助理">
+      <div class="avatar" v-else>
+        <xxCenterImage :src="avatar" radius="50%"></xxCenterImage>
+      </div>
     </div>
     <!-- 只有图片的类型 -->
     <div v-if="MsgType === 2" :class="[originator+'_imgChat_msg']">

@@ -4,7 +4,7 @@
     <div class="user_bg_container" style="margin-top:10px">
       <div class="user_info_container">
         <div class="avatar_box">
-          <img :src="userInfo.FriendAvatar | transformImgUrl" :alt="userInfo.UserName.substring(0, 1)">
+          <xxCenterImage :src="userInfo.FriendAvatar" radius="50%"></xxCenterImage>
         </div>
         <h4 class="realName">{{userInfo.UserName}}</h4>
         <!-- <p class="user_desc_p">

@@ -27,38 +27,40 @@
       </div>
     </div> -->
     <!-- 面板信息 -->
-    <div v-if="workSpaceData" class="income-panel-wrap">
+    <div class="income-panel-wrap">
       <div class="income-panel">
-        <div class="item">
-          <div class="row-1">
-            <div class="title">本月服务收入</div>
-            <div class="count">{{workSpaceData.ServiceIncome | moneyFilter}}</div>
+        <template>
+          <div class="item">
+            <div class="row-1">
+              <div class="title">本月服务收入</div>
+              <div class="count">{{workSpaceData.ServiceIncome | moneyFilter}}</div>
+            </div>
+            <div class="row-2">
+              <div class="title">本月服务数量</div>
+              <div class="count">{{workSpaceData.MissionCount}}</div>
+            </div>
           </div>
-          <div class="row-2">
-            <div class="title">本月服务数量</div>
-            <div class="count">{{workSpaceData.MissionCount}}</div>
+          <div class="item">
+            <div class="row-1">
+              <div class="title">本月推荐收入</div>
+              <div class="count">{{workSpaceData.RecommendIncome | moneyFilter}}</div>
+            </div>
+            <div class="row-2">
+              <div class="title">总出售服务包</div>
+              <div class="count">{{workSpaceData.TotalSelledPackage}}</div>
+            </div>
           </div>
-        </div>
-        <div class="item">
-          <div class="row-1">
-            <div class="title">本月推荐收入</div>
-            <div class="count">{{workSpaceData.RecommendIncome | moneyFilter}}</div>
+          <div class="item">
+            <div class="row-1">
+              <div class="title">累计收入</div>
+              <div class="count">{{workSpaceData.TotalIncome | moneyFilter}}</div>
+            </div>
+            <div class="row-2">
+              <div class="title">总服务数</div>
+              <div class="count">{{workSpaceData.TotalService}}</div>
+            </div>
           </div>
-          <div class="row-2">
-            <div class="title">总出售服务包</div>
-            <div class="count">{{workSpaceData.TotalSelledPackage}}</div>
-          </div>
-        </div>
-        <div class="item">
-          <div class="row-1">
-            <div class="title">累计收入</div>
-            <div class="count">{{workSpaceData.TotalIncome | moneyFilter}}</div>
-          </div>
-          <div class="row-2">
-            <div class="title">总服务数</div>
-            <div class="count">{{workSpaceData.TotalService}}</div>
-          </div>
-        </div>
+        </template>
       </div>
     </div>
     <!-- 列表 -->
@@ -114,7 +116,14 @@ import { numberComma } from 'vux'
 export default {
   data () {
     return {
-      workSpaceData: null
+      workSpaceData: {
+        MissionCount: 0,
+        RecommendIncome: 0,
+        ServiceIncome: 0,
+        TotalIncome: 0,
+        TotalSelledPackage: 0,
+        TotalService: 0
+      }
     }
   },
   created () {

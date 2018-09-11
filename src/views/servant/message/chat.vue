@@ -3,7 +3,9 @@
     <div style="z-index: 10;position: fixed;top: 0;right:0;left:0">
       <xx-go-back></xx-go-back>
       <div class="firend_info_container">
-        <img class="avatar_img" :src="userAccount.Avatar | transformImgUrl" alt="">
+        <div class="avatar_img">
+          <xxCenterImage :src="userAccount.Avatar" radius="50%"></xxCenterImage>
+        </div>
         {{userAccount.NickName}}
         <router-link class="viewDetail_btn" :to="`/customer/${userAccount.ID}/detail`">查看详情</router-link>
       </div>
