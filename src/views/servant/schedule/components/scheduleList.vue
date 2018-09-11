@@ -24,24 +24,30 @@
     <x-dialog v-model="addPlanDialogVisible" :hide-on-blur="true">
       <div style="padding:15px;">
         添加排班计划
-        <div>
-          <div>
-            <Datetime title="开始时间" format="HH:mm" hour-row="{value}点"></Datetime>
+        <group>
+          <Datetime title="开始时间" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
+          <Datetime title="结束时间" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
+          <div class="inline-x-number_container clearfix">
+            可预约次数
+            <inline-x-number style="display:block;float:right" :min="1" button-style="round"></inline-x-number>
           </div>
-        </div>
+        </group>
       </div>
-      <div @click="addPlanDialogVisible=false">
-        <span class="vux-close"></span>
+      <div class="btn_box">
+        <button class="btn" @click="addPlanDialogVisible=false">确定</button>
       </div>
     </x-dialog>
   </div>
 </template>
 <script>
-import { XDialog, Datetime } from 'vux'
+import { XDialog, Datetime, Cell, Group, InlineXNumber } from 'vux'
 export default {
   components: {
     XDialog,
-    Datetime
+    Datetime,
+    Group,
+    Cell,
+    InlineXNumber
   },
   data () {
     return {
@@ -118,6 +124,24 @@ export default {
       transform: translateY(-50%);
       color: rgb(255, 95, 95);
     }
+  }
+}
+.inline-x-number_container
+{
+  padding: 10px 0 10px 15px;
+  text-align: left;
+}
+.btn_box
+{
+  padding: 10px 0 20px;
+  .btn
+  {
+    padding: 0 20px;
+    height: 40px;
+    background-color: #3AC7F5;
+    color: #fff;
+    border:none;
+    border-radius: 5px;
   }
 }
 </style>
