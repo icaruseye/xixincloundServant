@@ -1,22 +1,25 @@
 <template>
   <div class="list_container">
-    <ul class="plans_list">
-      <li class="plans_list_items" v-for="(plan, index) in plansList" :key="index">
-        <div class="time_container">{{plan.startTime}} ~ {{plan.endTime}}</div>
+    <ul v-if="list && list.length > 0" class="plans_list">
+      <li class="plans_list_items" v-for="(plan, index) in list" :key="index">
+        <div class="time_container">{{plan.StartTime | xxTimeFormatFilter('HH:mm')}} ~ {{plan.EndTime | xxTimeFormatFilter('HH:mm')}}</div>
         <div class="content_container">
           <span>
-            可预约{{plan.total}}次，
+            可预约{{plan.ReserveNum}}次，
           </span>
           <span>
-            已预约{{plan.hasOrder}}次，
+            已预约{{plan.AlreadyReserveNum}}次，
           </span>
           <span>
-            剩余<b>{{plan.total - plan.hasOrder}}</b>次
+            剩余<b>{{plan.ReserveNum - plan.AlreadyReserveNum}}</b>次
           </span>
         </div>
         <i class="iconfont icon-trash plan_delete_icon"></i>
       </li>
     </ul>
+    <div class="noPlan_text" v-else>
+      还没有添加任何排班计划
+    </div>
     <div class="add_plan_btn" @click="addPlanDialogVisible = true">
       <i class="iconfont icon-hao"></i>
       添加排班计划
@@ -24,24 +27,48 @@
     <x-dialog v-model="addPlanDialogVisible" :hide-on-blur="true">
       <div style="padding:15px;">
         添加排班计划
-        <group>
-          <Datetime title="开始时间" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
-          <Datetime title="结束时间" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
-          <div class="inline-x-number_container clearfix">
-            可预约次数
-            <inline-x-number style="display:block;float:right" :min="1" button-style="round"></inline-x-number>
+        <div style="margin-top:20px">
+          <div class="select_items clearfix">
+            开始时间
+            <div class="select_items_content_container">
+              <Datetime v-model="startTime" placeholder="请选择时间" :minute-list="['00', '30']" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
+            </div>
           </div>
-        </group>
+          <div class="select_items clearfix">
+            结束时间
+            <div class="select_items_content_container">
+              <Datetime v-model="endTime" placeholder="请选择时间" :minute-list="['00', '30']" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
+            </div>
+          </div>
+          <div class="select_items clearfix">
+            可预约次数
+            <div class="select_items_content_container">
+              <van-stepper v-model="ReserveNum" :min="1" :integer="true" :max="500"/>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="btn_box">
-        <button class="btn" @click="addPlanDialogVisible=false">确定</button>
+        <button class="btn gray_btn" @click="addPlanDialogVisible = false">取消</button>
+        <button class="btn" @click="addPlan">确定</button>
       </div>
     </x-dialog>
   </div>
 </template>
 <script>
 import { XDialog, Datetime, Cell, Group, InlineXNumber } from 'vux'
+import util from '@/plugins/util'
 export default {
+  props: {
+    list: {
+      type: Array,
+      default: null
+    },
+    activeDate: {
+      type: Date,
+      default: null
+    }
+  },
   components: {
     XDialog,
     Datetime,
@@ -52,20 +79,77 @@ export default {
   data () {
     return {
       addPlanDialogVisible: false,
-      plansList: [
-        {
-          startTime: '09:00',
-          endTime: '10:00',
-          total: 10,
-          hasOrder: 5
-        },
-        {
-          startTime: '13:00',
-          endTime: '15:30',
-          total: 10,
-          hasOrder: 0
+      startTime: null,
+      endTime: null,
+      ReserveNum: 10
+    }
+  },
+  watch: {
+    addPlanDialogVisible () {
+      this.startTime = null
+      this.endTime = null
+    }
+  },
+  methods: {
+    addPlan () {
+      if (!this.startTime) {
+        this.$vux.toast.text('请选择开始时间')
+        return false
+      }
+      if (!this.endTime) {
+        this.$vux.toast.text('请选择开始时间')
+        return false
+      }
+      if (!this.timeInList()) {
+        return false
+      }
+      let date = util.timeFormatFilter(this.activeDate, 'YYYY-MM-DD')
+      let startTime = `${date} ${this.startTime}:00`
+      let endTime = `${date} ${this.endTime}:00`
+      this.$http.post(`/Schedule/Add`, {
+        StartTime: startTime,
+        EndTime: endTime,
+        ReserveNum: this.ReserveNum,
+        Items: '1,2,3'
+      }).then(result => {
+        if (result.data.Code === 100000) {
+          this.$emit('addSuccess', {
+            ID: result.data.Data.ID,
+            EndTime: new Date(endTime),
+            StartTime: new Date(startTime),
+            AlreadyReserveNum: 0,
+            ReserveNum: this.ReserveNum
+          })
+          this.addPlanDialogVisible = false
+        } else {
+          this.$vux.alert.show({
+            title: result.data.Msg,
+            content: `错误码：${result.data.Code}`
+          })
         }
-      ]
+      })
+    },
+    timeInList () {
+      let today = util.timeFormatFilter(this.activeDate, 'YYYY-MM-DD')
+      let startTime = new Date(`${today} ${this.startTime}:00`).getTime()
+      let endTime = new Date(`${today} ${this.endTime}:00`).getTime()
+      for (let i = 0; i < this.list.length; i++) {
+        let listStartTime = new Date(this.list[i].StartTime).getTime()
+        let listEndTime = new Date(this.list[i].EndTime).getTime()
+        if (startTime >= listStartTime && startTime <= listEndTime) {
+          this.$vux.toast.text('开始时间已被占用')
+          return false
+        }
+        if (endTime >= listStartTime && endTime <= listEndTime) {
+          this.$vux.toast.text('结束时间已被占用')
+          return false
+        }
+        if (startTime > endTime) {
+          this.$vux.toast.text('结束时间必选小于开始时间')
+          return false
+        }
+      }
+      return true
     }
   }
 }
@@ -126,22 +210,49 @@ export default {
     }
   }
 }
-.inline-x-number_container
+.select_items
 {
+  display: flex;
+  flex-flow: nowrap;
+  align-items: center;
+  justify-content: space-between;
   padding: 10px 0 10px 15px;
-  text-align: left;
+  font-size: 14px;
+  .select_items_content_container
+  {
+    height: 40px;
+    display: flex;
+    flex-flow: nowrap;
+    align-items: center;
+    justify-content: space-between;
+  }
 }
 .btn_box
 {
   padding: 10px 0 20px;
+  display: flex;
+  flex-flow: nowrap;
+  align-content: center;
+  justify-content: space-around;
   .btn
   {
-    padding: 0 20px;
+    padding: 0 40px;
     height: 40px;
     background-color: #3AC7F5;
     color: #fff;
     border:none;
     border-radius: 5px;
+    &.gray_btn
+    {
+      background-color: #ddd
+    }
   }
+}
+.noPlan_text
+{
+  padding: 20px 0;
+  text-align: center;
+  font-size: 12px;
+  color: #999;
 }
 </style>
