@@ -10,7 +10,7 @@
       <p class="desc">{{userAccount.Description | stringSub(85)}}</p>
     </div>
     <div class="qr_code_box">
-      <img :src="API_PATH+'/QRCode/'+userAccount.ID" alt="">
+      <img :src="`${API_PATH}/QrCodeToUser/?servantID=${userAccount.ID}`" alt="">
     </div>
     <p class="hint_desc">扫一扫二维码，可加我为好友</p>
   </div>
