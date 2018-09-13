@@ -14,7 +14,7 @@
             剩余<b>{{plan.ReserveNum - plan.AlreadyReserveNum}}</b>次
           </span>
         </div>
-        <i class="iconfont icon-trash plan_delete_icon"></i>
+        <i class="iconfont icon-trash plan_delete_icon" @click="deletePlan(plan.ID, index)"></i>
       </li>
     </ul>
     <div class="noPlan_text" v-else>
@@ -91,6 +91,21 @@ export default {
     }
   },
   methods: {
+    deletePlan (id, index) {
+      const that = this
+      that.$vux.confirm.show({
+        confirmText: '移除',
+        content: '确认要移除这条排班计划？',
+        onConfirm () {
+          that.$http.delete(`/Schedule/Delete?id=${id}`).then(result => {
+            if (result.data.Code === 100000) {
+              that.$vux.toast.text('移除成功')
+              that.$emit('deleteSuccess', index)
+            }
+          })
+        }
+      })
+    },
     addPlan () {
       if (!this.startTime) {
         this.$vux.toast.text('请选择开始时间')
@@ -110,7 +125,7 @@ export default {
         StartTime: startTime,
         EndTime: endTime,
         ReserveNum: this.ReserveNum,
-        Items: '1,2,3'
+        Items: ''
       }).then(result => {
         if (result.data.Code === 100000) {
           this.$emit('addSuccess', {

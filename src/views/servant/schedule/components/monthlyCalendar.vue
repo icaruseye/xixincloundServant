@@ -1,8 +1,10 @@
 <template>
   <div class="calendar_container">
-    <div v-if="loading" class="loading_shadow_container">
-      <xxLoading>加载中…</xxLoading>
-    </div>
+    <transition enter-active-class="animated fadeIn">
+      <div v-if="loading" class="loading_shadow_container">
+        <xxLoading>加载中…</xxLoading>
+      </div>
+    </transition>
     <div class="calendar_header_container">
       <div class="front_items" @click="setTodayActive">今日</div>
       <div class="arrows_items" @click="goPreMonth">
@@ -31,8 +33,8 @@
         </thead>
         <tbody v-if="dateList && dateList.length > 0">
           <tr v-for="row in Math.floor(dateList.length / 7)" :key="row">
-            <td v-for="col in 7" :key="col">
-              <div :class="[dateList[(row - 1) * 7 + col - 1].isCurMonth ? 'curMonth' : '', col === 1 ? 'rowStart' : '', col === 7 ? 'rowEnd' : '', dateList[(row - 1) * 7 + col - 1].isActive ? 'isActive' : '', dateList[(row - 1) * 7 + col - 1].isToday ? 'isToday' : '', dateInHasScheduleList(dateList[(row - 1) * 7 + col - 1].date) ? 'hasSchedule' : '']" @click="setActiveDate(dateList[(row - 1) * 7 + col - 1].date)">
+            <td v-for="col in 7" :key="col" :class="[dateInHasScheduleList(dateList[(row - 1) * 7 + col - 1].date) ? 'hasSchedule_td' : '']">
+              <div :class="['date_dev', dateList[(row - 1) * 7 + col - 1].isCurMonth ? 'curMonth' : '', dateList[(row - 1) * 7 + col - 1].isActive ? 'isActive' : '', dateList[(row - 1) * 7 + col - 1].isToday ? 'isToday' : '', dateInHasScheduleList(dateList[(row - 1) * 7 + col - 1].date) ? 'hasSchedule' : '']" @click="setActiveDate(dateList[(row - 1) * 7 + col - 1].date)">
                 <span class="date_span">
                   {{dateList[(row - 1) * 7 + col - 1].day}}
                 </span>
@@ -60,15 +62,39 @@ export default {
       hasScheduleList: []
     }
   },
+  updated () {
+    this.drawRadius()
+  },
   watch: {
     selectedMonth () {
       this.getListHasSchedule()
+      this.drawRadius()
     }
   },
   mounted () {
     this.selectedMonth = this.activeDate || new Date()
   },
   methods: {
+    drawRadius () {
+      let a = document.querySelectorAll('.hasSchedule_td')
+      for (let i = 0; i < a.length; i++) {
+        a[i].classList.remove('row_start')
+        a[i].classList.remove('row_end')
+        let nextNode = a[i].nextElementSibling
+        if (nextNode && this.hassClass(nextNode, 'hasSchedule_td')) {
+        } else {
+          a[i].classList.add('row_end')
+        }
+        let preNode = a[i].previousElementSibling
+        if (preNode && this.hassClass(preNode, 'hasSchedule_td')) {
+        } else {
+          a[i].classList.add('row_start')
+        }
+      }
+    },
+    hassClass (element, cls) {
+      return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1
+    },
     dateInHasScheduleList (date) {
       let flag = false
       let date1 = util.timeFormatFilter(date, 'YYYY-MM-DD')
@@ -328,16 +354,27 @@ export default {
             }
           }
         }
-        &.hasSchedule
+      }
+      &.hasSchedule_td
+      {
+        .date_dev
         {
           background-color: #F2F2F2;
-          &.rowEnd
+        }
+        &.row_end
+        {
+          .date_dev
           {
-            border-radius: 0 12px 12px 0
+            border-bottom-right-radius: 12px;
+            border-top-right-radius: 12px;
           }
-          &.rowStart
+        }
+        &.row_start
+        {
+          .date_dev
           {
-            border-radius: 12px 0 0 12px
+            border-bottom-left-radius: 12px;
+            border-top-left-radius: 12px;
           }
         }
       }

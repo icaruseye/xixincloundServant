@@ -1,13 +1,15 @@
 <template>
   <div>
     <xx-go-back></xx-go-back>
-    <weekCalendar v-if="!monthCalendar" ref="calendarRef" :activeDate="activeDate" @change="activeDateChange"></weekCalendar>
-    <monthlyCalendar v-if="monthCalendar" ref="calendarRef" :activeDate="activeDate" @change="activeDateChange"></monthlyCalendar>
-    <div class="switchCalander_btn" @click="monthCalendar = !monthCalendar">
-      <i v-if="!monthCalendar" class="iconfont icon-jiantouxia"></i>
-      <i v-if="monthCalendar" class="iconfont icon-jiantoushang"></i>
+    <div class="calendar_container">
+      <weekCalendar v-if="!monthCalendar" ref="calendarRef" :activeDate="activeDate" @change="activeDateChange"></weekCalendar>
+      <monthlyCalendar v-if="monthCalendar" ref="calendarRef" :activeDate="activeDate" @change="activeDateChange"></monthlyCalendar>
+      <div class="switchCalander_btn" @click="changeCalendar">
+        <i v-if="!monthCalendar" class="iconfont icon-jiantouxia"></i>
+        <i v-if="monthCalendar" class="iconfont icon-jiantoushang"></i>
+      </div>
     </div>
-    <scheduleList :list="schedules" :activeDate="activeDate" @addSuccess="scheduleAddPlan"></scheduleList>
+    <scheduleList :list="schedules" :activeDate="activeDate" @addSuccess="scheduleAddPlan" @deleteSuccess="scheduleDeletePlan"></scheduleList>
   </div>
 </template>
 <script>
@@ -32,9 +34,18 @@ export default {
     this.init()
   },
   methods: {
+    changeCalendar () {
+      this.monthCalendar = !this.monthCalendar
+    },
     scheduleAddPlan (plan) {
       this.schedules.unshift(plan)
       this.$refs.calendarRef.hasScheduleList.push(util.timeFormatFilter(this.activeDate))
+    },
+    scheduleDeletePlan (index) {
+      this.schedules.splice(index, 1)
+      if (this.schedules.length === 0) {
+        this.$refs.calendarRef.getListHasSchedule()
+      }
     },
     init () {
       this.getPlansByDateTime(this.activeDate).then(result => {
@@ -67,6 +78,10 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.calendar_container
+{
+  transition: height .2s linear;
+}
 .switchCalander_btn
 {
   text-align: center;

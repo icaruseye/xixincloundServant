@@ -1,8 +1,10 @@
 <template>
   <div class="calendar_container">
-    <div v-if="loading" class="loading_shadow_container">
-      <xxLoading>加载中…</xxLoading>
-    </div>
+    <transition enter-active-class="animated fadeIn">
+      <div v-if="loading" class="loading_shadow_container">
+        <xxLoading>加载中…</xxLoading>
+      </div>
+    </transition>
     <div class="calendar_header_container">
       <div class="front_items" @click="setTodayActive">今日</div>
       <div class="arrows_items" @click="preWeek">
@@ -31,8 +33,8 @@
         </thead>
         <tbody>
           <tr>
-            <td v-for="(date, index) in dateList" :key="index">
-              <div :class="[index === 0 ? 'rowStart' : '', index === 6 ? 'rowEnd' : '', date.isActive ? 'isActive': '', date.isCurMonth ? 'curMonth' : '', date.isToday ? 'isToday' : '',dateInHasScheduleList(date.date) ? 'hasSchedule' : '']" @click="setActiveDate(date.date)">
+            <td v-for="(date, index) in dateList" :key="index" :class="[dateInHasScheduleList(date.date) ? 'hasSchedule_td' : '']">
+              <div :class="['date_dev', date.isActive ? 'isActive': '', date.isCurMonth ? 'curMonth' : '', date.isToday ? 'isToday' : '',dateInHasScheduleList(date.date) ? 'hasSchedule' : '']" @click="setActiveDate(date.date)">
                 <span class="date_span">
                   {{date.date | xxTimeFormatFilter('DD')}}
                 </span>
@@ -85,9 +87,33 @@ export default {
     },
     startDate () {
       this.getListHasSchedule()
+      this.drawRadius()
     }
   },
+  updated () {
+    this.drawRadius()
+  },
   methods: {
+    drawRadius () {
+      let a = document.querySelectorAll('.hasSchedule_td')
+      for (let i = 0; i < a.length; i++) {
+        a[i].classList.remove('row_start')
+        a[i].classList.remove('row_end')
+        let nextNode = a[i].nextElementSibling
+        if (nextNode && this.hassClass(nextNode, 'hasSchedule_td')) {
+        } else {
+          a[i].classList.add('row_end')
+        }
+        let preNode = a[i].previousElementSibling
+        if (preNode && this.hassClass(preNode, 'hasSchedule_td')) {
+        } else {
+          a[i].classList.add('row_start')
+        }
+      }
+    },
+    hassClass (element, cls) {
+      return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1
+    },
     dateInHasScheduleList (date) {
       let flag = false
       let date1 = util.timeFormatFilter(date, 'YYYY-MM-DD')
@@ -296,16 +322,27 @@ export default {
             }
           }
         }
-        &.hasSchedule
+      }
+      &.hasSchedule_td
+      {
+        .date_dev
         {
           background-color: #F2F2F2;
-          &.rowEnd
+        }
+        &.row_end
+        {
+          .date_dev
           {
-            border-radius: 0 12px 12px 0
+            border-bottom-right-radius: 12px;
+            border-top-right-radius: 12px;
           }
-          &.rowStart
+        }
+        &.row_start
+        {
+          .date_dev
           {
-            border-radius: 12px 0 0 12px
+            border-bottom-left-radius: 12px;
+            border-top-left-radius: 12px;
           }
         }
       }
