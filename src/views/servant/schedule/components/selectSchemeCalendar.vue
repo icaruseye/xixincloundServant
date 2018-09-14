@@ -33,8 +33,8 @@
         </thead>
         <tbody v-if="dateList && dateList.length > 0">
           <tr v-for="row in Math.floor(dateList.length / 7)" :key="row">
-            <td v-for="col in 7" :key="col" :class="[dateInHasScheduleList(dateList[(row - 1) * 7 + col - 1].date) ? 'hasSchedule_td' : '']">
-              <div :class="['date_dev', dateList[(row - 1) * 7 + col - 1].isCurMonth ? 'curMonth' : '', dateList[(row - 1) * 7 + col - 1].isActive ? 'isActive' : '', dateList[(row - 1) * 7 + col - 1].isToday ? 'isToday' : '', dateInHasScheduleList(dateList[(row - 1) * 7 + col - 1].date) ? 'hasSchedule' : '']" @click="setActiveDate(dateList[(row - 1) * 7 + col - 1].date)">
+            <td v-for="col in 7" :key="col" :class="[dateList[(row - 1) * 7 + col - 1].hasPlan ? 'hasSchedule_td' : '']">
+              <div :class="['date_dev', dateList[(row - 1) * 7 + col - 1].isCurMonth ? 'curMonth' : '', dateList[(row - 1) * 7 + col - 1].isActive ? 'isActive' : '', dateList[(row - 1) * 7 + col - 1].isToday ? 'isToday' : '', dateList[(row - 1) * 7 + col - 1].hasPlan ? 'hasSchedule' : '']" @click="clickDate(dateList[(row - 1) * 7 + col - 1])">
                 <span class="date_span">
                   {{dateList[(row - 1) * 7 + col - 1].day}}
                 </span>
@@ -53,13 +53,16 @@ export default {
     activeDate: {
       type: Date,
       default: () => new Date()
+    },
+    hasScheduleList: {
+      type: Array,
+      default: () => []
     }
   },
   data () {
     return {
       loading: false,
-      selectedMonth: new Date(),
-      hasScheduleList: []
+      selectedMonth: new Date()
     }
   },
   updated () {
@@ -67,7 +70,6 @@ export default {
   },
   watch: {
     selectedMonth () {
-      this.getListHasSchedule()
       this.drawRadius()
     }
   },
@@ -96,33 +98,29 @@ export default {
       return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1
     },
     dateInHasScheduleList (date) {
-      let flag = false
+      let flag = {status: false}
       let date1 = util.timeFormatFilter(date, 'YYYY-MM-DD')
-      this.hasScheduleList.map(item => {
+      this.hasScheduleList.map((item, index) => {
         let date2 = util.timeFormatFilter(item, 'YYYY-MM-DD')
         if (date1 === date2) {
-          flag = true
+          flag.status = true
+          flag.index = index
         }
       })
       return flag
     },
-    getListHasSchedule () {
-      let startTime = util.timeFormatFilter(this.currentMonthFirstDay, 'YYYY-MM-DD 00:00:00')
-      let endDate = util.timeFormatFilter(this.currentMonthLastDay, 'YYYY-MM-DD 23:59:59')
-      this.$http.get(`/Schedule/IsNoSchedule?startTime=${startTime}&endTime=${endDate}`).then(result => {
-        if (result.data.Code === 100000) {
-          this.hasScheduleList = result.data.Data
-        }
-      })
-    },
-    setActiveDate (date) {
-      this.dateChange(date)
+    clickDate (date) {
+      this.loading = true
+      if (date.hasPlan) {
+        this.$emit('removePlanToDate', date, this)
+      } else {
+        this.$emit('addPlanToDate', date.date, this)
+      }
     },
     setTodayActive () {
       this.dateChange(new Date())
     },
     dateChange (date) {
-      this.loading = true
       this.selectedMonth = date
       this.$emit('change', date, this)
     },
@@ -180,21 +178,28 @@ export default {
         let date = new Date(this.fromtDate(this.selectedMonth.getFullYear(), this.selectedMonth.getMonth() + 1, 1))
         date.setMonth(date.getMonth() - 1)
         date.setDate(i)
+        let thisDateTime = new Date(this.fromtDate(date.getFullYear(), date.getMonth() + 1, date.getDate()))
+        let dateInHasSchedule = this.dateInHasScheduleList(thisDateTime)
         list.push({
-          date: new Date(this.fromtDate(date.getFullYear(), date.getMonth() + 1, date.getDate())),
+          date: thisDateTime,
           isCurMonth: false,
-          day: i
+          day: i,
+          hasPlan: dateInHasSchedule.status,
+          hasPlanIndex: dateInHasSchedule.index
         })
         index += 1
       }
       for (let i = 0; i < this.currentMonthDays; i++) {
         let date = new Date(this.fromtDate(this.selectedMonth.getFullYear(), this.selectedMonth.getMonth() + 1, i + 1))
+        let thisDateTime = new Date(this.fromtDate(date.getFullYear(), date.getMonth() + 1, date.getDate()))
+        let dateInHasSchedule = this.dateInHasScheduleList(thisDateTime)
         list.push({
           isCurMonth: true,
           day: i + 1,
-          date: new Date(this.fromtDate(date.getFullYear(), date.getMonth() + 1, date.getDate())),
+          date: thisDateTime,
           isToday: today.getFullYear() === this.selectedMonth.getFullYear() && today.getMonth() === this.selectedMonth.getMonth() && today.getDate() === (i + 1),
-          isActive: this.activeDate.getFullYear() === this.selectedMonth.getFullYear() && this.activeDate.getMonth() === this.selectedMonth.getMonth() && this.activeDate.getDate() === (i + 1)
+          hasPlan: dateInHasSchedule.status,
+          hasPlanIndex: dateInHasSchedule.index
         })
         index += 1
       }
@@ -202,10 +207,14 @@ export default {
         let date = new Date(this.fromtDate(this.selectedMonth.getFullYear(), this.selectedMonth.getMonth() + 1, 1))
         date.setMonth(date.getMonth() + 1)
         date.setDate(i + 1)
+        let thisDateTime = new Date(this.fromtDate(date.getFullYear(), date.getMonth() + 1, date.getDate()))
+        let dateInHasSchedule = this.dateInHasScheduleList(thisDateTime)
         list.push({
           isCurMonth: false,
-          date: new Date(this.fromtDate(date.getFullYear(), date.getMonth() + 1, date.getDate())),
-          day: i + 1
+          date: thisDateTime,
+          day: i + 1,
+          hasPlan: dateInHasSchedule.status,
+          hasPlanIndex: dateInHasSchedule.index
         })
       }
       return list

@@ -20,7 +20,7 @@
     <div class="noPlan_text" v-else>
       还没有添加任何排班计划
     </div>
-    <div class="add_plan_btn" @click="addPlanDialogVisible = true">
+    <div v-if="!acticeDateIsLessThanToday()" class="add_plan_btn" @click="addPlanDialogVisible = true">
       <i class="iconfont icon-hao"></i>
       添加排班计划
     </div>
@@ -31,13 +31,13 @@
           <div class="select_items clearfix">
             开始时间
             <div class="select_items_content_container">
-              <Datetime v-model="startTime" placeholder="请选择时间" :minute-list="['00', '30']" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
+              <Datetime v-model="startTime" :min-hour="6" :max-hour="18" placeholder="请选择时间" :minute-list="['00', '30']" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
             </div>
           </div>
           <div class="select_items clearfix">
             结束时间
             <div class="select_items_content_container">
-              <Datetime v-model="endTime" placeholder="请选择时间" :minute-list="['00', '30']" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
+              <Datetime v-model="endTime" :min-hour="6" :max-hour="18" placeholder="请选择时间" :minute-list="['00', '30']" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
             </div>
           </div>
           <div class="select_items clearfix">
@@ -56,7 +56,7 @@
   </div>
 </template>
 <script>
-import { XDialog, Datetime, Cell, Group, InlineXNumber } from 'vux'
+import { XDialog, Datetime } from 'vux'
 import util from '@/plugins/util'
 export default {
   props: {
@@ -71,17 +71,23 @@ export default {
   },
   components: {
     XDialog,
-    Datetime,
-    Group,
-    Cell,
-    InlineXNumber
+    Datetime
   },
   data () {
     return {
       addPlanDialogVisible: false,
       startTime: null,
       endTime: null,
-      ReserveNum: 10
+      ReserveNum: 1
+    }
+  },
+  computed: {
+    todayStartTime () {
+      let date = new Date()
+      date.setHours(0)
+      date.setMinutes(0)
+      date.setSeconds(0)
+      return date
     }
   },
   watch: {
@@ -91,6 +97,9 @@ export default {
     }
   },
   methods: {
+    acticeDateIsLessThanToday () {
+      return this.activeDate.getTime() < this.todayStartTime.getTime()
+    },
     deletePlan (id, index) {
       const that = this
       that.$vux.confirm.show({
@@ -125,7 +134,8 @@ export default {
         StartTime: startTime,
         EndTime: endTime,
         ReserveNum: this.ReserveNum,
-        Items: ''
+        Items: '',
+        SchemeID: 0
       }).then(result => {
         if (result.data.Code === 100000) {
           this.$emit('addSuccess', {
@@ -148,19 +158,20 @@ export default {
       let today = util.timeFormatFilter(this.activeDate, 'YYYY-MM-DD')
       let startTime = new Date(`${today} ${this.startTime}:00`).getTime()
       let endTime = new Date(`${today} ${this.endTime}:00`).getTime()
+      if (startTime > endTime) {
+        this.$vux.toast.text('结束时间必选小于开始时间')
+        return false
+      }
+      let timeDistance = Math.abs(endTime - startTime)
       for (let i = 0; i < this.list.length; i++) {
         let listStartTime = new Date(this.list[i].StartTime).getTime()
         let listEndTime = new Date(this.list[i].EndTime).getTime()
-        if (startTime >= listStartTime && startTime <= listEndTime) {
-          this.$vux.toast.text('开始时间已被占用')
-          return false
-        }
-        if (endTime >= listStartTime && endTime <= listEndTime) {
-          this.$vux.toast.text('结束时间已被占用')
-          return false
-        }
-        if (startTime > endTime) {
-          this.$vux.toast.text('结束时间必选小于开始时间')
+        let listTimeDistance = Math.abs(listEndTime - listStartTime)
+        let allDistance = timeDistance + listTimeDistance
+        let startInterval = Math.abs(startTime - listStartTime)
+        let endInterval = Math.abs(endTime - listEndTime)
+        if (allDistance > (startInterval + endInterval)) {
+          this.$vux.toast.text('时间段已被占用')
           return false
         }
       }

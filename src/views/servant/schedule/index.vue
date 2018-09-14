@@ -1,96 +1,54 @@
 <template>
   <div>
-    <xx-go-back></xx-go-back>
-    <div class="calendar_container">
-      <weekCalendar v-if="!monthCalendar" ref="calendarRef" :activeDate="activeDate" @change="activeDateChange"></weekCalendar>
-      <monthlyCalendar v-if="monthCalendar" ref="calendarRef" :activeDate="activeDate" @change="activeDateChange"></monthlyCalendar>
-      <div class="switchCalander_btn" @click="changeCalendar">
-        <i v-if="!monthCalendar" class="iconfont icon-jiantouxia"></i>
-        <i v-if="monthCalendar" class="iconfont icon-jiantoushang"></i>
+    <xxGoBack></xxGoBack>
+    <div>
+      <div class="weui-panel weui-list-panel">
+        <div class="weui-cell" @click="redirectUrl('/schedule/calendar')">
+          <div class="weui-cell-top">
+            <div class="icon"><img src="@/assets/images/app-pbsz.png"></div>
+            <div class="title">排班日历</div>
+            <i class="iconfont icon-jiantouyou"></i>
+          </div>
+        </div>
+        <div class="weui-cell" @click="redirectUrl('/schedule/schemeList')">
+          <div class="weui-cell-top">
+            <div class="icon"><img src="@/assets/images/app-ffsz.png"></div>
+            <div class="title">排班方案管理</div>
+            <i class="iconfont icon-jiantouyou"></i>
+          </div>
+        </div>
       </div>
     </div>
-    <scheduleList :list="schedules" :activeDate="activeDate" @addSuccess="scheduleAddPlan" @deleteSuccess="scheduleDeletePlan"></scheduleList>
   </div>
 </template>
 <script>
-import scheduleList from './components/scheduleList'
-import monthlyCalendar from './components/monthlyCalendar'
-import weekCalendar from './components/weekCalendar'
-import util from '@/plugins/util'
 export default {
-  components: {
-    scheduleList,
-    monthlyCalendar,
-    weekCalendar
-  },
-  data () {
-    return {
-      monthCalendar: false,
-      activeDate: new Date(),
-      schedules: []
-    }
-  },
-  created () {
-    this.init()
-  },
   methods: {
-    changeCalendar () {
-      this.monthCalendar = !this.monthCalendar
-    },
-    scheduleAddPlan (plan) {
-      this.schedules.unshift(plan)
-      this.$refs.calendarRef.hasScheduleList.push(util.timeFormatFilter(this.activeDate))
-    },
-    scheduleDeletePlan (index) {
-      this.schedules.splice(index, 1)
-      if (this.schedules.length === 0) {
-        this.$refs.calendarRef.getListHasSchedule()
-      }
-    },
-    init () {
-      this.getPlansByDateTime(this.activeDate).then(result => {
-        if (result.Code === 100000) {
-          this.schedules = result.Data.ScheduleResponses
-        }
-      })
-    },
-    activeDateChange (date, calendar) {
-      this.activeDate = date
-      let startTime = new Date().getTime()
-      this.getPlansByDateTime(date).then(result => {
-        let endTime = new Date().getTime()
-        let intervalTime = endTime - startTime
-        setTimeout(function () {
-          calendar.loading = false
-        }, (intervalTime < 500) ? (500 - intervalTime) : intervalTime)
-        if (result.Code === 100000) {
-          this.schedules = result.Data.ScheduleResponses
-        }
-      })
-    },
-    async getPlansByDateTime (date) {
-      const result = await this.$http.get(`/Schedule/List`, {
-        dateTime: util.timeFormatFilter(date, 'YYYY-MM-DD')
-      })
-      return result.data
+    redirectUrl (url) {
+      this.$router.push(url)
     }
   }
 }
 </script>
+
 <style lang="less" scoped>
-.calendar_container
-{
-  transition: height .2s linear;
-}
-.switchCalander_btn
-{
-  text-align: center;
-  background-color: #fff;
-  height: 20px;
-  line-height: 20px;
-  padding: 5px 0 10px;
-  color: #999;
+.weui-list-panel {
+  .weui-cell-top {
+    display: flex;
+    align-items: center;
+    .icon {
+      width: 31px;
+      height: 31px;
+    }
+    .title {
+      margin-left: 17px;
+      flex: 1;
+      color: #666;
+      font-size: 16px;
+    }
+    .icon-jiantouyou {
+      color: #ccc;
+    }
+  }
 }
 </style>
-
-
