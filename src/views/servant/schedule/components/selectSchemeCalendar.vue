@@ -77,6 +77,12 @@ export default {
     this.selectedMonth = this.activeDate || new Date()
   },
   methods: {
+    getZeroTime (date) {
+      date.setHours(0)
+      date.setSeconds(0)
+      date.setMinutes(0)
+      return date
+    },
     drawRadius () {
       let a = document.querySelectorAll('.hasSchedule_td')
       for (let i = 0; i < a.length; i++) {
@@ -110,11 +116,13 @@ export default {
       return flag
     },
     clickDate (date) {
-      this.loading = true
-      if (date.hasPlan) {
-        this.$emit('removePlanToDate', date, this)
-      } else {
-        this.$emit('addPlanToDate', date.date, this)
+      if ((date.date.getTime() > this.getZeroTime(new Date()).getTime())) {
+        this.loading = true
+        if (date.hasPlan) {
+          this.$emit('removePlanToDate', date, this)
+        } else {
+          this.$emit('addPlanToDate', date.date, this)
+        }
       }
     },
     setTodayActive () {

@@ -122,14 +122,14 @@ export default {
       }).then(result => {
         calendar.loading = false
         if (result.data.Code === 100000) {
-          this.$vux.toast.text('应用成功')
           this.hasScheduleList.push(date1)
         } else if (result.data.Code === 1100040) {
           this.$vux.toast.text(result.data.Msg)
         } else {
           const that = this
           that.$vux.confirm.show({
-            content: '此时间段已被占用！',
+            title: '此时间段已被占用！',
+            content: `${date1}（${this.detail.StartTime}~${this.detail.EndTime}）已有排班计划`,
             confirmText: '查看详情',
             cancelText: '算了',
             onConfirm () {
