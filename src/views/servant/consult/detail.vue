@@ -1,5 +1,5 @@
 <template>
- <div @click="closeEmojiBox" style="padding-top:100px;overflow:hidden">
+ <div @click="closeEmojiBox" style="padding-top:150px;overflow:hidden">
     <div style="position:fixed;top:0;left:0;right:0;z-index:1000">
       <xx-go-back></xx-go-back>
       <xx-step-bar :step="detail.State | stepFilter">
