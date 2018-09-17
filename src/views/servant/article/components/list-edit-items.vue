@@ -30,13 +30,18 @@
         审核中
       </a>
       <a class="link_btns" v-if="Status === 3">
-        <img class="link_btns_icon" src="@/assets/images/ic-fagao.png" alt="正常">
         正常
+      </a>
+      <a class="link_btns" v-if="Status === 4">
+        文章被驳回
       </a>
       <a class="link_btns" @click="articleDelete">
         <img class="link_btns_icon" src="@/assets/images/ic-delete.png" alt="删除">
         删除
       </a>
+    </div>
+    <div v-if="Status === 4" class="FailReason_container">
+      驳回原因：{{FailReason}}
     </div>
   </div>
 </template>
@@ -66,6 +71,10 @@ export default {
     Status: {
       type: Number,
       default: 0
+    },
+    FailReason: {
+      type: String,
+      default: ''
     }
   },
   data () {
@@ -196,6 +205,16 @@ export default {
         vertical-align: middle
       }
     }
+  }
+  .FailReason_container
+  {
+    font-size: 12px;
+    color: #999;
+    padding: 0 20px;
+    height: 40px;
+    line-height: 40px;
+    border-top: 1px solid #CCF0EE;
+    text-align: justify;
   }
 }
 </style>

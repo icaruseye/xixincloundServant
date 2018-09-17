@@ -10,6 +10,7 @@
         :ViewCount="article.ViewCount"
         :ArticleId="article.ArticleId"
         :Status="article.Status"
+        :FailReason="article.FailReason"
         @statusChange="(status) => {article.Status = status}"
         ></ListEditItems>
         <xxPageSorter
