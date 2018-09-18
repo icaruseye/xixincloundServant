@@ -4,9 +4,13 @@
     <div class="user_bg_container" style="margin-top:10px">
       <div class="user_info_container">
         <div class="avatar_box">
-          <xxCenterImage :src="userInfo.FriendAvatar" radius="50%"></xxCenterImage>
+          <img :src="userInfo.FriendAvatar | transformImgUrl" :alt="userInfo.UserName.substring(0, 1)">
         </div>
-        <h4 class="realName">{{userInfo.UserName}}</h4>
+        <div style="flex: 1;">
+          <h4 class="realName">{{userInfo.UserName}}</h4>
+          <span v-if="userInfo.Remark" class="remarkName">备注：{{userInfo.Remark}}</span>
+          <span class="remarkNameBtn" @click="addRemarkUserRealName = true">{{userInfo.Remark ? '修改备注' : '备注真实姓名'}}</span>
+        </div>
         <!-- <p class="user_desc_p">
           {{userInfo.Mobile}}
         </p> -->
@@ -147,6 +151,22 @@
         </div>
       </div>
     </x-dialog>
+
+    <!-- 备注用户真实姓名 -->
+    <x-dialog v-model="addRemarkUserRealName">
+      <div class="addRemarkDialog_container">
+        <h5 class="select_tag_title">添加备注</h5>
+        <div class="customTag_input_container" style="margin:25px 0;">
+          <input class="add_customTag_control" v-model="userRealName" type="text" placeholder="备注用户真实姓名">
+          <span class="add_customTag_btn" @click="addRemarkUserRealNameHandle">提交</span>
+        </div>
+        <div class="addRemarkDialog_btn_box">
+          <div class="btn_box">
+            <button class="btn"  @click="addRemarkUserRealName = false">关闭</button>
+          </div>
+        </div>
+      </div>
+    </x-dialog>
   </div>
 </template>
 <script>
@@ -160,11 +180,13 @@ export default {
       customTagValue: '',
       selectTagsDialog: false,
       addRemarkDialogVisible: false,
+      addRemarkUserRealName: false,
       userInfo: null,
       userTags: null,
       remarkList: null,
       systemTags: null,
-      remarkValue: ''
+      remarkValue: '',
+      userRealName: ''
     }
   },
   computed: {
@@ -258,6 +280,14 @@ export default {
       const res = await this.$http.delete(`/Attribute/UserAttribute/Delete?id=${tagID}`)
       return res.data
     },
+    // 添加用户备注
+    async addUserRemark () {
+      const res = await this.$http.post('/Attribute/Friends/AddRemark', {
+        FriendID: this.ID,
+        Remark: this.userRealName
+      })
+      return res.data
+    },
     // 点击已选标签移除
     clickAndRemoveTags (tagID) {
       this.deleteTagByTagID(tagID).then(result => {
@@ -278,21 +308,42 @@ export default {
     },
     // 添加自定义标签
     addCustomTagAction () {
-      if (this.customTagValue.length <= 0) {
+      if (this.customTagValue.trim().length <= 0) {
         this.$vux.toast.text('请输入标签内容')
         return false
       }
-      if (this.customTagValue.length > 8) {
+      if (this.customTagValue.trim().length > 8) {
         this.$vux.toast.text('标签不可以大于8个字')
         return false
       }
-      this.addUserTag(this.customTagValue).then(result => {
+      this.addUserTag(this.customTagValue.trim()).then(result => {
         if (result.Code === 100000) {
           this.customTagValue = ''
           this.getTags()
           this.getTagsList()
         }
       })
+    },
+    // 备注用户真实姓名
+    async addRemarkUserRealNameHandle () {
+      if (this.userRealName.trim().length <= 0) {
+        this.$vux.toast.text('请输入备注内容')
+        return false
+      }
+      if (this.customTagValue.trim().length > 8) {
+        this.$vux.toast.text('备注不可以大于8个字')
+        return false
+      }
+      this.$vux.loading.show('添加中')
+      const res = await this.addUserRemark()
+      this.$vux.loading.hide()
+      if (res.Code === 100000) {
+        this.addRemarkUserRealName = false
+        this.getUserInfo()
+      } else {
+        this.$vux.toast.text('提交失败')
+      }
+      this.userRealName = ''
     }
   }
 }
@@ -304,16 +355,15 @@ export default {
   background: linear-gradient(to right, #3AC7F5, #9EC2FB);
   .user_info_container
   {
-    position: relative;
+    display: flex;
+    align-items: center;
     height: 75px;
-    padding: 20px 20px 20px 59px;
+    padding: 20px;
     box-sizing: border-box;
     border-bottom: 1px solid rgba(255,255,255,.2);
     .avatar_box
     {
-      position: absolute;
-      left: 12px;
-      top: 50%;
+      margin-right: 15px;
       width: 32px;
       height: 32px;
       background-color: #fff;
@@ -323,7 +373,6 @@ export default {
       color: #ccc;
       line-height: 32px;
       text-align: center;
-      transform: translateY(-50%);
       img
       {
         display: block;
@@ -333,12 +382,21 @@ export default {
       }
     }
     .realName
-    {
+    { 
       color: #fff;
       font-size: 18px;
-      height: 35px;
-      line-height: 35px;
       font-weight: 500;
+    }
+    .remarkName {
+      font-size: 14px;
+      color: #fff;
+    }
+    .remarkNameBtn {
+      padding: 2px 5px;
+      font-size: 14px;
+      color: #3ac7f5;
+      background: #fff;
+      border-radius: 15px;
     }
     .user_desc_p
     {
@@ -738,10 +796,6 @@ export default {
   }
   .send_message_btn
   {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
     border: 1px solid #ddd;
     padding: 0 13px;
     color: #fff;

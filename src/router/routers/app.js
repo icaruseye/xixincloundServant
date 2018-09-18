@@ -77,5 +77,38 @@ export default [
         title: '服务设置'
       }
     }
+  },
+  {
+    path: '/app/push',
+    component: _import('/servant/app/push'),
+    meta: {
+      title: '群发列表',
+      goBackParam: {
+        url: '/app',
+        title: '应用'
+      }
+    }
+  },
+  {
+    path: '/app/push/detail/:id',
+    component: _import('/servant/app/push/detail'),
+    meta: {
+      title: '群发详情',
+      goBackParam: {
+        url: '/app/push',
+        title: '群发列表'
+      }
+    }
+  },
+  {
+    path: '/app/push/add',
+    component: _import('/servant/app/push/add'),
+    meta: {
+      title: '群发推送',
+      goBackParam: {
+        url: '/app/push',
+        title: '群发列表'
+      }
+    }
   }
 ]
