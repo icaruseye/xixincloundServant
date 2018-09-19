@@ -439,3 +439,35 @@
 {
   margin-top: 10px;
 }
+
+
+.xx-radio-item {
+  position: relative;
+  border: 1px solid #999999;
+  border-radius: 100%;
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  cursor: pointer;
+  display: inline-block;
+  box-sizing: border-box;
+  &::after {
+    width: 10px;
+    height: 10px;
+    border-radius: 100%;
+    background-color: #fff;
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    transition: transform .15s ease-in;
+  }
+  &.active {
+    border-color: #3AC7F5;
+    &::after {
+      background-color: #3AC7F5;
+      transform: translate(-50%,-50%) scale(1);
+    }
+  }
+}

@@ -63,16 +63,13 @@ export default {
 </script>
 
 <style scoped lang="less">
-.has-tabbar {
-  padding: 10px 0;
-}
 .checker-bar {
-  padding: 10px 12px;
+  padding: 20px 12px 15px;
   display: flex;
   font-size: 14px;
   color: #999;
   span {
-    width: 85px;
+    width: 70px;
   }
   ul {
     display: flex;
@@ -83,9 +80,10 @@ export default {
       &::after {
         content: "";
         position: absolute;
+        top: -1px;
         right: 0;
         background: #999;
-        height: 25px;
+        height: 24px;
         border-right: 1px solid #D8D8D8;
         -webkit-transform: scaleY(0.5);
         transform: scaleY(0.5);
@@ -104,7 +102,7 @@ export default {
   bottom: 0;
 }
 .list-box {
-  padding: 12px;
+  padding: 0 12px;
   .list-item-card {
     background: #fff;
     border-radius: 4px;
@@ -117,7 +115,7 @@ export default {
       }
     }
     .dec {
-      padding: 10px 10px 0;
+      padding: 15px 10px 0;
       font-size: 15px;
       color: #666;
     }
@@ -126,7 +124,7 @@ export default {
       display: flex;
       justify-content: space-between;
       font-size: 12px;
-      border-bottom: 1px solid RGBA(0, 180, 171, .2);
+      border-bottom: 1px solid RGBA(0, 180, 171, .1);
       .date-text {
         color: #999;
       }
@@ -140,7 +138,7 @@ export default {
       }
     }
     .status-bar {
-      padding: 10px;
+      padding: 12px 10px;
       display: flex;
       justify-content: space-between;
       font-size: 12px;

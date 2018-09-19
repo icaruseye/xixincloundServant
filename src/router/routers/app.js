@@ -110,5 +110,16 @@ export default [
         title: '群发列表'
       }
     }
+  },
+  {
+    path: '/app/push/userlist',
+    component: _import('/servant/app/push/user-list'),
+    meta: {
+      title: '使用用户',
+      goBackParam: {
+        url: '/app/push/add',
+        title: '群发推送'
+      }
+    }
   }
 ]
