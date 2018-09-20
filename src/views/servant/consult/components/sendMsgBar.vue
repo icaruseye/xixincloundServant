@@ -2,13 +2,13 @@
   <div class="container send_message_container" ref="operContainerRef">
     <a class="finished_service_btn" @click="showFinishServicePopup" href="javascript:void(0)">完成服务</a>
     <div class="oper_container">
-      <label class="select_img_btn">
+      <div class="select_img_btn">
         <label class="icon-tupian iconfont" for="uploadImgBtn"></label>
         <input id="uploadImgBtn" type="file" accept="image/*" @change="uploadImgChange">
-      </label>
+      </div>
       <div class="input_control_box">
         <textarea
-         @focus="emojiContainerShow = false"
+         @focus="pushContainerShow = false"
          ref="chatInput"
          @keyup.enter="sendTextMsg"
          v-model="msg">
@@ -18,6 +18,9 @@
         <i v-if="!emojiContainerShow" class="iconfont icon-biaoqing-xue"></i>
         <i v-else class="iconfont icon-jianpan"></i>
       </div> -->
+      <div class="send_push_container" @click="pushContainerShow = !pushContainerShow">
+        <i class="more-icon" :class="{ active: pushContainerShow }"></i>
+      </div>
       <div class="send_msg_container">
         <button @click="sendTextMsg">发送</button>
       </div>
@@ -26,6 +29,24 @@
       <a href="javascript:;" class="emoji_items" v-for="(item, index) in faceList" :key="index" @click="chooseFace(item)">{{item}}</a>
       <i class="iconfont icon-delete" @click="backspaceInputValue"></i>
     </div> -->
+    <div class="push_container" :class="{ active: pushContainerShow }">
+      <div class="push_item" @click="emitPushType(0)">
+        <img src="@/assets/images/ic-msg-push-1.png" alt="">
+        <span>文章</span>
+      </div>
+      <div class="push_item" @click="emitPushType(1)">
+        <img src="@/assets/images/ic-msg-push-2.png" alt="">
+        <span>日程方案</span>
+      </div>
+      <div class="push_item" @click="emitPushType(2)">
+        <img src="@/assets/images/ic-msg-push-3.png" alt="">
+        <span>服务包信息</span>
+      </div>
+      <div class="push_item" @click="emitPushType(3)">
+        <img src="@/assets/images/ic-msg-push-4.png" alt="">
+        <span>调研问题</span>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -40,12 +61,16 @@ export default {
         IsServantReceive: 0
       },
       emojiContainerShow: false,
+      pushContainerShow: false,
       faceList: ['😀', '😂', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😎', '😍', '😘', '😗', '😙', '😚', '😇', '😐', '😑', '😶', '😏', '😣', '😥', '😮', '😯', '😪', '😫', '😴', '😌', '😛', '😜', '😝', '😒', '😒', '😓', '😔', '😕', '😲', '😷', '😖', '😞', '😟', '😤', '😢', '😭', '😦', '😧', '😨', '😬', '😰', '😱', '😳', '😵', '😡', '😠', '💪', '👈', '👉', '✌', '👆', '👇', '✋', '👌', '👍', '👏', '👐', '🙏'],
       imgUploadProgress: 0
     }
   },
   watch: {
     emojiContainerShow () {
+      this.operContainerHeight()
+    },
+    pushContainerShow () {
       this.operContainerHeight()
     }
   },
@@ -74,7 +99,9 @@ export default {
     },
     operContainerHeight () {
       this.$nextTick(() => {
-        this.$emit('changeHeight', this.$refs.operContainerRef.offsetHeight)
+        setTimeout(() => {
+          this.$emit('changeHeight', this.$refs.operContainerRef.offsetHeight)
+        }, 500)
       })
     },
     // 发送文本消息
@@ -179,6 +206,9 @@ export default {
       } else {
         return true
       }
+    },
+    emitPushType (type) {
+      this.$emit('changePushType', type)
     }
   }
 }
@@ -217,12 +247,12 @@ export default {
   flex-flow: nowrap;
   width: 100%;
   height: 52px;
+  align-items: center;
   .select_img_btn
   {
     position: relative;
     display: block;
     flex: 0 0 60px;
-    line-height: 52px;
     text-align: center;
     overflow: hidden;
     .iconfont
@@ -245,14 +275,14 @@ export default {
   .input_control_box
   {
     flex: 1;
-    padding: 11px 0;
+    display: flex;
+    align-items: center;
     box-sizing: border-box;
     textarea
     {
       border: none;
-      border-bottom: 1px solid #979797;
       width: 100%;
-      height: 30px;
+      height: 35px;
       padding: 5px 10px;
       outline: none;
       color: #999;
@@ -260,6 +290,8 @@ export default {
       font-size: 14px;
       box-sizing: border-box;
       resize: none;
+      background: #f6f6f6;
+      border-radius: 4px;
       -webkit-tap-highlight-color: rgba(0,0,0,0)
     }
   }
@@ -277,7 +309,8 @@ export default {
   .send_msg_container
   {
     flex: 0 0 80px;
-    padding: 8px 10px;
+    padding: 0 10px;
+    height: 30px;
     box-sizing: border-box;
     button
     {
@@ -320,6 +353,49 @@ export default {
     line-height: 35px;
     text-align: center;
     font-size: 26px;
+  }
+}
+
+.send_push_container {
+  padding: 0 0 0 10px;
+  .more-icon {
+    display: block;
+    width: 30px;
+    height: 30px;
+    background: url(../../../../assets/images/ic-msg-push-add.png) no-repeat;
+    background-size: contain;
+    transition: .5s;
+    &.active {
+      transform: rotate(135deg);
+    }
+  }
+}
+.push_container {
+  display: flex;
+  align-items: center;
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: .3s;
+  box-sizing: border-box;
+  &.active {
+    height: 85px;
+    opacity: 1;
+  }
+  .push_item {
+    flex: 1;
+    padding: 18px 0;
+    text-align: center;
+    img {
+      margin: 0 auto;
+      display: block;
+      height: 24px;
+      width: auto;
+    }
+    span {
+      font-size: 10px;
+      color: #666;
+    }
   }
 }
 </style>

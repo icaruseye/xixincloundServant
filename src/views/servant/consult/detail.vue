@@ -81,7 +81,13 @@
     <cancel-mission-popup v-model="cancelMissionPopupVisible" :options="cancelReason" @confirmCancel="cancelMissionEvent"></cancel-mission-popup>
 
     <!-- 发送消息组件 -->
-    <send-msg-bar @click.native.stop="sendMessageBarClick" ref="SendMsgBarRef" v-if="detail.State === 3" @changeHeight="changePaddingBottom" :missionID="ID" @sendMsg="sendMsg"></send-msg-bar>
+    <send-msg-bar @click.native.stop="sendMessageBarClick" ref="SendMsgBarRef" v-if="detail.State === 3" @changeHeight="changePaddingBottom" :missionID="ID" @sendMsg="sendMsg" @changePushType="changePushType"></send-msg-bar>
+
+    <!--<推送>选择服务包 -->
+    <push-package-dialog v-model="selectPackage" @close="closeSelectPackage"></push-package-dialog>
+
+    <!-- <推送>选择文章 -->
+    <push-article-dialog v-model="selectArticle" @close="closeSelectArticle"></push-article-dialog>
  </div>
 </template>
 <script>
@@ -92,6 +98,8 @@ import SystemMsgItem from './components/systemMsgItem'
 import TextChatItem from './components/textChatItem'
 import GraphicMessage from './components/GraphicMessage'
 import SendMsgBar from './components/sendMsgBar'
+import pushPackageDialog from './components/pushPackage'
+import pushArticleDialog from './components/pushArticle'
 import { setInterval, clearInterval } from 'timers'
 import comments from './components/comments'
 import { ImagePreview } from 'vant'
@@ -105,7 +113,9 @@ export default {
     GraphicMessage,
     CancelMissionPopup,
     Toast,
-    comments
+    comments,
+    pushPackageDialog,
+    pushArticleDialog
   },
   filters: {
     stepFilter (val = 0) {
@@ -121,6 +131,8 @@ export default {
   },
   data () {
     return {
+      selectPackage: false,
+      selectArticle: false,
       chatImagePreviewerVisible: false,
       previewImageImage: new Image(),
       commentPanelVisible: false,
@@ -185,6 +197,16 @@ export default {
     closeEmojiBox (e) {
       if (this.$refs.SendMsgBarRef) {
         this.$refs.SendMsgBarRef.emojiContainerShow = false
+      }
+    },
+    changePushType (type) {
+      switch (type) {
+        case 0:
+          this.selectArticle = true
+          break
+        case 2:
+          this.selectPackage = true
+          break
       }
     },
     /**
@@ -368,6 +390,12 @@ export default {
       this.$nextTick(() => {
         document.body.scrollTop = document.documentElement.scrollTop = document.querySelector('body').scrollHeight
       })
+    },
+    closeSelectPackage () {
+      this.selectPackage = false
+    },
+    closeSelectArticle () {
+      this.selectArticle = false
     }
   }
 }
