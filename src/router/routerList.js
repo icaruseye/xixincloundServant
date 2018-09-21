@@ -11,6 +11,7 @@ import recommend from './routers/recommend'
 import customer from './routers/customer'
 import article from './routers/article'
 import schedule from './routers/schedule'
+import activity from './routers/activity'
 
 const routerList = [
   ...common,
@@ -22,7 +23,8 @@ const routerList = [
   ...recommend,
   ...customer,
   ...article,
-  ...schedule
+  ...schedule,
+  ...activity
 ]
 
 export default routerList

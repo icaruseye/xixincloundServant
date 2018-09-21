@@ -84,10 +84,10 @@
     <send-msg-bar @click.native.stop="sendMessageBarClick" ref="SendMsgBarRef" v-if="detail.State === 3" @changeHeight="changePaddingBottom" :missionID="ID" @sendMsg="sendMsg" @changePushType="changePushType"></send-msg-bar>
 
     <!--<推送>选择服务包 -->
-    <push-package-dialog v-model="selectPackage" @close="closeSelectPackage"></push-package-dialog>
+    <push-package-dialog v-model="selectPackage" @close="selectPackage = false"></push-package-dialog>
 
     <!-- <推送>选择文章 -->
-    <push-article-dialog v-model="selectArticle" @close="closeSelectArticle"></push-article-dialog>
+    <push-article-dialog v-model="selectArticle" @close="selectArticle = false"></push-article-dialog>
  </div>
 </template>
 <script>
@@ -390,12 +390,6 @@ export default {
       this.$nextTick(() => {
         document.body.scrollTop = document.documentElement.scrollTop = document.querySelector('body').scrollHeight
       })
-    },
-    closeSelectPackage () {
-      this.selectPackage = false
-    },
-    closeSelectArticle () {
-      this.selectArticle = false
     }
   }
 }
