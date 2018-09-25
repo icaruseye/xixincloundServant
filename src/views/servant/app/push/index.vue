@@ -1,36 +1,43 @@
 <template>
   <div class="has-tabbar">
     <div class="checker-bar">
-      <span class="">筛选条件：</span>
+      <span style="width:80px" class="">筛选条件：</span>
       <ul>
         <li :class="pushListTabIndex === 0 ? 'active' : ''" @click="changeChecker(0)">全部</li>
         <li :class="pushListTabIndex === 1 ? 'active' : ''" @click="changeChecker(1)">审批中</li>
         <li :class="pushListTabIndex === 2 ? 'active' : ''" @click="changeChecker(2)">已发送</li>
         <li :class="pushListTabIndex === 3 ? 'active' : ''" @click="changeChecker(3)">等待发送</li>
-        <!-- <li :class="pushListTabIndex === 4 ? 'active' : ''" @click="changeChecker(4)">发送失败</li> -->
+        <li :class="pushListTabIndex === 4 ? 'active' : ''" @click="changeChecker(4)">已取消</li>
       </ul>
     </div>
     <div class="list-box">
-      <div class="list-item-card">
-        <div class="title-bar">
-          <span>三位收贱人：</span>
-          <span class="name">一号收贱人，</span>
-          <span class="name">二号收贱人，</span>
-          <span class="name">三号收贱人，</span>
-          <span class="name">四号收贱人</span>
+      <template v-for="(item, index) in pushList">
+        <div :key="index">
+          <div class="list-item-card">
+            <div class="title-bar">
+              <span>{{item.PushPeopleName.split().length}}位收件人：</span>
+              <span class="name">{{item.PushPeopleName}}</span>
+            </div>
+            <div class="dec">{{item.Describe}}</div>
+            <div class="handle-bar">
+              <span class="date-text">{{item.CreateTime | xxTimeFormatFilter('MM月DD日')}}</span>
+              <button v-if="item.Status === 1" class="cancel-btn" @click="cancelPushHandle(item.ID)">取消发送</button>
+            </div>
+            <div class="status-bar">
+              <router-link :to="`/app/push/detail/${item.ID}`" class="link">查看详情</router-link>
+              <span class="text" :class="{ fail: item.status == 3 }">{{item.Status | pushStatus}} 
+                <span class="text fail" style="margin-left:10px;" @click="deleteHandle(item.ID)">删除</span>
+              </span>
+            </div>
+          </div>
+          <div class="date-bar">
+            <span>{{item.CreateTime | xxTimeFormatFilter('周E HH:mm')}}</span>
+          </div>
         </div>
-        <div class="dec">关于糖尿病的服务包，以及详情介绍，关于糖尿病 的服务包，以及详情介绍</div>
-        <div class="handle-bar">
-          <span class="date-text">8月8日</span>
-          <button class="cancel-btn">取消发送</button>
-        </div>
-        <div class="status-bar">
-          <router-link to="/app/push/detail/1" class="link">查看详情</router-link>
-          <span class="text fail">等待发送</span>
-        </div>
-      </div>
-      <div class="date-bar">
-        <span>周一 11:30</span>
+      </template>
+      <div v-if="pushList.length === 0" class="occupied_container">
+        <img class="occupied_img" src="@/assets/images/empty_icon.png" alt="">
+        <p class="occupied_text">暂无数据</p>
       </div>
     </div>
     <router-link to="/app/push/add">
@@ -44,18 +51,87 @@ export default {
   data () {
     return {
       pushListTabIndex: 0,
-      checkerIndexLoack: true
+      checkerIndexLoack: true,
+      pageIndex: 1,
+      pushList: []
     }
   },
+  filters: {
+    pushStatus (val) {
+      switch (val) {
+        case 1:
+          return '等待发送'
+        case 2:
+          return '已发送'
+        case 3:
+          return '已驳回'
+        case 4:
+          return '已取消'
+        case -1:
+          return '已删除'
+      }
+    }
+  },
+  watch: {
+    pushListTabIndex () {
+      this.getPushList()
+    }
+  },
+  mounted () {
+    this.getPushList()
+  },
   methods: {
-    async initData () {
+    async getPushList () {
+      const res = await this.$http.get(`/Push/List?pageIndex=${this.pageIndex}&status=${this.pushListTabIndex}`)
+      if (res.data.Code === 100000) {
+        console.log(res)
+        this.pushList = res.data.Data.SiteNoticePushResponses
+      }
     },
     async changeChecker (index) {
       if (this.checkerIndexLoack) {
         this.checkerIndexLoack = false
         this.pushListTabIndex = index
-        await this.initData()
+        await this.getPushList()
         this.checkerIndexLoack = true
+      }
+    },
+    deleteHandle (id) {
+      const that = this
+      this.$vux.confirm.show({
+        title: '删除推送',
+        content: '确认要删除此次推送吗？',
+        onConfirm () {
+          that.deletePush(id)
+        }
+      })
+    },
+    cancelPushHandle (id) {
+      const that = this
+      this.$vux.confirm.show({
+        title: '取消推送',
+        content: '确认要取消此次推送吗？',
+        onConfirm () {
+          that.cancelPush(id)
+        }
+      })
+    },
+    async cancelPush (id) {
+      const res = await this.$http.put(`/Push/Cancel?pushID=${id}`)
+      if (res.data.Code === 100000) {
+        this.$vux.toast.text('已取消')
+        this.getPushList()
+      } else {
+        this.$vux.toast.text(`出错了,错误码：${res.data.Code}`)
+      }
+    },
+    async deletePush (id) {
+      const res = await this.$http.delete(`/Push/Delete?pushID=${id}`)
+      if (res.data.Code === 100000) {
+        this.$vux.toast.text('已删除')
+        this.getPushList()
+      } else {
+        this.$vux.toast.text(`出错了,错误码：${res.data.Code}`)
       }
     }
   }
@@ -167,5 +243,22 @@ export default {
       border-radius: 2px;
     }
   }
+}
+.occupied_container
+{
+  padding: 120px 0;
+}
+.occupied_img
+{
+  display: block;
+  width: 80px;
+  margin: 0 auto;
+}
+.occupied_text
+{
+  margin-top: 10px;
+  font-size: 14px;
+  color: #999;
+  text-align: center;
 }
 </style>

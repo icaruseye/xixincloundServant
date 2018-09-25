@@ -3,47 +3,46 @@
     <div class="title_input_container" style="margin-top:10px">
       <label class="title_input_label">标题</label>
       <div class="title_input_box">
-        <input class="title_input_contorl" v-model="params.title" placeholder="请输入" type="text">
+        <input class="title_input_contorl" v-model="params.Title" placeholder="请输入" type="text">
       </div>
     </div>
     <div class="content_input_container">
       <label class="content_input_label">描述</label>
       <div class="content_input_box">
-        <textarea class="content_input_textarea" v-model="params.content" placeholder="请输入"></textarea>
-        <span class="content_input_nums_count">{{params.content ? params.content.length : 0}}/100</span>
+        <textarea class="content_input_textarea" v-model="params.Describe" placeholder="请输入"></textarea>
+        <span class="content_input_nums_count">{{params.Describe ? params.Describe.length : 0}}/100</span>
       </div>
     </div>
     <div>
       <div class="title_text_container">
         <label class="title_text_label">推送类型</label>
-        <div class="title_text_box" @click="selectPushType = true">{{type[params.type] || '请选择'}}<i class="iconfont icon-jiantouyou"></i></div>
+        <div class="title_text_box" @click="selectPushType = true">{{type[params.PushType] || '请选择'}}<i class="iconfont icon-jiantouyou"></i></div>
       </div>
       <div class="title_text_container">
         <label class="title_text_label">推送名称</label>
-        <div class="title_text_box" @click="selectStuffDialog">{{selectStuff || '请选择'}}<i class="iconfont icon-jiantouyou"></i></div>
+        <div class="title_text_box" @click="selectStuffDialog">{{params.selectStuff || '请选择'}}<i class="iconfont icon-jiantouyou"></i></div>
       </div>
       <div class="title_text_container">
         <label class="title_text_label">推送时间</label>
-        <div class="title_text_box" @click="selectTime = true">2018/08/25 14:00<i class="iconfont icon-jiantouyou"></i></div>
+        <div class="title_text_box" @click="selectDateTime">{{params.PushTime || '请选择推送时间'}}<i class="iconfont icon-jiantouyou"></i></div>
       </div>
       <div class="title_text_container">
         <label class="title_text_label">推送类型</label>
         <div
+          v-if="params.PushPeople.length > 0"
           @click="go('/app/push/userlist')"
           class="title_text_box"
           style="display: flex;flex-direction: row-reverse;align-items: center;">
           <i class="iconfont icon-jiantouyou"></i>
-          <span style="margin-left:5px;">7人</span>
+          <span style="margin-left:5px;">{{params.PushPeople.split(',').length}}人</span>
           <div class="push-list">
-            <img src="https://tva1.sinaimg.cn/crop.0.0.180.180.180/5e9d399fjw1e8qgp5bmzyj2050050aa8.jpg" alt="">
-            <img src="https://tvax3.sinaimg.cn/crop.0.0.512.512.180/006wZ05Mly8fl3xxdhh8cj30e80e8t8u.jpg" alt="">
-            <img src="https://tva4.sinaimg.cn/crop.0.0.180.180.180/622ddd17jw1e8qgp5bmzyj2050050aa8.jpg" alt="">
-            <img src="https://tvax1.sinaimg.cn/crop.0.0.512.512.180/0061fIkkly8fnt4zg3d5lj30e80e8glm.jpg" alt="">
+            <img v-if="index < 4" v-for="(item, index) in params.avatarList" :key="item" :src="item | transformImgUrl" alt="">
           </div>
         </div>
+        <div class="title_text_box" v-else @click="go('/app/push/userlist')">请选择<i class="iconfont icon-jiantouyou"></i></div>
       </div>
     </div>
-    <button type="button" class="weui-btn weui-btn_primary">提交</button>
+    <button type="button" class="weui-btn weui-btn_primary" @click="submit">提交</button>
 
     <!-- 选择推送类型 -->
     <div v-transfer-dom
@@ -66,16 +65,16 @@
       <div class="dialog-content">
         <div class="dialog-title">服务推荐</div>
         <div class="dialog-list">
-          <checker v-model="params.selectStuffId" default-item-class="item" selected-item-class="item-selected" :radio-required="true">
-            <checker-item :value="0">
-              <img class="icon" src="@/assets/images/icon_consult_item.png" alt="">
-              <span class="item-title">院内陪诊</span>
-              <span class="xx-radio-item" :class="params.selectStuffId === 0 ? 'active' : ''"></span>
-            </checker-item>
-            <checker-item :value="1">
-              <img class="icon" src="@/assets/images/icon_consult_item.png" alt="">
-              <span class="item-title">院内陪诊</span>
-              <span class="xx-radio-item" :class="params.selectStuffId === 1 ? 'active' : ''"></span>
+          <checker
+            v-model="selectPackageIndex"
+            default-item-class="item"
+            selected-item-class="item-selected"
+            :radio-required="true"
+            @on-change="selectPackageHandle">
+            <checker-item :value="index" :key="index" v-for="(item, index) in packageList">
+              <img class="icon" :src="item.PackageType | xxMissionTypeIconFilter" alt="">
+              <span class="item-title">{{item.Name}}</span>
+              <span class="xx-radio-item" :class="selectPackageIndex === index ? 'active' : ''"></span>
             </checker-item>
           </checker>
         </div>
@@ -94,32 +93,26 @@
       :hide-on-blur="true">
       <div class="dialog-content">
         <div class="dialog-title">文章列表</div>
-        <div class="tabbar">
+        <!-- <div class="tabbar">
           <span class="tabbar-item active">最新</span>
           <span class="tabbar-item">热点</span>
           <span class="tabbar-item">推荐</span>
-        </div>
+        </div> -->
         <div class="dialog-list">
-          <checker v-model="params.selectStuffId" default-item-class="item" selected-item-class="item-selected" :radio-required="true">
-            <checker-item :value="0">
-              <span class="xx-radio-item" :class="params.selectStuffId === 0 ? 'active' : ''"></span>
-              <img class="img" src="https://wx2.sinaimg.cn/mw690/497f855dgy1fvba0f3ypcj21w01w0npd.jpg" alt="">
+          <checker
+            v-model="selectArticleIndex"
+            default-item-class="item"
+            selected-item-class="item-selected"
+            :radio-required="true"
+            @on-change="selectArticleHandle">
+            <checker-item :value="index" :key="index" v-for="(item, index) in articleList">
+              <span class="xx-radio-item" :class="selectArticleIndex === index ? 'active' : ''"></span>
+              <img class="img" :src="item.Cover | transformImgUrl" alt="">
               <div class="content">
-                <div class="title">根据公众号的历史文章、类型等，…</div>
+                <div class="title">{{item.Title}}</div>
                 <div class="info">
-                  <span class="tag">糖尿病</span>
-                  <span class="date">8月5日 12:30:22</span>
-                </div>
-              </div>
-            </checker-item>
-            <checker-item :value="1">
-              <span class="xx-radio-item" :class="params.selectStuffId === 1 ? 'active' : ''"></span>
-              <img class="img" src="https://wx2.sinaimg.cn/mw690/497f855dgy1fvba0f3ypcj21w01w0npd.jpg" alt="">
-              <div class="content">
-                <div class="title">根据公众号的历史文章、类型等，…</div>
-                <div class="info">
-                  <span class="tag">糖尿病</span>
-                  <span class="date">8月5日 12:30:22</span>
+                  <span class="tag">{{item.Attributes}}</span>
+                  <span class="date">{{item.CreateTime | xxTimeFormatFilter('MM-DD HH:mm')}}</span>
                 </div>
               </div>
             </checker-item>
@@ -132,42 +125,11 @@
         </div>
       </div>
     </x-dialog>
-
-    <!-- 选择推送时间 -->
-    <x-dialog
-      v-model="selectTime"
-      class="dialog_Time dialog"
-      :hide-on-blur="true">
-      <div class="dialog-content">
-        <div class="dialog-title">推送时间</div>
-        <div class="dialog-list">
-          <checker v-model="params.selectStuffId" default-item-class="item" selected-item-class="item-selected" :radio-required="true">
-            <checker-item :value="0">
-              <span class="datetime">2018年 6月 1日 12：00</span>
-              <span class="xx-radio-item" :class="params.selectStuffId === 0 ? 'active' : ''"></span>
-            </checker-item>
-            <checker-item :value="1">
-              <span class="datetime">2018年 6月 1日 12：00</span>
-              <span class="xx-radio-item" :class="params.selectStuffId === 1 ? 'active' : ''"></span>
-            </checker-item>
-            <checker-item :value="2">
-              <span class="datetime">2018年 6月 1日 12：00</span>
-              <span class="xx-radio-item" :class="params.selectStuffId === 2 ? 'active' : ''"></span>
-            </checker-item>
-          </checker>
-        </div>
-        <div style="height:5px;background:#f1f1f1;"></div>
-        <div class="dialog-button_bar">
-          <button class="dialog-button dialog-confirm" @click="selectTime = false">确认</button>
-          <button class="dialog-button dialog-close" @click="selectTime = false">取消</button>
-        </div>
-      </div>
-    </x-dialog>
-
   </div>
 </template>
 
 <script>
+import util from '@/plugins/util'
 import { TransferDom, Popup, Checker, CheckerItem, XDialog } from 'vux'
 export default {
   directives: {
@@ -184,42 +146,114 @@ export default {
       selectPushType: false,
       selectPackage: false,
       selectArticle: false,
-      selectTime: false,
       type: ['文章', '服务'],
-      selectStuff: '',
-      stuffList: null,
+      articleList: null,
+      packageList: null,
+      selectArticleIndex: null,
+      selectPackageIndex: null,
       params: {
-        title: '',
-        content: '',
-        type: null,
-        selectStuffId: null
+        selectStuff: '',
+        PushType: -1, // 0: 文章；1：服务包；-1：未选择
+        Title: '',
+        Describe: '',
+        SourceID: '',
+        PushTime: '',
+        PushPeople: [],
+        PushPeopleName: []
       }
     }
   },
+  watch: {
+    selectArticleIndex () {
+      console.log(this.selectArticleIndex)
+      this.params.SourceID = this.articleList[this.selectArticleIndex].ArticleId
+    },
+    selectPackageIndex () {
+      console.log(this.selectPackageIndex)
+      this.params.SourceID = this.packageList[this.selectPackageIndex].ID
+    }
+  },
+  mounted () {
+    if (sessionStorage.getItem('addPushParams')) {
+      this.params = JSON.parse(sessionStorage.getItem('addPushParams'))
+    }
+  },
   methods: {
+    // 获取文章列表
+    async getArticleList () {
+      const res = await this.$http.get(`/ArticleList?Index=1`)
+      if (res.data.Code === 100000) {
+        this.articleList = res.data.Data.ArticleResponses
+      }
+    },
+    // 获取服务列表
+    async getPackageList () {
+      const res = await this.$http.get(`/Push/Package/List`)
+      if (res.data.Code === 100000) {
+        this.packageList = res.data.Data
+      }
+    },
+    async submit () {
+      const that = this
+      this.$vux.loading.show({
+        text: 'Loading'
+      })
+      const res = await this.$http.post('/Push/Add', this.params)
+      if (res.data.Code === 100000) {
+        this.$vux.loading.hide()
+        this.$vux.toast.show({
+          type: 'text',
+          text: '提交成功',
+          time: 1000,
+          onHide () {
+            sessionStorage.removeItem('addPushParams')
+            that.$router.back()
+          }
+        })
+      } else {
+        this.$vux.loading.hide()
+      }
+    },
     // 选择推送类型
     selectPushTypeHandle (id) {
-      this.params.type = id
+      this.params.PushType = id
       this.selectPushType = false
     },
-    // 选择推荐的服务或者文章
-    selectStuffHandle (index) {
-      console.log(index)
-      this.params.selectStuffId = index
+    // 选择文章
+    selectArticleHandle (index) {
+      this.params.selectStuff = this.articleList[index].Title
+    },
+    // 选择服务
+    selectPackageHandle (index) {
+      this.params.selectStuff = this.packageList[index].Name
     },
     // 根据类型弹出服务或文章
     selectStuffDialog () {
-      if (!this.params.type) {
+      if (this.params.PushType === -1) {
         this.$vux.toast.text('请先选择推送的类型')
       }
-      if (this.params.type === 0) {
+      if (this.params.PushType === 0) {
         this.selectArticle = true
+        this.getArticleList()
       }
-      if (this.params.type === 1) {
+      if (this.params.PushType === 1) {
         this.selectPackage = true
+        this.getPackageList()
       }
     },
+    // 寻找推送时间
+    selectDateTime () {
+      const that = this
+      this.$vux.datetime.show({
+        format: 'YYYY-MM-DD HH:mm',
+        startDate: util.timeFormatFilter(new Date(), 'YYYY-MM-DD'),
+        onConfirm (value) {
+          that.params.PushTime = value
+        }
+      })
+    },
     go (url) {
+      sessionStorage.setItem('addPushParams', JSON.stringify(this.params))
       this.$router.push(url)
     }
   }

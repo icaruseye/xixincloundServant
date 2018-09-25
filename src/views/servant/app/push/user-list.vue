@@ -1,17 +1,17 @@
 <template>
   <div class="wrapper">
+    <xx-go-back></xx-go-back>
     <div style="padding: 15px 12px 5px;background: #fff;">
       <div class="search-bar">
         <i class="iconfont icon-sousuo"></i>
-        <input type="text" placeholder="搜索">
-        <button class="all">全选</button>
+        <input type="text" placeholder="搜索" v-model="search">
+        <button class="all" @click="selectAll">全选</button>
       </div>
       <div class="tags-box">
         <div class="title">用户标签</div>
         <div class="list">
-          <checker v-model="params.tagId" :radio-required="true" default-item-class="tags-item" selected-item-class="tags-item-selected">
-            <checker-item :value="0">全部</checker-item>
-            <checker-item v-for="(item, index) in tagList" :key="index" :value="item.TagID">{{item.TagName}}</checker-item>
+          <checker v-model="attrs" type="checkbox" default-item-class="tags-item" selected-item-class="tags-item-selected">
+            <checker-item v-if="item.trim().length > 0" v-for="(item, index) in tagList" :key="index" :value="item">{{item}}</checker-item>
           </checker>
         </div>
       </div>
@@ -19,16 +19,11 @@
     <div class="userlist-box">
       <div class="title">通讯录</div>
       <div class="list">
-        <checker v-model="params.userlist" default-item-class="item" selected-item-class="item-selected">
-          <checker-item :value="0">
-            <span class="xx-radio-item" :class="params.userlist === 0 ? 'active' : ''"></span>
-            <img class="avatar" src="https://tva1.sinaimg.cn/crop.0.0.179.179.180/771d5a55gw1emwpljaw12j2050050t8o.jpg" alt="">
-            <span class="name">伍米常</span>
-          </checker-item>
-          <checker-item :value="1">
-            <span class="xx-radio-item" :class="params.userlist === 1 ? 'active' : ''"></span>
-            <img class="avatar" src="https://tvax4.sinaimg.cn/crop.0.0.996.996.180/9d0d09ably8foq7clnhjwj20ro0ro3yv.jpg" alt="">
-            <span class="name">易米常</span>
+        <checker v-model="params.userList" default-item-class="item" selected-item-class="item-selected" type="checkbox">
+          <checker-item :value="item.UserId" v-for="(item, index) in userList" :key="index" >
+            <span class="xx-radio-item" :class="params.userList.indexOf(item.UserId) !== -1 ? 'active' : ''"></span>
+            <img class="avatar" :src="item.FriendAvatar | transformImgUrl" alt="">
+            <span class="name">{{item.FriendName}}</span>
           </checker-item>
         </checker>
       </div>
@@ -46,7 +41,7 @@
         </checker-item>
       </checker>
     </div>
-    <button type="button" class="weui-btn weui-btn_primary">提交</button>
+    <button type="button" class="weui-btn weui-btn_primary" @click="submit">确认</button>
   </div>
 </template>
 
@@ -63,26 +58,84 @@ export default {
   data () {
     return {
       isCreateGroup: 0,
-      tagList: [{
-        TagName: '愚愚人',
-        TagID: 1
-      }, {
-        TagName: '海关监管和价格',
-        TagID: 2
-      }, {
-        TagName: '而我认为认为',
-        TagID: 3
-      }],
+      attrs: '',
+      search: '',
+      pageIndex: 1,
+      userList: null,
+      tagList: [],
       params: {
-        userlist: null
+        userList: []
       }
+    }
+  },
+  watch: {
+    attrs () {
+      this.params.userList = []
+      this.getuserList()
+    },
+    search () {
+      this.getuserList()
     }
   },
   created () {
   },
   mounted () {
+    this.getuserList()
+    this.getAttribute()
   },
   methods: {
+    async getuserList () {
+      const res = await this.$http.get(`/Attribute/Friends/userList?Index=${this.pageIndex}&Size=10&attrs=${this.attrs}&search=${this.search}&filterType=0`)
+      if (res.data.Code === 100000) {
+        this.userList = res.data.Data.UserList
+      }
+    },
+    async getAttribute () {
+      const res = await this.$http.get('/Attribute/UserAttribute/GetAttribute')
+      if (res.data.Code === 100000) {
+        this.tagList = res.data.Data
+      }
+    },
+    selectAll () {
+      for (let user of this.userList) {
+        console.log(user)
+        this.params.userList.push(user.UserId)
+      }
+    },
+    getAvatarList () {
+      let res = []
+      for (let user of this.userList) {
+        for (let selectItem of this.params.userList) {
+          if (selectItem === user.UserId) {
+            res.push(user.FriendAvatar)
+          }
+        }
+      }
+      return res
+    },
+    getUsername () {
+      const res = []
+      for (let user of this.userList) {
+        for (let selectItem of this.params.userList) {
+          if (selectItem === user.UserId) {
+            res.push(user.UserName)
+          }
+        }
+      }
+      return res
+    },
+    submit () {
+      let params = JSON.parse(sessionStorage.getItem('addPushParams'))
+      let avatarList = this.getAvatarList()
+      let username = this.getUsername()
+
+      params.PushPeople = this.params.userList.join()
+      params.PushPeopleName = username.join()
+      params.avatarList = avatarList
+
+      sessionStorage.setItem('addPushParams', JSON.stringify(params))
+      this.$router.back()
+    }
   }
 }
 </script>

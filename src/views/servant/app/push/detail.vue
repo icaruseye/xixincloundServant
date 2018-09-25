@@ -1,42 +1,39 @@
 <template>
   <div class="wrap">
     <div class="title-bar">
-      <div class="title">关于糖尿病的文章链接</div>
+      <div class="title">{{detail.Title}}</div>
       <div class="info">
-        <span class="date">8月5日 12:30:22</span>
-        <span class="status">已发送</span>
+        <span class="date">{{detail.CreateTime | xxTimeFormatFilter('MM月DD日 HH:mm:ss')}}</span>
+        <span class="status">{{detail.Status | pushStatus}}</span>
       </div>
     </div>
     <div class="recipients">
-      <span>三位收贱人：</span>
-      <span class="name">一号收贱人，</span>
-      <span class="name">二号收贱人，</span>
-      <span class="name">三号收贱人，</span>
-      <span class="name">四号收贱人</span>
+      <span>{{PushPeopleCount}}位收件人：</span>
+      <span class="name">{{detail.PushPeopleName}}</span>
     </div>
-    <div class="push-dec">关于糖尿病的服务包，以及详情介绍，关于糖尿病的服务包</div>
-    <div class="push-card">
+    <div class="push-dec">{{detail.Describe}}</div>
+    <div class="push-card" v-if="detail.PushType === 0">
       <div class="article">
         <div class="img">
-          <img src="https://wx2.sinaimg.cn/mw690/497f855dgy1fvba0f3ypcj21w01w0npd.jpg" alt="">
+          <img :src="detail.ArticleRes.Cover | transformImgUrl" alt="">
         </div>
         <div class="content">
-          <div class="title">根据公众号的历史文章、类型等，…</div>
+          <div class="title">{{detail.ArticleRes.ArticleTitle}}</div>
           <div class="info">
-            <span class="tag">糖尿病</span>
-            <span class="date">8月5日 12:30:22</span>
+            <span class="tag">{{detail.ArticleRes.Attributes}}</span>
+            <span class="date">{{detail.ArticleRes.CreateTime | xxTimeFormatFilter('MM月DD日 HH:mm:ss')}}</span>
           </div>
         </div>
       </div>
     </div>
-    <div class="push-card">
+    <div class="push-card" v-if="detail.PushType === 1">
       <div class="package">
         <div class="img">
-          <img src="https://wx2.sinaimg.cn/mw690/497f855dgy1fvba0f3ypcj21w01w0npd.jpg" alt="">
+          <img :src="detail.PackageRes.PackageType | xxMissionTypeIconFilter" alt="">
         </div>
         <div class="content">
-          <div class="title">根据公众号的历史文章、类型等，…</div>
-          <div class="dec">工作于急诊，擅长消化道危急重症…</div>
+          <div class="title">{{detail.PackageRes.Name}}</div>
+          <div class="dec">{{detail.PackageRes.Description}}</div>
         </div>
       </div>
     </div>
@@ -45,6 +42,48 @@
 
 <script>
 export default {
+  data () {
+    return {
+      detail: {}
+    }
+  },
+  filters: {
+    pushStatus (val) {
+      switch (val) {
+        case 1:
+          return '等待发送'
+        case 2:
+          return '已发送'
+        case 3:
+          return '已驳回'
+        case 4:
+          return '已取消'
+        case -1:
+          return '已删除'
+      }
+    }
+  },
+  computed: {
+    ID () {
+      return +this.$route.params.id
+    },
+    PushPeopleCount () {
+      if (this.detail.PushPeopleName) {
+        return this.detail.PushPeopleName.split().length
+      }
+    }
+  },
+  mounted () {
+    this.getDetail()
+  },
+  methods: {
+    async getDetail () {
+      const res = await this.$http.get(`/Push/Detail?pushID=${this.ID}`)
+      if (res.data.Code === 100000) {
+        this.detail = res.data.Data
+      }
+    }
+  }
 }
 </script>
 

@@ -18,9 +18,9 @@
         <i v-if="!emojiContainerShow" class="iconfont icon-biaoqing-xue"></i>
         <i v-else class="iconfont icon-jianpan"></i>
       </div> -->
-      <div class="send_push_container" @click="pushContainerShow = !pushContainerShow">
+      <!-- <div class="send_push_container" @click="pushContainerShow = !pushContainerShow">
         <i class="more-icon" :class="{ active: pushContainerShow }"></i>
-      </div>
+      </div> -->
       <div class="send_msg_container">
         <button @click="sendTextMsg">发送</button>
       </div>
