@@ -27,7 +27,7 @@
         <div class="title_text_box" @click="selectDateTime">{{params.PushTime || '请选择推送时间'}}<i class="iconfont icon-jiantouyou"></i></div>
       </div>
       <div class="title_text_container">
-        <label class="title_text_label">推送类型</label>
+        <label class="title_text_label">推送人员</label>
         <div
           v-if="params.PushPeople.length > 0"
           @click="go('/app/push/userlist')"
@@ -160,7 +160,38 @@ export default {
         PushTime: '',
         PushPeople: [],
         PushPeopleName: []
+      },
+      authText: {
+        Title: {
+          required: true,
+          text: '推送标题'
+        },
+        Describe: {
+          required: false,
+          text: '推送描述'
+        },
+        PushType: {
+          required: true,
+          text: '推送类型'
+        },
+        selectStuff: {
+          required: true,
+          text: '推送名称'
+        },
+        PushTime: {
+          required: true,
+          text: '推送时间'
+        },
+        PushPeople: {
+          required: true,
+          text: '推送人员'
+        }
       }
+    }
+  },
+  computed: {
+    id () {
+      return this.$route.params.id !== 'add' ? this.$route.params.id : ''
     }
   },
   watch: {
@@ -174,11 +205,30 @@ export default {
     }
   },
   mounted () {
+    if (this.id !== 'add') {
+      this.getPushDetail(this.id)
+    }
     if (sessionStorage.getItem('addPushParams')) {
       this.params = JSON.parse(sessionStorage.getItem('addPushParams'))
     }
   },
   methods: {
+    async getPushDetail (id) {
+      const res = await this.$http.get(`/Push/Detail?pushID=${id}`)
+      if (res.data.Code === 100000) {
+        const data = res.data.Data
+        this.params = {
+          selectStuff: data.PushType === 0 ? data.ArticleRes.ArticleTitle : data.PackageRes.Name,
+          PushType: data.PushType, // 0: 文章；1：服务包；-1：未选择
+          Title: data.Title,
+          Describe: data.Describe,
+          SourceID: data.SourceID,
+          PushTime: util.timeFormatFilter(data.CreateTime, 'YYYY-MM-DD HH:mm'),
+          PushPeople: data.PushPeople,
+          PushPeopleName: data.PushPeopleName
+        }
+      }
+    },
     // 获取文章列表
     async getArticleList () {
       const res = await this.$http.get(`/ArticleList?Index=1`)
@@ -195,10 +245,17 @@ export default {
     },
     async submit () {
       const that = this
-      this.$vux.loading.show({
-        text: 'Loading'
-      })
-      const res = await this.$http.post('/Push/Add', this.params)
+      const method = this.id === '' ? 'post' : 'put'
+      const url = this.id === '' ? '/Push/Add' : '/Push/Modify'
+      const validate = util.validateForm(this.params, this.authText)
+
+      if (!validate) return false
+      if (this.id) {
+        this.params.ID = +this.id
+      }
+
+      this.$vux.loading.show({text: 'Loading'})
+      const res = await this.$http.send(url, method, this.params)
       if (res.data.Code === 100000) {
         this.$vux.loading.hide()
         this.$vux.toast.show({
@@ -245,6 +302,7 @@ export default {
     selectDateTime () {
       const that = this
       this.$vux.datetime.show({
+        value: this.params.PushTime,
         format: 'YYYY-MM-DD HH:mm',
         startDate: util.timeFormatFilter(new Date(), 'YYYY-MM-DD'),
         onConfirm (value) {

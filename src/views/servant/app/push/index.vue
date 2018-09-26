@@ -27,6 +27,7 @@
               <router-link :to="`/app/push/detail/${item.ID}`" class="link">查看详情</router-link>
               <span class="text" :class="{ fail: item.status == 3 }">{{item.Status | pushStatus}} 
                 <span class="text fail" style="margin-left:10px;" @click="deleteHandle(item.ID)">删除</span>
+                <span class="text primary" style="margin-left:10px;" @click="editHandle(item.ID)">编辑</span>
               </span>
             </div>
           </div>
@@ -39,8 +40,15 @@
         <img class="occupied_img" src="@/assets/images/empty_icon.png" alt="">
         <p class="occupied_text">暂无数据</p>
       </div>
+      <xx-loadmore
+        v-if="pushList.length > 0"
+        :pageindex="pageIndex"
+        :pageTotal="totalPage"
+        :loadText="loadText"
+        @onClick="loadmore">
+      </xx-loadmore>
     </div>
-    <router-link to="/app/push/add">
+    <router-link to="/app/push/edit/add">
       <button type="button" class="weui-btn weui-btn_primary">添加</button>
     </router-link>
   </div>
@@ -53,6 +61,8 @@ export default {
       pushListTabIndex: 0,
       checkerIndexLoack: true,
       pageIndex: 1,
+      totalPage: 1,
+      loadText: '查看更多',
       pushList: []
     }
   },
@@ -74,18 +84,29 @@ export default {
   },
   watch: {
     pushListTabIndex () {
-      this.getPushList()
+      this.getPushList().then(res => {
+        if (res.SiteNoticePushResponses) {
+          this.pushList = res.SiteNoticePushResponses
+        }
+        this.totalPage = res.pateTotal
+      })
     }
   },
   mounted () {
-    this.getPushList()
+    this.getPushList().then(res => {
+      if (res.SiteNoticePushResponses) {
+        this.pushList = res.SiteNoticePushResponses
+      }
+      this.totalPage = res.pateTotal
+    })
   },
   methods: {
     async getPushList () {
+      this.$vux.loading.show({text: 'Loading'})
       const res = await this.$http.get(`/Push/List?pageIndex=${this.pageIndex}&status=${this.pushListTabIndex}`)
+      this.$vux.loading.hide()
       if (res.data.Code === 100000) {
-        console.log(res)
-        this.pushList = res.data.Data.SiteNoticePushResponses
+        return res.data.Data
       }
     },
     async changeChecker (index) {
@@ -95,6 +116,17 @@ export default {
         await this.getPushList()
         this.checkerIndexLoack = true
       }
+    },
+    async loadmore () {
+      this.pageIndex++
+      this.loadText = '加载中...'
+      this.getPushList().then(res => {
+        if (res.SiteNoticePushResponses) {
+          this.pushList.push(...res.SiteNoticePushResponses)
+        }
+        this.totalPage = res.pateTotal
+      })
+      this.loadText = '加载更多'
     },
     deleteHandle (id) {
       const that = this
@@ -115,6 +147,9 @@ export default {
           that.cancelPush(id)
         }
       })
+    },
+    editHandle (id) {
+      this.$router.push(`/app/push/edit/${id}`)
     },
     async cancelPush (id) {
       const res = await this.$http.put(`/Push/Cancel?pushID=${id}`)
@@ -225,6 +260,9 @@ export default {
         color: #999;
         &.fail {
           color: #FF5455;
+        }
+        &.primary {
+          color: #3AC7F5;
         }
       }
     }

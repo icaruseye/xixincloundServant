@@ -101,8 +101,8 @@ export default [
     }
   },
   {
-    path: '/app/push/add',
-    component: _import('/servant/app/push/add'),
+    path: '/app/push/edit/:id',
+    component: _import('/servant/app/push/edit'),
     meta: {
       title: '群发推送',
       goBackParam: {
@@ -117,7 +117,7 @@ export default [
     meta: {
       title: '使用用户',
       goBackParam: {
-        url: '/app/push/add',
+        url: '/app/push/edit',
         title: '群发推送'
       }
     }

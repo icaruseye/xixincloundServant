@@ -126,6 +126,9 @@ export default {
     if (type === '[object Null]') {
       return false
     }
+    if (type === '[object Number]') {
+      return true
+    }
   },
   // 从地址库通过id换取名字
   transformAddress (val) {

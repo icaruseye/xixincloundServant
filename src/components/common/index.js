@@ -19,6 +19,7 @@ import xxGoBack from './GoBack'
 import xxPageSorter from './PageSorter'
 import xxCenterImage from './xxCenterImage'
 import xxLoading from './xxLoading'
+import xxLoadmore from './loadmore'
 
 const components = {
   install: function (Vue) {
@@ -43,6 +44,7 @@ const components = {
     Vue.component('xxPageSorter', xxPageSorter)
     Vue.component('xxCenterImage', xxCenterImage)
     Vue.component('xxLoading', xxLoading)
+    Vue.component('xxLoadmore', xxLoadmore)
   }
 }
 
