@@ -22,7 +22,7 @@ axios.interceptors.response.use(response => {
       })
     }
   }
-  Vue.prototype.$popupTop('出错了，请重试')
+  Vue.prototype.$popupTop('网络出错，请稍后重试')
   return Promise.reject(error)
 })
 

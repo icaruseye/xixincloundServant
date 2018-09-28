@@ -13,7 +13,7 @@
         <div class="weui-cell" @click="redirectUrl('/schedule/schemeList')">
           <div class="weui-cell-top">
             <div class="icon"><img src="@/assets/images/app-ffsz.png"></div>
-            <div class="title">排班方案管理</div>
+            <div class="title">批量设置排班方案</div>
             <i class="iconfont icon-jiantouyou"></i>
           </div>
         </div>

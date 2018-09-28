@@ -2,7 +2,7 @@
   <div>
     <template v-if="prewimgList != null">
       <div class="thumbs_container">
-        <img v-for="(item, index) in prewimgList" 
+        <img v-for="(item, index) in prewimgList"
           :src="item"
           :key="index"
           @click="previewImage(index)"
@@ -39,10 +39,10 @@ export default {
   },
   methods: {
     onloaded () {
-      this.$emit('onloaded')
+      // this.$emit('onloaded')
     },
     previewImage (index) {
-      ImagePreview(this.prewimgList, index)
+      ImagePreview(this.prewimgList)
     }
   }
 }

@@ -22,11 +22,11 @@
     </div>
     <div v-if="!acticeDateIsLessThanToday()" class="add_plan_btn" @click="addPlanDialogVisible = true">
       <i class="iconfont icon-hao"></i>
-      添加排班计划
+      设置排班计划
     </div>
     <x-dialog v-model="addPlanDialogVisible" :hide-on-blur="true">
       <div style="padding:15px;">
-        添加排班计划
+        设置排班计划
         <div style="margin-top:20px">
           <div class="select_items clearfix">
             开始时间
