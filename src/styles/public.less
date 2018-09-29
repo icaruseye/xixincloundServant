@@ -471,3 +471,38 @@
     }
   }
 }
+
+.xx_actionsheet {
+  background-color: #f8f8f8;
+  .xx_actionsheet_item {
+    position: relative;
+    height: 50px;
+    width: 100%;
+    line-height: 50px;
+    font-size: 16px;
+    text-align: center;
+    color: #333;
+    background-color: #fff;
+    &::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      right: -50%;
+      bottom: -50%;
+      -webkit-transform: scale(0.5);
+      transform: scale(0.5);
+      pointer-events: none;
+      box-sizing: border-box;
+      border: 0 solid #eee;
+      border-top-width: 1px;
+    }
+    &.cancel {
+      margin-top: 10px;
+    }
+    &.title {
+      color: #3ac7f5;
+      font-size: 15px;
+    }
+  }
+}

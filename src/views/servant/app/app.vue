@@ -114,7 +114,7 @@
         </div>
       </div> -->
     </div>
-    <!-- <div class="empty-bar"></div>
+    <div class="empty-bar"></div>
     <div class="weui-panel weui-list-panel">
       <div class="weui-cell" @click="go('/app/push')">
         <div class="weui-cell-top">
@@ -123,7 +123,7 @@
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
-    </div> -->
+    </div>
     <xx-tabbar></xx-tabbar>
   </div>
 </template>

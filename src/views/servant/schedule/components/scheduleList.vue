@@ -41,6 +41,24 @@
             </div>
           </div>
           <div class="select_items clearfix">
+            服务类型
+            <div class="select_items_content_container" v-if="ScheduleType.text" @click="showServiceTypeHandle">
+              {{ScheduleType.text}}
+            </div>
+            <div class="select_items_content_container" v-else style="color:#999" @click="showServiceTypeHandle">
+              请选择服务类型
+            </div>
+          </div>
+          <div class="select_items clearfix" v-if="[1, 2].indexOf(ScheduleType.val) >= 0">
+            设置服务
+            <div class="select_items_content_container" style="color:#3ac7f5" @click="showServiceListHandle">
+              <template v-if="selectItemIndex.length === 0">
+                <i class="iconfont icon-jiahao"></i>&nbsp;添加服务
+              </template>
+              <template v-else>已选择{{selectItemIndex.length}}项</template>
+            </div>
+          </div>
+          <div class="select_items clearfix">
             可预约次数
             <div class="select_items_content_container">
               <van-stepper v-model="ReserveNum" :min="1" :integer="true" :max="500"/>
@@ -53,12 +71,56 @@
         <button class="btn" @click="addPlan">确定</button>
       </div>
     </x-dialog>
+
+    <!-- 服务类型 -->
+    <div v-transfer-dom>
+      <popup :popup-style="{zIndex: 9999}" v-model="showServiceTypePopup" @on-hide="showServiceTypePopup = false">
+        <div class="service_type_box">
+          <ul class="xx_actionsheet">
+            <li class="xx_actionsheet_item title">选择服务类型</li>
+            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(0, '全部')">全部</li>
+            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(1, '服务套餐')">服务套餐</li>
+            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(2, '服务项')">服务项</li>
+            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(3, '挂号')">挂号</li>
+            <li class="xx_actionsheet_item cancel" @click="showServiceTypePopup = false">取消</li>
+          </ul>
+        </div>
+      </popup>
+    </div>
+
+    <!-- 服务列表 -->
+    <div v-transfer-dom>
+      <popup :popup-style="{zIndex: 9999}" v-model="showServiceListPopup" @on-hide="showServiceTypePopup = false">
+        <div class="service_type_box">
+        <div class="xx_actionsheet">
+          <div class="xx_actionsheet_item title">选择服务</div>
+          <checker
+            v-model="selectItemIndex"
+            type="checkbox"
+            style="max-height:300px;overflow:auto;"
+            default-item-class="xx_actionsheet_item checker_item"
+            selected-item-class="xx_actionsheet_item-selected"
+            @on-change="selectPackageHandle">
+            <checker-item :value="item.ID" :key="index" v-for="(item, index) in itemList">
+              <img class="icon" :src="item.PackageType | xxMissionTypeIconFilter" alt="">
+              <span class="item-title">{{item.Name}}</span>
+              <span class="xx-radio-item" :class="selectItemIndex.indexOf(item.ID) >= 0 ? 'active' : ''"></span>
+            </checker-item>
+          </checker>
+          <div class="xx_actionsheet_item cancel" @click="showServiceListPopup = false">确认</div>
+        </div>
+        </div>
+      </popup>
+    </div>
   </div>
 </template>
 <script>
-import { XDialog, Datetime } from 'vux'
+import { XDialog, Datetime, TransferDom, Popup, Checker, CheckerItem } from 'vux'
 import util from '@/plugins/util'
 export default {
+  directives: {
+    TransferDom
+  },
   props: {
     list: {
       type: Array,
@@ -71,11 +133,19 @@ export default {
   },
   components: {
     XDialog,
-    Datetime
+    Datetime,
+    Popup,
+    Checker,
+    CheckerItem
   },
   data () {
     return {
       addPlanDialogVisible: false,
+      showServiceTypePopup: false,
+      showServiceListPopup: false,
+      ScheduleType: {}, // 服务类型
+      selectItemIndex: [], // 所选服务列表索引
+      itemList: [],
       startTime: null,
       endTime: null,
       ReserveNum: 1
@@ -94,6 +164,14 @@ export default {
     addPlanDialogVisible () {
       this.startTime = null
       this.endTime = null
+    },
+    async 'ScheduleType.val' (val) {
+      this.selectItemIndex = []
+      if ([1, 2].indexOf(val) >= 0) {
+        // 根据类型获取对应的服务列表
+        const res = await this.getServiceItemList(val)
+        this.itemList = res
+      }
     }
   },
   methods: {
@@ -134,8 +212,9 @@ export default {
         StartTime: startTime,
         EndTime: endTime,
         ReserveNum: this.ReserveNum,
-        Items: '',
-        SchemeID: 0
+        Items: this.selectItemIndex.join(),
+        SchemeID: 0,
+        ScheduleType: this.ScheduleType.val
       }).then(result => {
         if (result.data.Code === 100000) {
           this.$emit('addSuccess', {
@@ -176,6 +255,41 @@ export default {
         }
       }
       return true
+    },
+    async getServiceItemList (val) {
+      const url = {
+        1: '/Push/Package/List',
+        2: '/BundleList'
+      }
+      const res = await this.$http.get(url[val])
+      if (res.data.Code === 100000) {
+        return res.data.Data
+      }
+    },
+    setMaskzIndex (val) {
+      this.$nextTick(() => {
+        document.querySelector('.vux-popup-mask').style.zIndex = val
+      })
+    },
+    // 选择服务类型弹层
+    showServiceTypeHandle () {
+      this.showServiceTypePopup = true
+      this.setMaskzIndex(9998)
+    },
+    // 选择服务列表弹层
+    showServiceListHandle () {
+      this.showServiceListPopup = true
+      this.setMaskzIndex(9998)
+    },
+    selectPackageHandle () {
+      console.log(this.selectItemIndex)
+    },
+    async selectServiceTypeHandle (val, text) {
+      this.showServiceTypePopup = false
+      this.ScheduleType = {
+        val: val,
+        text: text
+      }
     }
   }
 }
@@ -280,5 +394,21 @@ export default {
   text-align: center;
   font-size: 12px;
   color: #999;
+}
+.checker_item {
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+  .icon {
+    margin: 0 10px;
+    width: 25px;
+    height: 25px;
+  }
+  .item-title {
+    flex: 1;
+    text-align: left;
+  }
 }
 </style>
