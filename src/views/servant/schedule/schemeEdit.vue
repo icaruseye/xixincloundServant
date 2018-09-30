@@ -22,20 +22,20 @@
       </div>
       <div class="select_items clearfix">
         服务类型
-        <div class="select_items_content_container" v-if="ScheduleType.text" @click="showServiceTypeHandle">
-          {{ScheduleType.text}}
+        <div class="select_items_content_container" v-if="ScheduleType != null" @click="showServiceTypeHandle">
+          {{typeText[ScheduleType]}}
         </div>
         <div class="select_items_content_container" v-else style="color:#999" @click="showServiceTypeHandle">
           请选择服务类型
         </div>
       </div>
-      <div class="select_items clearfix" v-if="[1, 2].indexOf(ScheduleType.val) >= 0">
+      <div class="select_items clearfix" v-if="[1, 2].indexOf(ScheduleType) >= 0">
         设置服务
         <div class="select_items_content_container" style="color:#3ac7f5" @click="showServiceListHandle">
-          <template v-if="selectItemIndex.length === 0">
+          <template v-if="selectItems.length === 0">
             <i class="iconfont icon-jiahao"></i>&nbsp;添加服务
           </template>
-          <template v-else>已选择{{selectItemIndex.length}}项</template>
+          <template v-else>已选择{{selectItems.length}}项</template>
         </div>
       </div>
       <div class="select_items clearfix">
@@ -62,10 +62,10 @@
         <div class="service_type_box">
           <ul class="xx_actionsheet">
             <li class="xx_actionsheet_item title">选择服务类型</li>
-            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(0, '全部')">全部</li>
-            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(1, '服务套餐')">服务套餐</li>
-            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(2, '服务项')">服务项</li>
-            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(3, '挂号')">挂号</li>
+            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(0)">全部</li>
+            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(1)">服务套餐</li>
+            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(2)">服务项</li>
+            <!-- <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(3, '挂号')">挂号</li> -->
             <li class="xx_actionsheet_item cancel" @click="showServiceTypePopup = false">取消</li>
           </ul>
         </div>
@@ -79,7 +79,7 @@
         <div class="xx_actionsheet">
           <div class="xx_actionsheet_item title">选择服务</div>
           <checker
-            v-model="selectItemIndex"
+            v-model="selectItems"
             type="checkbox"
             style="max-height:300px;overflow:auto;"
             default-item-class="xx_actionsheet_item checker_item"
@@ -88,7 +88,7 @@
             <checker-item :value="item.ID" :key="index" v-for="(item, index) in itemList">
               <img class="icon" :src="item.PackageType | xxMissionTypeIconFilter" alt="">
               <span class="item-title">{{item.Name}}</span>
-              <span class="xx-radio-item" :class="selectItemIndex.indexOf(item.ID) >= 0 ? 'active' : ''"></span>
+              <span class="xx-radio-item" :class="selectItems.indexOf(item.ID) >= 0 ? 'active' : ''"></span>
             </checker-item>
           </checker>
           <div class="xx_actionsheet_item cancel" @click="showServiceListPopup = false">确认</div>
@@ -113,10 +113,15 @@ export default {
   },
   data () {
     return {
+      typeText: {
+        0: '全部',
+        1: '服务套餐',
+        2: '服务项'
+      },
       showServiceTypePopup: false,
       showServiceListPopup: false,
-      ScheduleType: {}, // 服务类型
-      selectItemIndex: [], // 所选服务列表索引
+      ScheduleType: null, // 服务类型
+      selectItems: [], // 所选服务列表索引
       itemList: [],
       SchemeName: '',
       startTime: null,
@@ -130,8 +135,8 @@ export default {
     }
   },
   watch: {
-    async 'ScheduleType.val' (val) {
-      this.selectItemIndex = []
+    async ScheduleType (val) {
+      // this.selectItems = []
       if ([1, 2].indexOf(val) >= 0) {
         // 根据类型获取对应的服务列表
         const res = await this.getServiceItemList(val)
@@ -161,9 +166,12 @@ export default {
           this.startTime = result.data.Data.StartTime
           this.endTime = result.data.Data.EndTime
           this.ReserveNum = result.data.Data.ReserveNum
+          this.ScheduleType = result.data.Data.ScheduleType
+          this.selectItems = result.data.Data.Items.split(',').map(Number)
         } else {
           this.$vux.toast.text(` 参数错误，错误码：${result.data.Code}`)
         }
+        console.log(this.se)
       })
     },
     submit () {
@@ -193,6 +201,8 @@ export default {
           StartTime: this.startTime,
           EndTime: this.endTime,
           ReserveNum: this.ReserveNum,
+          ScheduleType: this.ScheduleType,
+          Items: this.selectItems.join()
         }).then(result => {
           if (result.data.Code === 100000) {
             this.$vux.toast.show('新增成功')
@@ -207,7 +217,9 @@ export default {
           SchemeName: this.SchemeName,
           StartTime: this.startTime,
           EndTime: this.endTime,
-          ReserveNum: this.ReserveNum
+          ReserveNum: this.ReserveNum,
+          ScheduleType: this.ScheduleType,
+          Items: this.selectItems.join()
         }).then(result => {
           if (result.data.Code === 100000) {
             this.$vux.toast.show('修改成功')
@@ -247,14 +259,14 @@ export default {
       this.setMaskzIndex(9998)
     },
     selectPackageHandle () {
-      console.log(this.selectItemIndex)
+      console.log(this.selectItems)
     },
-    async selectServiceTypeHandle (val, text) {
-      this.showServiceTypePopup = false
-      this.ScheduleType = {
-        val: val,
-        text: text
+    async selectServiceTypeHandle (val) {
+      if (this.ScheduleType !== val) {
+        this.selectItems = []
       }
+      this.showServiceTypePopup = false
+      this.ScheduleType = val
     }
   }
 }

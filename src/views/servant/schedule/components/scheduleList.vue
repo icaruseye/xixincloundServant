@@ -42,14 +42,14 @@
           </div>
           <div class="select_items clearfix">
             服务类型
-            <div class="select_items_content_container" v-if="ScheduleType.text" @click="showServiceTypeHandle">
-              {{ScheduleType.text}}
+            <div class="select_items_content_container" v-if="ScheduleType != null" @click="showServiceTypeHandle">
+              {{typeText[ScheduleType]}}
             </div>
             <div class="select_items_content_container" v-else style="color:#999" @click="showServiceTypeHandle">
               请选择服务类型
             </div>
           </div>
-          <div class="select_items clearfix" v-if="[1, 2].indexOf(ScheduleType.val) >= 0">
+          <div class="select_items clearfix" v-if="[1, 2].indexOf(ScheduleType) >= 0">
             设置服务
             <div class="select_items_content_container" style="color:#3ac7f5" @click="showServiceListHandle">
               <template v-if="selectItemIndex.length === 0">
@@ -140,10 +140,15 @@ export default {
   },
   data () {
     return {
+      typeText: {
+        0: '全部',
+        1: '服务套餐',
+        2: '服务项'
+      },
       addPlanDialogVisible: false,
       showServiceTypePopup: false,
       showServiceListPopup: false,
-      ScheduleType: {}, // 服务类型
+      ScheduleType: null, // 服务类型
       selectItemIndex: [], // 所选服务列表索引
       itemList: [],
       startTime: null,
@@ -165,7 +170,7 @@ export default {
       this.startTime = null
       this.endTime = null
     },
-    async 'ScheduleType.val' (val) {
+    async ScheduleType (val) {
       this.selectItemIndex = []
       if ([1, 2].indexOf(val) >= 0) {
         // 根据类型获取对应的服务列表
@@ -214,7 +219,7 @@ export default {
         ReserveNum: this.ReserveNum,
         Items: this.selectItemIndex.join(),
         SchemeID: 0,
-        ScheduleType: this.ScheduleType.val
+        ScheduleType: this.ScheduleType
       }).then(result => {
         if (result.data.Code === 100000) {
           this.$emit('addSuccess', {
@@ -286,10 +291,7 @@ export default {
     },
     async selectServiceTypeHandle (val, text) {
       this.showServiceTypePopup = false
-      this.ScheduleType = {
-        val: val,
-        text: text
-      }
+      this.ScheduleType = val
     }
   }
 }
