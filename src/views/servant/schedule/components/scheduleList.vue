@@ -42,20 +42,20 @@
           </div>
           <div class="select_items clearfix">
             服务类型
-            <div class="select_items_content_container" v-if="ScheduleType != null" @click="showServiceTypeHandle">
+            <div class="select_items_content_container" style="color:#3ac7f5" v-if="ScheduleType != null" @click="showServiceTypeHandle">
               {{typeText[ScheduleType]}}
             </div>
-            <div class="select_items_content_container" v-else style="color:#999" @click="showServiceTypeHandle">
+            <div class="select_items_content_container" v-else style="color:#ccc" @click="showServiceTypeHandle">
               请选择服务类型
             </div>
           </div>
           <div class="select_items clearfix" v-if="[1, 2].indexOf(ScheduleType) >= 0">
             设置服务
             <div class="select_items_content_container" style="color:#3ac7f5" @click="showServiceListHandle">
-              <template v-if="selectItemIndex.length === 0">
+              <template v-if="selectItems.length === 0">
                 <i class="iconfont icon-jiahao"></i>&nbsp;添加服务
               </template>
-              <template v-else>已选择{{selectItemIndex.length}}项</template>
+              <template v-else>已选择{{selectItems.length}}项</template>
             </div>
           </div>
           <div class="select_items clearfix">
@@ -95,7 +95,7 @@
         <div class="xx_actionsheet">
           <div class="xx_actionsheet_item title">选择服务</div>
           <checker
-            v-model="selectItemIndex"
+            v-model="selectItems"
             type="checkbox"
             style="max-height:300px;overflow:auto;"
             default-item-class="xx_actionsheet_item checker_item"
@@ -104,7 +104,7 @@
             <checker-item :value="item.ID" :key="index" v-for="(item, index) in itemList">
               <img class="icon" :src="item.PackageType | xxMissionTypeIconFilter" alt="">
               <span class="item-title">{{item.Name}}</span>
-              <span class="xx-radio-item" :class="selectItemIndex.indexOf(item.ID) >= 0 ? 'active' : ''"></span>
+              <span class="xx-radio-item" :class="selectItems.indexOf(item.ID) >= 0 ? 'active' : ''"></span>
             </checker-item>
           </checker>
           <div class="xx_actionsheet_item cancel" @click="showServiceListPopup = false">确认</div>
@@ -149,7 +149,7 @@ export default {
       showServiceTypePopup: false,
       showServiceListPopup: false,
       ScheduleType: null, // 服务类型
-      selectItemIndex: [], // 所选服务列表索引
+      selectItems: [], // 所选服务列表索引
       itemList: [],
       startTime: null,
       endTime: null,
@@ -171,7 +171,7 @@ export default {
       this.endTime = null
     },
     async ScheduleType (val) {
-      this.selectItemIndex = []
+      this.selectItems = []
       if ([1, 2].indexOf(val) >= 0) {
         // 根据类型获取对应的服务列表
         const res = await this.getServiceItemList(val)
@@ -210,6 +210,14 @@ export default {
       if (!this.timeInList()) {
         return false
       }
+      if ([0, 1, 2].indexOf(this.ScheduleType) < 0) {
+        this.$vux.toast.text('请选择服务类型')
+        return false
+      }
+      if (this.ScheduleType !== 0 && this.selectItems.length === 0) {
+        this.$vux.toast.text('至少要选择一项服务')
+        return false
+      }
       let date = util.timeFormatFilter(this.activeDate, 'YYYY-MM-DD')
       let startTime = `${date} ${this.startTime}:00`
       let endTime = `${date} ${this.endTime}:00`
@@ -217,7 +225,7 @@ export default {
         StartTime: startTime,
         EndTime: endTime,
         ReserveNum: this.ReserveNum,
-        Items: this.selectItemIndex.join(),
+        Items: this.selectItems.join(),
         SchemeID: 0,
         ScheduleType: this.ScheduleType
       }).then(result => {
@@ -263,8 +271,8 @@ export default {
     },
     async getServiceItemList (val) {
       const url = {
-        1: '/Push/Package/List',
-        2: '/BundleList'
+        1: '/BundleList',
+        2: '/ItemList'
       }
       const res = await this.$http.get(url[val])
       if (res.data.Code === 100000) {
@@ -287,7 +295,7 @@ export default {
       this.setMaskzIndex(9998)
     },
     selectPackageHandle () {
-      console.log(this.selectItemIndex)
+      console.log(this.selectItems)
     },
     async selectServiceTypeHandle (val, text) {
       this.showServiceTypePopup = false

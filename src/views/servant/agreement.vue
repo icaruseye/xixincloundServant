@@ -1,12 +1,17 @@
 <template>
   <div>
-    <div class="agreement_container" v-if="agreement != null">
-      <h1 class="agreement_title">{{agreement.Title}}</h1>
-      <div class="agreement_context_container" v-html="agreement.Content"></div>
-    </div>
-    <xx-occupied-box v-else>
-      没有找到相应的协议
+    <xx-occupied-box v-if="agreement === null">
+      加载中…
     </xx-occupied-box>
+    <template v-else>
+      <xx-occupied-box v-if="agreement === 'noData'">
+        没有找到相应的协议
+      </xx-occupied-box>
+      <div class="agreement_container" v-else>
+        <h1 class="agreement_title">{{agreement.Title}}</h1>
+        <div class="agreement_context_container" v-html="agreement.Content"></div>
+      </div>
+    </template>
   </div>
 </template>
 <script>
@@ -38,6 +43,7 @@ export default {
         this.agreement = res.data.Data
         document.title = res.data.Data.Title
       } else {
+        this.agreement = 'noData'
         document.title = '没有找到相应的协议'
       }
     }

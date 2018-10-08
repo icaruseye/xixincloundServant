@@ -195,6 +195,14 @@ export default {
         this.$vux.toast.text('结束时间必须大于开始时间')
         return false
       }
+      if ([0, 1, 2].indexOf(this.ScheduleType) < 0) {
+        this.$vux.toast.text('请选择服务类型')
+        return false
+      }
+      if (this.ScheduleType !== 0 && this.selectItems.length === 0) {
+        this.$vux.toast.text('至少要选择一项服务')
+        return false
+      }
       if (this.isADD) {
         this.$http.post(`/Schedule/Add/Scheme`, {
           SchemeName: this.SchemeName,
@@ -232,8 +240,8 @@ export default {
     },
     async getServiceItemList (val) {
       const url = {
-        1: '/Push/Package/List',
-        2: '/BundleList'
+        1: '/BundleList',
+        2: '/ItemList'
       }
       const res = await this.$http.get(url[val])
       if (res.data.Code === 100000) {
