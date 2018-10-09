@@ -25,7 +25,7 @@
         <div class="select_items_content_container" v-if="ScheduleType != null" @click="showServiceTypeHandle">
           {{typeText[ScheduleType]}}
         </div>
-        <div class="select_items_content_container" v-else style="color:#999" @click="showServiceTypeHandle">
+        <div class="select_items_content_container" v-else style="color:#ccc" @click="showServiceTypeHandle">
           请选择服务类型
         </div>
       </div>
@@ -38,7 +38,7 @@
           <template v-else>已选择{{selectItems.length}}项</template>
         </div>
       </div>
-      <div class="select_items clearfix">
+      <div class="select_items clearfix" v-if="[0,3].indexOf(ScheduleType) > 0">
         可预约次数
         <div class="select_items_content_container">
           <van-stepper v-model="ReserveNum" :min="1" :integer="true" :max="500"/>
@@ -78,20 +78,13 @@
         <div class="service_type_box">
         <div class="xx_actionsheet">
           <div class="xx_actionsheet_item title">选择服务</div>
-          <checker
-            v-model="selectItems"
-            type="checkbox"
-            style="max-height:300px;overflow:auto;"
-            default-item-class="xx_actionsheet_item checker_item"
-            selected-item-class="xx_actionsheet_item-selected"
-            @on-change="selectPackageHandle">
-            <checker-item :value="item.ID" :key="index" v-for="(item, index) in itemList">
-              <img class="icon" :src="item.PackageType | xxMissionTypeIconFilter" alt="">
+          <div style="max-height:300px;overflow:auto;">
+            <div class="xx_actionsheet_item checker_item" :key="index" v-for="(item, index) in itemList">
               <span class="item-title">{{item.Name}}</span>
-              <span class="xx-radio-item" :class="selectItems.indexOf(item.ID) >= 0 ? 'active' : ''"></span>
-            </checker-item>
-          </checker>
-          <div class="xx_actionsheet_item cancel" @click="showServiceListPopup = false">确认</div>
+              <van-stepper v-model="item.ServiceNum" :min="0" :integer="true" :max="500"/>
+            </div>
+          </div>
+          <div class="xx_actionsheet_item cancel" @click="setServiceTimes">确认</div>
         </div>
         </div>
       </popup>
@@ -116,7 +109,8 @@ export default {
       typeText: {
         0: '全部',
         1: '服务套餐',
-        2: '服务项'
+        2: '服务项',
+        3: '挂号'
       },
       showServiceTypePopup: false,
       showServiceListPopup: false,
@@ -141,6 +135,13 @@ export default {
         // 根据类型获取对应的服务列表
         const res = await this.getServiceItemList(val)
         this.itemList = res
+        for (let a of this.itemList) {
+          for (let b of this.selectItems) {
+            if (a.ID === b.ServiceItemID) {
+              a.ServiceNum = b.ServiceNum
+            }
+          }
+        }
       }
     }
   },
@@ -167,7 +168,7 @@ export default {
           this.endTime = result.data.Data.EndTime
           this.ReserveNum = result.data.Data.ReserveNum
           this.ScheduleType = result.data.Data.ScheduleType
-          this.selectItems = result.data.Data.Items.split(',').map(Number)
+          this.selectItems = result.data.Data.SchemeLimitItems
         } else {
           this.$vux.toast.text(` 参数错误，错误码：${result.data.Code}`)
         }
@@ -210,7 +211,7 @@ export default {
           EndTime: this.endTime,
           ReserveNum: this.ReserveNum,
           ScheduleType: this.ScheduleType,
-          Items: this.selectItems.join()
+          SchemeLimitItems: this.selectItems
         }).then(result => {
           if (result.data.Code === 100000) {
             this.$vux.toast.show('新增成功')
@@ -227,7 +228,7 @@ export default {
           EndTime: this.endTime,
           ReserveNum: this.ReserveNum,
           ScheduleType: this.ScheduleType,
-          Items: this.selectItems.join()
+          SchemeLimitItems: this.selectItems
         }).then(result => {
           if (result.data.Code === 100000) {
             this.$vux.toast.show('修改成功')
@@ -245,6 +246,9 @@ export default {
       }
       const res = await this.$http.get(url[val])
       if (res.data.Code === 100000) {
+        for (let item of res.data.Data) {
+          item.ServiceNum = 0
+        }
         return res.data.Data
       }
     },
@@ -269,12 +273,25 @@ export default {
     selectPackageHandle () {
       console.log(this.selectItems)
     },
-    async selectServiceTypeHandle (val) {
+    selectServiceTypeHandle (val) {
       if (this.ScheduleType !== val) {
         this.selectItems = []
       }
       this.showServiceTypePopup = false
       this.ScheduleType = val
+    },
+    setServiceTimes () {
+      this.selectItems = []
+      for (let item of this.itemList) {
+        if (item.ServiceNum > 0) {
+          this.selectItems.push({
+            ServiceItemID: item.ID,
+            ServiceNum: item.ServiceNum
+          })
+        }
+      }
+      console.log(this.itemList)
+      this.showServiceListPopup = false
     }
   }
 }
