@@ -15,8 +15,7 @@
             {{detail.CreateTime | xxTimeFormatFilter}}
           </p>
         </div>
-        <div class="detail_message_container">
-          {{detail.Message}}
+        <div class="detail_message_container" v-html="detail.Message">
           <!-- <div class="btn_container">
             <button @click="goback" class="go_back_btn">返回</button>
           </div> -->
@@ -47,11 +46,17 @@ export default {
         this.$vux.loading.hide()
         if (result.data.Code === 100000) {
           this.detail = result.data.Data
+          this.detail.Message = this.textFormat(this.detail.Message)
         }
       })
     },
     goback () {
       this.$router.push(`/systemMail/${this.detail.Type}/list`)
+    },
+    textFormat (string) {
+      string = string.replace(/\r\n/g, '<br>')
+      string = string.replace(/\n/g, '<br>')
+      return string
     }
   }
 }
