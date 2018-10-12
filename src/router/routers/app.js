@@ -121,5 +121,38 @@ export default [
         title: '群发推送'
       }
     }
+  },
+  {
+    path: '/app/registration',
+    component: _import('/servant/registration'),
+    meta: {
+      title: '挂号情况',
+      goBackParam: {
+        url: '/app',
+        title: '应用'
+      }
+    }
+  },
+  {
+    path: '/app/registration/setting',
+    component: _import('/servant/registration/setting'),
+    meta: {
+      title: '挂号设置',
+      goBackParam: {
+        url: '/app/registration',
+        title: '挂号情况'
+      }
+    }
+  },
+  {
+    path: '/app/registration/list',
+    component: _import('/servant/registration/list'),
+    meta: {
+      title: '挂号详情',
+      goBackParam: {
+        url: '/app/registration',
+        title: '挂号情况'
+      }
+    }
   }
 ]

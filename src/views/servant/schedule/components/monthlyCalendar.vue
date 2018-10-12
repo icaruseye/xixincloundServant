@@ -272,7 +272,7 @@ export default {
 }
 .calendar_content_container
 {
-  padding: 10px 12px;
+  padding: 10px 0;
   background-color: #fff;
   .calendar_content_table
   {

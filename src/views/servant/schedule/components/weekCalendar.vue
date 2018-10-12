@@ -53,6 +53,10 @@ export default {
     activeDate: {
       type: Date,
       default: new Date()
+    },
+    readOnly: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -126,6 +130,7 @@ export default {
       return flag
     },
     getListHasSchedule () {
+      if (this.readOnly) return false
       let startTime = util.timeFormatFilter(this.startDate, 'YYYY-MM-DD 00:00:00')
       let endDate = util.timeFormatFilter(this.endDate, 'YYYY-MM-DD 23:59:59')
       this.$http.get(`/Schedule/IsNoSchedule?startTime=${startTime}&endTime=${endDate}`).then(result => {
@@ -152,6 +157,7 @@ export default {
       this.activeDateChange(new Date())
     },
     setActiveDate (date) {
+      if (this.readOnly) return false
       this.activeDateChange(date)
     },
     activeDateChange (date) {
@@ -240,7 +246,7 @@ export default {
 }
 .calendar_content_container
 {
-  padding: 10px 12px;
+  padding: 10px 0;
   background-color: #fff;
   .calendar_content_table
   {
