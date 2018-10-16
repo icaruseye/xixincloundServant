@@ -148,10 +148,18 @@ export default {
     preWeek () { // 上一周
       this.startDate = this.addDayToDate(this.startDate, -7)
       this.endDate = this.addDayToDate(this.endDate, -7)
+      this.$emit('on-change-week', {
+        startDate: this.startDate,
+        endDate: this.endDate
+      })
     },
     nextWeek () { // 下一周
       this.startDate = this.addDayToDate(this.startDate, 7)
       this.endDate = this.addDayToDate(this.endDate, 7)
+      this.$emit('on-change-week', {
+        startDate: this.startDate,
+        endDate: this.endDate
+      })
     },
     setTodayActive () {
       this.activeDateChange(new Date())
@@ -161,7 +169,9 @@ export default {
       this.activeDateChange(date)
     },
     activeDateChange (date) {
-      this.loading = true
+      if (!this.readOnly) {
+        this.loading = true
+      }
       this.$emit('change', date, this)
     },
     getWeekByDate (date) {

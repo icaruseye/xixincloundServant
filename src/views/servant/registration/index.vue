@@ -2,9 +2,9 @@
   <div class="wrapper">
     <xx-go-back :url="goBackRedirect"></xx-go-back>
     <div class="calendar_wrap">
-      <weekCalendar v-if="!monthCalendar" :readOnly="true" :activeDate="activeDate" ref="calendarRef" @change="activeDateChange"></weekCalendar>
+      <weekCalendar :readOnly="true" :activeDate="activeDate" ref="calendarRef" @change="activeDateChange" @on-change-week="onChangeWeek"></weekCalendar>
     </div>
-    <scheduleTable @on-item-click="onClick"></scheduleTable>
+    <scheduleTable @on-item-click="onClick" :start="startDate" :end="endDate"></scheduleTable>
     <router-link to="/app/registration/setting">
       <button type="button" class="weui-btn weui-btn_primary weui-btn_bottom">设置号源</button>
     </router-link>
@@ -15,6 +15,7 @@
 import monthlyCalendar from '../schedule/components/monthlyCalendar'
 import weekCalendar from '../schedule/components/weekCalendar'
 import scheduleTable from './components/scheduleTable'
+import { dateFormat } from 'vux'
 export default {
   components: {
     monthlyCalendar,
@@ -23,8 +24,9 @@ export default {
   },
   data () {
     return {
-      monthCalendar: false,
-      activeDate: new Date()
+      activeDate: new Date(),
+      startDate: null,
+      endDate: null
     }
   },
   computed: {
@@ -39,13 +41,13 @@ export default {
   methods: {
     activeDateChange (date, calendar) {
       this.activeDate = date
-      console.log(date, calendar)
     },
-    changeCalendar () {
-      this.monthCalendar = !this.monthCalendar
+    onChangeWeek (data) {
+      this.startDate = dateFormat(data.startDate, 'YYYY-MM-DD')
+      this.endDate = dateFormat(data.endDate, 'YYYY-MM-DD')
     },
     onClick (data) {
-      console.log(data)
+      console.log(data.id)
     }
   }
 }
