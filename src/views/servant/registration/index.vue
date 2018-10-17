@@ -47,7 +47,9 @@ export default {
       this.endDate = dateFormat(data.endDate, 'YYYY-MM-DD')
     },
     onClick (data) {
-      console.log(data.id)
+      if (data.ScheduleID) {
+        this.$router.push(`/app/registration/list/${data.ScheduleID}?StartTime=${data.StartTime}&EndTime=${data.EndTime}`)
+      }
     }
   }
 }

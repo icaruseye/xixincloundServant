@@ -5,7 +5,7 @@
       <weekCalendar ref="calendarRef" :readOnly="true" :activeDate="activeDate" @change="activeDateChange" @on-change-week="onChangeWeek"></weekCalendar>
     </div>
     <scheduleTable @on-item-click="onClick" :start="startDate" :end="endDate" :isEdit="true"></scheduleTable>
-    <button type="button" class="weui-btn weui-btn_primary weui-btn_bottom">保存</button>
+    <!-- <button type="button" class="weui-btn weui-btn_primary weui-btn_bottom">保存</button> -->
   </div>
 </template>
 

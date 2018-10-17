@@ -145,7 +145,7 @@ export default [
     }
   },
   {
-    path: '/app/registration/list',
+    path: '/app/registration/list/:id',
     component: _import('/servant/registration/list'),
     meta: {
       title: '挂号详情',

@@ -1,71 +1,79 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" v-if="info.StartTime">
     <xx-go-back :url="goBackRedirect"></xx-go-back>
     <div class="date_info_wrap">
-      <div class="date">9月17号</div>
-      <div class="week">星期四 上午</div>
+      <div class="date">{{info.StartTime | dateFormat('MM-DD')}}</div>
+      <div class="week">星期{{info.StartTime | week}} {{info.StartTime | dateFormat('HH:mm')}} - {{info.EndTime | dateFormat('HH:mm')}}</div>
       <div class="count_wrap">
-        <span>总号源： 11</span>
-        <span>已挂号： 11</span>
-        <span>余号： 11</span>
+        <span>总号源： {{info.ReserveNum + info.AlreadyReserveNum}}</span>
+        <span>已挂号： {{info.AlreadyReserveNum}}</span>
+        <span>余号： {{info.ReserveNum}}</span>
       </div>
     </div>
     <div class="list_wrap">
       <div class="title">挂号列表</div>
       <ul>
-        <li class="item">
-          <div class="rank">第1号</div>
-          <div class="avatar">
-            <img src="https://tva1.sinaimg.cn/crop.0.0.179.179.180/771d5a55gw1emwpljaw12j2050050t8o.jpg" alt="">
-          </div>
-          <div class="name">小老弟</div>
-          <i class="iconfont icon-jiantouyou"></i>
-        </li>
-        <li class="item">
-          <div class="rank">第1号</div>
-          <div class="avatar">
-            <img src="https://tva1.sinaimg.cn/crop.0.0.179.179.180/771d5a55gw1emwpljaw12j2050050t8o.jpg" alt="">
-          </div>
-          <div class="name">小老弟</div>
-          <i class="iconfont icon-jiantouyou"></i>
-        </li>
-        <li class="item">
-          <div class="rank">第1号</div>
-          <div class="avatar">
-            <img src="https://tva1.sinaimg.cn/crop.0.0.179.179.180/771d5a55gw1emwpljaw12j2050050t8o.jpg" alt="">
-          </div>
-          <div class="name">小老弟</div>
-          <i class="iconfont icon-jiantouyou"></i>
-        </li>
-        <li class="item">
-          <div class="rank">第1号</div>
-          <div class="avatar">
-            <img src="https://tva1.sinaimg.cn/crop.0.0.179.179.180/771d5a55gw1emwpljaw12j2050050t8o.jpg" alt="">
-          </div>
-          <div class="name">小老弟</div>
-          <i class="iconfont icon-jiantouyou"></i>
-        </li>
+        <template v-if="list.length > 0">
+          <li class="item" :key="index" v-for="(item, index) in list">
+            <div class="rank">第{{index + 1}}号</div>
+            <div class="avatar">
+              <img :src="item.Avatar" alt="">
+            </div>
+            <div class="name">{{item.NickName}}</div>
+            <i class="iconfont icon-jiantouyou"></i>
+          </li>
+        </template>
+        <xx-occupied-box v-else>
+          暂无挂号信息
+        </xx-occupied-box>
       </ul>
     </div>
   </div>
 </template>
 
 <script>
+import { dateFormat } from 'vux'
 export default {
   data () {
     return {
+      pageIndex: 1,
+      list: [],
+      info: {}
+    }
+  },
+  filters: {
+    week (val) {
+      let text = ['日', '一', '二', '三', '四', '五', '六']
+      return text[new Date(val).getDay()]
+    },
+    dateFormat (val, format = 'YYYY-MM-DD HH:mm:ss') {
+      return dateFormat(new Date(val), format)
     }
   },
   computed: {
     goBackRedirect () {
       return this.$route.query.redirect || null
+    },
+    scheduleId () {
+      return this.$route.params.id
     }
   },
   created () {
   },
   mounted () {
+    this.getList()
   },
   methods: {
+    async getList () {
+      this.$vux.loading.show()
+      const res = await this.$http.get(`/Registration/List?pageIndex=${this.pageIndex}&scheduleId=${this.scheduleId}`)
+      if (res.data.Code === 100000) {
+        console.log(res.data.Data)
+        this.info = res.data.Data
+        this.list = res.data.Data.RegistrationResponses
+      }
+      this.$vux.loading.hide()
+    }
   }
 }
 </script>

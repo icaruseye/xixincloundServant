@@ -7,10 +7,22 @@
       <div class="weeklist">
         <template v-for="(item, index) in list">
           <div class="col" :key="index">
-            <template v-for="(time, timeIndex) in timeBucket">
-              <div class="item" @click="clickItem(index, timeIndex)" :key="timeIndex">
-                <div v-if="item.count > 0">{{item.count}}</div>
-                <div v-if="item.sale > 0">{{item.sale}}</div>
+            <template v-for="(i, timeIndex) in item.scheduleRegistrResult">
+              <div
+                @click="clickItem(index, timeIndex)"
+                class="item"
+                :class="{ active: list[index].startTime === list[index].date && i.ReserveNum > 0 }"
+                :key="timeIndex"
+                :data-id="i.ScheduleID">
+                <div v-if="i.AlreadyReserveNum > 0 && !isEdit">
+                  挂 {{i.AlreadyReserveNum}}
+                </div>
+                <div v-if="i.ReserveNum > 0 && !isEdit">
+                  余 {{i.ReserveNum}}
+                </div>
+                <div v-if="isEdit && i.ReserveNum">
+                  {{i.ReserveNum}}
+                </div>
               </div>
             </template>
           </div>
@@ -22,10 +34,14 @@
         <div class="title">设置号源数量</div>
         <div style="display: flex;justify-content: space-around;height:45px;line-height:45px">
           <span>设置数量</span>
-          <van-stepper v-model="count" :min="1"/>
+          <van-stepper v-model="count" :min="0"/>
+        </div>
+        <div style="display: flex;justify-content: space-around;height:45px;line-height:45px">
+          <span>设置价格</span>
+          <input type="number" v-model="price" placeholder="请输入挂号价格">
         </div>
         <div class="btns">
-          <button class="submit" @click="setNumber">确定</button>
+          <button class="submit" @click="setNumber" :disabled="submitDisable">确定</button>
           <button @click="showToast = false">取消</button>
         </div>
       </x-dialog>
@@ -35,7 +51,7 @@
 
 <script>
 import { XDialog, TransferDomDirective as TransferDom, dateFormat } from 'vux'
-import {mapGetters} from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   directives: {
     TransferDom
@@ -59,16 +75,20 @@ export default {
   watch: {
     start (val) {
       this.startDate = val
+      this.endDate = this.end
+      this.getList()
     }
   },
   data () {
     return {
       showToast: false,
+      submitDisable: false,
       count: 1,
       startDate: this.start,
       endDate: this.end,
       timeBucket: [],
       list: [],
+      scheduleList: [],
       index: null,
       timeIndex: null
     }
@@ -77,18 +97,20 @@ export default {
     if (!this.start) {
       this.setStartAndEndDate()
     }
-    this.createWeekList()
     this.getTimeBucket().then(res => {
       this.getList()
     })
   },
   methods: {
     async getList () {
+      this.$vux.loading.show()
       const res = await this.$http.get(`/Registration/Registr-Situation-List?startTime=${dateFormat(this.startDate, 'YYYY-MM-DD')}&endTime=${dateFormat(this.endDate, 'YYYY-MM-DD')}`)
       if (res.data.Code === 100000) {
-        // this.list = res.data.Data
-        console.log(res.data.Data)
+        this.scheduleList = res.data.Data
+        this.createWeekList()
+        this.mergeWeekList()
       }
+      this.$vux.loading.hide()
     },
     async getTimeBucket () {
       const res = await this.$http.get(`/Registration/List/Info`)
@@ -110,24 +132,70 @@ export default {
         this.$vux.toast.text(res.data.Msg)
       }
     },
+    async editInfo (data) {
+      const res = await this.$http.put('/Registration/Modify-Registr-Schedule', {
+        ViewID: this.userAccount.ViewID,
+        ScheduleID: data.ScheduleID,
+        ReserveNum: data.ReserveNum
+      })
+      if (res.data.Code === 100000) {
+        this.showToast = false
+        this.$vux.toast.text('提交成功')
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
+    },
     clickItem (index, timeIndex) {
       if (this.isEdit) {
-        this.count = 1
         this.index = index
         this.timeIndex = timeIndex
+        console.log(index, timeIndex)
         this.showToast = true
+        if (this.list[index].scheduleRegistrResult[timeIndex].ReserveNum) {
+          this.count = this.list[index].scheduleRegistrResult[timeIndex].ReserveNum
+        } else {
+          this.count = 1
+        }
       }
-      this.$emit('on-item-click', this.list[index])
+      this.$emit('on-item-click', this.list[index].scheduleRegistrResult[timeIndex])
     },
     createWeekList () {
+      this.list = []
       for (let index = 0; index < 7; index++) {
         let date = new Date(this.startDate)
         date.setDate(new Date(this.startDate).getDate() + index)
         let _obj = Object.assign({
           date: dateFormat(date, 'YYYY-MM-DD'),
-          ScheduleID: null
+          scheduleRegistrResult: []
         }, {})
         this.list.push(_obj)
+      }
+    },
+    mergeWeekList () {
+      for (let item of this.list) {
+        for (let index = 0; index < this.timeBucket.length; index++) {
+          item.scheduleRegistrResult.push({
+            ReserveNum: 0,
+            AlreadyReserveNum: 0,
+            EndTime: this.timeBucket[index].EndTime,
+            StartTime: this.timeBucket[index].StartTime,
+            ScheduleID: null
+          })
+        }
+      }
+      for (let schedule of this.scheduleList) {
+        for (let item of this.list) {
+          if (item.date === dateFormat(new Date(schedule.startTime), 'YYYY-MM-DD')) {
+            item.startTime = item.date
+            for (let a = 0; a < item.scheduleRegistrResult.length; a++) {
+              for (let b = 0; b < schedule.scheduleRegistrResult.length; b++) {
+                if (dateFormat(new Date(item.scheduleRegistrResult[a].StartTime), 'HH:mm:ss') === dateFormat(new Date(schedule.scheduleRegistrResult[b].StartTime), 'HH:mm:ss')) {
+                  item.scheduleRegistrResult[a] = Object.assign(schedule.scheduleRegistrResult[b])
+                }
+              }
+            }
+          }
+        }
       }
     },
     setStartAndEndDate () {
@@ -143,20 +211,21 @@ export default {
       return curDate
     },
     async setNumber () {
-      if (this.list[this.index][timeIndex].ReserveNum) {
-        await editInfo({
-          ScheduleID: this.list[this.index],
-          StartTime: `${this.list[this.index].date} ${dateFormat(new Date(this.timeBucket[this.timeIndex].StartTime), 'HH:mm:ss')}`,
-          EndTime: `${this.list[this.index].date} ${dateFormat(new Date(this.timeBucket[this.timeIndex].EndTime), 'HH:mm:ss')}`,
+      this.submitDisable = true
+      if (this.list[this.index].scheduleRegistrResult[this.timeIndex].ReserveNum) {
+        await this.editInfo({
+          ScheduleID: this.list[this.index].scheduleRegistrResult[this.timeIndex].ScheduleID,
           ReserveNum: this.count
+
         })
       } else {
         await this.addInfo({
           StartTime: `${this.list[this.index].date} ${dateFormat(new Date(this.timeBucket[this.timeIndex].StartTime), 'HH:mm:ss')}`,
           EndTime: `${this.list[this.index].date} ${dateFormat(new Date(this.timeBucket[this.timeIndex].EndTime), 'HH:mm:ss')}`,
           ReserveNum: this.count
-        })
+        }
       }
+      this.submitDisable = false
       this.getList()
     }
   }
@@ -214,6 +283,18 @@ export default {
     border-bottom: 1px solid #E7E7E7;
     margin-bottom: 20px;
   }
+  input {
+    margin: 7px 0;
+    width: 115px;
+    height: 30px;
+    line-height: 30px;
+    background: #F6F6F6;
+    border: 1px solid #eaeaea;
+    font-size: 12px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    border-radius: 2px;
+  }
   .btns {
     display: flex;
     justify-content: center;
@@ -230,6 +311,9 @@ export default {
       background: #ccc;
       &.submit {
         background: #3AC7F5;
+        &:disabled {
+          background: #ccc;
+        }
       }
     }
   }
