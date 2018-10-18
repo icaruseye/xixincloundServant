@@ -11,7 +11,7 @@
           :list="addressData"
           placeholder="请选择地址" 
           value-text-align="center" 
-          :popup-style="{'z-index': 503}"
+          :popup-style="{'z-index': 9999}"
           >
         </x-address>
       </div>

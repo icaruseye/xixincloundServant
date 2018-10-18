@@ -15,7 +15,10 @@
     </div>
       <button type="button" class="weui-btn weui-btn_primary" @click="toEdit(-1, 0)">新建地址</button>
     <div v-transfer-dom>
-      <popup v-model="showAddress" height="100%">
+      <popup 
+        v-model="showAddress"
+        height="100%"
+        :should-rerender-on-show="true">
         <div v-if="showAddress">
           <AddressEdit :UserAddress="UserAddress" :id="addressID" :defaultOnly="addressList.length === 0" @cancel="cancelAddress" @success="successAddress"></AddressEdit>
         </div>
