@@ -40,7 +40,7 @@
           </div>
           <div style="display:flex;justify-content:space-between;height:45px;line-height:45px">
             <span>设置价格</span>
-            <input type="number" v-model="price" placeholder="挂号价格（元）">
+            <input class="price" type="number" v-model="price" placeholder="挂号价格（元）">
           </div>
           <div style="display:flex;justify-content:space-between;align-items:center;min-height:45px;">
             <span style="width: 80px;text-align:left">设置地址</span>
@@ -233,7 +233,8 @@ export default {
         return false
       }
       this.submitDisable = true
-      if (this.list[this.index].scheduleRegistrResult[this.timeIndex].ReserveNum) {
+      console.log(this.list[this.index].scheduleRegistrResult[this.timeIndex].ScheduleID)
+      if (this.list[this.index].scheduleRegistrResult[this.timeIndex].ScheduleID) {
         await this.editInfo({
           ScheduleID: this.list[this.index].scheduleRegistrResult[this.timeIndex].ScheduleID,
           ReserveNum: this.count,
@@ -242,8 +243,8 @@ export default {
         })
       } else {
         await this.addInfo({
-          StartTime: `${this.list[this.index].date} ${dateFormat(new Date(this.timeBucket[this.timeIndex].StartTime), 'HH:mm:ss')}`,
-          EndTime: `${this.list[this.index].date} ${dateFormat(new Date(this.timeBucket[this.timeIndex].EndTime), 'HH:mm:ss')}`,
+          StartTime: `${this.list[this.index].date}T${dateFormat(new Date(this.timeBucket[this.timeIndex].StartTime), 'HH:mm:ss')}+08:00`,
+          EndTime: `${this.list[this.index].date}T${dateFormat(new Date(this.timeBucket[this.timeIndex].EndTime), 'HH:mm:ss')}+08:00`,
           ReserveNum: this.count,
           RegistrationFee: parseInt(this.price * 100),
           Address: this.address
@@ -256,6 +257,11 @@ export default {
       if (this.isEdit) {
         this.index = index
         this.timeIndex = timeIndex
+        let EndTime = this.list[index].scheduleRegistrResult[timeIndex].EndTime
+        if (new Date(EndTime).getTime() < new Date().getTime()) {
+          this.$vux.toast.text('不能设置已过期的时段')
+          return false
+        }
         this.showToast = true
         if (this.list[index].scheduleRegistrResult[timeIndex].ReserveNum) {
           this.count = this.list[index].scheduleRegistrResult[timeIndex].ReserveNum
@@ -263,8 +269,10 @@ export default {
           this.address = this.list[index].scheduleRegistrResult[timeIndex].Address
         } else {
           this.count = 1
-          this.address = ''
           this.price = 0
+          if (this.addressList.length > 0) {
+            this.address = this.concatAdress(this.addressList[0])
+          }
         }
       }
       this.$emit('on-item-click', this.list[index].scheduleRegistrResult[timeIndex])
@@ -333,13 +341,15 @@ export default {
       }
     },
     mergeWeekList () {
-      for (let item of this.list) {
+      let weekday = new Date()
+      for (let m = 0; m < this.list.length; m++) {
+        weekday.setDate(new Date(this.startDate).getDate() + m)
         for (let index = 0; index < this.timeBucket.length; index++) {
-          item.scheduleRegistrResult.push({
+          this.list[m].scheduleRegistrResult.push({
             ReserveNum: 0,
             AlreadyReserveNum: 0,
-            EndTime: this.timeBucket[index].EndTime,
-            StartTime: this.timeBucket[index].StartTime,
+            EndTime: `${dateFormat(weekday, 'YYYY-MM-DD')}T${dateFormat(new Date(this.timeBucket[index].EndTime), 'HH:mm:ss')}+08:00`,
+            StartTime: `${dateFormat(weekday, 'YYYY-MM-DD')}T${dateFormat(new Date(this.timeBucket[index].StartTime), 'HH:mm:ss')}+08:00`,
             ScheduleID: null
           })
         }
@@ -351,7 +361,7 @@ export default {
             for (let a = 0; a < item.scheduleRegistrResult.length; a++) {
               for (let b = 0; b < schedule.scheduleRegistrResult.length; b++) {
                 if (dateFormat(new Date(item.scheduleRegistrResult[a].StartTime), 'HH:mm:ss') === dateFormat(new Date(schedule.scheduleRegistrResult[b].StartTime), 'HH:mm:ss')) {
-                  item.scheduleRegistrResult[a] = Object.assign(schedule.scheduleRegistrResult[b])
+                  item.scheduleRegistrResult[a] = Object.assign({}, schedule.scheduleRegistrResult[b])
                 }
               }
             }
@@ -364,7 +374,6 @@ export default {
       week = week === 0 ? 7 : week
       this.startDate = this.addDayToDate(new Date(), (1 - week))
       this.endDate = this.addDayToDate(new Date(), (7 - week))
-      console.log(this.startDate, this.endDate)
     },
     addDayToDate (date, day) {
       let curDate = new Date()
@@ -426,7 +435,7 @@ export default {
     border-bottom: 1px solid #E7E7E7;
     margin-bottom: 20px;
   }
-  input {
+  .price {
     margin: 7px 0;
     width: 115px;
     height: 30px;

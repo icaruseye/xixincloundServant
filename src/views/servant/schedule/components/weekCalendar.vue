@@ -6,7 +6,7 @@
       </div>
     </transition>
     <div class="calendar_header_container">
-      <div class="front_items" @click="setTodayActive">今日</div>
+      <div class="front_items" @click="setTodayActive"> <span v-show="!readOnly">今日</span></div>
       <div class="arrows_items" @click="preWeek">
         <i class="iconfont icon-sanjiao-left"></i>
       </div>

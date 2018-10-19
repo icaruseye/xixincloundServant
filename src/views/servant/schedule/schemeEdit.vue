@@ -65,7 +65,6 @@
             <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(0)">全部</li>
             <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(1)">服务套餐</li>
             <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(2)">服务项</li>
-            <!-- <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(3, '挂号')">挂号</li> -->
             <li class="xx_actionsheet_item cancel" @click="showServiceTypePopup = false">取消</li>
           </ul>
         </div>
@@ -109,8 +108,7 @@ export default {
       typeText: {
         0: '全部',
         1: '服务套餐',
-        2: '服务项',
-        3: '挂号'
+        2: '服务项'
       },
       showServiceTypePopup: false,
       showServiceListPopup: false,
@@ -203,6 +201,14 @@ export default {
       if (this.ScheduleType !== 0 && this.selectItems.length === 0) {
         this.$vux.toast.text('至少要选择一项服务')
         return false
+      }
+      if (this.ScheduleType !== 0) {
+        this.ReserveNum = 0
+        for (let item of this.selectItems) {
+          if (item.ServiceNum > 0) {
+            this.ReserveNum += item.ServiceNum
+          }
+        }
       }
       if (this.isADD) {
         this.$http.post(`/Schedule/Add/Scheme`, {

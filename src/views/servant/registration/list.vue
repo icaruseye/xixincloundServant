@@ -17,7 +17,7 @@
           <li class="item" :key="index" v-for="(item, index) in list">
             <div class="rank">第{{index + 1}}号</div>
             <div class="avatar">
-              <img :src="item.Avatar" alt="">
+              <img :src="item.Avatar | transformImgUrl" alt="">
             </div>
             <div class="name">{{item.NickName}}</div>
             <i class="iconfont icon-jiantouyou"></i>

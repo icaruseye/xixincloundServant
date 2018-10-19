@@ -189,7 +189,6 @@ export default {
     async init () {
       let packageDetail = JSON.parse(sessionStorage.getItem('packageServiceDetail'))
       if (packageDetail) {
-        console.log(packageDetail)
         this.reqParams = packageDetail
         this.templateDetail = packageDetail
         this.EffectiveType = packageDetail.EffectiveType

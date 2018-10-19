@@ -81,7 +81,6 @@
             <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(0, '全部')">全部</li>
             <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(1, '服务套餐')">服务套餐</li>
             <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(2, '服务项')">服务项</li>
-            <li class="xx_actionsheet_item" @click="selectServiceTypeHandle(3, '挂号')">挂号</li>
             <li class="xx_actionsheet_item cancel" @click="showServiceTypePopup = false">取消</li>
           </ul>
         </div>
@@ -97,7 +96,7 @@
           <div style="max-height:300px;overflow:auto;">
             <div class="xx_actionsheet_item checker_item" :key="index" v-for="(item, index) in itemList">
               <span class="item-title">{{item.Name}}</span>
-              <van-stepper v-model="item.ServiceNums" :min="0" :integer="true" :max="500"/>
+              <van-stepper v-model="item.ServiceNum" :min="0" :integer="true" :max="500"/>
             </div>
           </div>
           <div class="xx_actionsheet_item cancel" @click="setServiceTimes">确认</div>
@@ -136,8 +135,7 @@ export default {
       typeText: {
         0: '全部',
         1: '服务套餐',
-        2: '服务项',
-        3: '挂号'
+        2: '服务项'
       },
       addPlanDialogVisible: false,
       showServiceTypePopup: false,
@@ -211,6 +209,14 @@ export default {
       if (this.ScheduleType !== 0 && this.selectItems.length === 0) {
         this.$vux.toast.text('至少要选择一项服务')
         return false
+      }
+      if (this.ScheduleType !== 0) {
+        this.ReserveNum = 0
+        for (let item of this.selectItems) {
+          if (item.ServiceNum > 0) {
+            this.ReserveNum += item.ServiceNum
+          }
+        }
       }
       let date = util.timeFormatFilter(this.activeDate, 'YYYY-MM-DD')
       let startTime = `${date} ${this.startTime}:00`
