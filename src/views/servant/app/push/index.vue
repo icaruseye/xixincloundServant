@@ -15,7 +15,7 @@
         <div :key="index">
           <div class="list-item-card">
             <div class="title-bar">
-              <span>{{item.PushPeopleName.split().length}}位收件人：</span>
+              <span>{{item.PushPeopleName.split(',').length}}位收件人：</span>
               <span class="name">{{item.PushPeopleName}}</span>
             </div>
             <div class="dec">{{item.Describe}}</div>

@@ -34,7 +34,7 @@
         <tbody>
           <tr>
             <td v-for="(date, index) in dateList" :key="index" :class="[dateInHasScheduleList(date.date) ? 'hasSchedule_td' : '']">
-              <div :class="['date_dev', date.isActive ? 'isActive': '', date.isCurMonth ? 'curMonth' : '', date.isToday ? 'isToday' : '',dateInHasScheduleList(date.date) ? 'hasSchedule' : '']" @click="setActiveDate(date.date)">
+              <div :class="['date_dev', date.isActive && !readOnly ? 'isActive': '', date.isCurMonth ? 'curMonth' : '', date.isToday && !readOnly ? 'isToday' : '',dateInHasScheduleList(date.date) ? 'hasSchedule' : '']" @click="setActiveDate(date.date)">
                 <span class="date_span">
                   {{date.date | xxTimeFormatFilter('DD')}}
                 </span>

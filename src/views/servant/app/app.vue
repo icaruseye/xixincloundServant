@@ -116,12 +116,13 @@
     </div>
     <div class="empty-bar"></div>
     <div class="weui-panel weui-list-panel">
-      <!-- <div class="weui-cell" @click="go('/app/push')">
+      <div class="weui-cell" @click="go('/app/push')">
         <div class="weui-cell-top">
           <div class="icon"><img src="@/assets/images/ic_app_ts.png"></div>
           <div class="title">推送设置</div>
           <i class="iconfont icon-jiantouyou"></i>
-        </div> -->
+        </div>
+      </div>
       <div class="weui-cell" @click="go('/app/registration')">
         <div class="weui-cell-top">
           <div class="icon"><img src="@/assets/images/app-ghsz.png"></div>

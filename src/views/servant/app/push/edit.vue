@@ -191,7 +191,11 @@ export default {
   },
   computed: {
     id () {
-      return this.$route.params.id !== 'add' ? this.$route.params.id : ''
+      if (this.$route.params.id !== 'add') {
+        return this.$route.params.id
+      } else {
+        return 'add'
+      }
     }
   },
   watch: {
@@ -205,15 +209,16 @@ export default {
     }
   },
   mounted () {
-    if (this.id !== 'add') {
-      this.getPushDetail(this.id)
-    }
+    this.getPushDetail(this.id)
     if (sessionStorage.getItem('addPushParams')) {
       this.params = JSON.parse(sessionStorage.getItem('addPushParams'))
     }
   },
   methods: {
     async getPushDetail (id) {
+      if (id === 'add') {
+        return false
+      }
       const res = await this.$http.get(`/Push/Detail?pushID=${id}`)
       if (res.data.Code === 100000) {
         const data = res.data.Data
@@ -245,8 +250,8 @@ export default {
     },
     async submit () {
       const that = this
-      const method = this.id === '' ? 'post' : 'put'
-      const url = this.id === '' ? '/Push/Add' : '/Push/Modify'
+      const method = this.id === 'add' ? 'post' : 'put'
+      const url = this.id === 'add' ? '/Push/Add' : '/Push/Modify'
       const validate = util.validateForm(this.params, this.authText)
 
       if (!validate) return false

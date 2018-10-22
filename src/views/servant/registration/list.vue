@@ -5,16 +5,16 @@
       <div class="date">{{info.StartTime | dateFormat('MM-DD')}}</div>
       <div class="week">星期{{info.StartTime | week}} {{info.StartTime | dateFormat('HH:mm')}} - {{info.EndTime | dateFormat('HH:mm')}}</div>
       <div class="count_wrap">
-        <span>总号源： {{info.ReserveNum + info.AlreadyReserveNum}}</span>
+        <span>总号源： {{info.ReserveNum}}</span>
         <span>已挂号： {{info.AlreadyReserveNum}}</span>
-        <span>余号： {{info.ReserveNum}}</span>
+        <span>余号： {{info.ReserveNum - info.AlreadyReserveNum}}</span>
       </div>
     </div>
     <div class="list_wrap">
       <div class="title">挂号列表</div>
       <ul>
         <template v-if="list.length > 0">
-          <li class="item" :key="index" v-for="(item, index) in list">
+          <li class="item" :key="index" v-for="(item, index) in list" @click="to(item.UserID)">
             <div class="rank">第{{index + 1}}号</div>
             <div class="avatar">
               <img :src="item.Avatar | transformImgUrl" alt="">
@@ -73,6 +73,9 @@ export default {
         this.list = res.data.Data.RegistrationResponses
       }
       this.$vux.loading.hide()
+    },
+    to (id) {
+      this.$router.push(`/customer/${id}/detail`)
     }
   }
 }
@@ -131,6 +134,9 @@ export default {
       -webkit-transform: scaleY(0.5);
       transform: scaleY(0.5);
       z-index: 2;
+    }
+    &:last-child::after {
+      display: none;
     }
     .rank {
       padding-right: 25px;

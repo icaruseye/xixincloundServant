@@ -117,7 +117,6 @@ export default [
     meta: {
       title: '使用用户',
       goBackParam: {
-        url: '/app/push/edit',
         title: '群发推送'
       }
     }

@@ -14,11 +14,11 @@
                 :class="{ active: list[index].startTime === list[index].date && i.ReserveNum > 0 }"
                 :key="timeIndex"
                 :data-id="i.ScheduleID">
-                <div v-if="i.AlreadyReserveNum > 0 && !isEdit">
+                <div v-if="!isEdit && (i.ReserveNum || i.AlreadyReserveNum > 0)">
                   挂 {{i.AlreadyReserveNum}}
                 </div>
-                <div v-if="i.ReserveNum > 0 && !isEdit">
-                  余 {{i.ReserveNum}}
+                <div v-if="!isEdit && (i.ReserveNum || i.AlreadyReserveNum > 0)">
+                  余 {{i.ReserveNum - i.AlreadyReserveNum}}
                 </div>
                 <div v-if="isEdit && i.ReserveNum">
                   {{i.ReserveNum}}

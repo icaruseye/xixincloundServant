@@ -1,13 +1,13 @@
 <template>
   <div class="wrapper">
-    <xx-go-back></xx-go-back>
+    <xx-go-back ></xx-go-back>
     <div style="padding: 15px 12px 5px;background: #fff;">
       <div class="search-bar">
         <i class="iconfont icon-sousuo"></i>
         <input type="text" placeholder="搜索" v-model="search">
         <button class="all" @click="selectAll">全选</button>
       </div>
-      <div class="tags-box">
+      <div class="tags-box" v-if="tagList.length > 0">
         <div class="title">用户标签</div>
         <div class="list">
           <checker v-model="attrs" type="checkbox" default-item-class="tags-item" selected-item-class="tags-item-selected">
@@ -28,7 +28,7 @@
         </checker>
       </div>
     </div>
-    <div class="tool-bar">
+    <!-- <div class="tool-bar">
       <span class="text">是否创建为群组</span>
       <checker v-model="isCreateGroup" class="list" default-item-class="item" selected-item-class="item-selected" :radio-required="true">
         <checker-item :value="1">
@@ -40,7 +40,7 @@
           <span class="xx-radio-item" :class="isCreateGroup === 0 ? 'active' : ''"></span>
         </checker-item>
       </checker>
-    </div>
+    </div> -->
     <button type="button" class="weui-btn weui-btn_primary" @click="submit">确认</button>
   </div>
 </template>
@@ -57,7 +57,7 @@ export default {
   },
   data () {
     return {
-      isCreateGroup: 0,
+      // isCreateGroup: 0,
       attrs: '',
       search: '',
       pageIndex: 1,
@@ -98,7 +98,6 @@ export default {
     },
     selectAll () {
       for (let user of this.userList) {
-        console.log(user)
         this.params.userList.push(user.UserId)
       }
     },
