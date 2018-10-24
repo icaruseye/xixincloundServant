@@ -70,6 +70,7 @@
             default-item-class="item"
             selected-item-class="item-selected"
             :radio-required="true"
+            v-if="packageList.length > 0"
             @on-change="selectPackageHandle">
             <checker-item :value="index" :key="index" v-for="(item, index) in packageList">
               <img class="icon" :src="item.PackageType | xxMissionTypeIconFilter" alt="">
@@ -77,6 +78,7 @@
               <span class="xx-radio-item" :class="selectPackageIndex === index ? 'active' : ''"></span>
             </checker-item>
           </checker>
+          <xx-occupied-box v-else>服务列表为空</xx-occupied-box>
         </div>
         <div style="height:5px;background:#f1f1f1;"></div>
         <div class="dialog-button_bar">
@@ -104,6 +106,7 @@
             default-item-class="item"
             selected-item-class="item-selected"
             :radio-required="true"
+            v-if="articleList.length > 0"
             @on-change="selectArticleHandle">
             <checker-item :value="index" :key="index" v-for="(item, index) in articleList">
               <span class="xx-radio-item" :class="selectArticleIndex === index ? 'active' : ''"></span>
@@ -117,6 +120,7 @@
               </div>
             </checker-item>
           </checker>
+          <xx-occupied-box v-else>文章列表为空</xx-occupied-box>
         </div>
         <div style="height:5px;background:#f1f1f1;"></div>
         <div class="dialog-button_bar">
@@ -147,8 +151,8 @@ export default {
       selectPackage: false,
       selectArticle: false,
       type: ['文章', '服务'],
-      articleList: null,
-      packageList: null,
+      articleList: [],
+      packageList: [],
       selectArticleIndex: null,
       selectPackageIndex: null,
       params: {
@@ -487,7 +491,7 @@ export default {
     border-bottom: 1px solid RGBA(204, 240, 238, 1);
   }
   .dialog-list {
-    max-height: 300px;
+    max-height: 340px;
     overflow: scroll;
     .item {
       border-bottom: 1px solid RGBA(204, 240, 238, 1);

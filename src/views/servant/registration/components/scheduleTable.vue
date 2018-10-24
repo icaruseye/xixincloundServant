@@ -11,7 +11,7 @@
               <div
                 @click="clickItem(index, timeIndex)"
                 class="item"
-                :class="{ active: list[index].startTime === list[index].date && i.ReserveNum > 0 }"
+                :class="{ active: list[index].startTime === list[index].date && i.ReserveNum > 0, before: currentTime > new Date(i.EndTime).getTime()}"
                 :key="timeIndex"
                 :data-id="i.ScheduleID">
                 <div v-if="!isEdit && (i.ReserveNum || i.AlreadyReserveNum > 0)">
@@ -127,7 +127,10 @@ export default {
   computed: {
     ...mapGetters([
       'userAccount'
-    ])
+    ]),
+    currentTime () {
+      return new Date().getTime()
+    }
   },
   watch: {
     start (val) {
@@ -142,7 +145,7 @@ export default {
       submitDisable: false,
       isShowAddressList: false,
       showAddress: false,
-      address: null,
+      address: '',
       addressList: [],
       addressIndex: null,
       addressID: null,
@@ -195,7 +198,7 @@ export default {
       })
       if (res.data.Code === 100000) {
         this.showToast = false
-        this.$vux.toast.text('提交成功')
+        this.$vux.toast.text('添加成功')
       } else {
         this.$vux.toast.text(res.data.Msg)
       }
@@ -210,7 +213,7 @@ export default {
       })
       if (res.data.Code === 100000) {
         this.showToast = false
-        this.$vux.toast.text('提交成功')
+        this.$vux.toast.text('修改成功')
       } else {
         this.$vux.toast.text(res.data.Msg)
       }
@@ -350,7 +353,8 @@ export default {
             AlreadyReserveNum: 0,
             EndTime: `${dateFormat(weekday, 'YYYY-MM-DD')}T${dateFormat(new Date(this.timeBucket[index].EndTime), 'HH:mm:ss')}+08:00`,
             StartTime: `${dateFormat(weekday, 'YYYY-MM-DD')}T${dateFormat(new Date(this.timeBucket[index].StartTime), 'HH:mm:ss')}+08:00`,
-            ScheduleID: null
+            ScheduleID: null,
+            Address: ''
           })
         }
       }
@@ -425,6 +429,10 @@ export default {
       background: #3AC7F5;
       color: #fff;
       font-size: 14px;
+    }
+    &.before {
+      background: #F6F6F6;
+      color: transparent;
     }
   }
 }
