@@ -105,7 +105,7 @@ Vue.filter('xxMissionTypeIconFilter', (useType = 1) => {
 Vue.filter('xxSiteNoticeIconFilter', (type = 1) => {
   switch (type) {
     case 2:
-      return '#icon-dingdan1'
+      return '#icon-dingdan-copy'
     case 4:
       return '#icon-icon_xitonggonggao'
     default:
