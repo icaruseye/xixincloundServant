@@ -33,9 +33,10 @@ export default {
       return this.$route.query.redirect || null
     }
   },
-  created () {
-  },
   mounted () {
+    if (!this.$store.getters.moduleSwitch.RegisterSwitch) {
+      this.$router.push('/app')
+    }
   },
   methods: {
     activeDateChange (date, calendar) {
