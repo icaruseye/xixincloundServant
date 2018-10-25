@@ -46,6 +46,14 @@ router.beforeEach((to, from, next) => {
       })
     } else { // 已登录的状态
       const userState = router.app.$store.getters.userState // 用户状态 -4：未绑定手机；-2：账户锁定中；-1：账户已被删除；0：账户未提交身份证；1：账户提交身份证 待审核；2：未提交审核资料3：账户审核未通过；；3：账户已审核通过
+
+      // 获取功能开关
+      if (to.meta.ModuleSwitch) {
+        apiRequest.get('/ModuleSwitch').then(res => {
+          router.app.$store.commit('SET_MODULESWITCH', res.data.Data)
+        })
+      }
+
       if (userState === -4) { // 没有绑定手机
         if (to.path !== '/user/authstep1') {
           next('/user/authstep1')

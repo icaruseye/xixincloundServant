@@ -123,7 +123,7 @@
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
-      <div class="weui-cell" @click="go('/app/registration')">
+      <div v-if="moduleSwitch.RegisterSwitch" class="weui-cell" @click="go('/app/registration')">
         <div class="weui-cell-top">
           <div class="icon"><img src="@/assets/images/app-ghsz.png"></div>
           <div class="title">挂号设置</div>
@@ -136,8 +136,14 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import { numberComma } from 'vux'
 export default {
+  computed: {
+    ...mapGetters([
+      'moduleSwitch'
+    ])
+  },
   data () {
     return {
       workSpaceData: {

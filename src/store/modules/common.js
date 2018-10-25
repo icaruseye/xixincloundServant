@@ -8,6 +8,7 @@ const SET_WITHDRAW_TAB_INDEX = 'SET_WITHDRAW_TAB_INDEX'
 const SET_SERVICE_LIST_TAB_INDEX = 'SET_SERVICE_LIST_TAB_INDEX'
 const SET_API_ERROT = 'SET_API_ERROT'
 const SET_HAS_NEW_CHAT = 'SET_HAS_NEW_CHAT'
+const SET_MODULESWITCH = 'SET_MODULESWITCH'
 
 const state = {
   missionTabIndex: 0, // 任务列表第一级tab
@@ -20,7 +21,8 @@ const state = {
   apiError: false, // 接口请求是否异常
   hasNewChat: false, // 是否有新消息
   updateChatList: 0,
-  chatHasNewsTimer: null
+  chatHasNewsTimer: null,
+  moduleSwitch: {}
 }
 
 const mutations = {
@@ -50,6 +52,9 @@ const mutations = {
   },
   [SET_HAS_NEW_CHAT] (state, flag) {
     state.hasNewChat = flag
+  },
+  [SET_MODULESWITCH] (state, res) {
+    state.moduleSwitch = res
   }
 }
 const actions = {
@@ -82,7 +87,8 @@ const getters = {
   serviceListTabIndex: state => state.serviceListTabIndex,
   apiError: state => state.apiError,
   hasNewChat: state => state.hasNewChat,
-  updateChatList: state => state.updateChatList
+  updateChatList: state => state.updateChatList,
+  moduleSwitch: state => state.moduleSwitch
 }
 
 export default {

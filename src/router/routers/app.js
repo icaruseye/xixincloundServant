@@ -11,7 +11,8 @@ export default [
     path: '/app',
     component: _import('/servant/app/app'),
     meta: {
-      title: '应用'
+      title: '应用',
+      ModuleSwitch: true
     }
   },
   {
