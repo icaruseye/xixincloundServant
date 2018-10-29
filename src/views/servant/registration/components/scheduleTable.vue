@@ -236,7 +236,6 @@ export default {
         return false
       }
       this.submitDisable = true
-      console.log(this.list[this.index].scheduleRegistrResult[this.timeIndex].ScheduleID)
       if (this.list[this.index].scheduleRegistrResult[this.timeIndex].ScheduleID) {
         await this.editInfo({
           ScheduleID: this.list[this.index].scheduleRegistrResult[this.timeIndex].ScheduleID,
@@ -344,7 +343,7 @@ export default {
       }
     },
     mergeWeekList () {
-      let weekday = new Date()
+      let weekday = new Date(this.startDate)
       for (let m = 0; m < this.list.length; m++) {
         weekday.setDate(new Date(this.startDate).getDate() + m)
         for (let index = 0; index < this.timeBucket.length; index++) {
@@ -372,6 +371,7 @@ export default {
           }
         }
       }
+      console.log(this.list)
     },
     setStartAndEndDate () {
       let week = new Date().getDay()
