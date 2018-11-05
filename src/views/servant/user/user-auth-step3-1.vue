@@ -59,7 +59,7 @@ export default {
           required: true
         },
         CertificateNum: {
-          text: '执业证编号',
+          text: '执业证地址',
           required: true
         },
         isDefault: {
