@@ -99,23 +99,20 @@
     </div>
     <div class="empty-bar"></div>
     <div class="weui-panel weui-list-panel">
-      <div class="weui-cell" @click="go('/article')">
+      <div v-if="moduleSwitch.RegisterSwitch" class="weui-cell" @click="go('/app/registration')">
         <div class="weui-cell-top">
-          <div class="icon"><img src="@/assets/images/ic_app_wzsz.png"></div>
-          <div class="title">文章设置</div>
+          <div class="icon"><img src="@/assets/images/app-ghsz.png"></div>
+          <div class="title">挂号设置</div>
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
-      <!-- <div class="weui-cell" @click="go('/activity')">
+      <div class="weui-cell" @click="go('/app/course')">
         <div class="weui-cell-top">
-          <div class="icon"><img src="@/assets/images/ic_app_hdsz.png"></div>
-          <div class="title">活动设置</div>
+          <div class="icon"><img src="@/assets/images/app-ghsz.png"></div>
+          <div class="title">课程设置</div>
           <i class="iconfont icon-jiantouyou"></i>
         </div>
-      </div> -->
-    </div>
-    <div class="empty-bar"></div>
-    <div class="weui-panel weui-list-panel">
+      </div>
       <div class="weui-cell" @click="go('/app/activity')">
         <div class="weui-cell-top">
           <div class="icon"><img src="@/assets/images/ic_app_hdsz.png"></div>
@@ -130,13 +127,23 @@
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
-      <div v-if="moduleSwitch.RegisterSwitch" class="weui-cell" @click="go('/app/registration')">
+    </div>
+    <div class="empty-bar"></div>
+    <div class="weui-panel weui-list-panel">
+      <div class="weui-cell" @click="go('/article')">
         <div class="weui-cell-top">
-          <div class="icon"><img src="@/assets/images/app-ghsz.png"></div>
-          <div class="title">挂号设置</div>
+          <div class="icon"><img src="@/assets/images/ic_app_wzsz.png"></div>
+          <div class="title">文章设置</div>
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
+      <!-- <div class="weui-cell" @click="go('/activity')">
+        <div class="weui-cell-top">
+          <div class="icon"><img src="@/assets/images/ic_app_hdsz.png"></div>
+          <div class="title">活动设置</div>
+          <i class="iconfont icon-jiantouyou"></i>
+        </div>
+      </div> -->
     </div>
     <xx-tabbar></xx-tabbar>
   </div>

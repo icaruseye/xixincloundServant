@@ -24,10 +24,11 @@ export default {
     color: #999;
     padding: 5px 10px;
     line-height: 16px;
-    width: 210px;
+    max-width: 210px;
     border-radius: 4px;
     margin: 0 auto;
     text-align: justify;
+    display: inline-block;
   }
   .time_container
   {

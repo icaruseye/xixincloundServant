@@ -59,7 +59,7 @@ export default {
   created () {
     this.getData()
     this.getChatHasNews()
-    this.getSiteNoticeNum()
+    // this.getSiteNoticeNum()
   },
   methods: {
     ...mapActions([

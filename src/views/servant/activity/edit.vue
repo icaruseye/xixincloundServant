@@ -4,7 +4,7 @@
       <xx-uploader
         :limit="1"
         title="活动封面"
-        :imgList="initCover"
+        :imgList="params.CoverPhoto"
         @onUpdate="onUpdateCover">
       </xx-uploader>
     </div>
@@ -12,14 +12,14 @@
       <label class="content_input_label">活动介绍</label>
       <div class="content_input_box">
         <textarea class="content_input_textarea" v-model="params.Describe" placeholder="请输入"></textarea>
-        <span class="content_input_nums_count">{{params.Describe ? params.Describe.length : 0}}/100</span>
+        <span class="content_input_nums_count">{{params.ActivityDescribe ? params.ActivityDescribe.length : 0}}/100</span>
       </div>
     </div>
     <div class="content_input_container">
       <label class="content_input_label">活动详情</label>
       <div class="content_input_box">
         <textarea class="content_input_textarea" v-model="params.Describe" placeholder="请输入"></textarea>
-        <span class="content_input_nums_count">{{params.Describe ? params.Describe.length : 0}}/100</span>
+        <span class="content_input_nums_count">{{params.ActivityDescribe ? params.ActivityDescribe.length : 0}}/100</span>
       </div>
     </div>
     <div class="content_input_container" style="padding-top:10px">
@@ -34,19 +34,23 @@
       <label class="title_text_label">活动时间</label>
       <div class="title_text_box" @click="selectDateTime">{{params.PushTime || '请选择活动时间'}}<i class="iconfont icon-jiantouyou"></i></div>
     </div>
-    <div class="title_text_container">
-      <label class="title_text_label">报名时间</label>
-      <div class="title_text_box" @click="selectDateTime">{{params.PushTime || '请选择报名时间'}}<i class="iconfont icon-jiantouyou"></i></div>
+    <div class="title_input_container">
+      <label class="title_input_label">每人可购买数量</label>
+      <div class="title_input_box">
+        <input class="title_input_contorl" v-model="params.QuantityPerPerson" placeholder="请输入" type="text">
+      </div>
     </div>
     <!-- 添加服务 -->
-    <div class="serviceItem_list">
+    <div class="serviceItem_list" v-if="selectItem.Name">
       <div class="serviceItem_list_item">
         <img src="https://tvax1.sinaimg.cn/crop.0.0.473.473.180/78258c21ly8ft5x6jpwepj20d50d5wec.jpg" alt="" class="icon">
         <div class="content">
-          <div class="title">图文问诊</div>
-          <div class="price">￥199元</div>
+          <div class="title">{{selectItem.Name}}</div>
+          <div class="price">￥{{selectItem.Price}}元</div>
         </div>
-        <span class="count">X1</span>
+        <span style="color: #FF5F5F">￥</span>
+        <input type="number" v-model="params.PresentPrice" class="count">
+        <van-stepper v-model="params.AvailableDuantity" :min="1" :integer="true"/>
       </div>
     </div>
     <router-link class="serviceItem_list_item_add" to="/app/activity/addServiceItem">+ 添加服务</router-link>
@@ -62,16 +66,29 @@ export default {
       initCover: '',
       initIntroImgs: '',
       params: {
-        Title: '',
-        Describe: '',
-        PushTime: '',
-        Cover: ''
-      }
+        ViewID: '',
+        CoverPhoto: '', // 封面
+        ActivityDescribe: '', // 介绍
+        ActivityIntroductionImg: '', // 介绍图片
+        StartTime: '',
+        EndTime: '',
+        QuantityPerPerson: '', // 每人可购买数量
+        CommodityType: '', // 活动类型
+        CommodityID: '', // 关联ID
+        OriginalPrice: '',
+        PresentPrice: '',
+        AvailableDuantity: '' // 库存数量
+      },
+      selectItem: {}
     }
+  },
+  computed: {
   },
   created () {
   },
   mounted () {
+    const activitySelectedItem = JSON.parse(sessionStorage.getItem('activitySelectedItem')) || null
+    this.selectItem = activitySelectedItem
   },
   methods: {
     // 寻找推送时间
@@ -140,7 +157,7 @@ export default {
   {
     display: flex;
     align-items: center;
-    flex: 0 0 55px;
+    flex: 0 0 120px;
     font-size: 14px;
     color: #666;
     padding-left: 12px;
@@ -235,8 +252,16 @@ export default {
       }
     }
     .count {
-      font-size: 15px;
-      color: #999;
+      width: 50px;
+      height: 28px;
+      line-height: 30px;
+      background: #F6F6F6;
+      border-radius: 4px;
+      margin: 0 15px 0 5px;
+      border: 1px solid #eee;
+      text-align: center;
+      font-size: 14px;
+      color: #666;
     }
   }
 }

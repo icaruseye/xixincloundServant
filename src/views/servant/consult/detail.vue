@@ -15,7 +15,7 @@
       </xx-step-bar>
     </div>
     <div class="content_container" :style="'padding-bottom:'+ boxPaddingBottom+'px'">
-      <system-msg-item v-if="warmPrompt">
+      <system-msg-item v-if="warmPrompt" class="tips_bar">
         {{warmPrompt}}
       </system-msg-item>
       <a v-if="messageId !== -1" href="javascript:" class="moreMessage_text" @click="moreMessage">
@@ -24,7 +24,7 @@
       </a>
       <template v-if="messageList.length > 0">
         <div v-for="(item, index) in messageList" :key="index">
-          <system-msg-item v-if="item.SendTime" msgType="time" class="mt25px">
+          <system-msg-item v-if="item.SendTime" msgType="time" class="mt25px tips_bar">
             {{item.SendTime | xxTimeFormatFilter}}
           </system-msg-item>
           <text-chat-item
@@ -51,11 +51,11 @@
         </div>
       </template>
       <div v-if="detail.State === -1" style="margin-top:40px">
-        <system-msg-item msgType="time">
+        <system-msg-item msgType="time" class="tips_bar">
           任务已被取消
         </system-msg-item>
-        <system-msg-item class="mt10px">
-          取消原因： {{detail.CancelDescription || '服务者4小时未做出响应'}}
+        <system-msg-item class="mt10px tips_bar">
+          取消原因： {{detail.CancelDescription || '未填写原因'}}
         </system-msg-item>
       </div>
     </div>
@@ -218,7 +218,7 @@ export default {
         return false
       }
       this.$vux.loading.show('加载中')
-      const res = await this.$http.put(`/Mission?missionID=${this.ID}`, option)
+      const res = await this.$http.put(`/CancelTheConsult?missionID=${this.ID}`, option)
       this.$vux.loading.hide()
       if (res.data.Code === 100000) {
         that.$vux.toast.show({
@@ -430,5 +430,9 @@ export default {
   padding: 20px 0;
   color: #3ac7f5;
   outline: none
+}
+
+.tips_bar {
+  text-align: center;
 }
 </style>

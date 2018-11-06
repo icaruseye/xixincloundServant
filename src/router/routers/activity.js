@@ -28,7 +28,7 @@ export default [
     path: '/app/activity/addServiceItem',
     component: _import('/servant/activity/add-serviceItem'),
     meta: {
-      title: '添加活动'
+      title: '选择项目'
     }
   },
   {

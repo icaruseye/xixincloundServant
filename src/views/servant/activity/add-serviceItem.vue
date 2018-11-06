@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper has-tabbar">
     <div style="position:fixed;left:0;right:0;top:0;background-color: #fff;z-index: 10">
-      <xx-tab v-model="modelMissionTabIndex" active-color="#3AC7F5" custom-bar-width="25px">
+      <xx-tab v-model="tabIndex" active-color="#3AC7F5" custom-bar-width="25px">
         <xx-tab-item @on-item-click="onItemClick">服务产品</xx-tab-item>
         <xx-tab-item @on-item-click="onItemClick">课程产品</xx-tab-item>
         <!-- <xx-tab-item @on-item-click="onItemClick">挂号产品</xx-tab-item> -->
@@ -9,16 +9,13 @@
     </div>
     <div class="serviceItem_list">
       <checker v-model="selectedItem" default-item-class="serviceItem_list_item" selected-item-class="serviceItem_list_item_selected">
-        <checker-item :value="1">
-          <img class="icon" src="https://tvax1.sinaimg.cn/crop.0.0.473.473.180/78258c21ly8ft5x6jpwepj20d50d5wec.jpg" alt="" srcset="">
-          <div class="title">院内陪朕</div>
-          <i class="iconfont icon-xuanzhong" v-if="selectedItem == 1"></i>
-        </checker-item>
-        <checker-item :value="2">
-          <img class="icon" src="https://tvax1.sinaimg.cn/crop.0.0.473.473.180/78258c21ly8ft5x6jpwepj20d50d5wec.jpg" alt="" srcset="">
-          <div class="title">院内陪朕</div>
-          <i class="iconfont icon-xuanzhong" v-if="selectedItem == 2"></i>
-        </checker-item>
+        <template v-for="(item, index) in itemList">
+          <checker-item :value="index" :key="index">
+            <img class="icon" :src="item.PackageType | xxMissionTypeIconFilter" alt="" srcset="">
+            <div class="title">{{item.Name}}</div>
+            <i class="iconfont icon-xuanzhong" v-if="selectedItem == index"></i>
+          </checker-item>
+        </template>
       </checker>
     </div>
     <button type="button" class="weui-btn weui-btn_primary weui-btn-bottom" @click="submit">确定</button>
@@ -34,16 +31,54 @@ export default {
   },
   data () {
     return {
-      modelMissionTabIndex: 0,
-      selectedItem: null
+      tabIndex: 0,
+      selectedItem: -1,
+      itemList: [],
+      courseList: []
     }
   },
-  created () {
+  watch: {
+    tabIndex (val) {
+      if (val === 0) {
+        this.getItemList()
+      } else {
+        this.getCourseList()
+      }
+    }
   },
   mounted () {
+    this.getItemList()
   },
   methods: {
-    onItemClick () {}
+    // 获取服务包列表
+    async getItemList () {
+      const res = await this.$http.get(`/Push/Package/List`)
+      if (res.data.Code === 100000) {
+        this.itemList = res.data.Data
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
+    },
+    // 获取课程列表
+    async getCourseList () {
+      const res = await this.$http.get(``)
+      if (res.data.Code === 100000) {
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
+    },
+    onItemClick (val) {
+      this.tabIndex = val
+    },
+    submit () {
+      if (this.selectedItem < 0) {
+        this.$vux.toast.text('请选择一项')
+      } else {
+        const data = this.tabIndex === 0 ? this.itemList[this.selectedItem] : this.courseList[this.selectedItem]
+        sessionStorage.setItem('activitySelectedItem', JSON.stringify(data))
+        this.$router.back()
+      }
+    }
   }
 }
 </script>
@@ -71,7 +106,6 @@ export default {
     flex: 1;
     font-size: 18px;
     color: #666;
-    font-weight: bold;
   }
   .iconfont {
     font-size: 14px;

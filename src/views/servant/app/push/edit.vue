@@ -157,7 +157,7 @@ export default {
       selectPackageIndex: null,
       params: {
         selectStuff: '',
-        PushType: -1, // 0: 文章；1：服务包；-1：未选择
+        PushType: 0, // 0: 文章；1：服务包；-1：未选择
         Title: '',
         Describe: '',
         SourceID: '',
