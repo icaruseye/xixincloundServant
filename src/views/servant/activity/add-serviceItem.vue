@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper has-tabbar">
-    <div style="position:fixed;left:0;right:0;top:0;background-color: #fff;z-index: 10">
+    <div style="position:absolute;left:0;right:0;top:0;background-color: #fff;z-index: 10">
       <xx-tab v-model="tabIndex" active-color="#3AC7F5" custom-bar-width="25px">
         <xx-tab-item @on-item-click="onItemClick">服务产品</xx-tab-item>
         <xx-tab-item @on-item-click="onItemClick">课程产品</xx-tab-item>
@@ -10,9 +10,14 @@
     <div class="serviceItem_list">
       <checker v-model="selectedItem" default-item-class="serviceItem_list_item" selected-item-class="serviceItem_list_item_selected">
         <template v-for="(item, index) in itemList">
-          <checker-item :value="index" :key="index">
+          <checker-item :value="index" :key="index" v-if="tabIndex === 0">
             <img class="icon" :src="item.PackageType | xxMissionTypeIconFilter" alt="" srcset="">
             <div class="title">{{item.Name}}</div>
+            <i class="iconfont icon-xuanzhong" v-if="selectedItem == index"></i>
+          </checker-item>
+          <checker-item :value="index" :key="index" v-if="tabIndex === 1">
+            <img class="icon" :src="item.PackageType | xxMissionTypeIconFilter" alt="" srcset="">
+            <div class="title">{{item.Title}}</div>
             <i class="iconfont icon-xuanzhong" v-if="selectedItem == index"></i>
           </checker-item>
         </template>
@@ -23,11 +28,13 @@
 </template>
 
 <script>
-import { Checker, CheckerItem } from 'vux'
+import { Checker, CheckerItem, ButtonTab, ButtonTabItem } from 'vux'
 export default {
   components: {
     Checker,
-    CheckerItem
+    CheckerItem,
+    ButtonTab,
+    ButtonTabItem
   },
   data () {
     return {
@@ -39,6 +46,7 @@ export default {
   },
   watch: {
     tabIndex (val) {
+      this.selectedItem = -1
       if (val === 0) {
         this.getItemList()
       } else {
@@ -61,8 +69,9 @@ export default {
     },
     // 获取课程列表
     async getCourseList () {
-      const res = await this.$http.get(``)
+      const res = await this.$http.get(`/Proxy-Courses-List`)
       if (res.data.Code === 100000) {
+        this.itemList = res.data.Data
       } else {
         this.$vux.toast.text(res.data.Msg)
       }
@@ -74,9 +83,10 @@ export default {
       if (this.selectedItem < 0) {
         this.$vux.toast.text('请选择一项')
       } else {
-        const data = this.tabIndex === 0 ? this.itemList[this.selectedItem] : this.courseList[this.selectedItem]
-        sessionStorage.setItem('activitySelectedItem', JSON.stringify(data))
-        this.$router.back()
+        const data = this.itemList[this.selectedItem]
+        console.log(data)
+        data.CommodityType = this.tabIndex + 1
+        this.$emit('selected', data)
       }
     }
   }

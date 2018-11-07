@@ -1,39 +1,57 @@
 <template>
   <div class="wrapper">
     <xx-go-back></xx-go-back>
-    <div class="ac_container">
+    <div class="ac_container" v-if="list.Curriculum.length > 0">
       <div class="ac_container_title">服务产品</div>
       <div class="ac_container_list">
-        <div class="ac_list_item" @click="go('/app/activity/detail/1')">
-          <img class="icon" src="https://tvax4.sinaimg.cn/crop.0.0.996.996.180/9d0d09ably8foq7clnhjwj20ro0ro3yv.jpg" alt="">
-          <div class="content">
-            <div class="name">院内陪诊</div>
-            <div class="price">￥199元</div>
+        <template v-for="(item, index) in list.Curriculum">
+          <div class="ac_list_item" :key="index">
+            <img class="icon" :src="item.CoverPhoto | transformImgUrl" alt="">
+            <div class="content" @click="go(`/app/activity/detail/${item.ID}`)">
+              <div class="name">{{item.ActivityName}}</div>
+              <div class="price">￥{{item.PresentPrice}}元</div>
+            </div>
+            <div class="btns">
+              <button class="btn yellow" @click="edit(item.ID)">编辑</button>
+              <button class="btn red" @click="remove(item.ID)">删除</button>
+            </div>
+            <!-- <img class="status" src="@/assets/images/ic_dqr.png" alt=""> -->
           </div>
-          <!-- <div class="btns">
-            <button class="btn yellow">管理</button>
-            <button class="btn blue" style="margin-left:13px;">查询</button>
-          </div> -->
-          <img class="status" src="@/assets/images/ic_dqr.png" alt="">
-        </div>
+        </template>
       </div>
     </div>
-    <div class="ac_container">
+    <div class="ac_container" v-if="list.Service.length > 0">
       <div class="ac_container_title">课程产品</div>
       <div class="ac_container_list">
-        <div class="ac_list_item">
-          <div class="content">
-            <div class="name course">院内陪诊<span class="tag">录播</span></div>
-            <div class="time">30分钟</div>
+        <template v-for="(item, index) in list.Service">
+          <div class="ac_list_item" :key="index">
+            <img class="icon" :src="item.CoverPhoto | transformImgUrl" alt="">
+            <div class="content" @click="go(`/app/activity/detail/${item.ID}`)">
+              <div class="name">{{item.ActivityName}}</div>
+              <div class="price">￥{{item.PresentPrice}}元</div>
+            </div>
+            <div class="btns">
+              <button class="btn yellow" @click="edit(item.ID)">编辑</button>
+              <button class="btn red" @click="remove(item.ID)">删除</button>
+            </div>
+            <!-- <img class="status" src="@/assets/images/ic_dqr.png" alt=""> -->
           </div>
-          <div class="btns">
-            <button class="btn yellow">管理</button>
-            <button class="btn blue" style="margin-left:13px;">查询</button>
+        </template>
+        <!-- <template v-for="(item, index) in list.Service">
+          <div class="ac_list_item" :key="index">
+            <div class="content">
+              <div class="name course">{{}}<span class="tag">录播</span></div>
+              <div class="time">30分钟</div>
+            </div>
+            <div class="btns">
+              <button class="btn yellow">管理</button>
+              <button class="btn blue" style="margin-left:13px;">查询</button>
+            </div>
           </div>
-        </div>
+        </template> -->
       </div>
     </div>
-    <button type="button" class="weui-btn weui-btn_primary weui-btn-bottom" @click="edit">+添加活动</button>
+    <button type="button" class="weui-btn weui-btn_primary weui-btn-bottom" @click="edit('add')">+添加活动</button>
   </div>
 </template>
 
@@ -41,15 +59,39 @@
 export default {
   data () {
     return {
+      list: {
+        Curriculum: [],
+        Service: []
+      }
     }
   },
   created () {
   },
   mounted () {
+    this.getActivityList()
   },
   methods: {
-    edit () {
-      this.$router.push(`/app/activity/edit/add`)
+    async getActivityList () {
+      this.$vux.loading.show()
+      const res = await this.$http.get(`/Activity-List`)
+      this.$vux.loading.hide()
+      if (res.data.Code === 100000) {
+        this.list = res.data.Data
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
+    },
+    edit (id) {
+      this.$router.push(`/app/activity/edit/${id}`)
+    },
+    async remove (id) {
+      const res = await this.$http.delete(`/Activity-Delete?activityId=${id}`)
+      if (res.data.Code === 100000) {
+        this.$vux.toast.text('删除成功')
+        this.getActivityList()
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
     },
     go (url) {
       this.$router.push(url)
@@ -81,6 +123,10 @@ export default {
     display: flex;
     align-items: center;
     padding: 15px 0;
+    border-bottom: 1px solid RGBA(0, 180, 171, .1);
+    &:last-child {
+      border: 0;
+    }
     .icon {
       margin-right: 8px;
       width: 29px;
@@ -136,6 +182,10 @@ export default {
         &.blue {
           color: #3AC7F5;
           border-color: #3AC7F5;
+        }
+        &.red {
+          color: #FF5F5F;
+          border-color: #FF5F5F;
         }
       }
     }

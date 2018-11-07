@@ -108,7 +108,7 @@
       </div>
       <div class="weui-cell" @click="go('/app/course')">
         <div class="weui-cell-top">
-          <div class="icon"><img src="@/assets/images/app-ghsz.png"></div>
+          <div class="icon"><img src="@/assets/images/ic_app_wzsz.png"></div>
           <div class="title">课程设置</div>
           <i class="iconfont icon-jiantouyou"></i>
         </div>

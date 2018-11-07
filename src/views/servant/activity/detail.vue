@@ -2,40 +2,72 @@
   <div class="wrapper">
     <div class="ac_detail_info">
       <div style="position: relative;top: -13px;">
-        <img class="icon" src="https://tvax1.sinaimg.cn/crop.0.0.473.473.180/78258c21ly8ft5x6jpwepj20d50d5wec.jpg" alt="">
+        <img class="icon" :src="info.CoverPhoto | transformImgUrl" alt="">
       </div>
       <div class="content">
-        <div class="title">院内陪朕</div>
-        <div class="price">￥199元</div>
-        <div class="date">2018/08/05～2018/08/25</div>
+        <div class="title">{{info.ActivityName}}</div>
+        <div class="price">￥{{info.PresentPrice}}元</div>
+        <div class="date">{{info.StartTime | timeFormatFilter}}～{{info.EndTime | timeFormatFilter}}</div>
       </div>
-      <img src="@/assets/images/ic_dqr.png" alt="" class="status">
+      <img :src="info.StartTime | statusIcon" alt="" class="status">
     </div>
     <div class="ac_detail_list_title">
       <span>参与人数</span>
-      <span><span style="color: #F8A519">12</span>人</span>
+      <span><span style="color: #F8A519">{{info.UserResults.length}}</span>人</span>
     </div>
-    <div class="ac_detail_list">
-      <div class="ac_detail_list_item">
-        <img src="https://tvax1.sinaimg.cn/crop.0.0.473.473.180/78258c21ly8ft5x6jpwepj20d50d5wec.jpg" alt="" class="avatar">
-        <div class="name">杀杀杀</div>
-        <button class="btn">查看服务</button>
-      </div>
+    <div class="ac_detail_list" v-if="info.UserResults.length > 0">
+      <template v-for="(item, index) in info.UserResults">
+        <div class="ac_detail_list_item" :key="index">
+          <img src="item.Avatar" alt="" class="avatar">
+          <div class="name">{{item.NickName}}</div>
+          <!-- <button class="btn">查看服务</button> -->
+        </div>
+      </template>
     </div>
+    <xx-occupied-box v-else style="background: #fff">
+      暂无用户参加次活动
+    </xx-occupied-box>
   </div>
 </template>
 
 <script>
+import util from '@/plugins/util'
 export default {
+  filters: {
+    statusIcon (val) {
+      if (new Date(util.timeFormatFilter(val, 'YYYY-MM-DD')).getTime() >= new Date(util.timeFormatFilter(new Date(), 'YYYY-MM-DD')).getTime()) {
+        return require('@/assets/images/ic_yks.png')
+      } else {
+        return require('@/assets/images/ic_wks.png')
+      }
+    },
+    timeFormatFilter (val) {
+      return util.timeFormatFilter(new Date(val), 'YYYY/MM/DD')
+    }
+  },
   data () {
     return {
+      info: {
+        UserResults: []
+      }
     }
   },
   created () {
   },
   mounted () {
+    this.getActivityUserList()
+    console.log(new Date('2018-11-07').getTime())
+    console.log(new Date(util.timeFormatFilter('2018-11-07T00:00:00+08:00', 'YYYY-MM-DD')).getTime())
   },
   methods: {
+    async getActivityUserList () {
+      const res = await this.$http.get(`/Activity-User-List?activityId=${this.$route.params.id}`)
+      if (res.data.Code === 100000) {
+        this.info = res.data.Data
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
+    }
   }
 }
 </script>
