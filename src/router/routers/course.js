@@ -12,5 +12,12 @@ export default [
         title: '应用'
       }
     }
+  },
+  {
+    path: '/app/course/:id/userlist',
+    component: _import('/servant/course/user-list'),
+    meta: {
+      title: '报名管理'
+    }
   }
 ]

@@ -1,13 +1,18 @@
 <template>
   <div class="wrapper">
     <xx-go-back></xx-go-back>
-    <div class="course_list">
-      <div class="course_list_item">
-        <img src="http://service.t.vcmps.com/app/activity/detail/1" alt="" class="icon">
-        <div class="title">啊啊啊</div>
-        <button class="btn close">上架</button>
-      </div>
+    <div class="course_list" v-if="list.length > 0">
+      <template v-for="(item, index) in list">
+        <div class="course_list_item" :key="index">
+          <div class="title">{{item.Title}}</div>
+          <button class="btn" :class="item.CourseState === 0 ? 'close' : ''" @click="changeStatus(item.CourseId, item.CourseState)">{{item.CourseState === 0 ? '上架' : '下架'}}</button>
+          <button class="btn manage" @click="toList(item.CourseId)">管理</button>
+        </div>
+      </template>
     </div>
+    <xx-occupied-box v-else>
+      暂无课程
+    </xx-occupied-box>
   </div>
 </template>
 
@@ -15,27 +20,50 @@
 export default {
   data () {
     return {
+      list: []
     }
   },
-  created () {
-  },
   mounted () {
+    this.getCourseList()
   },
   methods: {
+    async getCourseList () {
+      const res = await this.$http.get(`/Proxy-Course-List`)
+      if (res.data.Code === 100000) {
+        this.list = res.data.Data
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
+    },
+    async changeStatus (courseId, status) {
+      const res = await this.$http.put(`/Upper-Lower?courseId=${courseId}`)
+      if (res.data.Code === 100000) {
+        if (status) {
+          this.$vux.toast.text('下架成功')
+        } else {
+          this.$vux.toast.text('上架成功')
+        }
+        this.getCourseList()
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
+    },
+    toList (id) {
+      this.$router.push('/app/course/1/userlist')
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
 .course_list {
-  padding: 0 12px;
   background: #fff;
 }
 
 .course_list_item {
   display: flex;
   align-items: center;
-  padding: 20px 5px;
+  padding: 20px 12px;
   border-bottom: 1px solid RGBA(0, 180, 171, .1);
   &:last-child {
     border: 0;
@@ -48,9 +76,8 @@ export default {
   }
   .title {
     flex: 1;
-    font-size: 18px;
+    font-size: 15px;
     color: #666;
-    font-weight: bold;
   }
   .btn {
     padding: 2px 8px;
@@ -62,6 +89,12 @@ export default {
     &.close {
       border: 1px solid #3AC7F5;
       background: #3AC7F5;
+    }
+    &.manage {
+      margin-left: 10px;
+      color: #3AC7F5;
+      background: #fff;
+      border: 1px solid #3AC7F5;
     }
   }
 }
