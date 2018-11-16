@@ -51,7 +51,7 @@
           <!-- <div class="price">￥{{selectItem.Price}}元</div> -->
         </div>
         <span style="color: #FF5F5F">￥</span>
-        <input type="number" v-model="params.PresentPrice" class="count">
+        <input type="number" v-model="params.Price" class="count">
         <van-stepper v-model="params.AvailableDuantity" :min="1" :integer="true"/>
       </div>
     </div>
@@ -95,7 +95,7 @@ export default {
         CommodityType: '', // 活动类型
         CommodityID: '', // 关联ID
         OriginalPrice: '',
-        PresentPrice: '',
+        Price: '',
         AvailableDuantity: '' // 库存数量
       },
       authText: {
@@ -119,7 +119,7 @@ export default {
           text: '服务或课程',
           required: true
         },
-        PresentPrice: {
+        Price: {
           text: '价格',
           required: true
         }
@@ -131,8 +131,6 @@ export default {
       'userAccount'
     ])
   },
-  created () {
-  },
   mounted () {
     if (this.$route.params.id !== 'add') {
       this.getActivityDetail()
@@ -143,6 +141,7 @@ export default {
       const res = await this.$http.get(`/Activity-Detail?activityId=${this.$route.params.id}`)
       if (res.data.Code === 100000) {
         this.params = res.data.Data
+        this.params.Price = (res.data.Data.PresentPrice / 100).toFixed(2)
         this.params.StartTime = util.timeFormatFilter(this.params.StartTime, 'YYYY-MM-DD')
         this.params.EndTime = util.timeFormatFilter(this.params.EndTime, 'YYYY-MM-DD')
         this.selectItem.Name = res.data.Data.CommodityName
@@ -155,6 +154,7 @@ export default {
       this.params.ViewID = this.userAccount.ViewID
       const isValidate = util.validateForm(this.params, this.authText)
       if (isValidate) {
+        this.params.PresentPrice = Math.floor(this.params.Price * 100)
         const res = await this.$http.post(`/Add-Activity`, this.params)
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
@@ -173,6 +173,7 @@ export default {
       this.params.ActivityID = this.params.ID
       const isValidate = util.validateForm(this.params, this.authText)
       if (isValidate) {
+        this.params.PresentPrice = Math.floor(this.params.Price * 100)
         const res = await this.$http.put(`/Edit-Activity`, this.params)
         if (res.data.Code === 100000) {
           this.$vux.toast.show({

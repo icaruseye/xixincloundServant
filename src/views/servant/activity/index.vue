@@ -4,12 +4,12 @@
     <div class="ac_container" v-if="list.Curriculum.length > 0">
       <div class="ac_container_title">服务产品</div>
       <div class="ac_container_list">
-        <template v-for="(item, index) in list.Curriculum">
+        <template v-for="(item, index) in list.Service">
           <div class="ac_list_item" :key="index">
             <img class="icon" :src="item.CoverPhoto | transformImgUrl" alt="">
             <div class="content" @click="go(`/app/activity/detail/${item.ID}`)">
               <div class="name">{{item.ActivityName}}</div>
-              <div class="price">￥{{item.PresentPrice}}元</div>
+              <div class="price">￥{{item.PresentPrice | price}}元</div>
             </div>
             <div class="btns">
               <button class="btn yellow" @click="edit(item.ID)">编辑</button>
@@ -23,12 +23,12 @@
     <div class="ac_container" v-if="list.Service.length > 0">
       <div class="ac_container_title">课程产品</div>
       <div class="ac_container_list">
-        <template v-for="(item, index) in list.Service">
+        <template v-for="(item, index) in list.Curriculum">
           <div class="ac_list_item" :key="index">
             <img class="icon" :src="item.CoverPhoto | transformImgUrl" alt="">
             <div class="content" @click="go(`/app/activity/detail/${item.ID}`)">
               <div class="name">{{item.ActivityName}}</div>
-              <div class="price">￥{{item.PresentPrice}}元</div>
+              <div class="price">￥{{item.PresentPrice | price}}元</div>
             </div>
             <div class="btns">
               <button class="btn yellow" @click="edit(item.ID)">编辑</button>
@@ -63,6 +63,11 @@ export default {
         Curriculum: [],
         Service: []
       }
+    }
+  },
+  filters: {
+    price (val) {
+      return (val / 100).toFixed(2)
     }
   },
   created () {
