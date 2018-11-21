@@ -142,8 +142,8 @@ export default {
       if (res.data.Code === 100000) {
         this.params = res.data.Data
         this.params.Price = (res.data.Data.PresentPrice / 100).toFixed(2)
-        this.params.StartTime = util.timeFormatFilter(this.params.StartTime, 'YYYY-MM-DD')
-        this.params.EndTime = util.timeFormatFilter(this.params.EndTime, 'YYYY-MM-DD')
+        this.params.StartTime = util.timeFormatFilter(this.params.StartTime, 'YYYY-MM-DD HH:mm')
+        this.params.EndTime = util.timeFormatFilter(this.params.EndTime, 'YYYY-MM-DD HH:mm')
         this.selectItem.Name = res.data.Data.CommodityName
       } else {
         this.$vux.toast.text(res.data.Msg)
@@ -199,8 +199,8 @@ export default {
       const that = this
       this.$vux.datetime.show({
         value: this.params.StartTime,
-        format: 'YYYY-MM-DD',
-        startDate: util.timeFormatFilter(new Date(), 'YYYY-MM-DD'),
+        format: 'YYYY-MM-DD HH:mm',
+        startDate: util.timeFormatFilter(new Date(), 'YYYY-MM-DD HH:mm'),
         onConfirm (value) {
           if (new Date(value).getTime() > new Date(that.params.EndTime).getTime()) {
             that.$vux.toast.text('开始时间不能在结束时间之后')
@@ -215,8 +215,8 @@ export default {
       const that = this
       this.$vux.datetime.show({
         value: this.params.EndTime,
-        format: 'YYYY-MM-DD',
-        startDate: util.timeFormatFilter(new Date(), 'YYYY-MM-DD'),
+        format: 'YYYY-MM-DD HH:mm',
+        startDate: util.timeFormatFilter(new Date(), 'YYYY-MM-DD HH:mm'),
         onConfirm (value) {
           if (new Date(value).getTime() < new Date(that.params.StartTime).getTime()) {
             that.$vux.toast.text('结束时间不能在开始时间之前')
