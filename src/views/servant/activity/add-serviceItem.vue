@@ -8,7 +8,7 @@
       </xx-tab>
     </div>
     <div class="serviceItem_list">
-      <checker v-model="selectedItem" default-item-class="serviceItem_list_item" selected-item-class="serviceItem_list_item_selected">
+      <checker v-model="selectedItem" default-item-class="serviceItem_list_item" selected-item-class="serviceItem_list_item_selected" radio-required>
         <template v-for="(item, index) in itemList">
           <checker-item :value="index" :key="index" v-if="tabIndex === 0">
             <img class="icon" :src="item.PackageType | xxMissionTypeIconFilter" alt="" srcset="">
@@ -83,8 +83,7 @@ export default {
       if (this.selectedItem < 0) {
         this.$vux.toast.text('请选择一项')
       } else {
-        const data = this.itemList[this.selectedItem]
-        console.log(data)
+        const data = Object.assign({}, this.itemList[this.selectedItem])
         data.CommodityType = this.tabIndex + 1
         this.$emit('selected', data)
       }

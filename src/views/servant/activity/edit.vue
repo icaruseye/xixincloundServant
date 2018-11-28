@@ -51,7 +51,7 @@
           <!-- <div class="price">￥{{selectItem.Price}}元</div> -->
         </div>
         <span style="color: #FF5F5F">￥</span>
-        <input type="number" v-model="params.Price" class="count">
+        <input type="number" v-model="params.Price" class="count" :disabled="selectItem.CommodityType === 2">
         <van-stepper v-model="params.AvailableDuantity" :min="1" :integer="true"/>
       </div>
     </div>
@@ -232,6 +232,7 @@ export default {
       this.selectItem = data
       this.params.CommodityID = data.ID || data.CourseId
       this.params.CommodityType = data.CommodityType
+      this.params.Price = data.Price
     },
     // 上传封面
     onUpdateCover (val) {
@@ -390,6 +391,9 @@ export default {
       text-align: center;
       font-size: 14px;
       color: #666;
+      &:disabled {
+        color: #ccc;
+      }
     }
   }
 }

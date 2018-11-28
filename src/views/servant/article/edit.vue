@@ -14,7 +14,7 @@
         <span class="content_input_nums_count">{{params.content ? params.content.length : 0}}/10000</span>
       </div>
     </div>
-    <div class="attr_box">
+    <div class="attr_box" v-if="attributeListComputed.length > 0">
       <div class="attr_box_title">标签</div>
       <div class="tag_select_contianer" ref="tagSelectContianerRef">
         <div class="tags_checkbox_flex" v-for="(item, index) in attributeListComputed" :key="index">
@@ -124,6 +124,8 @@ export default {
       this.$http.get(`/Attribute/UserAttribute/GetAttribute`).then(result => {
         if (result.data.Code === 100000) {
           this.attributeList = result.data.Data
+        } else {
+          this.$vux.toast.text(result.data.Msg)
         }
       })
     },
@@ -172,6 +174,8 @@ export default {
                 that.$router.push('/article')
               }
             })
+          } else {
+            this.$vux.toast.text(result.data.Msg)
           }
         })
       } else {
@@ -190,6 +194,8 @@ export default {
                 that.$router.push('/article')
               }
             })
+          } else {
+            this.$vux.toast.text(result.data.Msg)
           }
         })
       }

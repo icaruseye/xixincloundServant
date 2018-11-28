@@ -51,7 +51,7 @@
       <popup v-model="selectPushType" class="type-popup">
         <div class="type-list">
           <div class="item" @click="selectPushTypeHandle(0)">文章</div>
-          <div class="item" @click="selectPushTypeHandle(1)">服务</div>
+          <!-- <div class="item" @click="selectPushTypeHandle(1)">服务</div> -->
         </div>
         <div class="cancel" @click="selectPushType = false">取消</div>
       </popup>
@@ -214,15 +214,14 @@ export default {
   },
   mounted () {
     this.getPushDetail(this.id)
+    console.log(this.params.PushType)
     if (sessionStorage.getItem('addPushParams')) {
       this.params = JSON.parse(sessionStorage.getItem('addPushParams'))
     }
   },
   methods: {
     async getPushDetail (id) {
-      if (id === 'add') {
-        return false
-      }
+      if (id === 'add') return false
       const res = await this.$http.get(`/Push/Detail?pushID=${id}`)
       if (res.data.Code === 100000) {
         const data = res.data.Data

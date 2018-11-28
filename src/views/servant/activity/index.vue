@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <xx-go-back></xx-go-back>
-    <div class="ac_container" v-if="list.Curriculum.length > 0">
+    <div class="ac_container" v-if="list.Service.length > 0">
       <div class="ac_container_title">服务产品</div>
       <div class="ac_container_list">
         <template v-for="(item, index) in list.Service">
@@ -13,14 +13,14 @@
             </div>
             <div class="btns">
               <button class="btn yellow" @click="edit(item.ID)">编辑</button>
-              <button class="btn red" @click="remove(item.ID)">删除</button>
+              <button class="btn red" @click="confirmRemove(item.ID)">删除</button>
             </div>
             <!-- <img class="status" src="@/assets/images/ic_dqr.png" alt=""> -->
           </div>
         </template>
       </div>
     </div>
-    <div class="ac_container" v-if="list.Service.length > 0">
+    <div class="ac_container" v-if="list.Curriculum.length > 0">
       <div class="ac_container_title">课程产品</div>
       <div class="ac_container_list">
         <template v-for="(item, index) in list.Curriculum">
@@ -32,7 +32,7 @@
             </div>
             <div class="btns">
               <button class="btn yellow" @click="edit(item.ID)">编辑</button>
-              <button class="btn red" @click="remove(item.ID)">删除</button>
+              <button class="btn red" @click="confirmRemove(item.ID)">删除</button>
             </div>
             <!-- <img class="status" src="@/assets/images/ic_dqr.png" alt=""> -->
           </div>
@@ -86,9 +86,6 @@ export default {
         this.$vux.toast.text(res.data.Msg)
       }
     },
-    edit (id) {
-      this.$router.push(`/app/activity/edit/${id}`)
-    },
     async remove (id) {
       const res = await this.$http.delete(`/Activity-Delete?activityId=${id}`)
       if (res.data.Code === 100000) {
@@ -97,6 +94,19 @@ export default {
       } else {
         this.$vux.toast.text(res.data.Msg)
       }
+    },
+    confirmRemove (id) {
+      const that = this
+      this.$vux.confirm.show({
+        title: '提示',
+        content: '确认删除次活动吗？',
+        onConfirm () {
+          that.remove(id)
+        }
+      })
+    },
+    edit (id) {
+      this.$router.push(`/app/activity/edit/${id}`)
     },
     go (url) {
       this.$router.push(url)
