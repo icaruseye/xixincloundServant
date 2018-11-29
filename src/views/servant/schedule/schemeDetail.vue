@@ -111,14 +111,15 @@ export default {
     },
     addPlanToDate (date, calendar) {
       let date1 = util.timeFormatFilter(date, 'YYYY-MM-DD')
-      let startTime = `${date1} ${this.detail.StartTime}`
-      let endTime = `${date1} ${this.detail.EndTime}`
+      let startTime = `${date1} ${this.detail.StartTime}:00`
+      let endTime = `${date1} ${this.detail.EndTime}:00`
       this.$http.post(`/Schedule/Add`, {
         StartTime: startTime,
         EndTime: endTime,
-        Items: '',
+        ScheduleLimitItems: this.detail.SchemeLimitItems,
         ReserveNum: this.detail.ReserveNum,
-        SchemeID: this.detail.ID
+        SchemeID: this.detail.ID,
+        ScheduleType: this.detail.ScheduleType
       }).then(result => {
         calendar.loading = false
         if (result.data.Code === 100000) {

@@ -168,6 +168,7 @@ export default {
         } else {
           this.codeText = '重新发送'
           this.disabled_code = false
+          this.countDownTime = 60
           clearInterval(this.getCodeIntervalTimer)
         }
       }, 1000)
