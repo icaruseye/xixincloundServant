@@ -56,11 +56,7 @@
              >
             <img v-if="item.State == 4 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_dpj.png" alt="待评价">
             <img v-if="item.State >= 5 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_ywj.png" alt="已完结">
-            <div v-if="item.State == -1 && item.Type == 1" class="cancel_icon">
-              <svg class="icon" aria-hidden="true">
-                <use xlink:href="#icon-yiquxiao"></use>
-              </svg>
-            </div>
+            <img v-if="item.State == -1 && item.Type == 1" style="width:50px;height:50px;" src="@/assets/images/ic_yqx.png" alt="已取消">
           </div>
         </div>
       </div>
