@@ -25,6 +25,13 @@ const supportBankList = {
     icon: '#icon-mingshengyinhang'
   }
 }
+
+const newDateFormat = (time) => {
+  time = time.replace(/-/g, ':').replace(' ', ':')
+  time = time.split(':')
+  let time1 = new Date(time[0], (time[1] - 1), time[2], time[3], time[4], time[5])
+  return time1
+}
 export default {
   CheckIDCardNum: function (value) {
     // 验证身份证号方法 http://www.cnblogs.com/jiqing9006/p/3597549.html
@@ -156,8 +163,13 @@ export default {
   /**
    * 时间格式化
    */
-  timeFormatFilter: function (value, format = 'YYYY-MM-DD HH:mm:ss') {
-    return dateFormat(new Date(value), format)
+  timeFormatFilter: function (val, format = 'YYYY-MM-DD HH:mm:ss') {
+    let date = new Date(val)
+    if (isNaN(date.getTime())) {
+      return dateFormat(newDateFormat(val), format)
+    } else {
+      return dateFormat(date, format)
+    }
   },
   // 支持的银行卡
   getSupportBankList: () => supportBankList,

@@ -232,8 +232,8 @@ export default {
         if (result.data.Code === 100000) {
           this.$emit('addSuccess', {
             ID: result.data.Data.ID,
-            EndTime: new Date(endTime),
-            StartTime: new Date(startTime),
+            EndTime: endTime,
+            StartTime: startTime,
             AlreadyReserveNum: 0,
             ReserveNum: this.ReserveNum
           })
