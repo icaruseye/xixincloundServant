@@ -26,7 +26,7 @@
     "fundebug-javascript": "^1.2.2",
     "lodash": "^4.17.10",
     "qs": "^6.5.1",
-    "vant": "^1.1.15",
+    "vant": "^1.4.8",
     "vee-validate": "2.0.0-rc.25",
     "vue": "^2.5.2",
     "vue-lazyload": "^1.2.6",

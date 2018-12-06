@@ -110,7 +110,6 @@
   </div>
 </template>
 <script>
-import 'vant/lib/vant-css/base.css'
 import xxSelectBankCard from '@/components/common/selectBankCard/index'
 export default {
   components: {
