@@ -5,7 +5,7 @@
       <template v-for="(item, index) in list">
         <div class="course_list_item" :key="index">
           <div class="title">{{item.Title}}</div>
-          <button class="btn" :class="item.CourseState === 0 ? 'close' : ''" @click="changeStatus(item.CourseId, item.CourseState)">{{item.CourseState === 0 ? '上架' : '下架'}}</button>
+          <button class="btn" :class="item.CourseState === 0 ? 'close' : ''" @click="changeStatus(item.ServantShopProxyCourseID, !item.IsUpperShelf)">{{item.IsUpperShelf ? '下架' : '上架'}}</button>
           <button class="btn manage" @click="toList(item.CourseId)">管理</button>
         </div>
       </template>
@@ -35,13 +35,13 @@ export default {
         this.$vux.toast.text(res.data.Msg)
       }
     },
-    async changeStatus (courseId, status) {
-      const res = await this.$http.put(`/Upper-Lower?courseId=${courseId}`)
+    async changeStatus (servantShopProxyCourseID, isUpperShelf) {
+      const res = await this.$http.put(`/Upper-Lower?servantShopProxyCourseID=${servantShopProxyCourseID}&isUpperShelf=${isUpperShelf}`)
       if (res.data.Code === 100000) {
-        if (status) {
-          this.$vux.toast.text('下架成功')
-        } else {
+        if (isUpperShelf) {
           this.$vux.toast.text('上架成功')
+        } else {
+          this.$vux.toast.text('下架成功')
         }
         this.getCourseList()
       } else {
