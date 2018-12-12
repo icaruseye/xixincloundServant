@@ -8,7 +8,7 @@
             <div class="title_text">{{item.Title}}</div>
             <div class="title_price">￥{{item.Price | price}}</div>
           </div>
-          <button class="btn" :class="item.CourseState === 0 ? 'close' : ''" @click="changeStatus(item.ServantShopProxyCourseID, !item.IsUpperShelf)">{{item.IsUpperShelf ? '下架' : '上架'}}</button>
+          <button class="btn" :class="item.IsUpperShelf ? 'close' : ''" @click="changeStatus(item.ServantShopProxyCourseID, !item.IsUpperShelf)">{{item.IsUpperShelf ? '下架' : '上架'}}</button>
           <button class="btn manage" @click="toList(item.CourseId)">管理</button>
         </div>
       </template>

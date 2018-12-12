@@ -140,11 +140,13 @@ export default {
     async getActivityDetail () {
       const res = await this.$http.get(`/Activity-Detail?activityId=${this.$route.params.id}`)
       if (res.data.Code === 100000) {
+        const {PresentPrice, StartTime, EndTime, CommodityName, CommodityType} = res.data.Data
         this.params = res.data.Data
-        this.params.Price = (res.data.Data.PresentPrice / 100).toFixed(2)
-        this.params.StartTime = util.timeFormatFilter(this.params.StartTime, 'YYYY-MM-DD HH:mm')
-        this.params.EndTime = util.timeFormatFilter(this.params.EndTime, 'YYYY-MM-DD HH:mm')
-        this.selectItem.Name = res.data.Data.CommodityName
+        this.params.Price = (PresentPrice / 100).toFixed(2)
+        this.params.StartTime = util.timeFormatFilter(StartTime, 'YYYY-MM-DD HH:mm')
+        this.params.EndTime = util.timeFormatFilter(EndTime, 'YYYY-MM-DD HH:mm')
+        this.selectItem.Name = CommodityName
+        this.selectItem.CommodityType = CommodityType
       } else {
         this.$vux.toast.text(res.data.Msg)
       }
@@ -232,7 +234,7 @@ export default {
       this.selectItem = data
       this.params.CommodityID = data.ID || data.CourseId
       this.params.CommodityType = data.CommodityType
-      this.params.Price = data.Price
+      this.params.Price = (data.Price / 100).toFixed(2)
     },
     // 上传封面
     onUpdateCover (val) {
