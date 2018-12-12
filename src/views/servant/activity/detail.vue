@@ -6,7 +6,7 @@
       </div>
       <div class="content">
         <div class="title">{{info.ActivityName}}</div>
-        <div class="price">￥{{info.PresentPrice}}元</div>
+        <div class="price">￥{{info.PresentPrice | price}}元</div>
         <div class="date">{{info.StartTime | timeFormatFilter}}～{{info.EndTime | timeFormatFilter}}</div>
       </div>
       <img :src="info.StartTime | statusIcon" alt="" class="status">
@@ -43,6 +43,9 @@ export default {
     },
     timeFormatFilter (val) {
       return util.timeFormatFilter(new Date(val), 'YYYY/MM/DD')
+    },
+    price (val = 0) {
+      return (val / 100).toFixed(2)
     }
   },
   data () {

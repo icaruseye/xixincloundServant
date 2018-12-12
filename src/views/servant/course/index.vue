@@ -4,7 +4,10 @@
     <div class="course_list" v-if="list.length > 0">
       <template v-for="(item, index) in list">
         <div class="course_list_item" :key="index">
-          <div class="title">{{item.Title}}</div>
+          <div class="title">
+            <div class="title_text">{{item.Title}}</div>
+            <div class="title_price">￥{{item.Price | price}}</div>
+          </div>
           <button class="btn" :class="item.CourseState === 0 ? 'close' : ''" @click="changeStatus(item.ServantShopProxyCourseID, !item.IsUpperShelf)">{{item.IsUpperShelf ? '下架' : '上架'}}</button>
           <button class="btn manage" @click="toList(item.CourseId)">管理</button>
         </div>
@@ -18,6 +21,11 @@
 
 <script>
 export default {
+  filters: {
+    price (val = 0) {
+      return (val / 100).toFixed(2)
+    }
+  },
   data () {
     return {
       list: []
@@ -49,7 +57,7 @@ export default {
       }
     },
     toList (id) {
-      this.$router.push('/app/course/1/userlist')
+      this.$router.push(`/app/course/${id}/userlist`)
     }
   }
 }
@@ -78,6 +86,10 @@ export default {
     flex: 1;
     font-size: 15px;
     color: #666;
+    .title_price {
+      font-size: 12px;
+      color: #FF5F5F;
+    }
   }
   .btn {
     padding: 2px 8px;

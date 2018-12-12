@@ -66,7 +66,7 @@ export default {
     }
   },
   filters: {
-    price (val) {
+    price (val = 0) {
       return (val / 100).toFixed(2)
     }
   },

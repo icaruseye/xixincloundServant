@@ -1,17 +1,22 @@
 <template>
   <div class="wrapper">
     <xx-go-back></xx-go-back>
-    <div class="course_list" v-if="list.length > 0">
-      <template v-for="(item, index) in list">
-        <div class="course_list_item" :key="index">
-          <img class="icon" :src="item.Avatar | transformImgUrl" alt="">
-          <div class="title">{{item.NickName}}</div>
-          <!-- <button class="btn manage" @click=toDetail(item.UserId)>学习过程</button> -->
-        </div>
-      </template>
+    <div v-if="list.length > 0">
+      <div class="title_bar">
+        <div>已有<span>{{list.length}}</span>人参加此课程</div>
+      </div>
+      <div class="course_list">
+        <template v-for="(item, index) in list">
+          <div class="course_list_item" :key="index">
+            <img class="icon" :src="item.Avatar | transformImgUrl" alt="">
+            <div class="title">{{item.NickName}}</div>
+            <!-- <button class="btn manage" @click=toDetail(item.UserId)>学习过程</button> -->
+          </div>
+        </template>
+      </div>
     </div>
     <xx-occupied-box v-else>
-      暂无用户参加次课程
+      暂无用户参加此课程
     </xx-occupied-box>
   </div>
 </template>
@@ -74,6 +79,19 @@ export default {
     color: #3AC7F5;
     background: #fff;
     border: 1px solid #3AC7F5;
+  }
+}
+
+.title_bar {
+  padding: 0 12px;
+  height: 40px;
+  line-height: 40px;
+  align-items: center;
+  justify-content: space-around;
+  font-size: 12px;
+  color: #666;
+  span {
+    color: #F8A519;
   }
 }
 </style>
