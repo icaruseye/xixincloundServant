@@ -93,7 +93,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.wrapper {
+  background: #fff;
+}
 .serviceItem_list {
+  height: 300px;
+  overflow: scroll;
   padding: 50px 12px 0 12px;
   background: #fff;
 }

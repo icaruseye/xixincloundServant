@@ -154,5 +154,23 @@ export default [
         title: '挂号情况'
       }
     }
+  },
+  {
+    path: '/app/exchange/list',
+    component: _import('/servant/exchange/list'),
+    meta: {
+      title: '课程兑换码',
+      goBackParam: {
+        url: '/app',
+        title: '应用'
+      }
+    }
+  },
+  {
+    path: '/app/exchange/apply',
+    component: _import('/servant/exchange/apply'),
+    meta: {
+      title: '申请兑换码'
+    }
   }
 ]
