@@ -1,26 +1,54 @@
 <template>
   <div class="wrapper has-tabbar">
     <div class="title_input_container">
-      <label class="title_input_label">数量</label>
-      <div class="title_input_box">
-        <input class="title_input_contorl" v-model="params.QuantityPerPerson" placeholder="请输入" type="number">
-      </div>
-    </div>
-    <!-- 添加服务 -->
-    <div class="serviceItem_list" v-if="selectItem.Name || selectItem.Title">
-      <div class="serviceItem_list_item">
-        <img class="icon" :src="selectItem.PackageType | xxMissionTypeIconFilter" alt="" srcset="">
-        <div class="content">
-          <div class="title">{{selectItem.Name || selectItem.Title}}</div>
+      <label class="title_input_label">商品类型</label>
+      <div class="title_input_box" @click="showTypeMenus = true">
+        <div class="title_input_box_inner">
+          {{typeMenus[0].label || '请选择'}}
+          <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
     </div>
-    <div class="serviceItem_list_item_add" @click="isShowSelectItem = true">添加服务</div>
+    <div class="title_input_container">
+      <label class="title_input_label">商品名称</label>
+      <div class="title_input_box" @click="showItemPopupHandle">
+        <div class="title_input_box_inner">
+          {{ selectedItem.Title|| '请选择'}}
+          <i class="iconfont icon-jiantouyou"></i>
+        </div>
+      </div>
+    </div>
+    <div class="title_input_container">
+      <label class="title_input_label">数量</label>
+      <div class="title_input_box">
+        <input class="title_input_contorl" v-model.number="params.GenerateNum" placeholder="请输入" type="number">
+      </div>
+    </div>
     <button type="button" class="weui-btn weui-btn_primary weui-btn-bottom" @click="submit">提交</button>
-    <!-- 选择服务或课程 -->
+    <!-- 选择商品类型 -->
+    <actionsheet v-model="showTypeMenus" :menus="typeMenus" @on-click-menu="clickType" show-cancel></actionsheet>
+    <!-- 选择商品 -->
     <div v-transfer-dom>
-      <popup v-model="isShowSelectItem" height="410px">
-        <addServiceItem @selected="selectedItem"></addServiceItem>
+      <popup v-model="showItemPopup" height="410px" style="background:#fff;">
+        <div class="serviceItem_list">
+          <checker
+            v-model="selectedItemIndex"
+            @on-change="showItemPopupChange"
+            default-item-class="serviceItem_list_item"
+            selected-item-class="serviceItem_list_item_selected"
+            radio-required>
+            <template v-for="(item, index) in itemList">
+              <checker-item :value="index" :key="index">
+                <div class="tag">ID:{{item.CourseId}}</div>
+                <div class="content">
+                  <div class="title">{{item.Title}}</div>
+                  <div class="price">￥{{item.Price | price}}</div>
+                </div>
+                <i class="iconfont icon-gouSolid-copy-copy" v-if="selectedItemIndex == index"></i>
+              </checker-item>
+            </template>
+          </checker>
+        </div>
       </popup>
     </div>
   </div>
@@ -28,8 +56,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { TransferDom, Popup } from 'vux'
-import addServiceItem from '../activity/add-serviceItem'
+import { TransferDom, Popup, Actionsheet, Checker, CheckerItem } from 'vux'
 import util from '@/plugins/util'
 export default {
   directives: {
@@ -37,25 +64,40 @@ export default {
   },
   components: {
     Popup,
-    addServiceItem
+    Actionsheet,
+    Checker,
+    CheckerItem
+  },
+  filters: {
+    price (val = 0) {
+      return (val / 100).toFixed(2)
+    }
   },
   data () {
     return {
       isShowSelectItem: false,
-      selectItem: {},
+      showTypeMenus: false,
+      showItemPopup: false,
+      selectedItemIndex: null,
+      itemList: [],
+      selectedItem: {},
+      typeMenus: [{
+        label: '课程',
+        type: 6
+      }],
       params: {
         ViewID: '',
-        QuantityPerPerson: '', // 每人可购买数量
-        CommodityID: '', // 关联ID
-        AvailableDuantity: '' // 库存数量
+        PackageType: 6,
+        PackageID: '', // 关联ID
+        GenerateNum: '' // 库存数量
       },
       authText: {
-        CommodityID: {
-          text: '服务或课程',
+        PackageID: {
+          text: '商品',
           required: true
         },
-        Price: {
-          text: '价格',
+        GenerateNum: {
+          text: '数量',
           required: true
         }
       }
@@ -69,13 +111,29 @@ export default {
   mounted () {
   },
   methods: {
-    async addActivity () {
+    // 获取服务包列表
+    async getItemList () {
+      const res = await this.$http.get(`/Push/Package/List`)
+      if (res.data.Code === 100000) {
+        this.itemList = res.data.Data
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
+    },
+    // 获取课程列表
+    async getCourseList () {
+      const res = await this.$http.get(`/Proxy-Courses-List`)
+      if (res.data.Code === 100000) {
+        this.itemList = res.data.Data
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
+    },
+    async applyActivation () {
       const that = this
-      this.params.ViewID = this.userAccount.ViewID
       const isValidate = util.validateForm(this.params, this.authText)
       if (isValidate) {
-        this.params.PresentPrice = Math.floor(this.params.Price * 100)
-        const res = await this.$http.post(`/Add-Activity`, this.params)
+        const res = await this.$http.post(`/Activation/ActivationGenerate/Add`, this.params)
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
             text: '提交成功',
@@ -88,13 +146,28 @@ export default {
         }
       }
     },
-    submit () {
+    clickType (menuKey, menuItem) {
+      this.params.PackageType = menuItem.type
     },
-    // 选择服务或者课程
-    selectedItem (data) {
-      this.isShowSelectItem = false
-      this.selectItem = data
-      this.params.CommodityID = data.ID || data.CourseId
+    clickItem () {
+
+    },
+    showItemPopupChange (val) {
+      this.showItemPopup = false
+      this.selectedItem = this.itemList[val]
+      this.params.PackageID = this.itemList[val].CourseId
+    },
+    showItemPopupHandle () {
+      this.showItemPopup = true
+      if (!this.params.PackageType) {
+        this.$vux.toast.text('请选择商品类型')
+      }
+      if (this.params.PackageType === 6) {
+        this.getCourseList()
+      }
+    },
+    submit () {
+      this.applyActivation()
     }
   }
 }
@@ -159,7 +232,15 @@ export default {
       background-color: #F6F6F6;
       border-radius: 2px;
       padding: 0 13px;
+      font-size: 14px;
+    }
+    .title_input_box_inner {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
       font-size: 13px;
+      color: #666;
     }
   }
 }
@@ -202,63 +283,38 @@ export default {
     }
   }
 }
-
-.serviceItem_list {
-  background: #fff;
-  padding: 0 10px;
+.serviceItem_list_item {
+  display: flex;
   align-items: center;
+  padding: 15px;
   border-bottom: 1px solid RGBA(0, 180, 171, .1);
-  .serviceItem_list_item {
-    display: flex;
-    align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid RGBA(0, 180, 171, .1);
-    &:last-child {
-      border: 0;
-    }
-    .icon {
-      margin-right: 10px;
-      width: 29px;
-      height: 29px;
-      border-radius: 4px;
-    }
-    .content {
-      flex: 1;
-      .title {
-        font-size: 15px;
-        color: #666;
-        font-weight: bold;
-      }
-      .price {
-        color: #FF5F5F;
-        font-size: 15px;
-      }
-    }
-    .count {
-      width: 50px;
-      height: 28px;
-      line-height: 30px;
-      background: #F6F6F6;
-      border-radius: 4px;
-      margin: 0 15px 0 5px;
-      border: 1px solid #eee;
-      text-align: center;
-      font-size: 14px;
-      color: #666;
-      &:disabled {
-        color: #ccc;
-      }
-    }
+  .content {
+    flex: 1;
   }
-}
-.serviceItem_list_item_add {
-  display: block;
-  margin-bottom: 20px;
-  height: 48px;
-  line-height: 48px;
-  background: #fff;
-  text-align: center;
-  font-size: 15px;
-  color: #3AC7F5;
+  .tag {
+    display: inline-block;
+    width: 35px;
+    height: 20px;
+    line-height: 20px;
+    background: #3ac7f5;
+    color: #fff;
+    padding: 0 5px;
+    font-size: 12px;
+    margin-right: 10px;
+    border-radius: 2px;
+    text-align: center;
+  }
+  .price {
+    font-size: 12px;
+    color: #FF5F5F;
+  }
+  .title {
+    font-size: 14px;
+    color: #666;
+  }
+  .iconfont {
+    font-size: 22px;
+    color: #F8A519;
+  }
 }
 </style>

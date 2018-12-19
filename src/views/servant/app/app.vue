@@ -116,7 +116,7 @@
       <div class="weui-cell" @click="go('/app/exchange/list')">
         <div class="weui-cell-top">
           <div class="icon"><img src="@/assets/images/app-dhmsz.png"></div>
-          <div class="title">课程兑换码</div>
+          <div class="title">课程激活码</div>
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
@@ -255,9 +255,15 @@ export default {
 }
 
 .weui-list-panel {
+  .weui-cell {
+    &::before {
+      border: 0;
+    }
+  }
   .weui-cell-top {
     display: flex;
     align-items: center;
+    width: 100%;
     .icon {
       width: 31px;
       height: 31px;

@@ -159,7 +159,7 @@ export default [
     path: '/app/exchange/list',
     component: _import('/servant/exchange/list'),
     meta: {
-      title: '课程兑换码',
+      title: '课程激活码',
       goBackParam: {
         url: '/app',
         title: '应用'
@@ -170,7 +170,14 @@ export default [
     path: '/app/exchange/apply',
     component: _import('/servant/exchange/apply'),
     meta: {
-      title: '申请兑换码'
+      title: '申请激活码'
+    }
+  },
+  {
+    path: '/app/exchange/detail/:id',
+    component: _import('/servant/exchange/detail'),
+    meta: {
+      title: '激活码详情'
     }
   }
 ]
