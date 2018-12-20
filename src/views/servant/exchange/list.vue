@@ -1,9 +1,9 @@
 <template>
   <div class="wrapper">
     <xx-go-back></xx-go-back>
-    <div class="exchange_list">
+    <div class="exchange_list" v-if="list.length > 0">
       <template v-for="(item, index) in list">
-        <div class="item" @click="toDetail(item.ID)" :key="index">
+        <div class="item" @click="toDetail(item.ID, item.State)" :key="index">
           <div class="left">
             <div class="name"><span class="tag" :class="item.PackageType === 6 ? 'course' : 'service'">{{item.PackageType | _PackageType}}</span>{{item.PackageName}}</div>
             <div class="date">{{item.CreateTime | xxTimeFormatFilter}}</div>
@@ -15,6 +15,9 @@
         </div>
       </template>
     </div>
+    <xx-occupied-box v-else>
+      暂无数据
+    </xx-occupied-box>
     <button type="button" class="weui-btn weui-btn_primary weui-btn-bottom" @click="toApply">申请激活码</button>
   </div>
 </template>
@@ -48,7 +51,7 @@ export default {
         case 0:
           return '等待审核'
         case 1:
-          return '审核通过'
+          return '申请成功'
         default:
           return ''
       }
@@ -61,15 +64,19 @@ export default {
   },
   methods: {
     async getList () {
+      this.$vux.loading.show()
       const res = await this.$http.get(`/Activation/ActivationGenerate/List?page=${this.page}&pageSize=${this.pageSize}`)
+      this.$vux.loading.hide()
       if (res.data.Code === 100000) {
         this.list = res.data.Data.activationGenerateList
       } else {
         this.$vux.toast.text(res.data.Msg)
       }
     },
-    toDetail (id) {
-      this.$router.push(`/app/exchange/detail/${id}`)
+    toDetail (id, state) {
+      if (state === 1) {
+        this.$router.push(`/app/exchange/detail/${id}`)
+      }
     },
     toApply () {
       this.$router.push('/app/exchange/apply')

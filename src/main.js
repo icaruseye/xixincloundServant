@@ -16,6 +16,7 @@ import Vant from 'vant'
 import 'vant/lib/index.css'
 import 'animate.css/animate.min.css'
 import fundebug from 'fundebug-javascript'
+import VueClipboard from 'vue-clipboard2'
 fundebug.apikey = 'e3fbd8baddee7e450d5bf79ee7f2887afcaa86c25553662559b3a20d65515a4c'
 
 function formatComponentName (vm) {
@@ -47,6 +48,7 @@ Vue.use(registryPopup)
 Vue.use(LoadingPlugin)
 Vue.use(AlertPlugin)
 Vue.use(BusPlugin)
+Vue.use(VueClipboard)
 
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 FastClick.attach(document.body)

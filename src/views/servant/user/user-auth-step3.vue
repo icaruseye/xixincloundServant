@@ -29,7 +29,7 @@
         </div>
         <div v-if="item.State !== 2" class="content_container">
           <p>
-            证书编号：{{item.CertificateNum}}
+            执业机构：{{item.CertificateNum}}
           </p>
           <p v-if="item.State === -1" style="color:#e15f63">
             失败原因：{{item.ErrorMsg}}

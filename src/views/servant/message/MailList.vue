@@ -10,7 +10,8 @@
           :count="item.State === 0 ? '未读': null"
           :title="item.Title"
         >
-          {{item.Message | xxTextTruncateFilter(15)}}
+          <div style="width: 60%" v-html="item.Message">
+          </div>
         </mail-list-item>
       </template>
       <xx-occupied-box v-else>
