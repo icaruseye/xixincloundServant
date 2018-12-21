@@ -47,5 +47,16 @@ export default [
         title: '用户管理'
       }
     }
+  },
+  {
+    path: '/customer/:id/courseOrder/list',
+    component: _import('/servant/customer/courseOrder'),
+    meta: {
+      title: '培训课程',
+      goBackParam: {
+        url: '/customer',
+        title: '用户管理'
+      }
+    }
   }
 ]

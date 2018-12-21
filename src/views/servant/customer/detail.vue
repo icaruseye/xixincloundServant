@@ -51,6 +51,11 @@
         服务记录
         <i class="iconfont icon-jiantouyou"></i>
       </li>
+      <li class="list_link_items" @click="listLinkRedirect(`/customer/${ID}/courseOrder/list`)">
+        <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_2.png" alt="">
+        培训课程
+        <i class="iconfont icon-jiantouyou"></i>
+      </li>
       <!-- <li class="list_link_items" @click="listLinkRedirect('/')">
         <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_3.png" alt="">
         健康计划
