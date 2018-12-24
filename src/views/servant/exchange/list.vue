@@ -14,6 +14,13 @@
           <div v-if="item.State === 1" class="right success">{{item.State | _State}}</div>
         </div>
       </template>
+      <xxPageSorter
+        ref="xxPageSorterRef"
+        :TotalPage="CommentPage"
+        :pageNumber="page"
+        @nextPage="loadNextPage"
+      >
+      </xxPageSorter>
     </div>
     <xx-occupied-box v-else>
       暂无数据
@@ -27,6 +34,7 @@ export default {
   data () {
     return {
       list: [],
+      CommentPage: 1,
       page: 1,
       pageSize: 10
     }
@@ -68,10 +76,16 @@ export default {
       const res = await this.$http.get(`/Activation/ActivationGenerate/List?page=${this.page}&pageSize=${this.pageSize}`)
       this.$vux.loading.hide()
       if (res.data.Code === 100000) {
-        this.list = res.data.Data.activationGenerateList
+        this.list.push(...res.data.Data.activationGenerateList)
+        this.CommentPage = Math.ceil(res.data.Data.total / this.page)
       } else {
         this.$vux.toast.text(res.data.Msg)
       }
+    },
+    async loadNextPage () {
+      this.page++
+      this.getList()
+      this.$refs.xxPageSorterRef.loading = false
     },
     toDetail (id, state) {
       if (state === 1) {

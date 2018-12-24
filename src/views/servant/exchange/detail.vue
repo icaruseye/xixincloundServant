@@ -21,6 +21,13 @@
           </div>
         </div>
       </template>
+      <xxPageSorter
+        ref="xxPageSorterRef"
+        :TotalPage="CommentPage"
+        :pageNumber="page"
+        @nextPage="loadNextPage"
+      >
+      </xxPageSorter>
       <!-- 详情弹窗 -->
       <div>
         <x-dialog v-model="showDetail" class="dialog_detail" :hide-on-blur="true">
@@ -51,8 +58,9 @@ export default {
     return {
       showDetail: false,
       selectedIndex: null,
+      CommentPage: 1,
       page: 1,
-      pageSize: 12,
+      pageSize: 10,
       list: []
     }
   },
@@ -70,7 +78,8 @@ export default {
     async getDetail () {
       const res = await this.$http.get(`/Activation/ActivationCode/List?page=${this.page}&pageSize=${this.pageSize}&activationGenerateID=${this.activationGenerateID}`)
       if (res.data.Code === 100000) {
-        this.list = res.data.Data.activationGenerateCodeResponseList
+        this.list.push(...res.data.Data.activationGenerateCodeResponseList)
+        this.CommentPage = Math.ceil(res.data.Data.total / this.pageSize)
       } else {
         this.$vux.toast.text(res.data.Msg)
       }
@@ -82,6 +91,11 @@ export default {
       } else {
         this.$vux.toast.text(res.data.Msg)
       }
+    },
+    async loadNextPage () {
+      this.page++
+      await this.getDetail()
+      this.$refs.xxPageSorterRef.loading = false
     },
     showDetailHandle (index) {
       this.selectedIndex = index

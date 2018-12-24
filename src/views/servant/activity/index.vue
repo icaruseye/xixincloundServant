@@ -10,6 +10,8 @@
             <div class="content" @click="go(`/app/activity/detail/${item.ID}`)">
               <div class="name">{{item.ActivityName}}</div>
               <div class="price">￥{{item.PresentPrice | price}}元</div>
+              <div class="time">开始时间：{{item.StartTime | xxTimeFormatFilter}}</div>
+              <div class="time">结束时间：{{item.EndTime | xxTimeFormatFilter}}</div>
             </div>
             <div class="btns">
               <button class="btn yellow" @click="edit(item.ID)">编辑</button>
@@ -29,6 +31,8 @@
             <div class="content" @click="go(`/app/activity/detail/${item.ID}`)">
               <div class="name">{{item.ActivityName}}</div>
               <div class="price">￥{{item.PresentPrice | price}}元</div>
+              <div class="time">开始时间：{{item.StartTime | xxTimeFormatFilter}}</div>
+              <div class="time">结束时间：{{item.EndTime | xxTimeFormatFilter}}</div>
             </div>
             <div class="btns">
               <button class="btn yellow" @click="edit(item.ID)">编辑</button>
@@ -135,6 +139,7 @@ export default {
 
 .ac_container_list {
   .ac_list_item {
+    position: relative;
     display: flex;
     align-items: center;
     padding: 15px 0;
@@ -143,12 +148,15 @@ export default {
       border: 0;
     }
     .icon {
+      position: absolute;
+      top: 25px;
       margin-right: 8px;
       width: 29px;
       height: 29px;
       border-radius: 4px;
     }
     .content {
+      margin-left: 40px;
       flex: 1;
       .name {
         font-size: 18px;
@@ -167,7 +175,7 @@ export default {
         }
       }
       .time {
-        font-size: 9px;
+        font-size: 12px;
         color: #999;
       }
       .price {

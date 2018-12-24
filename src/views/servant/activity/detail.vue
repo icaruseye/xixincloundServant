@@ -18,7 +18,7 @@
     <div class="ac_detail_list" v-if="info.UserResults.length > 0">
       <template v-for="(item, index) in info.UserResults">
         <div class="ac_detail_list_item" :key="index">
-          <img src="item.Avatar" alt="" class="avatar">
+          <img :src="item.Avatar | transformImgUrl" alt="" class="avatar">
           <div class="name">{{item.NickName}}</div>
           <!-- <button class="btn">查看服务</button> -->
         </div>
