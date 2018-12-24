@@ -59,6 +59,9 @@
       <li class="list_link_items" @click="listLinkRedirect(`/customer/${ID}/serviceRecord`)">
         <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_2.png" alt="">
         课程购买记录
+      <li class="list_link_items" @click="listLinkRedirect(`/customer/${ID}/courseOrder/list`)">
+        <img class="list_link_items_icons" src="@/assets/images/ic_userDetail_listItem_2.png" alt="">
+        培训课程
         <i class="iconfont icon-jiantouyou"></i>
       </li>
       <!-- <li class="list_link_items" @click="listLinkRedirect('/')">
