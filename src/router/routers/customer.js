@@ -58,5 +58,15 @@ export default [
         title: '用户管理'
       }
     }
+  },
+  {
+    path: '/customer/:id/studyRecord/:courseID/list',
+    component: _import('/servant/customer/courseStudyRecord'),
+    meta: {
+      title: '学习记录',
+      goBackParam: {
+        title: '培训课程'
+      }
+    }
   }
 ]
