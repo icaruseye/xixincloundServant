@@ -20,7 +20,7 @@
       <xx-cell-items label="展示价格：" class="noraml_cell_right" labelClass="the-cells-items_label">
         <div class="input_control_container">
           <div class="input_control_inner_box">
-            <input readonly class="input_control" type="Number" v-model="ViewPrice" v-validate="'currency|required'" name="PackageViewPrice" placeholder="请输入展示价格">
+            <input @blur="checkViewPrice" class="input_control" type="Number" v-model="ViewPrice" v-validate="'currency|required'" name="PackageViewPrice" placeholder="请输入展示价格">
           </div>
           <span class="input_control_suffix">元</span>
           <p v-show="errorBags.has('PackageViewPrice')" class="help is-danger">{{ errorBags.first('PackageViewPrice') }}</p>
@@ -185,6 +185,12 @@ export default {
     priceBlur () {
       let parsePrice = parseFloat(this.templateDetail.Price)
       this.templateDetail.Price = (isNaN(parsePrice) ? 0 : parsePrice)
+    },
+    checkViewPrice () {
+      if (Number(this.ViewPrice) < Number(this.templateDetail.Price)) {
+        this.ViewPrice = this.templateDetail.Price
+        this.$vux.toast.text('展示价格不能低于真实售价')
+      }
     },
     async init () {
       let packageDetail = JSON.parse(sessionStorage.getItem('packageServiceDetail'))
