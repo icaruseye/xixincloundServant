@@ -155,7 +155,7 @@ export default [
     path: '/user/authstep3-1',
     component: _import('/servant/user/user-auth-step3-1'),
     meta: {
-      title: '',
+      title: '机构证书认证',
       goBackParam: {
         url: '/user/authstep3',
         title: '执业认证'

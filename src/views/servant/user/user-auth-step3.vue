@@ -22,26 +22,29 @@
       <div v-for="(item, index) in list" :key="index" class="certificate_card">
         <div class="certificate_name">
           {{item.Name}}
-          <button class="apply_certificate_btn" v-if="item.State === 2" @click="toNext(item.ShopCertificateTypeID, item.ImgNums, item.ImgNames, item.Name)">申请</button>
+          <button class="apply_certificate_btn" v-if="item.State === 2" @click="toNext(item.CertificateTypeID)">申请</button>
           <p v-if="item.State === 0" style="color:#F8A519" class="certificate_status_text">审核中</p>
           <p v-if="item.State === -1" style="color:#e15f63" class="certificate_status_text">审核失败</p>
           <p v-if="item.State === 1" style="color:#3eb94e" class="certificate_status_text">审核通过</p>
         </div>
         <div v-if="item.State !== 2" class="content_container">
           <p>
-            执业机构：{{item.CertificateNum}}
+            头衔：{{item.Title}}
+          </p>
+          <p v-if="item.DescriptionNames" v-for="(desc, index) in item.DescriptionNames.split(',')" :key="index">
+            {{desc}}：{{item.Descriptions.split(',')[index]}}
           </p>
           <p v-if="item.State === -1" style="color:#e15f63">
             失败原因：{{item.ErrorMsg}}
           </p>
           <p v-if="item.State === 1">
-            到期时间：{{item.EffectiveTime | xxTimeFormatFilter}}
+            到期时间：{{item.IsNeedExamine ? formatDateTime(item.EffectiveTime, 'YYYY-MM-DD') : '永久有效'}}
           </p>
         </div>
         <div v-if="item.State !== 2 " class="btn_container">
           <router-link class="certificate_btn" style="border-color:#3eb94e; color:#3eb94e" v-if="item.State === 1 && userState === 3" to = "/app/itemApply">服务设置</router-link>
           <button class="certificate_btn" v-if="item.State === 0 || item.State === 1" @click="getCertificateType">刷新状态</button>
-          <button class="certificate_btn" style="border-color:#e15f63; color:#e15f63" v-if="item.State === -1" @click="toNext(item.ShopCertificateTypeID, item.ImgNums, item.ImgNames, item.Name)">重新申请</button>
+          <button class="certificate_btn" style="border-color:#e15f63; color:#e15f63" v-if="item.State === -1" @click="toNext(item.CertificateTypeID)">重新申请</button>
         </div>
       </div>
     </div>
@@ -65,6 +68,7 @@
 <script>
 import stepBar from './user-auth-stepbar'
 import {mapGetters, mapActions} from 'vuex'
+import util from '@/plugins/util'
 export default {
   components: {
     stepBar
@@ -86,6 +90,7 @@ export default {
     this.getCertificateType()
   },
   methods: {
+    formatDateTime: util.timeFormatFilter,
     ...mapActions([
       'getUserAccount',
       'getUserInfo'
@@ -99,8 +104,8 @@ export default {
         this.$router.push('/user/authstep2')
       }
     },
-    toNext (ShopCertificateTypeID, ImgNums, ImgNames, Name) {
-      this.$router.push(`/user/authstep3-1?ShopCertificateTypeID=${ShopCertificateTypeID}&ImgNums=${ImgNums}&ImgNames=${ImgNames}&Name=${Name}`)
+    toNext (CertificateTypeID) {
+      this.$router.push(`/user/authstep3-1?CertificateTypeID=${CertificateTypeID}`)
     },
     async getCertificateType () {
       this.$vux.loading.show('加载中')

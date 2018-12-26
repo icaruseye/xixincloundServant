@@ -1,36 +1,32 @@
 <template>
-  <div style="min-height:100vh;position:relative;padding-bottom:100px">
+  <div v-if="CertificateType" style="min-height:100vh;position:relative;padding-bottom:100px">
     <xx-go-back></xx-go-back>
     <div style="padding:20px;background-color: #fff">
       <h1 style="font-size: 18px;font-weight: normal;border-bottom: 1px solid #ddd;line-height:40px;margin-bottom: 20px">
-        {{Name}}认证
+        {{CertificateType.Name}}
       </h1>
-      <div class="certificateImg_box" v-for="(item, index) in CertificateImgList" :key="index">
-        <xx-uploader
-          :limit="1"
-          :title = "item"
-          ref = "uploaderRef"
-          @onUpdate="onUpdate(index)"
-        ></xx-uploader>
+      <div class="item_desc">
+        头衔：{{CertificateType.Title}}
       </div>
-    </div>
-    <div class="weui-form-title">
-      *{{Name}}信息
-    </div>
-    <div class="weui-form step-form">
-      <div class="weui-cell nobor">
-        <div class="weui-cell-top">
-          <label for="CertificateNum">执业机构</label>
-          <input id="CertificateNum" v-model="reqParam.CertificateNum" type="text" :placeholder="`输入执业机构名称`">
-          <i class="iconfont icon-jiantouyou"></i>
+      <div v-if="CertificateImgList.length > 0">
+        <div class="certificateImg_box" v-for="(item, index) in CertificateImgList" :key="index">
+          <xx-uploader
+            :limit="1"
+            :title = "item"
+            ref = "uploaderRef"
+            @onUpdate="onUpdate(index)"
+          ></xx-uploader>
         </div>
       </div>
-      <!-- <group>
-        <x-switch title="是否默认" v-model="reqParam.IsDefault" :value-map="[0, 1]"></x-switch>
-      </group>
-      <p style="padding: 15px 15px;font-size: 14px;color: #f44336;text-align: justify;">
-        * 由于您可以申请认证多个证书，选择默认意为用户端展示您的默认身份
-      </p> -->
+      <div  class="item_desc" v-else>
+        不需要上传证件照片
+      </div>
+      <template v-if="CertificateType.DescriptionNames">
+        <InputMulti ref="DescriptionsRef" v-model="reqParam.Descriptions" :labelNames="CertificateType.DescriptionNames"></InputMulti>
+      </template>
+      <div  class="item_desc" v-else>
+        不需要填写证件信息
+      </div>
     </div>
     <div class="step-btn">
       <button class="weui-btn" @click="submit">提交</button>
@@ -41,26 +37,24 @@
 <script>
 import util from '@/plugins/util'
 import { Group, XSwitch } from 'vux'
+import InputMulti from '@/components/common/InputMulti'
 export default {
   components: {
     Group,
-    XSwitch
+    XSwitch,
+    InputMulti
   },
   data () {
     return {
+      CertificateType: null,
       reqParam: {
         Imgs: '',
-        CertificateNum: '',
+        Descriptions: '',
         IsDefault: 0
       },
       authText: {
         Imgs: {
-          text: '执业证照片',
-          required: true
-        },
-        CertificateNum: {
-          text: '执业证地址',
-          required: true
+          text: '执业证照片'
         },
         isDefault: {
           required: false
@@ -69,24 +63,34 @@ export default {
     }
   },
   computed: {
-    Name () {
-      return this.$route.query.Name
-    },
-    ImgNames () {
-      return this.$route.query.ImgNames
-    },
-    ShopCertificateTypeID () {
-      return this.$route.query.ShopCertificateTypeID
+    CertificateTypeID () {
+      return this.$route.query.CertificateTypeID
     },
     CertificateImgList () {
-      let list = this.ImgNames.split(',')
+      let list = []
+      if (this.CertificateType.ImgNames) {
+        list = this.CertificateType.ImgNames.split(',')
+      }
       return list
     }
   },
+  created () {
+    this.init()
+  },
   mounted () {
-    document.title = `${this.Name}认证`
   },
   methods: {
+    init () {
+      this.getCertificateTypeByID()
+    },
+    async getCertificateTypeByID () {
+      const result = await this.$http.get(`/CertificateType/${this.CertificateTypeID}`)
+      if (result.data.Code === 100000) {
+        this.CertificateType = result.data.Data
+      } else {
+        this.$vux.toast(result.data.Msg)
+      }
+    },
     onUpdate () {
       const that = this
       let imglist = ''
@@ -96,20 +100,15 @@ export default {
       that.reqParam.Imgs = imglist.substring(0, imglist.lastIndexOf(','))
     },
     async submit () {
-      const that = this
-      await that.validateCertificateImgs().then(value => {
-        if (value) {
-          that.submitPost()
-        } else {
-          return value
-        }
-      })
+      if (this.validateCertificateImgs() && this.validateCertificateDesc()) {
+        this.submitPost()
+      }
     },
     async submitPost () {
       const that = this
       const isValidate = util.validateForm(that.reqParam, that.authText)
       if (isValidate) {
-        that.reqParam.ShopCertificateTypeID = this.ShopCertificateTypeID
+        that.reqParam.CertificateTypeID = this.CertificateType.CertificateTypeID
         const res = await that.$http.post('/ServantShopCertificate', that.reqParam)
         if (res.data.Code === 100000) {
           this.$vux.toast.show({
@@ -123,13 +122,21 @@ export default {
         }
       }
     },
-    async validateCertificateImgs () {
-      for (let index in this.$refs.uploaderRef) {
-        let item = this.$refs.uploaderRef[index]
-        if (item.guid[0] === undefined) {
-          this.$vux.toast.text(`请上传${item.title}`)
-          return false
+    validateCertificateImgs () {
+      if (this.$refs['uploaderRef']) {
+        for (let index in this.$refs['uploaderRef']) {
+          let item = this.$refs['uploaderRef'][index]
+          if (item.guid[0] === undefined) {
+            this.$vux.toast.text(`请上传${item.title}`)
+            return false
+          }
         }
+      }
+      return true
+    },
+    validateCertificateDesc () {
+      if (this.$refs['DescriptionsRef']) {
+        return this.$refs['DescriptionsRef'].validateParams()
       }
       return true
     }
@@ -138,6 +145,12 @@ export default {
 </script>
 
 <style lang="less">
+.item_desc
+{
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 10px;
+}
 .certificateImg_box
 {
   margin-bottom: 20px;
