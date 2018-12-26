@@ -32,7 +32,7 @@
             头衔：{{item.Title}}
           </p>
           <p v-if="item.DescriptionNames" v-for="(desc, index) in item.DescriptionNames.split(',')" :key="index">
-            {{desc}}：{{item.Descriptions.split(',')[index]}}
+            {{desc}}：{{item.Descriptions.split(',')[index] || '-'}}
           </p>
           <p v-if="item.State === -1" style="color:#e15f63">
             失败原因：{{item.ErrorMsg}}
