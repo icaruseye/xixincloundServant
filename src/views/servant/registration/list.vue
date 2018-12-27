@@ -14,13 +14,14 @@
       <div class="title">挂号列表</div>
       <ul>
         <template v-if="list.length > 0">
-          <li class="item" :key="index" v-for="(item, index) in list" @click="to(item.UserID)">
+          <li class="item" :key="index" v-for="(item, index) in list">
             <div class="rank">第{{index + 1}}号</div>
-            <div class="avatar">
+            <div class="avatar" @click="to(item.UserID)">
               <img :src="item.Avatar | transformImgUrl" alt="">
             </div>
-            <div class="name">{{item.NickName}}</div>
-            <i class="iconfont icon-jiantouyou"></i>
+            <div class="name" @click="to(item.UserID)">{{item.NickName}}</div>
+            <div class="btn" :class="item.State !== 0 ? 'finished' : ''" @click="SetRegisterationFinish(item.ID, item.State)">{{item.State | _State}}</div>
+            <!-- <i class="iconfont icon-jiantouyou"></i> -->
           </li>
         </template>
         <xx-occupied-box v-else>
@@ -48,6 +49,22 @@ export default {
     },
     dateFormat (val, format = 'YYYY-MM-DD HH:mm:ss') {
       return dateFormat(new Date(val), format)
+    },
+    _State (val) {
+      switch (val) {
+        case -1:
+          return '已删除'
+        case 0:
+          return '确认完成'
+        case 1:
+          return '已使用'
+        case 2:
+          return '已失效'
+        case 4:
+          return '已取消'
+        default:
+          break
+      }
     }
   },
   computed: {
@@ -73,6 +90,16 @@ export default {
         this.list = res.data.Data.RegistrationResponses
       }
       this.$vux.loading.hide()
+    },
+    async SetRegisterationFinish (id, state) {
+      if (state !== 0) return
+      const res = await this.$http.put(`/Registration/SetRegisterationFinish?registerID=${id}`)
+      if (res.data.Code === 100000) {
+        this.$vux.toast.text('已确认该挂号完成')
+        this.getList()
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
     },
     to (id) {
       this.$router.push(`/customer/${id}/detail`)
@@ -137,6 +164,18 @@ export default {
     }
     &:last-child::after {
       display: none;
+    }
+    .btn {
+      padding: 0 5px;
+      height: 25px;
+      line-height: 25px;
+      font-size: 12px;
+      background: #3AC7F5;
+      color: #fff;
+      border-radius: 2px;
+      &.finished {
+        background: #ccc;
+      }
     }
     .rank {
       padding-right: 25px;
