@@ -5,10 +5,11 @@
       v-for="(item, index) in itemList"
       :key="index"
     >
-      <label class=label_name>
-        <span class="required_tag">*</span>
-        {{item.label}}：
-      </label>
+      <div class=label_name>
+        <div class="required_tag">*</div>
+        <div class="name_flex_box" v-html="titleAddTag(item.label)"></div>
+        <div class="title_colon">：</div>
+      </div>
       <div class="label_content">
           <input class="label_content_input" :placeholder="`请输入${item.label}`" type="text" v-model="item.value" @keyup="assemblyValue">
       </div>
@@ -58,7 +59,13 @@ export default {
   },
   watch: {},
   methods: {
-    init () {
+    titleAddTag (title) {
+      const list = title.split('')
+      let str = ''
+      list.map(item => {
+        str += `<div>${item}</div>`
+      })
+      return str
     },
     assemblyValue () {
       let str = ''
@@ -83,7 +90,6 @@ export default {
   },
   created () {},
   mounted () {
-    this.init()
   }
 }
 </script>
@@ -92,32 +98,48 @@ export default {
 {
   .text_item
   {
-    height: 40px;
-    padding: 10px 0;
-    background-color: #fff;
-    border-bottom: 1px solid #f6f6f6;
+    display: flex;
+    flex-flow: nowrap;
+    margin-bottom: 20px;
     .label_name
     {
-      float: left;
-      width: 80px;
-      text-align: right;
-      line-height: 40px;
+      display: flex;
+      flex-flow: nowrap;
+      flex: 0 0 100px;
+      align-items: center;
       font-size: 12px;
-      padding: 0 10px;
+      color: #333;
+      .name_flex_box
+      {
+        flex: 1;
+        display: flex;
+        flex-flow: wrap;
+        justify-content: space-between;
+      }
       .required_tag
       {
+        flex: 0 10px;
+        text-align: left;
         color: #ff0000;
+      }
+      .title_colon
+      {
+        flex: 0 020px;
+        text-align: center;
       }
     }
     .label_content
     {
-      float: left;
-      height: 40px;
+      display: flex;
+      align-items: center;
+      flex: 1;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 10px;
       .label_content_input
       {
-        height: 40px;
         font-size: 12px;
-        color: #999;
+        color: #5d5d5d;
+        width: 100%;
       }
     }
     &:last-child

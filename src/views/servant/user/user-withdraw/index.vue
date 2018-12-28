@@ -179,11 +179,13 @@ export default {
      * 申请提现
      */
     applyWithdraw () {
+      this.$vux.loading.show('正在申请提现，请稍候…')
       const withdrawAmount = parseFloat(this.withdrawAmount) * 100
       this.$http.post('/Withdraw', {
         Amount: withdrawAmount,
         bankInfoID: this.currentWithdrawType.id
       }).then(result => {
+        this.$vux.loading.hide()
         if (result.data.Code === 100000) {
           this.$router.replace(`/user/bills/${result.data.Data}/detail`)
         }
