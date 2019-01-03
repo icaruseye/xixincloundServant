@@ -334,7 +334,7 @@ export default {
       this.list = []
       for (let index = 0; index < 7; index++) {
         let date = new Date(this.startDate)
-        date.setDate(new Date(this.startDate).getDate() + index)
+        date = new Date(new Date(this.startDate).getTime() + index * 1000 * 60 * 60 * 24)
         let _obj = Object.assign({
           date: dateFormat(date, 'YYYY-MM-DD'),
           scheduleRegistrResult: []
@@ -347,7 +347,6 @@ export default {
       for (let m = 0; m < this.list.length; m++) {
         weekday = new Date(new Date(this.startDate).getTime() + m * 1000 * 60 * 60 * 24)
         for (let index = 0; index < this.timeBucket.length; index++) {
-          console.log(dateFormat(weekday, 'YYYY-MM-DD'))
           this.list[m].scheduleRegistrResult.push({
             ReserveNum: 0,
             AlreadyReserveNum: 0,
