@@ -13,11 +13,11 @@
               <div class="time">开始时间：{{item.StartTime | xxTimeFormatFilter}}</div>
               <div class="time">结束时间：{{item.EndTime | xxTimeFormatFilter}}</div>
             </div>
-            <div class="btns">
+            <div v-if="item.State === 1" class="btns">
               <button class="btn yellow" @click="edit(item.ID)">编辑</button>
               <button class="btn red" @click="confirmRemove(item.ID)">删除</button>
             </div>
-            <!-- <img class="status" src="@/assets/images/ic_dqr.png" alt=""> -->
+            <img v-if="item.State === 0" class="status" src="@/assets/images/ic_dsh.png" alt="">
           </div>
         </template>
       </div>
@@ -34,11 +34,11 @@
               <div class="time">开始时间：{{item.StartTime | xxTimeFormatFilter}}</div>
               <div class="time">结束时间：{{item.EndTime | xxTimeFormatFilter}}</div>
             </div>
-            <div class="btns">
+            <div v-if="item.State === 1" class="btns">
               <button class="btn yellow" @click="edit(item.ID)">编辑</button>
               <button class="btn red" @click="confirmRemove(item.ID)">删除</button>
             </div>
-            <!-- <img class="status" src="@/assets/images/ic_dqr.png" alt=""> -->
+            <img v-if="item.State === 0" class="status" src="@/assets/images/ic_dsh.png" alt="">
           </div>
         </template>
         <!-- <template v-for="(item, index) in list.Service">
