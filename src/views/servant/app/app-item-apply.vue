@@ -82,7 +82,9 @@ export default {
       })
     },
     async getList () {
+      this.$vux.loading.show('加载中')
       const res = await this.$http.get('/PackageList')
+      this.$vux.loading.hide()
       if (res.data.Code === 100000) {
         this.getRoleList(res.data.Data)
         this.getAllItems(res.data.Data)
