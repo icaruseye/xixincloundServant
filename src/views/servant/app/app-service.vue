@@ -10,27 +10,29 @@
     <!-- 服务项 -->
     <div v-if="modelServiceListTabIndex === 0">
       <div v-if="itemList.length > 0">
-        <div v-for="(item, pIndex) in itemList" v-if="item.PackageList.length > 0" :key="pIndex">
-          <div class="weui-list-title">{{item.PackageTypeName}}</div>
-          <div class="weui-list-panel weui-panel">
-            <template v-if="item.PackageList.length > 0">
-              <service-item v-for="(service, serviceIndex) in item.PackageList" 
-              :key="serviceIndex"
-              :id="service.ID"
-              :title="service.Name"
-              :price="service.Price/100"
-              :count="service.Count"
-              :state ="service.State"
-              :effectiveDay ="service.EffectiveDay"
-              :effectiveMonth ="service.EffectiveMonth"
-              :effectiveYear ="service.EffectiveYear"
-              :description ="service.Description"
-              :useType="service.PackageType"
-              @changeState = "service.State = service.State === 0 ? 1 : 0"
-              ></service-item>
-            </template>
+        <template v-for="(item, pIndex) in itemList">
+          <div  :key="pIndex" v-if="item.PackageList.length > 0">
+            <div class="weui-list-title">{{item.PackageTypeName}}</div>
+            <div class="weui-list-panel weui-panel">
+              <template v-if="item.PackageList.length > 0">
+                <service-item v-for="(service, serviceIndex) in item.PackageList" 
+                :key="serviceIndex"
+                :id="service.ID"
+                :title="service.Name"
+                :price="service.Price/100"
+                :count="service.Count"
+                :state ="service.State"
+                :effectiveDay ="service.EffectiveDay"
+                :effectiveMonth ="service.EffectiveMonth"
+                :effectiveYear ="service.EffectiveYear"
+                :description ="service.Description"
+                :useType="service.PackageType"
+                @changeState = "service.State = service.State === 0 ? 1 : 0"
+                ></service-item>
+              </template>
+            </div>
           </div>
-        </div>
+        </template>
       </div>
       <div v-else style="position: relative; height:200px">
         <xx-occupied-box>

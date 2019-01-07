@@ -11,7 +11,7 @@
       <xx-cell-items label="真实售价：" class="noraml_cell_right" labelClass="the-cells-items_label">
         <div class="input_control_container">
           <div class="input_control_inner_box">
-            <input @blur="priceBlur" class="input_control" type="Number" v-model="templateDetail.Price" v-validate="'currency|required'" name="Price" placeholder="请输入真实售价">
+            <input @blur="priceBlur" class="input_control" type="Number" :readonly="!templateDetail.CouldChangePrice" v-model="templateDetail.Price" v-validate="'currency|required'" name="Price" placeholder="请输入真实售价">
           </div>
           <span class="input_control_suffix">元</span>
           <p v-show="errorBags.has('Price')" class="help is-danger">{{ errorBags.first('Price') }}</p>
@@ -210,6 +210,7 @@ export default {
               ID: tempData.ID,
               Name: tempData.Name,
               Price: tempData.Price / 100,
+              CouldChangePrice: tempData.CouldChangePrice,
               PackageType: tempData.PackageType,
               Img: tempData.Img,
               State: tempData.State,
