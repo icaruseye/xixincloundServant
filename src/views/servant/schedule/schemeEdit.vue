@@ -11,13 +11,13 @@
       <div class="select_items clearfix">
         开始时间
         <div class="select_items_content_container">
-          <Datetime v-model="startTime" :min-hour="6" :max-hour="18" placeholder="请选择时间" :minute-list="['00', '30']" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
+          <Datetime v-model="startTime" :min-hour="6" :max-hour="20" placeholder="请选择时间" :minute-list="['00', '30']" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
         </div>
       </div>
       <div class="select_items clearfix">
         结束时间
         <div class="select_items_content_container">
-          <Datetime v-model="endTime" :min-hour="6" :max-hour="18" placeholder="请选择时间" :minute-list="['00', '30']" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
+          <Datetime v-model="endTime" :min-hour="6" :max-hour="20" placeholder="请选择时间" :minute-list="['00', '30']" format="HH:mm" hour-row="{value}点" minute-row="{value}分"></Datetime>
         </div>
       </div>
       <div class="select_items clearfix">
