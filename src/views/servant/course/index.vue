@@ -8,7 +8,8 @@
             <div class="title_text">{{item.Title}}</div>
             <div class="title_price">￥{{item.Price | price}}</div>
           </div>
-          <button class="btn" :class="item.IsUpperShelf ? 'close' : ''" @click="changeStatus(item.ServantShopProxyCourseID, !item.IsUpperShelf)">{{item.IsUpperShelf ? '下架' : '上架'}}</button>
+          <button v-if="item.ShopProxyCourseIsUpperShelf" class="btn" :class="item.IsUpperShelf ? 'close' : ''" @click="changeStatus(item.ServantShopProxyCourseID, !item.IsUpperShelf)">{{item.IsUpperShelf ? '下架' : '上架'}}</button>
+          <button disabled class="btn" v-if="!item.ShopProxyCourseIsUpperShelf">机构已下架</button>
           <button class="btn manage" @click="toList(item.CourseId)">管理</button>
         </div>
       </template>
@@ -107,6 +108,10 @@ export default {
       color: #3AC7F5;
       background: #fff;
       border: 1px solid #3AC7F5;
+    }
+    &:disabled {
+      background: #d1d1d1;
+      border: 1px solid #d1d1d1;
     }
   }
 }

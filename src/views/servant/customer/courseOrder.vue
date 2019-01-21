@@ -5,7 +5,7 @@
       <section
         class="items_section"
         v-for="(course, index) in courseList"
-        @click="redirectUrl(`/customer/${userID}/studyRecord/${course.ShopProxyCourseID}/list`)"
+        @click="redirectUrl(`/customer/${userID}/studyRecord/${course.ServantShopProxyCourseID}/list`)"
         :key="index">
         <p class="item_name">{{course.ShopProxyCourseName}}</p>
         <p class="item_desc">分类：{{course.CourseTypeName}}</p>
