@@ -17,6 +17,7 @@ import 'vant/lib/index.css'
 import 'animate.css/animate.min.css'
 import fundebug from 'fundebug-javascript'
 import VueClipboard from 'vue-clipboard2'
+import VueAMap from 'vue-amap'
 fundebug.apikey = 'e3fbd8baddee7e450d5bf79ee7f2887afcaa86c25553662559b3a20d65515a4c'
 
 function formatComponentName (vm) {
@@ -49,6 +50,13 @@ Vue.use(LoadingPlugin)
 Vue.use(AlertPlugin)
 Vue.use(BusPlugin)
 Vue.use(VueClipboard)
+Vue.use(VueAMap)
+VueAMap.initAMapApiLoader({
+  key: '6c1e7dd17520cbff5d12dbc63018f3b0',
+  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
+  // 默认高德 sdk 版本为 1.4.4
+  v: '1.4.4'
+})
 
 Object.defineProperty(Vue.prototype, '$_', { value: _ })
 FastClick.attach(document.body)

@@ -10,6 +10,7 @@
           class="address_select_control"
           :list="addressData"
           placeholder="请选择地址" 
+          @on-hide="addressOnHide"
           value-text-align="center" 
           :popup-style="{'z-index': 9999}"
           >
@@ -17,7 +18,16 @@
       </div>
       <div class="weui-form-cell">
           <label class="label" for="">详细地址：</label>
-          <textarea v-model="SpecificAddress" class="textarea_control"  name="address" placeholder="请输入具体地址"></textarea>
+          <!-- <textarea v-model="SpecificAddress" class="textarea_control"  name="address" placeholder="请输入具体地址"></textarea> -->
+          <custom-search
+            @select="selectAddress"
+            :city="searchCitys"
+            :SpecificAddress="SpecificAddress"
+          ></custom-search>
+      </div>
+      <div class="weui-form-cell">
+          <label class="label" for="">门牌号：</label>
+          <input type="text" v-model="HouseAddress" class="input_control" name="HouseAddress" placeholder="例：一栋二单元1024">
       </div>
       <div class="weui-form-cell">
         <label class="label" for="" style="width:95px">标签：</label>
@@ -56,6 +66,7 @@
 import ChinaAddressV4Data from '@/plugins/datas/ChinaAddressV4Data.json'
 import { Group, XAddress, Checker, CheckerItem, InlineXSwitch, Confirm, TransferDom } from 'vux'
 import util from '@/plugins/util'
+import customSearch from '@/components/customSearch'
 export default {
   directives: {
     TransferDom
@@ -66,7 +77,8 @@ export default {
     Checker,
     CheckerItem,
     InlineXSwitch,
-    Confirm
+    Confirm,
+    customSearch
   },
   props: {
     id: {
@@ -89,6 +101,7 @@ export default {
         return this.modelAddress.cityTemp
       },
       set: function (val) {
+        this.searchCitys = val[1]
         this.modelAddress.cityTemp = val
       }
     },
@@ -101,6 +114,15 @@ export default {
         this.modelAddress.SpecificAddress = val
       }
     },
+    HouseAddress: {
+      cache: false,
+      get () {
+        return this.modelAddress.HouseAddress
+      },
+      set (val) {
+        this.modelAddress.HouseAddress = val
+      }
+    },
     Remark: {
       cache: false,
       get () {
@@ -108,6 +130,24 @@ export default {
       },
       set (val) {
         this.modelAddress.Remark = val
+      }
+    },
+    Latitude: {
+      cache: false,
+      get () {
+        return this.modelAddress.Latitude
+      },
+      set (val) {
+        this.modelAddress.Latitude = val
+      }
+    },
+    Longitude: {
+      cache: false,
+      get () {
+        return this.modelAddress.Longitude
+      },
+      set (val) {
+        this.modelAddress.Longitude = val
       }
     },
     IsDefault: {
@@ -121,6 +161,7 @@ export default {
     }
   },
   mounted () {
+    console.log(this.modelAddress)
     this.modelAddress.cityTemp = (this.modelAddress.Province ? [this.modelAddress.Province, this.modelAddress.City, this.modelAddress.Area] : [])
   },
   data () {
@@ -132,6 +173,7 @@ export default {
       removeBtn: false,
       addressData: ChinaAddressV4Data,
       address: '',
+      searchCitys: '',
       authText: {
         IsDefault: {
           required: false
@@ -152,6 +194,14 @@ export default {
     }
   },
   methods: {
+    addressOnHide () {
+      this.searchCitys = this.citys[1]
+    },
+    selectAddress (poi) {
+      this.SpecificAddress = poi.name
+      this.Latitude = poi.location.lat
+      this.Longitude = poi.location.lng
+    },
     cancel () {
       this.$emit('cancel')
     },
@@ -196,7 +246,10 @@ export default {
           City: this.citys[1],
           Area: this.citys[2],
           SpecificAddress: this.SpecificAddress,
-          Remark: this.Remark
+          Remark: this.Remark,
+          Longitude: this.Longitude,
+          Latitude: this.Latitude,
+          HouseAddress: this.HouseAddress
         }
         const method = this.id === -1 ? 'post' : 'put'
         const url = this.id === -1 ? '/ServantAddress' : `/ServantAddress?addressID=${this.id}`
@@ -306,3 +359,4 @@ export default {
   background-color: #ffc349
 }
 </style>
+
