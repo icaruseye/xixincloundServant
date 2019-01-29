@@ -36,7 +36,7 @@
           <i class="iconfont icon-jiantouyou"></i>
           <span style="margin-left:5px;">{{params.PushPeople.split(',').length}}人</span>
           <div class="push-list">
-            <img v-if="index < 4" v-for="(item, index) in params.avatarList" :key="item" :src="item | transformImgUrl" alt="">
+            <img v-show="index < 4" v-for="(item, index) in params.avatarList" :key="item" :src="item | transformImgUrl" alt="">
           </div>
         </div>
         <div class="title_text_box" v-else @click="go('/app/push/userlist')">请选择<i class="iconfont icon-jiantouyou"></i></div>

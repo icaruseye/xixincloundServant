@@ -179,5 +179,12 @@ export default [
     meta: {
       title: '激活码详情'
     }
+  },
+  {
+    path: '/app/dispatch',
+    component: _import('/servant/dispatch/apply'),
+    meta: {
+      title: '派单申请'
+    }
   }
 ]

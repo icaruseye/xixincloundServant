@@ -103,6 +103,13 @@
           <i class="iconfont icon-jiantouyou"></i>
         </div>
       </div>
+      <div v-if="ShopSwitch" class="weui-cell" @click="go('/app/dispatch')">
+        <div class="weui-cell-top">
+          <div class="icon"><img src="@/assets/images/app-pdgl.png"></div>
+          <div class="title">派单管理</div>
+          <i class="iconfont icon-jiantouyou"></i>
+        </div>
+      </div>
     </div>
     <div class="empty-bar"></div>
     <div class="weui-panel weui-list-panel">
@@ -177,11 +184,13 @@ export default {
         TotalIncome: 0,
         TotalSelledPackage: 0,
         TotalService: 0
-      }
+      },
+      ShopSwitch: false
     }
   },
   created () {
     this.getWorkSpaceData()
+    this.getShopSwitch()
   },
   filters: {
     moneyFilter (val = 0) {
@@ -213,6 +222,14 @@ export default {
           this.workSpaceData = result.data.Data
         }
       })
+    },
+    async getShopSwitch () {
+      const res = await this.$http.get(`/DispatchService/ShopSwitch`)
+      if (res.data.Code === 100000) {
+        this.ShopSwitch = true
+      } else {
+        this.$vux.toast.text(res.data.Msg)
+      }
     }
   }
 }
