@@ -5,7 +5,7 @@
         <img class="avatar" :src="userAccount.Avatar | transformImgUrl" alt="">
       </div>
       <h3 class="nickName">
-        {{userAccount.NickName}}
+        {{userInfo.RealName}}
       </h3>
       <p class="desc">{{userAccount.Description | stringSub(85)}}</p>
     </div>
@@ -29,7 +29,8 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'userAccount'
+      'userAccount',
+      'userInfo'
     ]),
     API_PATH () {
       return process.env.API_PATH

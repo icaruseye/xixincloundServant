@@ -3,7 +3,7 @@
     <div class="user_top_container">
       <div class="user_avatar" :style="{backgroundImage: `url(${transformImgUrl(userAccount.Avatar)})`}"></div>
       <div class="user_nickName">
-        {{userAccount.NickName}}
+        {{userInfo.RealName}}
       </div>
       <!-- <p class="user_desc">
         儿科

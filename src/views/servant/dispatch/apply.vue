@@ -1,6 +1,9 @@
 <template>
   <div class="wrapper" v-show="isApply">
-    <xx-go-back></xx-go-back>
+    <div class="tips" v-if="ServantSwitch === 1">
+      <i class="iconfont icon-warning"></i>
+      <div class="text">派单申请审核中</div>
+    </div>
     <xx-cell class="mt10px">
       <xx-cell-items label="接受派单地址" class="noraml_cell_right" style="color:#3AC7F5" @click.native="showAddressPopup">
         <p style="font-size: 12px;max-width: 216px;text-align: justify;float: right;">
@@ -69,7 +72,7 @@ export default {
   data () {
     return {
       isApply: false,
-      ServantSwitch: false,
+      ServantSwitch: 0,
       isShowAddressList: false,
       showAddress: false,
       addressList: [],
@@ -256,6 +259,22 @@ export default {
     flex: 1;
     color: #666;
     padding-right: 10px;
+  }
+}
+
+.tips {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px;
+  padding: 10px;
+  background: #fdf6ec;
+  border: 1px solid #faecd8;
+  color: #e6a23c;
+  font-size: 12px;
+  .text {
+    margin-left: 5px;
+    text-align: center;
   }
 }
 </style>
